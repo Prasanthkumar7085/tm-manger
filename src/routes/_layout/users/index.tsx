@@ -1,5 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router'
+import UsersTable from "@/components/Users";
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/_layout/users/')({
-  component: () => <div>Hello /_layout/users/!</div>,
-})
+export const Route = createFileRoute("/_layout/users/")({
+  component: () => (
+    <div>
+      <UsersTable />
+    </div>
+  ),
+});

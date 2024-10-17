@@ -14,6 +14,9 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as IndexImport } from './routes/index'
 import { Route as LayoutUsersIndexImport } from './routes/_layout/users/index'
+import { Route as LayoutTasksIndexImport } from './routes/_layout/tasks/index'
+import { Route as LayoutProjectsIndexImport } from './routes/_layout/projects/index'
+import { Route as LayoutDashboardIndexImport } from './routes/_layout/dashboard/index'
 
 // Create/Update Routes
 
@@ -29,6 +32,21 @@ const IndexRoute = IndexImport.update({
 
 const LayoutUsersIndexRoute = LayoutUsersIndexImport.update({
   path: '/users/',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutTasksIndexRoute = LayoutTasksIndexImport.update({
+  path: '/tasks/',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutProjectsIndexRoute = LayoutProjectsIndexImport.update({
+  path: '/projects/',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutDashboardIndexRoute = LayoutDashboardIndexImport.update({
+  path: '/dashboard/',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -50,6 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutImport
       parentRoute: typeof rootRoute
     }
+    '/_layout/dashboard/': {
+      id: '/_layout/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof LayoutDashboardIndexImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/projects/': {
+      id: '/_layout/projects/'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof LayoutProjectsIndexImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/tasks/': {
+      id: '/_layout/tasks/'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof LayoutTasksIndexImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/users/': {
       id: '/_layout/users/'
       path: '/users'
@@ -63,10 +102,16 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface LayoutRouteChildren {
+  LayoutDashboardIndexRoute: typeof LayoutDashboardIndexRoute
+  LayoutProjectsIndexRoute: typeof LayoutProjectsIndexRoute
+  LayoutTasksIndexRoute: typeof LayoutTasksIndexRoute
   LayoutUsersIndexRoute: typeof LayoutUsersIndexRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
+  LayoutDashboardIndexRoute: LayoutDashboardIndexRoute,
+  LayoutProjectsIndexRoute: LayoutProjectsIndexRoute,
+  LayoutTasksIndexRoute: LayoutTasksIndexRoute,
   LayoutUsersIndexRoute: LayoutUsersIndexRoute,
 }
 
@@ -76,12 +121,18 @@ const LayoutRouteWithChildren =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof LayoutRouteWithChildren
+  '/dashboard': typeof LayoutDashboardIndexRoute
+  '/projects': typeof LayoutProjectsIndexRoute
+  '/tasks': typeof LayoutTasksIndexRoute
   '/users': typeof LayoutUsersIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof LayoutRouteWithChildren
+  '/dashboard': typeof LayoutDashboardIndexRoute
+  '/projects': typeof LayoutProjectsIndexRoute
+  '/tasks': typeof LayoutTasksIndexRoute
   '/users': typeof LayoutUsersIndexRoute
 }
 
@@ -89,15 +140,25 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/_layout': typeof LayoutRouteWithChildren
+  '/_layout/dashboard/': typeof LayoutDashboardIndexRoute
+  '/_layout/projects/': typeof LayoutProjectsIndexRoute
+  '/_layout/tasks/': typeof LayoutTasksIndexRoute
   '/_layout/users/': typeof LayoutUsersIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '' | '/users'
+  fullPaths: '/' | '' | '/dashboard' | '/projects' | '/tasks' | '/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/users'
-  id: '__root__' | '/' | '/_layout' | '/_layout/users/'
+  to: '/' | '' | '/dashboard' | '/projects' | '/tasks' | '/users'
+  id:
+    | '__root__'
+    | '/'
+    | '/_layout'
+    | '/_layout/dashboard/'
+    | '/_layout/projects/'
+    | '/_layout/tasks/'
+    | '/_layout/users/'
   fileRoutesById: FileRoutesById
 }
 
@@ -133,8 +194,23 @@ export const routeTree = rootRoute
     "/_layout": {
       "filePath": "_layout.tsx",
       "children": [
+        "/_layout/dashboard/",
+        "/_layout/projects/",
+        "/_layout/tasks/",
         "/_layout/users/"
       ]
+    },
+    "/_layout/dashboard/": {
+      "filePath": "_layout/dashboard/index.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/projects/": {
+      "filePath": "_layout/projects/index.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/tasks/": {
+      "filePath": "_layout/tasks/index.tsx",
+      "parent": "/_layout"
     },
     "/_layout/users/": {
       "filePath": "_layout/users/index.tsx",

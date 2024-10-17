@@ -3,7 +3,7 @@ import SideMenu from "./SideMenu";
 
 function SideBar() {
   return (
-    <div className="w-[18%] m-4 rounded-xl bg-white">
+    <div className="w-[15%] p-4 border bg-white border-box">
       <Logo />
       <SideMenu />
     </div>

@@ -41,10 +41,10 @@ const LoginComponent = () => {
         expires: exp,
       });
 
-      dispatch(setUserDetails(data));
+      // dispatch(setUserDetails(data));
       toast.success("Logged in Successfully!");
       navigate({
-        to: `/users`,
+        to: `/dashboard`,
       });
     },
     onError: (error: any) => {
@@ -57,11 +57,14 @@ const LoginComponent = () => {
     },
   });
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleLogin = async (e: any) => {
+    // e.preventDefault();
+    navigate({
+      to: "/dashboard",
+    });
 
-    setErrors([]);
-    mutate(loginDetails);
+    // setErrors([]);
+    // mutate(loginDetails);
   };
 
   return (
@@ -98,7 +101,8 @@ const LoginComponent = () => {
               id="email"
               placeholder="Email"
               onChange={(e) =>
-                setLoginDetails({ ...loginDetails, email: e.target.value })
+                // setLoginDetails({ ...loginDetails, email: e.target.value })
+                ""
               }
             />
           </div>
@@ -112,7 +116,8 @@ const LoginComponent = () => {
               id="password"
               placeholder="Password"
               onChange={(e) =>
-                setLoginDetails({ ...loginDetails, password: e.target.value })
+                // setLoginDetails({ ...loginDetails, password: e.target.value })
+                ""
               }
             />
           </div>

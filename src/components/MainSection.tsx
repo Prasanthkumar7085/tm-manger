@@ -1,5 +1,5 @@
-import ContentSection from "./ContentSection"
-import TopBar from "./TopBar"
+import ContentSection from "./ContentSection";
+import TopBar from "./TopBar";
 
 function MainSection() {
   return (
@@ -7,7 +7,7 @@ function MainSection() {
       <TopBar />
       <ContentSection />
     </div>
-  )
+  );
 }
 
-export default MainSection
+export default MainSection;
