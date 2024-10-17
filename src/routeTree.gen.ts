@@ -11,59 +11,104 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as ProjectsImport } from './routes/projects'
+import { Route as LayoutImport } from './routes/_layout'
+import { Route as IndexImport } from './routes/index'
+import { Route as LayoutUsersIndexImport } from './routes/_layout/users/index'
 
 // Create/Update Routes
 
-const ProjectsRoute = ProjectsImport.update({
-  path: '/projects',
+const LayoutRoute = LayoutImport.update({
+  id: '/_layout',
   getParentRoute: () => rootRoute,
+} as any)
+
+const IndexRoute = IndexImport.update({
+  path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LayoutUsersIndexRoute = LayoutUsersIndexImport.update({
+  path: '/users/',
+  getParentRoute: () => LayoutRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/projects': {
-      id: '/projects'
-      path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof ProjectsImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
+    }
+    '/_layout': {
+      id: '/_layout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof LayoutImport
+      parentRoute: typeof rootRoute
+    }
+    '/_layout/users/': {
+      id: '/_layout/users/'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof LayoutUsersIndexImport
+      parentRoute: typeof LayoutImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface LayoutRouteChildren {
+  LayoutUsersIndexRoute: typeof LayoutUsersIndexRoute
+}
+
+const LayoutRouteChildren: LayoutRouteChildren = {
+  LayoutUsersIndexRoute: LayoutUsersIndexRoute,
+}
+
+const LayoutRouteWithChildren =
+  LayoutRoute._addFileChildren(LayoutRouteChildren)
+
 export interface FileRoutesByFullPath {
-  '/projects': typeof ProjectsRoute
+  '/': typeof IndexRoute
+  '': typeof LayoutRouteWithChildren
+  '/users': typeof LayoutUsersIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/projects': typeof ProjectsRoute
+  '/': typeof IndexRoute
+  '': typeof LayoutRouteWithChildren
+  '/users': typeof LayoutUsersIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/projects': typeof ProjectsRoute
+  '/': typeof IndexRoute
+  '/_layout': typeof LayoutRouteWithChildren
+  '/_layout/users/': typeof LayoutUsersIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/projects'
+  fullPaths: '/' | '' | '/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/projects'
-  id: '__root__' | '/projects'
+  to: '/' | '' | '/users'
+  id: '__root__' | '/' | '/_layout' | '/_layout/users/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  ProjectsRoute: typeof ProjectsRoute
+  IndexRoute: typeof IndexRoute
+  LayoutRoute: typeof LayoutRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  ProjectsRoute: ProjectsRoute,
+  IndexRoute: IndexRoute,
+  LayoutRoute: LayoutRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -78,11 +123,22 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/projects"
+        "/",
+        "/_layout"
       ]
     },
-    "/projects": {
-      "filePath": "projects.tsx"
+    "/": {
+      "filePath": "index.tsx"
+    },
+    "/_layout": {
+      "filePath": "_layout.tsx",
+      "children": [
+        "/_layout/users/"
+      ]
+    },
+    "/_layout/users/": {
+      "filePath": "_layout/users/index.tsx",
+      "parent": "/_layout"
     }
   }
 }
