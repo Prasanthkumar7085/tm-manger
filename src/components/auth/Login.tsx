@@ -97,7 +97,6 @@ const LoginComponent = () => {
             </Label>
             <Input
               className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
-              type="email"
               id="email"
               placeholder="Email"
               onChange={(e) =>
@@ -112,7 +111,6 @@ const LoginComponent = () => {
             </Label>
             <Input
               className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
-              type="password"
               id="password"
               placeholder="Password"
               onChange={(e) =>

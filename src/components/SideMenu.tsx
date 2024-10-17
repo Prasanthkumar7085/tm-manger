@@ -41,6 +41,8 @@ function SideMenu() {
                   </div>
                 </div>
               </Link>
+            </li>
+            <li>
               <Link
                 to="/tasks"
                 activeProps={{
@@ -60,6 +62,8 @@ function SideMenu() {
                   </div>
                 </div>
               </Link>
+            </li>
+            <li>
               <Link
                 to="/projects"
                 activeProps={{
@@ -79,6 +83,8 @@ function SideMenu() {
                   </div>
                 </div>
               </Link>
+            </li>
+            <li>
               <Link
                 to="/users"
                 activeProps={{

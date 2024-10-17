@@ -51,7 +51,7 @@ const TanStackTable: FC<pageProps> = ({
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
-  console.log(paginationDetails, "lplp");
+  console.log(paginationDetails, "details");
 
   const capturePageNum = (value: number) => {
     getData({

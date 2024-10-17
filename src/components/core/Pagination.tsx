@@ -41,10 +41,9 @@ const Pagination = ({
   const [limitOptions, setLimitOptions] = useState<
     { title: string; value: number }[]
   >([]);
-  console.log(paginationDetails, "value");
   const totalPages = paginationDetails ? paginationDetails?.total_pages : 1;
 
-  const selectedValue = paginationDetails?.page_size;
+  const selectedValue = paginationDetails?.limit;
 
   useEffect(() => {
     setLimitOptions(
@@ -99,11 +98,11 @@ const Pagination = ({
         for (let i = 1; i <= 4; i++) {
           pageNumbers.push(i);
         }
-        pageNumbers.push(null); // For ellipsis
+        pageNumbers.push(null);
         pageNumbers.push(totalPages);
       } else if (currentPage >= totalPages - 2) {
         pageNumbers.push(1);
-        pageNumbers.push(null); // For ellipsis
+        pageNumbers.push(null);
         for (let i = totalPages - 3; i <= totalPages; i++) {
           pageNumbers.push(i);
         }
@@ -120,7 +119,7 @@ const Pagination = ({
 
     return pageNumbers;
   };
-  console.log(paginationDetails?.total, "total");
+
   return (
     <ShadCNPagination className="flex justify-between px-2 py-0">
       <PaginationContent className="px-1 py-0 flex gap-2">

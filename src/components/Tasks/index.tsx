@@ -8,12 +8,12 @@ import { addSerial } from "@/lib/helpers/addSerial";
 import TanStackTable from "../core/TanstackTable";
 import { getAllPaginatedTasks } from "@/lib/services/tasks";
 import { taskColumns } from "./TaskColumns";
+import SearchFilter from "../core/CommonComponents/SearchFilter";
 
 const Tasks = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
-
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 10;
@@ -21,8 +21,8 @@ const Tasks = () => {
     ? searchParams.get("order_by")
     : "";
   const initialSearch = searchParams.get("search") || "";
-
-  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+  const [searchString, setSearchString] = useState(initialSearch);
+  const [debouncedSearch, setDebouncedSearch] = useState(searchString);
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
@@ -37,17 +37,20 @@ const Tasks = () => {
         pageIndex: pagination.pageIndex,
         pageSize: pagination.pageSize,
         order_by: pagination.order_by,
+        search: debouncedSearch,
       });
 
       const queryParams: Record<string, any> = {
-        current_page: pagination.pageIndex,
-        page_size: pagination.pageSize,
+        page: pagination.pageIndex,
+        limit: pagination.pageSize,
         order_by: pagination.order_by || undefined,
+        search: debouncedSearch || undefined,
       };
-      // router.navigate({
-      //   to: "/tasks",
-      //   search: queryParams,
-      // });
+
+      router.navigate({
+        to: "/tasks",
+        search: queryParams,
+      });
 
       return response;
     },
@@ -63,6 +66,16 @@ const Tasks = () => {
   const getAllUsers = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchString);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchString]);
 
   const userActions = [
     {
@@ -109,9 +122,27 @@ const Tasks = () => {
       maxWidth: "80px",
     },
   ];
+  const handleNavigation = () => {
+    navigate({
+      to: "/tasks/add",
+    });
+  };
 
   return (
     <div className="relative">
+      <div className="flex">
+        <Button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={handleNavigation}
+        >
+          Add Task
+        </Button>
+        <SearchFilter
+          searchString={searchString}
+          setSearchString={setSearchString}
+        />
+      </div>
+
       <div className="flex justify-end mb-4 gap-3"></div>
       <div>
         {isError ? (
@@ -121,7 +152,7 @@ const Tasks = () => {
             <TanStackTable
               data={usersData}
               columns={[...taskColumns]}
-              paginationDetails={data?.data?.pagination}
+              paginationDetails={data?.data}
               getData={getAllUsers}
               removeSortingForColumnIds={[
                 "serial",
