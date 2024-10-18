@@ -49,7 +49,6 @@ const DashBoard = () => {
               <p className="text-sm text-gray-600">Tasks</p>
             </div>
 
-            {/* Users */}
             <div className="p-4 bg-purple-100 rounded-lg text-center shadow-sm">
               <div className="flex justify-center items-center mb-4">
                 <img
@@ -62,7 +61,6 @@ const DashBoard = () => {
               <p className="text-sm text-gray-600">Users</p>
             </div>
 
-            {/* Active Tasks */}
             <div className="p-4 bg-green-100 rounded-lg text-center shadow-sm">
               <div className="flex justify-center items-center mb-4">
                 <img
@@ -80,7 +78,7 @@ const DashBoard = () => {
           <StatsAndGraph />
         </Card>
       </div>
-      <Card className="p-6 py-4 mt-2 bg-white shadow-lg rounded-lg">
+      <Card className="p-6 py-4 mt-2 bg-white shadow-lg rounded-lg h-[50%] overflow-auto">
         <Tasks />
       </Card>
     </>

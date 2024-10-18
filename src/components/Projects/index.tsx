@@ -6,7 +6,7 @@ import { useNavigate } from "@tanstack/react-router";
 import Pagination from "../core/Pagination";
 // const navigate = useNavigate();
 
-const dummyProjects = Array(15)
+const dummyProjects = Array(10)
   .fill(0)
   .map((_, i) => ({
     id: i + 1,
@@ -27,6 +27,7 @@ const fetchProjects = async (page: any, search: any) => {
 };
 
 export const Projects = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [paginationDetails, setPaginationDetails] = useState<any>();
@@ -45,6 +46,11 @@ export const Projects = () => {
   //     to: "/projects/add",
   //   });
   // };
+  const handleNavigation = () => {
+    navigate({
+      to: "/projects/add",
+    });
+  };
 
   return (
     <div className="p-4">
@@ -58,7 +64,7 @@ export const Projects = () => {
         />
         <Button
           className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-          // onClick={handleNavigation}
+          onClick={handleNavigation}
         >
           Add Project
         </Button>

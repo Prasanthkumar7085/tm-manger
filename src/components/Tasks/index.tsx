@@ -9,6 +9,7 @@ import TanStackTable from "../core/TanstackTable";
 import { getAllPaginatedTasks } from "@/lib/services/tasks";
 import { taskColumns } from "./TaskColumns";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
+import Loading from "../core/Loading";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -71,6 +72,11 @@ const Tasks = () => {
       clearTimeout(handler);
     };
   }, [searchString]);
+  const handleView = () => {
+    navigate({
+      to: "/tasks/view",
+    });
+  };
 
   const userActions = [
     {
@@ -79,10 +85,20 @@ const Tasks = () => {
       cell: (info: any) => {
         return (
           <div>
-            {/* <Button title="View" size={"sm"} variant={"ghost"}>
-              <img src={"/table/view.svg"} alt="view" height={16} width={16} />
-            </Button> */}
             <Button
+              title="View"
+              size={"sm"}
+              variant={"ghost"}
+              onClick={handleView}
+            >
+              <img
+                src={"/src/assets/view.svg"}
+                alt="view"
+                height={16}
+                width={16}
+              />
+            </Button>
+            {/* <Button
               title="Edit"
               onClick={() =>
                 navigate({
@@ -93,7 +109,7 @@ const Tasks = () => {
               variant={"ghost"}
             >
               <img src={"/table/edit.svg"} alt="view" height={16} width={16} />
-            </Button>
+            </Button> */}
             {/* <Button
               title="delete"
               onClick={() => onClickOpen(info.row.original.id)}
@@ -125,20 +141,23 @@ const Tasks = () => {
 
   return (
     <div className="relative">
-      <div className="flex justify-end mb-4 gap-3">
-        <Button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={handleNavigation}
-        >
-          Add Task
-        </Button>
-        <SearchFilter
-          searchString={searchString}
-          setSearchString={setSearchString}
-        />
+      <div className="flex justify-between mb-4 gap-3">
+        <h2>Tasks</h2>
+        <div className="flex flex-row gap-2">
+          <Button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={handleNavigation}
+          >
+            Add Task
+          </Button>
+          <SearchFilter
+            searchString={searchString}
+            setSearchString={setSearchString}
+          />
+        </div>
       </div>
 
-      <div className="flex justify-end gap-3"></div>
+      <div className="flex justify-end gap-3 "></div>
       <div>
         {isError ? (
           <div>Error: {error.message}</div>
@@ -146,7 +165,7 @@ const Tasks = () => {
           <div>
             <TanStackTable
               data={usersData}
-              columns={[...taskColumns]}
+              columns={[...taskColumns, ...userActions]}
               paginationDetails={data?.data}
               getData={getAllUsers}
               removeSortingForColumnIds={[
@@ -162,7 +181,7 @@ const Tasks = () => {
           </div>
         )}
 
-        {/* <Loading loading={isLoading || isFetching} /> */}
+        <Loading loading={isLoading || isFetching} />
       </div>
     </div>
   );
