@@ -1,17 +1,16 @@
-import { useNavigate } from "@tanstack/react-router";
 import LogoPath from "@/assets/logo.svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { LogIn } from "lucide-react";
+import { loginAPI } from "@/lib/services/auth";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import Cookies from "js-cookie";
+import { LogIn } from "lucide-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import Cookies from "js-cookie";
-import { setUserDetails } from "@/redux/Modules/userlogin";
 import { toast } from "sonner";
-import { loginAPI } from "@/lib/services/auth";
-
+import loginBackground from "@/assets/login-bg-image.png";
 interface loginProps {
   email: string;
   password: string;
@@ -68,16 +67,15 @@ const LoginComponent = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen w-2/3 mx-auto p-20">
-      <div className="w-full h-full py-10">
-        <div className="relative w-full h-full grid bg-black p-10 rounded-xl">
-          <div className="absolute left-0 top-[0px] bg-[url('./img/grow.jpg')] bg-cover bg-no-repeat bg-center w-full h-full"></div>
-          <p className="[text-shadow:_0_1px_1px_rgb(255_255_255/_0.8)] text-4xl font-normal tracking-wide leading-[3rem] text-gray-800 relative self-center pt-10 text-center">
-            Task manager
-          </p>
-        </div>
+    <div className="flex justify-center items-center h-screen  mx-auto p-20 bg-white">
+      <div className="w-[60%] h-full py-10">
+        <img
+          src={loginBackground}
+          alt="logo"
+          className="w-[90%] mx-auto mt-2"
+        />
       </div>
-      <div className="w-full h-full flex flex-col justify-center items-center space-y-8 relative ml-[-20px] bg-white shadow-xl p-8">
+      <div className="w-[40%] h-full border flex flex-col justify-center items-center space-y-8 relative ml-[-20px] bg-white shadow-xl p-8">
         <div>
           <img
             src={LogoPath}

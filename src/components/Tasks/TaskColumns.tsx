@@ -52,7 +52,7 @@ export const taskColumns = [
     id: "priority",
     cell: (info: any) => {
       let title = info.getValue();
-      return <span>{title ? title : "-"}</span>;
+      return <span className="capitalize">{title ? title : "-"}</span>;
     },
     width: "150px",
     maxWidth: "150px",

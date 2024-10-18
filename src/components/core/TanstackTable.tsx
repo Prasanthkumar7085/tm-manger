@@ -51,7 +51,6 @@ const TanStackTable: FC<pageProps> = ({
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
-  console.log(paginationDetails, "details");
 
   const capturePageNum = (value: number) => {
     getData({
@@ -108,96 +107,102 @@ const TanStackTable: FC<pageProps> = ({
   };
 
   return (
-    <div>
-      <div>
-        <Table>
-          <TableHeader>
-            {table?.getHeaderGroups().map((headerGroup) => {
-              return (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header: any, index: number) => {
-                    return (
-                      <TableHead
-                        key={index}
-                        colSpan={header.colSpan}
+    <div className="overflow-x-auto w-full">
+      {/* Outer container with rounded corners and shadow */}
+      <div className="max-h-[80vh] overflow-y-auto rounded-lg shadow-lg border border-gray-200">
+        <table className="min-w-full divide-y divide-gray-200">
+          {/* Table Header */}
+          <thead className="bg-gray-100 rounded-t-lg">
+            {table?.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header, index) => (
+                  <th
+                    key={index}
+                    colSpan={header.colSpan}
+                    className="px-6 py-3 text-left text-xs font-semibold text-gray-700 bg-[#f3e5f6] uppercase tracking-wider"
+                    style={{
+                      minWidth: getWidth(header.id),
+                      width: getWidth(header.id),
+                    }}
+                  >
+                    {header.isPlaceholder ? null : (
+                      <div
+                        className={`${
+                          header.column.getCanSort()
+                            ? "cursor-pointer select-none"
+                            : ""
+                        } flex items-center gap-2`}
+                        onClick={() => sortAndGetData(header)}
                         style={{
                           minWidth: getWidth(header.id),
                           width: getWidth(header.id),
-                          color: "#000",
-                          background: "#dfffff",
                         }}
                       >
-                        {header.isPlaceholder ? null : (
-                          <div
-                            {...{
-                              className: header.column.getCanSort()
-                                ? "cursor-pointer select-none"
-                                : "",
-                            }}
-                            onClick={() => sortAndGetData(header)}
-                            className="flex items-center gap-2 cursor-pointer"
-                            style={{
-                              minWidth: getWidth(header.id),
-                              width: getWidth(header.id),
-                            }}
-                          >
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                            <SortItems
-                              header={header}
-                              removeSortingForColumnIds={
-                                removeSortingForColumnIds
-                              }
-                            />
-                          </div>
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
                         )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableHeader>
-          <TableBody className="bg-white divide-gray-100">
+                        {/* Sorting icon component */}
+                        <SortItems
+                          header={header}
+                          removeSortingForColumnIds={removeSortingForColumnIds}
+                        />
+                      </div>
+                    )}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          {/* Table Body */}
+          <tbody className="bg-white divide-y divide-gray-100">
             {data?.length ? (
               table?.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <tr
+                  key={row.id}
+                  className="hover:bg-gray-50 transition duration-150 ease-in-out"
+                >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <td
+                      key={cell.id}
+                      className="px-6 py-4 text-sm text-gray-800"
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
                       )}
-                    </TableCell>
+                    </td>
                   ))}
-                </TableRow>
+                </tr>
               ))
             ) : !loading ? (
-              <TableRow>
-                <TableCell colSpan={6}>
+              <tr>
+                <td colSpan={6} className="px-6 py-6 text-center">
                   <img
                     src="/No-Files.jpg"
                     alt="No Data"
-                    height={150}
-                    width={250}
+                    className="mx-auto h-40 w-60 object-contain"
                   />
-                </TableCell>
-              </TableRow>
+                </td>
+              </tr>
             ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length}>Loading...</TableCell>
-              </TableRow>
+              <tr>
+                <td colSpan={columns.length} className="px-6 py-4 text-center">
+                  Loading...
+                </td>
+              </tr>
             )}
-          </TableBody>
-        </Table>
+          </tbody>
+        </table>
       </div>
-      <Pagination
-        paginationDetails={paginationDetails}
-        capturePageNum={capturePageNum}
-        captureRowPerItems={captureRowPerItems}
-      />
+      {/* Pagination Component */}
+      <div className="mt-4">
+        <Pagination
+          paginationDetails={paginationDetails}
+          capturePageNum={capturePageNum}
+          captureRowPerItems={captureRowPerItems}
+        />
+      </div>
     </div>
   );
 };

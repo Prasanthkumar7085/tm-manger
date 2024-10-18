@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
-import { ClipboardCheck, Loader, PieChart, Users } from "lucide-react";
+import { useState } from "react";
 import StatsAndGraph from "./StatsAndGraphs";
 import Tasks from "./Tasks";
 import GlobalDateRangeFilter from "./core/DateRangePicker";
+import dahboardProjectIcon from "@/assets/dashboard-project-icon.svg";
+import dahboardTaskIcon from "@/assets/dashboard-task-icon.svg";
+import dashboardUsersIcon from "@/assets/dashboard-users-icon.svg";
+import dashboardActiveTaskIcon from "@/assets/dashboard-active-icon.svg";
 
 const DashBoard = () => {
   const [totalDetails, setTotalDetails] = useState({});
@@ -24,7 +27,7 @@ const DashBoard = () => {
             <div className="p-4 bg-red-100 rounded-lg text-center shadow-sm">
               <div className="flex justify-center items-center mb-4">
                 <img
-                  src={"src/assets/dashboard-project-icon.svg"}
+                  src={dahboardProjectIcon}
                   alt="logo"
                   className="h-[33px] w-[33px]"
                 />
@@ -37,7 +40,7 @@ const DashBoard = () => {
             <div className="p-4 bg-yellow-100 rounded-lg text-center shadow-sm">
               <div className="flex justify-center items-center mb-4">
                 <img
-                  src={"src/assets/dashboard-task-icon.svg"}
+                  src={dahboardTaskIcon}
                   alt="logo"
                   className="h-[33px] w-[33px]"
                 />
@@ -50,7 +53,7 @@ const DashBoard = () => {
             <div className="p-4 bg-purple-100 rounded-lg text-center shadow-sm">
               <div className="flex justify-center items-center mb-4">
                 <img
-                  src={"src/assets/dashboard-users-icon.svg"}
+                  src={dashboardUsersIcon}
                   alt="logo"
                   className="h-[33px] w-[33px]"
                 />
@@ -63,7 +66,7 @@ const DashBoard = () => {
             <div className="p-4 bg-green-100 rounded-lg text-center shadow-sm">
               <div className="flex justify-center items-center mb-4">
                 <img
-                  src={"src/assets/dashboard-active-icon.svg"}
+                  src={dashboardActiveTaskIcon}
                   alt="logo"
                   className="h-[33px] w-[33px]"
                 />
@@ -77,7 +80,7 @@ const DashBoard = () => {
           <StatsAndGraph />
         </Card>
       </div>
-      <Card className="p-6 py-4 mt-5 bg-white shadow-lg rounded-lg">
+      <Card className="p-6 py-4 mt-2 bg-white shadow-lg rounded-lg">
         <Tasks />
       </Card>
     </>

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import ProjectCard from "./Card";
 import { Button } from "../ui/button";
 import { useNavigate } from "@tanstack/react-router";
+import Pagination from "../core/Pagination";
 // const navigate = useNavigate();
 
 const dummyProjects = Array(15)
@@ -28,6 +29,7 @@ const fetchProjects = async (page: any, search: any) => {
 export const Projects = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [paginationDetails, setPaginationDetails] = useState<any>();
 
   const { data, isLoading } = useQuery({
     queryKey: ["projects", page, search],
@@ -35,6 +37,9 @@ export const Projects = () => {
   });
 
   if (isLoading) return <div>Loading...</div>;
+
+  const capturePageNum = () => {};
+  const captureRowPerItems = () => {};
   // const handleNavigation = () => {
   //   navigate({
   //     to: "/projects/add",
@@ -59,10 +64,17 @@ export const Projects = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto h-[70vh]">
         {data?.map((project: any) => (
           <ProjectCard key={project.id} project={project} />
         ))}
+      </div>
+      <div className="mt-4">
+        <Pagination
+          paginationDetails={paginationDetails}
+          capturePageNum={capturePageNum}
+          captureRowPerItems={captureRowPerItems}
+        />
       </div>
     </div>
   );
