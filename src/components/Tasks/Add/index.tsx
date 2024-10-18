@@ -1,4 +1,5 @@
 import Loading from "@/components/core/Loading";
+import UploadFiles from "@/components/core/UploadDocuments";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "@tanstack/react-router";
 import React, { useState } from "react";
@@ -43,6 +44,8 @@ const AddTask = () => {
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                   >
                     <option>Select Project</option>
+                    <option>Labsquire </option>
+                    <option>Analytics</option>
                   </select>
                 </div>
 
@@ -74,14 +77,7 @@ const AddTask = () => {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-gray-700 font-bold mb-2">
-                    Upload Attachments
-                  </label>
-                  <div className="border-2 border-dashed rounded-md p-4">
-                    <p className="text-gray-500 text-sm">
-                      Drag & Drop your file here Or Click to add files
-                    </p>
-                  </div>
+                  <UploadFiles />
                 </div>
               </div>
 
@@ -110,6 +106,9 @@ const AddTask = () => {
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                   >
                     <option>Select priority</option>
+                    <option>High</option>
+                    <option>Medium</option>
+                    <option>Low</option>
                   </select>
                 </div>
 
@@ -154,6 +153,7 @@ const AddTask = () => {
               <Button
                 type="button"
                 className="px-6 py-2 bg-red-500 text-white rounded-md mr-2"
+                onClick={() => navigate({ to: "/tasks" })}
               >
                 Cancel
               </Button>

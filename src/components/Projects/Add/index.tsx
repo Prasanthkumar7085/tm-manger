@@ -85,13 +85,13 @@ const AddProject = () => {
                 </div>
 
                 {/* Role */}
-                <Select className="w-[120px]">
+                <Select>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="User" />
+                    <SelectValue placeholder="Select Members" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="manager">Manager</SelectItem>
+                    <SelectItem value="light">Admin</SelectItem>
+                    <SelectItem value="dark">Manager</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -104,6 +104,7 @@ const AddProject = () => {
         <Button
           type="button"
           className="px-6 py-2 bg-red-500 text-white rounded-md mr-2"
+          onClick={() => navigate({ to: "/projects" })}
         >
           Cancel
         </Button>
