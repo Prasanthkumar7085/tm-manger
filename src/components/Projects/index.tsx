@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ProjectCard from "./Card";
+import { Button } from "../ui/button";
+import { useNavigate } from "@tanstack/react-router";
+// const navigate = useNavigate();
 
 const dummyProjects = Array(15)
   .fill(0)
@@ -32,6 +35,11 @@ export const Projects = () => {
   });
 
   if (isLoading) return <div>Loading...</div>;
+  // const handleNavigation = () => {
+  //   navigate({
+  //     to: "/projects/add",
+  //   });
+  // };
 
   return (
     <div className="p-4">
@@ -43,12 +51,12 @@ export const Projects = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <button
+        <Button
           className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-          onClick={() => setPage(page + 1)}
+          // onClick={handleNavigation}
         >
-          Next Page
-        </button>
+          Add Project
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
