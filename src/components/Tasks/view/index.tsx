@@ -53,18 +53,16 @@ const TaskView = () => {
     comments: [
       {
         id: 1,
-        author: "Robert",
+        author: "Pavan",
         timestamp: "1 month ago",
-        content:
-          "Impressive! Though it seems the drag feature could be improved.",
+        content: "This is the test comment 1 for task1",
       },
       {
         id: 2,
-        author: "Dyane",
+        author: "Gowtham",
         timestamp: "1 week ago",
-        content:
-          "I'd recommend focusing on the fundamentals of HTML, CSS, and JS before considering React",
-        replyTo: "@Robert",
+        content: "This is the test comment 2",
+        replyTo: "@Pavan",
       },
     ],
   };

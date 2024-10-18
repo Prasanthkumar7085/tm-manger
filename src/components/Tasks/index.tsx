@@ -113,7 +113,7 @@ const Tasks = () => {
   return (
     <>
       <div>{!isDashboard && <TotalCounts />}</div>
-      <div className="relative">
+      <div className="relative mt-3">
         <div className="flex justify-between mb-4 gap-3">
           <h2>Tasks</h2>
           <div className="flex flex-row gap-2">
