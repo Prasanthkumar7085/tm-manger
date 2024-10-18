@@ -10,6 +10,18 @@ export const taskColumns = [
   //   minWidth: "60px",
   // },
   {
+    accessorFn: (row: any) => row.project,
+    id: "project",
+    cell: (info: any) => {
+      return <span>{"project 1"}</span>;
+    },
+    width: "150px",
+    maxWidth: "150px",
+    minWidth: "150px",
+    header: () => <span>Project</span>,
+    footer: (props: any) => props.column.id,
+  },
+  {
     accessorFn: (row: any) => row.title,
     id: "title",
     cell: (info: any) => {
@@ -19,7 +31,7 @@ export const taskColumns = [
     width: "150px",
     maxWidth: "150px",
     minWidth: "150px",
-    header: () => <span>Project</span>,
+    header: () => <span>Task Name</span>,
     footer: (props: any) => props.column.id,
   },
   {

@@ -47,11 +47,6 @@ const Tasks = () => {
         search: debouncedSearch || undefined,
       };
 
-      router.navigate({
-        to: "/tasks",
-        search: queryParams,
-      });
-
       return response;
     },
   });
@@ -130,7 +125,7 @@ const Tasks = () => {
 
   return (
     <div className="relative">
-      <div className="flex">
+      <div className="flex justify-end mb-4 gap-3">
         <Button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={handleNavigation}
@@ -143,7 +138,7 @@ const Tasks = () => {
         />
       </div>
 
-      <div className="flex justify-end mb-4 gap-3"></div>
+      <div className="flex justify-end gap-3"></div>
       <div>
         {isError ? (
           <div>Error: {error.message}</div>
@@ -161,6 +156,7 @@ const Tasks = () => {
                 "description",
                 "priority",
                 "due_date",
+                "project",
               ]}
             />
           </div>

@@ -16,8 +16,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useLocation } from "@tanstack/react-router";
 import Pagination from "./Pagination";
-import { getRouteApi, useLocation } from "@tanstack/react-router";
 
 interface pageProps {
   columns: any[];
@@ -108,8 +108,8 @@ const TanStackTable: FC<pageProps> = ({
   };
 
   return (
-    <div className="overflow-x-auto w-full">
-      <div className="max-h-[100vh] overflow-y-auto">
+    <div>
+      <div>
         <Table>
           <TableHeader>
             {table?.getHeaderGroups().map((headerGroup) => {
@@ -124,7 +124,7 @@ const TanStackTable: FC<pageProps> = ({
                           minWidth: getWidth(header.id),
                           width: getWidth(header.id),
                           color: "#000",
-                          background: "#F0EDFF",
+                          background: "#dfffff",
                         }}
                       >
                         {header.isPlaceholder ? null : (
@@ -160,12 +160,12 @@ const TanStackTable: FC<pageProps> = ({
               );
             })}
           </TableHeader>
-          <TableBody>
+          <TableBody className="bg-white divide-gray-100">
             {data?.length ? (
               table?.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell className="p-1.5" key={cell.id}>
+                    <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
