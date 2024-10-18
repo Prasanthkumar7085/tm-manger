@@ -9,7 +9,7 @@ function SideMenu() {
   };
 
   return (
-    <div className="h-screen  py-10">
+    <div className="py-12">
       <div className="flex flex-col justify-between h-full">
         <div>
           <ul className="space-y-3 text-gray-600">
@@ -67,11 +67,15 @@ function SideMenu() {
                   }`}
                 >
                   <img
-                    src={"src/assets/dashboard-icon-black.svg"}
-                    alt="dashboard"
+                    src={
+                      isActive("/projects")
+                        ? "src/assets/projects-white-icon.svg"
+                        : "src/assets/projects-icon.svg"
+                    }
+                    alt="projects"
                     className="h-[23px] w-[23px]"
                   />
-                  <span className="text-[16px] text-[#5f637d]">Projects</span>
+                  <span>Projects</span>
                 </div>
               </Link>
             </li>
@@ -85,11 +89,15 @@ function SideMenu() {
                   }`}
                 >
                   <img
-                    src={"src/assets/dashboard-icon-black.svg"}
+                    src={
+                      isActive("/users")
+                        ? "src/assets/users-white-icon.svg"
+                        : "src/assets/users-icon.svg"
+                    }
                     alt="dashboard"
                     className="h-[23px] w-[23px]"
                   />
-                  <span className="text-[16px] text-[#5f637d]">Users</span>
+                  <span>Users</span>
                 </div>
               </Link>
             </li>
