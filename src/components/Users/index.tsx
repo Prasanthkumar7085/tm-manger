@@ -101,11 +101,20 @@ import { useState } from "react";
 import TanStackTable from "../core/TanstackTable";
 import { userColumns } from "./UserColumns";
 import { Button } from "../ui/button";
-import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import { Typography } from "@mui/material";
 import { Input } from "../ui/input";
-import { toast } from "sonner";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { Label } from "@/components/ui/label"
 
 interface ReportPayload {
   full_name: string;
@@ -126,7 +135,8 @@ function UsersTable() {
   const initialSearch = searchParams.get("search") || "";
   const [searchString, setSearchString] = useState(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  // const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
@@ -205,11 +215,11 @@ function UsersTable() {
     ) || [];
 
   const handleDrawerOpen = () => {
-    setIsDrawerOpen(true);
+    setIsOpen(true);
   };
 
   const handleDrawerClose = () => {
-    setIsDrawerOpen(false);
+    setIsOpen(false);
   };
   return (
     <div className="relative">
@@ -239,81 +249,55 @@ function UsersTable() {
             ]}
           />
         </div>
-        <Drawer anchor="right" open={isDrawerOpen} onClose={handleDrawerClose}>
-          <Box sx={{ width: 600, p: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              Add User
-            </Typography>
-            <form className="space-y-20">
-              <div className="space-y-4">
-                <div>
-                  <label
-                    htmlFor="FirstName"
-                    className="block text-sm font-medium"
-                  >
-                    Name<span className="text-red-500">*</span>
-                  </label>
-                  <Input
-                    id="Name"
-                    placeholder="Enter Person Name"
-                    // value={.first_name}
-                    name="first_name"
-                    // onChange={handleInputChange}
-                  />
-                  {/* {errorMessages?.first_name && (
-            <p style={{ color: "red" }}>{errorMessages.first_name[0]}</p>
-          )} */}
-                </div>
-                <div>
-                  <label
-                    htmlFor="FirstName"
-                    className="block text-sm font-medium"
-                  >
-                    Email<span className="text-red-500">*</span>
-                  </label>
-                  <Input
-                    id="email"
-                    placeholder="Enter Email"
-                    // value={.first_name}
-                    name="email"
-                    // onChange={handleInputChange}
-                  />
-                  {/* {errorMessages?.first_name && (
-            <p style={{ color: "red" }}>{errorMessages.first_name[0]}</p>
-          )} */}
-                </div>
-                <div>
-                  <label
-                    htmlFor="FirstName"
-                    className="block text-sm font-medium"
-                  >
-                    Mobile Number<span className="text-red-500">*</span>
-                  </label>
-                  <Input
-                    id="phone_number"
-                    placeholder="Enter Mobile Number"
-                    // value={.first_name}
-                    name="phone_number"
-                    // onChange={handleInputChange}
-                  />
-                  {/* {errorMessages?.first_name && (
-            <p style={{ color: "red" }}>{errorMessages.first_name[0]}</p>
-          )} */}
-                </div>
-              </div>
-              <Button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-4">
-                Cancel
-              </Button>
-
-              <Button
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                onClick={addUser}
-              >
-                Submit
-              </Button>
-            </form>
-          </Box>
-        </Drawer>
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Add User</SheetTitle>
+          <SheetDescription>
+          </SheetDescription>
+        </SheetHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            <Input
+              id="name"
+              placeholder="Enter name"
+              className="col-span-3 border border-gray-300 p-2 rounded"
+              type="text"
+  />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Email
+            </Label>
+            <Input
+              id="email"
+              placeholder="Enter Email"
+              className="col-span-3 border border-gray-300 p-2 rounded"
+              type="text"
+  />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="mobile number" className="text-right">
+              Mobile Number
+            </Label>
+            <Input
+              id="phonenumber"
+              placeholder="Enter Mobile Number"
+              className="col-span-3 border border-gray-300 p-2 rounded"
+              type="text"
+  />
+          </div>
+        </div>
+        <SheetFooter>
+          <SheetClose asChild>
+            <Button type="submit">Save changes</Button>
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
       </div>
     </div>
   );
