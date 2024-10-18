@@ -1,13 +1,13 @@
-import ContentSection from "./ContentSection"
-import TopBar from "./TopBar"
+import ContentSection from "./ContentSection";
+import TopBar from "./TopBar";
 
 function MainSection() {
   return (
-    <div className="w-[85%] flex flex-col h-screen">
+    <div className="w-[85%] flex flex-col ">
       <TopBar />
       <ContentSection />
     </div>
-  )
+  );
 }
 
-export default MainSection
+export default MainSection;

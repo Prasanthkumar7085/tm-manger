@@ -41,10 +41,10 @@ const LoginComponent = () => {
         expires: exp,
       });
 
-      dispatch(setUserDetails(data));
+      // dispatch(setUserDetails(data));
       toast.success("Logged in Successfully!");
       navigate({
-        to: `/users`,
+        to: `/dashboard`,
       });
     },
     onError: (error: any) => {
@@ -57,11 +57,14 @@ const LoginComponent = () => {
     },
   });
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleLogin = async (e: any) => {
+    // e.preventDefault();
+    navigate({
+      to: "/dashboard",
+    });
 
-    setErrors([]);
-    mutate(loginDetails);
+    // setErrors([]);
+    // mutate(loginDetails);
   };
 
   return (
@@ -70,7 +73,7 @@ const LoginComponent = () => {
         <div className="relative w-full h-full grid bg-black p-10 rounded-xl">
           <div className="absolute left-0 top-[0px] bg-[url('./img/grow.jpg')] bg-cover bg-no-repeat bg-center w-full h-full"></div>
           <p className="[text-shadow:_0_1px_1px_rgb(255_255_255/_0.8)] text-4xl font-normal tracking-wide leading-[3rem] text-gray-800 relative self-center pt-10 text-center">
-            Growing & Sharing with You
+            Task manager
           </p>
         </div>
       </div>
@@ -94,11 +97,11 @@ const LoginComponent = () => {
             </Label>
             <Input
               className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
-              type="email"
               id="email"
               placeholder="Email"
               onChange={(e) =>
-                setLoginDetails({ ...loginDetails, email: e.target.value })
+                // setLoginDetails({ ...loginDetails, email: e.target.value })
+                ""
               }
             />
           </div>
@@ -108,11 +111,12 @@ const LoginComponent = () => {
             </Label>
             <Input
               className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
-              type="password"
               id="password"
               placeholder="Password"
+              type="password"
               onChange={(e) =>
-                setLoginDetails({ ...loginDetails, password: e.target.value })
+                // setLoginDetails({ ...loginDetails, password: e.target.value })
+                ""
               }
             />
           </div>
