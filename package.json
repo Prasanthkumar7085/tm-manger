@@ -6,7 +6,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "dev": "vite --port=3001",
- "build": "vite build && echo {\"rewrites\": [{ \"source\": \"/(.*)\", \"destination\": \"/index.html\" }]} > dist/vercel.json", 
+    "build": "vite build && echo {\"rewrites\": [{ \"source\": \"/(.*)\", \"destination\": \"/index.html\" }]} > dist/vercel.json",
     "serve": "vite preview",
     "start": "vite"
   },
@@ -24,6 +24,9 @@
     "vite": "^5.4.8"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/material": "^6.1.4",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.2",

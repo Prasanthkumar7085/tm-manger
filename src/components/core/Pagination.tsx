@@ -50,6 +50,7 @@ const Pagination = ({
       limitOptionsFromProps?.length
         ? limitOptionsFromProps
         : [
+            { title: "5/pages", value: 5 },
             { title: "10/page", value: 10 },
             { title: "20/page", value: 20 },
             { title: "30/page", value: 30 },
