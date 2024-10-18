@@ -57,7 +57,7 @@ const TanStackTable: FC<pageProps> = ({
       ...searchParams,
       pageSize: searchParams.get("page_size")
         ? searchParams.get("page_size")
-        : 10,
+        : 5,
       pageIndex: value,
     });
   };
