@@ -115,6 +115,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Label } from "@/components/ui/label"
+import SearchFilter from "../core/CommonComponents/SearchFilter";
 
 interface ReportPayload {
   full_name: string;
@@ -224,6 +225,10 @@ function UsersTable() {
   return (
     <div className="relative">
       <div className="flex justify-end mb-4 gap-3">
+      <SearchFilter
+          searchString={searchString}
+          setSearchString={setSearchString}
+        />
         <Button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           // onClick={handleNavigation}
@@ -231,12 +236,20 @@ function UsersTable() {
         >
           +Add Users
         </Button>
+        <Button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          // onClick={handleNavigation}
+          // onClick={handleDrawerOpen}
+        >
+          import
+        </Button>
       </div>
+
       <div>
         <div>
           <TanStackTable
             data={usersData}
-            columns={[...userColumns]}
+            columns={[...userColumns,]}
             paginationDetails={data?.data}
             getData={getAllUsers}
             removeSortingForColumnIds={[
@@ -246,11 +259,17 @@ function UsersTable() {
               "phone_number",
               "user_type",
               "created_at",
+              "progress",
+              "pending",
+              "completed",
+              "tasks",
+              "overdue",
+              "1_tasks_"
             ]}
           />
         </div>
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent>
+      <SheetContent className="bg-gray-100">
         <SheetHeader>
           <SheetTitle>Add User</SheetTitle>
           <SheetDescription>
@@ -292,8 +311,9 @@ function UsersTable() {
           </div>
         </div>
         <SheetFooter>
+        <Button variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
           <SheetClose asChild>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit" onClick={addUser}>Submit</Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>
