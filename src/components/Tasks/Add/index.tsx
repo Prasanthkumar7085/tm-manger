@@ -1,193 +1,198 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  addTasksAPI,
-  getSingleTaskAPI,
-  updateTasksAPI,
-} from "@/lib/services/tasks";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "@tanstack/react-router";
-import { useState } from "react";
-import { toast } from "sonner";
-
-interface ReportPayload {
-  title: string;
-  description: string;
-  prirority: string;
-  due_date: string;
-  project_id: string;
-}
+import React, { useState } from "react";
 
 const AddTask = () => {
-  const navigate = useNavigate();
-  const { taskId } = useParams({ strict: false });
-
-  const [userData, setUserData] = useState<any>({});
-  const [errorMessages, setErrorMessages] = useState<any>({});
-  const [userTypeOpen, setUserTypeOpen] = useState(false);
-  const [userType, setUserType] = useState("");
-
-  const { mutate, isPending, isError, error, data, isSuccess } = useMutation({
-    mutationFn: async (payload: ReportPayload) => {
-      if (taskId) {
-        return await updateTasksAPI(payload, taskId);
-      } else {
-        return await addTasksAPI(payload);
-      }
-    },
-    onSuccess: (response: any) => {
-      if (response?.status === 200 || response?.status === 201) {
-        toast.success(response?.data?.message);
-        navigate({
-          to: "/tasks",
-        });
-      }
-      if (response?.status === 422) {
-        setErrorMessages(response?.data?.errData || [""]);
-        toast.error(response?.data?.message);
-      }
-    },
+  const [task, setTask] = useState({
+    project: "",
+    title: "",
+    description: "",
+    dueDate: "",
+    priority: "",
+    tags: "",
+    assignee: "",
   });
 
-  const addUser = () => {
-    if (taskId) {
-      const payload: any = {
-        title: userData?.title,
-        description: userData?.description,
-        project_id: userData?.project_id,
-        prirority: userData?.prirority,
-        due_date: userData?.due_date,
-      };
-
-      mutate(payload);
-    } else {
-    }
-  };
-
-  const { isFetching } = useQuery({
-    queryKey: ["getSingleUser", taskId],
-    queryFn: async () => {
-      if (!taskId) return;
-      try {
-        const response = await getSingleTaskAPI(taskId);
-
-        if (response.success) {
-          const data = response?.data?.data;
-          setUserData({
-            title: data?.title,
-            description: data?.description,
-            prirority: data?.prirority,
-            due_date: data?.due_date,
-          });
-          setUserType(data?.user_type);
-        } else {
-          throw response;
-        }
-      } catch (errData) {
-        console.error(errData);
-        // errPopper(errData);
-      }
-    },
-    enabled: Boolean(taskId),
-  });
-
-  const handleInputChange = (e: any) => {
-    let { name, value } = e.target;
-    const updatedValue = value
-      .replace(/[^a-zA-Z\s]/g, "")
-      .replace(/^\s+/g, "")
-      .replace(/\s{2,}/g, " ");
-    setUserData({
-      ...userData,
-      [name]: updatedValue,
-    });
-  };
-
-  const handleChangeEmail = (e: any) => {
-    let { name, value } = e.target;
-    setUserData({
-      ...userData,
-      [name]: value,
-    });
-  };
-  const handleChangePassword = (e: any) => {
-    let { name, value } = e.target;
-    setUserData({
-      ...userData,
-      [name]: value,
-    });
-  };
-  const onChangeStatus = (value: string) => {
-    setUserType(value);
+  const handleChange = (e: any) => {
+    setTask({ ...task, [e.target.name]: e.target.value });
   };
 
   return (
-    <Card className="p-6 max-w-lg mx-auto shadow-md">
-      <h1 className="text-2xl font-bold text-black-600 ml-2">
-        {taskId ? "Update Task" : "Add Task"}
-      </h1>
-      <Button
-        variant="ghost"
-        onClick={() =>
-          navigate({
-            to: "/tasks",
-          })
-        }
-        className="mb-4 border-black"
-      >
-        ← Back
-      </Button>
+    <div className="min-h-screen flex bg-gray-100">
+      {/* Sidebar */}
+      {/* <aside className="bg-blue-900 text-white w-64 p-4">
+        <div className="text-xl font-bold mb-8">Labsquire</div>
+        <nav>
+          <ul>
+            <li className="mb-4">
+              <a href="#" className="block px-4 py-2 hover:bg-blue-700 rounded">
+                Dashboard
+              </a>
+            </li>
+            <li className="mb-4">
+              <a href="#" className="block px-4 py-2 bg-blue-700 rounded">
+                Tasks
+              </a>
+            </li>
+            <li className="mb-4">
+              <a href="#" className="block px-4 py-2 hover:bg-blue-700 rounded">
+                Projects
+              </a>
+            </li>
+            <li>
+              <a href="#" className="block px-4 py-2 hover:bg-blue-700 rounded">
+                Users
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside> */}
 
-      <div className="space-y-4">
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium">
-            Task Title
-          </label>
-          <Input
-            id="title"
-            placeholder="Enter Title"
-            value={userData.title}
-            name="title"
-            onChange={handleInputChange}
-          />
-          {errorMessages?.title && (
-            <p style={{ color: "red" }}>{errorMessages.title[0]}</p>
-          )}
-        </div>
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium">
-            Description
-          </label>
-          <Input
-            id="ldescription"
-            placeholder="Enter Description"
-            value={userData.last_name}
-            name="description"
-            onChange={handleInputChange}
-          />
-          {errorMessages?.description && (
-            <p style={{ color: "red" }}>{errorMessages.description[0]}</p>
-          )}
-        </div>
+      {/* Main Content */}
+      <main className="flex-1 p-8">
+        <div className="bg-white shadow rounded-lg p-8">
+          <h2 className="text-2xl font-bold mb-6">Add Task</h2>
+          <form>
+            <div className="grid grid-cols-2 gap-6">
+              {/* Left Column */}
+              <div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Select Project
+                  </label>
+                  <select
+                    name="project"
+                    value={task.project}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  >
+                    <option>Select Project</option>
+                  </select>
+                </div>
 
-        <div className="flex justify-between mt-6">
-          <Button
-            variant="outline"
-            onClick={() =>
-              navigate({
-                to: "/users",
-              })
-            }
-          >
-            Cancel
-          </Button>
-          <Button type="submit" onClick={addUser}>
-            {taskId ? "Update" : "Add"}
-          </Button>
+                <div className="mb-4">
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Task Title
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={task.title}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    placeholder="Enter Task Title"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    value={task.description}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    placeholder="Enter Task Description"
+                  ></textarea>
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Upload Attachments
+                  </label>
+                  <div className="border-2 border-dashed rounded-md p-4">
+                    <p className="text-gray-500 text-sm">
+                      Drag & Drop your file here Or Click to add files
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column */}
+              <div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Due Date
+                  </label>
+                  <input
+                    type="date"
+                    name="dueDate"
+                    value={task.dueDate}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Priority Level
+                  </label>
+                  <select
+                    name="priority"
+                    value={task.priority}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  >
+                    <option>Select priority</option>
+                  </select>
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Tags
+                  </label>
+                  <input
+                    type="text"
+                    name="tags"
+                    value={task.tags}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    placeholder="Enter tag"
+                  />
+                  <span className="inline-block mt-2 px-3 py-1 bg-green-100 text-green-800 text-sm rounded">
+                    Restaurant
+                  </span>
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Assign To
+                  </label>
+                  <select
+                    name="assignee"
+                    value={task.assignee}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  >
+                    <option>Select a person</option>
+                    <option>Pavan</option>
+                    <option>Gowtham</option>
+                    <option>Sudhakar</option>
+                    <option>Kedar</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="mt-8 flex justify-end">
+              <button
+                type="button"
+                className="px-6 py-2 bg-red-500 text-white rounded-md mr-2"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-6 py-2 bg-blue-600 text-white rounded-md"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
         </div>
-      </div>
-    </Card>
+      </main>
+    </div>
   );
 };
+
 export default AddTask;
