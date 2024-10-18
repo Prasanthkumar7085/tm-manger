@@ -6,7 +6,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "dev": "vite --port=3001",
- "build": "vite build && echo {\"rewrites\": [{ \"source\": \"/(.*)\", \"destination\": \"/index.html\" }]} > dist/vercel.json",    "serve": "vite preview",
+ "build": "vite build && echo {\"rewrites\": [{ \"source\": \"/(.*)\", \"destination\": \"/index.html\" }]} > dist/vercel.json", 
+    "serve": "vite preview",
     "start": "vite"
   },
   "devDependencies": {

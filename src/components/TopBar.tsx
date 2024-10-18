@@ -1,5 +1,5 @@
-import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { BellDot } from "lucide-react";
+import { navBarConstants } from "@/lib/helpers/navBarConstants";
+import { useLocation, useNavigate } from "@tanstack/react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
@@ -9,7 +9,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { navBarConstants } from "@/lib/helpers/navBarConstants";
 
 interface titleProps {
   title: string;
@@ -23,6 +22,7 @@ function TopBar() {
     pathname.includes(item.path)
   );
   const title = currentNavItem ? currentNavItem.title : null;
+  const navigate = useNavigate({ from: "/" });
 
   return (
     <div className="p-3 flex justify-between items-center bg-white border-b-2">
@@ -40,7 +40,15 @@ function TopBar() {
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Update Password</DropdownMenuItem>
-            <DropdownMenuItem>Logout</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                navigate({
+                  to: `/`,
+                });
+              }}
+            >
+              Logout
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         <img
