@@ -1,5 +1,12 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-
+import dashboardBlackIcon from "@/assets/dashboard-icon-black.svg";
+import dashboardWhiteIcon from "@/assets/dash-board-icon.svg";
+import tasksBlackIcon from "@/assets/tasks-icon.svg";
+import tasksWhiteIcon from "@/assets/task-white.svg";
+import usersBlackIcon from "@/assets/users-icon.svg";
+import usersWhiteIcon from "@/assets/users-white-icon.svg";
+import projectsBlackIcon from "@/assets/projects-icon.svg";
+import projectsWhiteIcon from "@/assets/projects-white-icon.svg";
 function SideMenu() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -25,8 +32,8 @@ function SideMenu() {
                   <img
                     src={
                       isActive("/dashboard")
-                        ? "src/assets/dash-board-icon.svg"
-                        : "src/assets/dashboard-icon-black.svg"
+                        ? dashboardWhiteIcon
+                        : dashboardBlackIcon
                     }
                     alt="dashboard"
                     className="h-[23px] w-[23px]"
@@ -45,11 +52,7 @@ function SideMenu() {
                   }`}
                 >
                   <img
-                    src={
-                      isActive("/tasks")
-                        ? "src/assets/task-white.svg"
-                        : "src/assets/tasks-icon.svg"
-                    }
+                    src={isActive("/tasks") ? tasksWhiteIcon : tasksBlackIcon}
                     alt="dashboard"
                     className="h-[23px] w-[23px]"
                   />
@@ -69,8 +72,8 @@ function SideMenu() {
                   <img
                     src={
                       isActive("/projects")
-                        ? "src/assets/projects-white-icon.svg"
-                        : "src/assets/projects-icon.svg"
+                        ? projectsWhiteIcon
+                        : projectsBlackIcon
                     }
                     alt="projects"
                     className="h-[23px] w-[23px]"
@@ -89,11 +92,7 @@ function SideMenu() {
                   }`}
                 >
                   <img
-                    src={
-                      isActive("/users")
-                        ? "src/assets/users-white-icon.svg"
-                        : "src/assets/users-icon.svg"
-                    }
+                    src={isActive("/users") ? usersWhiteIcon : usersBlackIcon}
                     alt="dashboard"
                     className="h-[23px] w-[23px]"
                   />

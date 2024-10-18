@@ -9,6 +9,8 @@ import TanStackTable from "../core/TanstackTable";
 import { getAllPaginatedTasks } from "@/lib/services/tasks";
 import { taskColumns } from "./TaskColumns";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
+import Loading from "../core/Loading";
+import TotalCounts from "./Counts";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -17,9 +19,7 @@ const Tasks = () => {
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 10;
-  const orderBY = searchParams.get("order_by")
-    ? searchParams.get("order_by")
-    : "";
+  const orderBY = searchParams.get("order_by") || "";
   const initialSearch = searchParams.get("search") || "";
   const [searchString, setSearchString] = useState(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
@@ -39,13 +39,6 @@ const Tasks = () => {
         order_by: pagination.order_by,
         search: debouncedSearch,
       });
-
-      const queryParams: Record<string, any> = {
-        page: pagination.pageIndex,
-        limit: pagination.pageSize,
-        order_by: pagination.order_by || undefined,
-        search: debouncedSearch || undefined,
-      };
 
       return response;
     },
@@ -72,6 +65,12 @@ const Tasks = () => {
     };
   }, [searchString]);
 
+  const handleView = () => {
+    navigate({
+      to: "/tasks/view",
+    });
+  };
+
   const userActions = [
     {
       accessorFn: (row: any) => row.actions,
@@ -79,34 +78,19 @@ const Tasks = () => {
       cell: (info: any) => {
         return (
           <div>
-            {/* <Button title="View" size={"sm"} variant={"ghost"}>
-              <img src={"/table/view.svg"} alt="view" height={16} width={16} />
-            </Button> */}
             <Button
-              title="Edit"
-              onClick={() =>
-                navigate({
-                  to: `/users/${info.row.original.id}/update`,
-                })
-              }
+              title="View"
               size={"sm"}
               variant={"ghost"}
-            >
-              <img src={"/table/edit.svg"} alt="view" height={16} width={16} />
-            </Button>
-            {/* <Button
-              title="delete"
-              onClick={() => onClickOpen(info.row.original.id)}
-              size={"sm"}
-              variant={"ghost"}
+              onClick={handleView}
             >
               <img
-                src={"/table/delete.svg"}
+                src={"/src/assets/view.svg"}
                 alt="view"
                 height={16}
                 width={16}
               />
-            </Button> */}
+            </Button>
           </div>
         );
       },
@@ -117,54 +101,62 @@ const Tasks = () => {
       maxWidth: "80px",
     },
   ];
+
   const handleNavigation = () => {
     navigate({
       to: "/tasks/add",
     });
   };
 
-  return (
-    <div className="relative">
-      <div className="flex justify-end mb-4 gap-3">
-        <Button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={handleNavigation}
-        >
-          Add Task
-        </Button>
-        <SearchFilter
-          searchString={searchString}
-          setSearchString={setSearchString}
-        />
-      </div>
+  const isDashboard = location.pathname === "/dashboard";
 
-      <div className="flex justify-end gap-3"></div>
-      <div>
-        {isError ? (
-          <div>Error: {error.message}</div>
-        ) : (
-          <div>
-            <TanStackTable
-              data={usersData}
-              columns={[...taskColumns]}
-              paginationDetails={data?.data}
-              getData={getAllUsers}
-              removeSortingForColumnIds={[
-                "serial",
-                "actions",
-                "title",
-                "description",
-                "priority",
-                "due_date",
-                "project",
-              ]}
+  return (
+    <>
+      <div>{!isDashboard && <TotalCounts />}</div>
+      <div className="relative mt-3">
+        <div className="flex justify-between mb-4 gap-3">
+          <h2>Tasks</h2>
+          <div className="flex flex-row gap-2">
+            <Button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={handleNavigation}
+            >
+              Add Task
+            </Button>
+            <SearchFilter
+              searchString={searchString}
+              setSearchString={setSearchString}
             />
           </div>
-        )}
+        </div>
 
-        {/* <Loading loading={isLoading || isFetching} /> */}
+        <div>
+          {isError ? (
+            <div>Error: {error.message}</div>
+          ) : (
+            <div>
+              <TanStackTable
+                data={usersData}
+                columns={[...taskColumns, ...userActions]}
+                paginationDetails={data?.data}
+                getData={getAllUsers}
+                removeSortingForColumnIds={[
+                  "serial",
+                  "actions",
+                  "title",
+                  "description",
+                  "priority",
+                  "due_date",
+                  "project",
+                ]}
+              />
+            </div>
+          )}
+
+          <Loading loading={isLoading || isFetching} />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

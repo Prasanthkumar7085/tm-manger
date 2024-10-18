@@ -18,7 +18,7 @@ function RootComponent() {
           {/* <TanStackRouterDevtools position="bottom-right" /> */}
         </React.Suspense>
       </Providers>
-      <Toaster richColors closeButton position="top-center" />
+      <Toaster richColors closeButton position="top-right" />
     </>
   );
 }

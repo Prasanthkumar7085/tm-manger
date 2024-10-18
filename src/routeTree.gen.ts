@@ -17,6 +17,7 @@ import { Route as LayoutUsersIndexImport } from './routes/_layout/users/index'
 import { Route as LayoutTasksIndexImport } from './routes/_layout/tasks/index'
 import { Route as LayoutProjectsIndexImport } from './routes/_layout/projects/index'
 import { Route as LayoutDashboardIndexImport } from './routes/_layout/dashboard/index'
+import { Route as LayoutTasksViewIndexImport } from './routes/_layout/tasks/view/index'
 import { Route as LayoutTasksAddIndexImport } from './routes/_layout/tasks/add/index'
 import { Route as LayoutProjectsAddIndexImport } from './routes/_layout/projects/add/index'
 import { Route as LayoutTasksTaskIdUpdateImport } from './routes/_layout/tasks/$taskId/update'
@@ -50,6 +51,11 @@ const LayoutProjectsIndexRoute = LayoutProjectsIndexImport.update({
 
 const LayoutDashboardIndexRoute = LayoutDashboardIndexImport.update({
   path: '/dashboard/',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutTasksViewIndexRoute = LayoutTasksViewIndexImport.update({
+  path: '/tasks/view/',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -135,6 +141,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutTasksAddIndexImport
       parentRoute: typeof LayoutImport
     }
+    '/_layout/tasks/view/': {
+      id: '/_layout/tasks/view/'
+      path: '/tasks/view'
+      fullPath: '/tasks/view'
+      preLoaderRoute: typeof LayoutTasksViewIndexImport
+      parentRoute: typeof LayoutImport
+    }
   }
 }
 
@@ -148,6 +161,7 @@ interface LayoutRouteChildren {
   LayoutTasksTaskIdUpdateRoute: typeof LayoutTasksTaskIdUpdateRoute
   LayoutProjectsAddIndexRoute: typeof LayoutProjectsAddIndexRoute
   LayoutTasksAddIndexRoute: typeof LayoutTasksAddIndexRoute
+  LayoutTasksViewIndexRoute: typeof LayoutTasksViewIndexRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
@@ -158,6 +172,7 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutTasksTaskIdUpdateRoute: LayoutTasksTaskIdUpdateRoute,
   LayoutProjectsAddIndexRoute: LayoutProjectsAddIndexRoute,
   LayoutTasksAddIndexRoute: LayoutTasksAddIndexRoute,
+  LayoutTasksViewIndexRoute: LayoutTasksViewIndexRoute,
 }
 
 const LayoutRouteWithChildren =
@@ -173,6 +188,7 @@ export interface FileRoutesByFullPath {
   '/tasks/$taskId/update': typeof LayoutTasksTaskIdUpdateRoute
   '/projects/add': typeof LayoutProjectsAddIndexRoute
   '/tasks/add': typeof LayoutTasksAddIndexRoute
+  '/tasks/view': typeof LayoutTasksViewIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -185,6 +201,7 @@ export interface FileRoutesByTo {
   '/tasks/$taskId/update': typeof LayoutTasksTaskIdUpdateRoute
   '/projects/add': typeof LayoutProjectsAddIndexRoute
   '/tasks/add': typeof LayoutTasksAddIndexRoute
+  '/tasks/view': typeof LayoutTasksViewIndexRoute
 }
 
 export interface FileRoutesById {
@@ -198,6 +215,7 @@ export interface FileRoutesById {
   '/_layout/tasks/$taskId/update': typeof LayoutTasksTaskIdUpdateRoute
   '/_layout/projects/add/': typeof LayoutProjectsAddIndexRoute
   '/_layout/tasks/add/': typeof LayoutTasksAddIndexRoute
+  '/_layout/tasks/view/': typeof LayoutTasksViewIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -212,6 +230,7 @@ export interface FileRouteTypes {
     | '/tasks/$taskId/update'
     | '/projects/add'
     | '/tasks/add'
+    | '/tasks/view'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -223,6 +242,7 @@ export interface FileRouteTypes {
     | '/tasks/$taskId/update'
     | '/projects/add'
     | '/tasks/add'
+    | '/tasks/view'
   id:
     | '__root__'
     | '/'
@@ -234,6 +254,7 @@ export interface FileRouteTypes {
     | '/_layout/tasks/$taskId/update'
     | '/_layout/projects/add/'
     | '/_layout/tasks/add/'
+    | '/_layout/tasks/view/'
   fileRoutesById: FileRoutesById
 }
 
@@ -275,7 +296,8 @@ export const routeTree = rootRoute
         "/_layout/users/",
         "/_layout/tasks/$taskId/update",
         "/_layout/projects/add/",
-        "/_layout/tasks/add/"
+        "/_layout/tasks/add/",
+        "/_layout/tasks/view/"
       ]
     },
     "/_layout/dashboard/": {
@@ -304,6 +326,10 @@ export const routeTree = rootRoute
     },
     "/_layout/tasks/add/": {
       "filePath": "_layout/tasks/add/index.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/tasks/view/": {
+      "filePath": "_layout/tasks/view/index.tsx",
       "parent": "/_layout"
     }
   }

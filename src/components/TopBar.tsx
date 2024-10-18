@@ -27,7 +27,7 @@ function TopBar() {
   return (
     <div className="p-3 flex justify-between items-center bg-white border-b-2">
       <span className="ml-2 text-lg font-semibold">{title}</span>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 bg-white">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex gap-2 items-center hover:cursor-pointer">
             <Avatar>
@@ -36,11 +36,12 @@ function TopBar() {
             </Avatar>
             My Account
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent className="bg-white">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Update Password</DropdownMenuItem>
             <DropdownMenuItem
+              className="cursor-pointer"
               onClick={() => {
                 navigate({
                   to: `/`,

@@ -1,6 +1,12 @@
+import Loading from "@/components/core/Loading";
+import UploadFiles from "@/components/core/UploadDocuments";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "@tanstack/react-router";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 const AddTask = () => {
+  const navigate = useNavigate();
   const [task, setTask] = useState({
     project: "",
     title: "",
@@ -14,45 +20,18 @@ const AddTask = () => {
   const handleChange = (e: any) => {
     setTask({ ...task, [e.target.name]: e.target.value });
   };
+  const handleSubmit = () => {
+    toast.success("Task added successfully!");
+    navigate({ to: "/tasks" });
+  };
 
   return (
     <div className="min-h-screen flex bg-gray-100">
-      {/* Sidebar */}
-      {/* <aside className="bg-blue-900 text-white w-64 p-4">
-        <div className="text-xl font-bold mb-8">Labsquire</div>
-        <nav>
-          <ul>
-            <li className="mb-4">
-              <a href="#" className="block px-4 py-2 hover:bg-blue-700 rounded">
-                Dashboard
-              </a>
-            </li>
-            <li className="mb-4">
-              <a href="#" className="block px-4 py-2 bg-blue-700 rounded">
-                Tasks
-              </a>
-            </li>
-            <li className="mb-4">
-              <a href="#" className="block px-4 py-2 hover:bg-blue-700 rounded">
-                Projects
-              </a>
-            </li>
-            <li>
-              <a href="#" className="block px-4 py-2 hover:bg-blue-700 rounded">
-                Users
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </aside> */}
-
-      {/* Main Content */}
       <main className="flex-1 p-8">
         <div className="bg-white shadow rounded-lg p-8">
           <h2 className="text-2xl font-bold mb-6">Add Task</h2>
           <form>
             <div className="grid grid-cols-2 gap-6">
-              {/* Left Column */}
               <div>
                 <div className="mb-4">
                   <label className="block text-gray-700 font-bold mb-2">
@@ -65,6 +44,8 @@ const AddTask = () => {
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                   >
                     <option>Select Project</option>
+                    <option>Labsquire </option>
+                    <option>Analytics</option>
                   </select>
                 </div>
 
@@ -96,18 +77,10 @@ const AddTask = () => {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-gray-700 font-bold mb-2">
-                    Upload Attachments
-                  </label>
-                  <div className="border-2 border-dashed rounded-md p-4">
-                    <p className="text-gray-500 text-sm">
-                      Drag & Drop your file here Or Click to add files
-                    </p>
-                  </div>
+                  <UploadFiles />
                 </div>
               </div>
 
-              {/* Right Column */}
               <div>
                 <div className="mb-4">
                   <label className="block text-gray-700 font-bold mb-2">
@@ -133,6 +106,9 @@ const AddTask = () => {
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                   >
                     <option>Select priority</option>
+                    <option>High</option>
+                    <option>Medium</option>
+                    <option>Low</option>
                   </select>
                 </div>
 
@@ -173,24 +149,26 @@ const AddTask = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
             <div className="mt-8 flex justify-end">
-              <button
+              <Button
                 type="button"
                 className="px-6 py-2 bg-red-500 text-white rounded-md mr-2"
+                onClick={() => navigate({ to: "/tasks" })}
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
                 className="px-6 py-2 bg-blue-600 text-white rounded-md"
+                onClick={handleSubmit}
               >
                 Submit
-              </button>
+              </Button>
             </div>
           </form>
         </div>
       </main>
+      {/* <Loading loading={} /> */}
     </div>
   );
 };
