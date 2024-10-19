@@ -72,9 +72,9 @@ function ForgotComponent() {
         </div>
         <form className="w-full" onSubmit={handleSubmit}>
           <div className="flex flex-col space-y-1 w-full">
-            <h3 className="mb-2">
-              Forgot your account’s password? Enter your email address and we’ll
-              send you a recovery link.
+            <h3 className="mb-2" style={{ lineHeight: "1.2" }}>
+              Forgot your account’s password? <br />
+              Enter your email address and we’ll send you a recovery link.
             </h3>
             <div className="flex flex-col space-y-1">
               <div className="relative">

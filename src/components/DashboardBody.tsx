@@ -7,6 +7,7 @@ import dahboardProjectIcon from "@/assets/dashboard-project-icon.svg";
 import dahboardTaskIcon from "@/assets/dashboard-task-icon.svg";
 import dashboardUsersIcon from "@/assets/dashboard-users-icon.svg";
 import dashboardActiveTaskIcon from "@/assets/dashboard-active-icon.svg";
+import CountUp from "react-countup";
 
 const DashBoard = () => {
   const [totalDetails, setTotalDetails] = useState({});
@@ -24,7 +25,7 @@ const DashBoard = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {/* Projects */}
-            <div className="p-4 bg-red-100 rounded-lg text-center shadow-sm">
+            {/* <div className="p-4 bg-red-100 rounded-lg text-center shadow-sm">
               <div className="flex justify-center items-center mb-4">
                 <img
                   src={dahboardProjectIcon}
@@ -34,10 +35,23 @@ const DashBoard = () => {
               </div>
               <h1 className="text-3xl font-semibold text-gray-800">100</h1>
               <p className="text-sm text-gray-600">Projects</p>
+            </div> */}
+            <div className="p-4 bg-red-100 rounded-lg text-center shadow-sm">
+              <div className="flex justify-center items-center mb-4">
+                <img
+                  src={dahboardProjectIcon}
+                  alt="logo"
+                  className="h-[33px] w-[33px]"
+                />
+              </div>
+              <h1 className="text-3xl font-semibold text-gray-800">
+                <CountUp start={0} end={100} duration={2.75} />
+              </h1>
+              <p className="text-sm text-gray-600">Projects</p>
             </div>
 
             {/* Tasks */}
-            <div className="p-4 bg-yellow-100 rounded-lg text-center shadow-sm">
+            {/* <div className="p-4 bg-yellow-100 rounded-lg text-center shadow-sm">
               <div className="flex justify-center items-center mb-4">
                 <img
                   src={dahboardTaskIcon}
@@ -46,6 +60,19 @@ const DashBoard = () => {
                 />
               </div>
               <h1 className="text-3xl font-semibold text-gray-800">300</h1>
+              <p className="text-sm text-gray-600">Tasks</p>
+            </div> */}
+            <div className="p-4 bg-yellow-100 rounded-lg text-center shadow-sm">
+              <div className="flex justify-center items-center mb-4">
+                <img
+                  src={dahboardTaskIcon}
+                  alt="logo"
+                  className="h-[33px] w-[33px]"
+                />
+              </div>
+              <h1 className="text-3xl font-semibold text-gray-800">
+                <CountUp start={0} end={300} duration={2.75} />
+              </h1>
               <p className="text-sm text-gray-600">Tasks</p>
             </div>
 
@@ -57,7 +84,9 @@ const DashBoard = () => {
                   className="h-[33px] w-[33px]"
                 />
               </div>
-              <h1 className="text-3xl font-semibold text-gray-800">500</h1>
+              <h1 className="text-3xl font-semibold text-gray-800">
+              <CountUp start={0} end={300} duration={2.75} />
+              </h1>
               <p className="text-sm text-gray-600">Users</p>
             </div>
 
@@ -69,7 +98,9 @@ const DashBoard = () => {
                   className="h-[33px] w-[33px]"
                 />
               </div>
-              <h1 className="text-3xl font-semibold text-gray-800">50</h1>
+              <h1 className="text-3xl font-semibold text-gray-800">
+              <CountUp start={0} end={300} duration={2.75} />
+              </h1>
               <p className="text-sm text-gray-600">Active Tasks</p>
             </div>
           </div>

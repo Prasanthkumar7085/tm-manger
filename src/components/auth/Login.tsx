@@ -47,7 +47,6 @@ const LoginComponent = () => {
             to: "/dashboard",
           });
         } else if (response?.status === 422) {
-          console.log(response);
           const errData = response?.data?.errData;
           setErrors(errData);
         } else {
@@ -167,7 +166,8 @@ const LoginComponent = () => {
         {/* <p className="font-light self-center md:text-xl lg:text-3xl xl:text-base">Don't have an account? <span className="text-yellow-500 cursor-pointer">Register</span></p> */}
       </div>
       {/* <Loading loading={loading} /> */}
-    </div>
+   </div>
+   
   );
 };
 export default LoginComponent;
