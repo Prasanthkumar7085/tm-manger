@@ -1,3 +1,4 @@
+import { SheetDemo } from "@/components/core/CommonComponents/Sheet";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -23,24 +24,22 @@ import { useNavigate, useParams } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import AddMember from "../Members/Add";
+
 interface ProjectPayload {
   title: string;
   description: string;
-  select: string;
+  select: string[];
 }
 
 const AddProject = () => {
   const navigate = useNavigate();
   const { projectId } = useParams({ strict: false });
   const [projectData, setProjectData] = useState<any>({});
-  console.log(projectData, "project");
   const [errorMessages, setErrorMessages] = useState<any>({});
-  const [userTypeOpen, setUserTypeOpen] = useState(false);
-  const [userType, setUserType] = useState("");
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
-  const [selectedMember, setSelectedMember] = useState("");
-  console.log(selectedMember, "member");
+  const [selectedMember, setSelectedMember] = useState<string[]>([]); // Initialize as array of strings
 
   const { mutate, isPending, isError, error, data, isSuccess } = useMutation({
     mutationFn: async (payload: ProjectPayload) => {
@@ -65,10 +64,10 @@ const AddProject = () => {
   });
 
   const addProject = () => {
-    const payload: any = {
+    const payload: ProjectPayload = {
       title: projectData?.title,
       description: projectData?.description,
-      select: selectedMember,
+      select: selectedMember, // Use selected members for API payload
     };
 
     mutate(payload);
@@ -89,13 +88,11 @@ const AddProject = () => {
             prirority: data?.prirority,
             due_date: data?.due_date,
           });
-          setUserType(data?.user_type);
         } else {
           throw response;
         }
       } catch (errData) {
         console.error(errData);
-        // errPopper(errData);
       }
     },
     enabled: Boolean(projectId),
@@ -111,6 +108,14 @@ const AddProject = () => {
       ...projectData,
       [name]: updatedValue,
     });
+  };
+
+  const toggleValue = (currentValue: string) => {
+    setSelectedMember((prev) =>
+      prev.includes(currentValue)
+        ? prev.filter((value) => value !== currentValue)
+        : [...prev, currentValue]
+    );
   };
 
   return (
@@ -137,61 +142,61 @@ const AddProject = () => {
           onChange={handleInputChange}
         />
       </div>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-[200px] justify-between"
-          >
-            {" "}
-            {value
-              ? membersConstants?.find((member) => member?.value === value)
-                  ?.label
-              : "Select Member"}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0">
-          <Command>
-            <CommandInput placeholder="Select Member" />
-            <CommandList>
-              <CommandEmpty>No Members Found</CommandEmpty>
-              <CommandGroup>
-                {membersConstants.map((member) => (
-                  <CommandItem
-                    key={member?.value}
-                    value={member?.value}
-                    onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue);
-                      setSelectedMember(currentValue);
-                      setOpen(false);
-                    }}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value === member.value ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                    {member.label}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
 
-      {/* <div className="space-y-4">
-        <div className="border-t border-gray-200 mt-4">
-          <div className="flex items-center space-x-4 py-2">
-            <span className="w-10 text-sm font-semibold">S.No</span>
-            <span className="w-40 text-sm font-semibold">Name</span>
-            <span className="w-[120px] text-sm font-semibold">Role</span>
-          </div>
-        </div>
-      </div> */}
+      <div className="flex space-x-4 items-center">
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="w-[200px] justify-between"
+            >
+              {selectedMember.length > 0
+                ? selectedMember
+                    .map(
+                      (value) =>
+                        membersConstants.find(
+                          (member) => member.value === value
+                        )?.label
+                    )
+                    .join(", ")
+                : "Select Members"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[200px] p-0">
+            <Command>
+              <CommandInput placeholder="Select Member" />
+              <CommandList>
+                <CommandEmpty>No Members Found</CommandEmpty>
+                <CommandGroup>
+                  {membersConstants.map((member) => (
+                    <CommandItem
+                      key={member?.value}
+                      value={member?.value}
+                      onSelect={() => {
+                        toggleValue(member.value);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          selectedMember.includes(member.value)
+                            ? "opacity-100"
+                            : "opacity-0"
+                        )}
+                      />
+                      {member.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+
+        <AddMember />
+      </div>
 
       <div className="flex justify-end space-x-4">
         <Button
@@ -212,4 +217,5 @@ const AddProject = () => {
     </div>
   );
 };
+
 export default AddProject;
