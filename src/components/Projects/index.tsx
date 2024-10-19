@@ -1,51 +1,94 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ProjectCard from "./Card";
 import { Button } from "../ui/button";
-import { useNavigate } from "@tanstack/react-router";
+import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
 import Pagination from "../core/Pagination";
-// const navigate = useNavigate();
+import { addSerial } from "@/lib/helpers/addSerial";
+import { getAllPaginatedProjectss } from "@/lib/services/projects";
+import { Input } from "../ui/input";
 
-const dummyProjects = Array(10)
-  .fill(0)
-  .map((_, i) => ({
-    id: i + 1,
-    name: `Project ${i + 1}`,
-    description: `Description for project ${i + 1}`,
-    members: Array(5)
-      .fill(0)
-      .map((_, j) => ({
-        name: `Member ${j + 1}`,
-        avatar: `https://i.pravatar.cc/150?img=${j + 1}`,
-      })),
-  }));
-
-const fetchProjects = async (page: any, search: any) => {
-  return dummyProjects.filter((project) =>
-    project.name.toLowerCase().includes(search.toLowerCase())
-  );
-};
-
-export const Projects = () => {
+const Projects = () => {
   const navigate = useNavigate();
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [paginationDetails, setPaginationDetails] = useState<any>();
+  const location = useLocation();
+  const router = useRouter();
+  const searchParams = new URLSearchParams(location.search);
+  const pageIndexParam = Number(searchParams.get("page")) || 1;
+  const pageSizeParam = Number(searchParams.get("page_size")) || 10;
+  const orderBY = searchParams.get("order_by") || "";
+  const initialSearch = searchParams.get("search") || "";
+  const [searchString, setSearchString] = useState(initialSearch);
+  const [debouncedSearch, setDebouncedSearch] = useState(searchString);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["projects", page, search],
-    queryFn: () => fetchProjects(page, search),
+  const [pagination, setPagination] = useState({
+    pageIndex: pageIndexParam,
+    pageSize: pageSizeParam,
+    order_by: orderBY,
+  });
+  console.log(pagination, "plpl");
+  const { isLoading, isError, error, data, isFetching } = useQuery({
+    queryKey: ["projects", pagination],
+    queryFn: async () => {
+      const response = await getAllPaginatedProjectss({
+        pageIndex: pagination.pageIndex,
+        pageSize: pagination.pageSize,
+        order_by: pagination.order_by,
+        search: debouncedSearch,
+      });
+
+      return response;
+    },
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  const usersData =
+    addSerial(
+      data?.data?.Projects,
+      data?.data?.pagination?.page,
+      data?.data?.pagination?.limit
+    ) || [];
+  console.log(usersData, "users");
 
-  const capturePageNum = () => {};
-  const captureRowPerItems = () => {};
-  // const handleNavigation = () => {
-  //   navigate({
-  //     to: "/projects/add",
-  //   });
-  // };
+  const getAllProjects = async ({ pageIndex, pageSize, order_by }: any) => {
+    setPagination({ pageIndex, pageSize, order_by });
+  };
+
+  const handleView = () => {
+    navigate({
+      to: "/tasks/view",
+    });
+  };
+
+  const userActions = [
+    {
+      accessorFn: (row: any) => row.actions,
+      id: "actions",
+      cell: (info: any) => {
+        return (
+          <div>
+            <Button
+              title="View"
+              size={"sm"}
+              variant={"ghost"}
+              onClick={handleView}
+            >
+              <img
+                src={"/src/assets/view.svg"}
+                alt="view"
+                height={16}
+                width={16}
+              />
+            </Button>
+          </div>
+        );
+      },
+      header: () => <span>Actions</span>,
+      footer: (props: any) => props.column.id,
+      width: "80px",
+      minWidth: "80px",
+      maxWidth: "80px",
+    },
+  ];
+
   const handleNavigation = () => {
     navigate({
       to: "/projects/add",
@@ -54,33 +97,30 @@ export const Projects = () => {
 
   return (
     <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <input
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+        <Input
           type="text"
           placeholder="Search by name"
           className="border px-3 py-2 rounded-lg"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
         />
-        <Button
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-          onClick={handleNavigation}
-        >
-          Add Project
-        </Button>
+        <div className="flex ">
+          <Button
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+            onClick={handleNavigation}
+          >
+            Add Project
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto h-[70vh]">
-        {data?.map((project: any) => (
-          <ProjectCard key={project.id} project={project} />
-        ))}
-      </div>
-      <div className="mt-4">
-        <Pagination
-          paginationDetails={paginationDetails}
-          capturePageNum={capturePageNum}
-          captureRowPerItems={captureRowPerItems}
-        />
+        {usersData?.length === 0 ? (
+          <div className="col-span-full text-center">No Projects Found</div>
+        ) : (
+          usersData?.map((project: any) => (
+            <ProjectCard key={project.id} project={project} />
+          ))
+        )}
       </div>
     </div>
   );
