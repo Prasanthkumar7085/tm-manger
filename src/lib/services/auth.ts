@@ -11,3 +11,13 @@ export const loginAPI = async (payload: {
     throw err;
   }
 };
+export const forgotAPI = async (payload: {
+  email: string;
+}) => {
+  try {
+    const response = await $fetch.post("/auth/forgot-password", payload);
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
