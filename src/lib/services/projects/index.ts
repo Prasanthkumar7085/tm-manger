@@ -25,3 +25,24 @@ export const getAllPaginatedProjectss = async ({
     throw err;
   }
 };
+export const addProjectAPI = async (payload: any) => {
+  try {
+    return await $fetch.post("/projects", payload);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const updateProjectAPI = async (projectId: any, payload: any) => {
+  try {
+    return await $fetch.post(`/projects/${projectId}`, payload);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const viewProjectAPI = async (projectId: any) => {
+  try {
+    return await $fetch.post(`/projects/${projectId}`);
+  } catch (err: any) {
+    throw err;
+  }
+};
