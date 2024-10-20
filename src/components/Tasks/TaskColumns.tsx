@@ -13,7 +13,7 @@ export const taskColumns = [
     accessorFn: (row: any) => row.project,
     id: "project",
     cell: (info: any) => {
-      return <span>{"project 1"}</span>;
+      return <span>{"Labsquire Core"}</span>;
     },
     width: "150px",
     maxWidth: "150px",

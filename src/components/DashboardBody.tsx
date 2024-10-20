@@ -45,7 +45,7 @@ const DashBoard = () => {
                 />
               </div>
               <h1 className="text-3xl font-semibold text-gray-800">
-                <CountUp start={0} end={100} duration={2.75} />
+                <CountUp start={0} end={25} duration={2.75} />
               </h1>
               <p className="text-sm text-gray-600">Projects</p>
             </div>
@@ -71,7 +71,7 @@ const DashBoard = () => {
                 />
               </div>
               <h1 className="text-3xl font-semibold text-gray-800">
-                <CountUp start={0} end={300} duration={2.75} />
+                <CountUp start={0} end={150} duration={2.75} />
               </h1>
               <p className="text-sm text-gray-600">Tasks</p>
             </div>
@@ -85,7 +85,7 @@ const DashBoard = () => {
                 />
               </div>
               <h1 className="text-3xl font-semibold text-gray-800">
-              <CountUp start={0} end={300} duration={2.75} />
+                <CountUp start={0} end={40} duration={2.75} />
               </h1>
               <p className="text-sm text-gray-600">Users</p>
             </div>
@@ -99,7 +99,7 @@ const DashBoard = () => {
                 />
               </div>
               <h1 className="text-3xl font-semibold text-gray-800">
-              <CountUp start={0} end={300} duration={2.75} />
+                <CountUp start={0} end={60} duration={2.75} />
               </h1>
               <p className="text-sm text-gray-600">Active Tasks</p>
             </div>
