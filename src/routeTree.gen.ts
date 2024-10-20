@@ -11,8 +11,10 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as ForgotPasswordImport } from './routes/forgot-password'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as IndexImport } from './routes/index'
+import { Route as AuthResetPasswordImport } from './routes/auth/reset-password'
 import { Route as LayoutUsersIndexImport } from './routes/_layout/users/index'
 import { Route as LayoutTasksIndexImport } from './routes/_layout/tasks/index'
 import { Route as LayoutProjectsIndexImport } from './routes/_layout/projects/index'
@@ -24,6 +26,11 @@ import { Route as LayoutTasksTaskIdUpdateImport } from './routes/_layout/tasks/$
 
 // Create/Update Routes
 
+const ForgotPasswordRoute = ForgotPasswordImport.update({
+  path: '/forgot-password',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const LayoutRoute = LayoutImport.update({
   id: '/_layout',
   getParentRoute: () => rootRoute,
@@ -31,6 +38,11 @@ const LayoutRoute = LayoutImport.update({
 
 const IndexRoute = IndexImport.update({
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthResetPasswordRoute = AuthResetPasswordImport.update({
+  path: '/auth/reset-password',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -90,6 +102,20 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof LayoutImport
+      parentRoute: typeof rootRoute
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/auth/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordImport
       parentRoute: typeof rootRoute
     }
     '/_layout/dashboard/': {
@@ -181,6 +207,8 @@ const LayoutRouteWithChildren =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof LayoutRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/dashboard': typeof LayoutDashboardIndexRoute
   '/projects': typeof LayoutProjectsIndexRoute
   '/tasks': typeof LayoutTasksIndexRoute
@@ -194,6 +222,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof LayoutRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/dashboard': typeof LayoutDashboardIndexRoute
   '/projects': typeof LayoutProjectsIndexRoute
   '/tasks': typeof LayoutTasksIndexRoute
@@ -208,6 +238,8 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/_layout': typeof LayoutRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/_layout/dashboard/': typeof LayoutDashboardIndexRoute
   '/_layout/projects/': typeof LayoutProjectsIndexRoute
   '/_layout/tasks/': typeof LayoutTasksIndexRoute
@@ -223,6 +255,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | ''
+    | '/forgot-password'
+    | '/auth/reset-password'
     | '/dashboard'
     | '/projects'
     | '/tasks'
@@ -235,6 +269,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | ''
+    | '/forgot-password'
+    | '/auth/reset-password'
     | '/dashboard'
     | '/projects'
     | '/tasks'
@@ -247,6 +283,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_layout'
+    | '/forgot-password'
+    | '/auth/reset-password'
     | '/_layout/dashboard/'
     | '/_layout/projects/'
     | '/_layout/tasks/'
@@ -261,11 +299,15 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LayoutRoute: typeof LayoutRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LayoutRoute: LayoutRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
 }
 
 export const routeTree = rootRoute
@@ -281,7 +323,9 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/_layout"
+        "/_layout",
+        "/forgot-password",
+        "/auth/reset-password"
       ]
     },
     "/": {
@@ -299,6 +343,12 @@ export const routeTree = rootRoute
         "/_layout/tasks/add/",
         "/_layout/tasks/view/"
       ]
+    },
+    "/forgot-password": {
+      "filePath": "forgot-password.tsx"
+    },
+    "/auth/reset-password": {
+      "filePath": "auth/reset-password.tsx"
     },
     "/_layout/dashboard/": {
       "filePath": "_layout/dashboard/index.tsx",

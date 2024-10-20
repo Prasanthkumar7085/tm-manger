@@ -178,11 +178,7 @@ const TanStackTable: FC<pageProps> = ({
             ) : !loading ? (
               <tr>
                 <td colSpan={6} className="px-6 py-6 text-center">
-                  <img
-                    src="/No-Files.jpg"
-                    alt="No Data"
-                    className="mx-auto h-40 w-60 object-contain"
-                  />
+                  No data found
                 </td>
               </tr>
             ) : (

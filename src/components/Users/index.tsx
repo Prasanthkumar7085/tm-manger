@@ -1,98 +1,3 @@
-// import { useQuery } from "@tanstack/react-query";
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/components/ui/table";
-// const dummyUsers = Array(10)
-//   .fill(0)
-//   .map((_, i) => ({
-//     id: i + 1,
-//     name: `User ${i + 1}`,
-//     createdOn: `15-Sep-2024`,
-//     email: `user${i + 1}@example.com`,
-//     mobileNumber: `9${Math.floor(100000000 + Math.random() * 900000000)}`,
-//     status: i % 2 === 0 ? "Active" : "Inactive",
-//     progress: 20,
-//     completed: 30,
-//     pending: 40,
-//     overdue: 1,
-//     avatar: `https://i.pravatar.cc/150?img=${i + 1}`,
-//   }));
-
-// const fetchUsers = async (page: any, search: any) => {
-//   return dummyUsers.filter((user) =>
-//     user.name.toLowerCase().includes(search.toLowerCase())
-//   );
-// };
-
-// export const UsersTable = () => {
-//   const { data, isLoading } = useQuery({
-//     queryKey: ["users"],
-//     queryFn: () => fetchUsers("", ""),
-//   });
-
-//   return (
-//     <div className="overflow-x-auto w-full">
-//       <Table>
-//         <TableHeader>
-//           <TableRow>
-//             <TableHead>S No</TableHead>
-//             <TableHead>Name</TableHead>
-//             <TableHead>Created On</TableHead>
-//             <TableHead>Email</TableHead>
-//             <TableHead>Mobile Number</TableHead>
-//             <TableHead>Status</TableHead>
-//             <TableHead>Progress</TableHead>
-//             <TableHead>Completed</TableHead>
-//             <TableHead>Pending</TableHead>
-//             <TableHead>Overdue</TableHead>
-//           </TableRow>
-//         </TableHeader>
-//         <TableBody>
-//           {data?.map((user, index) => (
-//             <TableRow key={user.id}>
-//               <TableCell>{index + 1}</TableCell>
-//               <TableCell>
-//                 <div className="flex items-center">
-//                   <img
-//                     src={user.avatar}
-//                     alt={user.name}
-//                     className="h-8 w-8 rounded-full mr-2"
-//                   />
-//                   {user.name}
-//                 </div>
-//               </TableCell>
-//               <TableCell>{user.createdOn}</TableCell>
-//               <TableCell>{user.email}</TableCell>
-//               <TableCell>{user.mobileNumber}</TableCell>
-//               <TableCell>
-//                 <span
-//                   className={`px-2 py-1 rounded-full ${
-//                     user.status === "Active"
-//                       ? "bg-green-100 text-green-800"
-//                       : "bg-red-100 text-red-800"
-//                   }`}
-//                 >
-//                   {user.status}
-//                 </span>
-//               </TableCell>
-//               <TableCell>{user.progress}</TableCell>
-//               <TableCell>{user.completed}</TableCell>
-//               <TableCell>{user.pending}</TableCell>
-//               <TableCell>{user.overdue}</TableCell>
-//             </TableRow>
-//           ))}
-//         </TableBody>
-//       </Table>
-//     </div>
-//   );
-// };
-
-// export default UsersTable;
 import { addSerial } from "@/lib/helpers/addSerial";
 import { addUsersAPI, getAllPaginatedUsers } from "@/lib/services/users";
 import { useQuery } from "@tanstack/react-query";
@@ -113,8 +18,8 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/sheet";
+import { Label } from "@/components/ui/label";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
 
 interface ReportPayload {
@@ -129,7 +34,7 @@ function UsersTable() {
   const router = useRouter();
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
-  const pageSizeParam = Number(searchParams.get("page_size")) || 5;
+  const pageSizeParam = Number(searchParams.get("page_size")) || 8;
   const orderBY = searchParams.get("order_by")
     ? searchParams.get("order_by")
     : "";
@@ -205,7 +110,7 @@ function UsersTable() {
       email: userData?.email,
       phone_number: userData?.phone_number,
     };
-    (payload);
+    payload;
   };
 
   const usersData =
@@ -225,7 +130,7 @@ function UsersTable() {
   return (
     <div className="relative">
       <div className="flex justify-end mb-4 gap-3">
-      <SearchFilter
+        <SearchFilter
           searchString={searchString}
           setSearchString={setSearchString}
         />
@@ -249,7 +154,7 @@ function UsersTable() {
         <div>
           <TanStackTable
             data={usersData}
-            columns={[...userColumns,]}
+            columns={[...userColumns]}
             paginationDetails={data?.data}
             getData={getAllUsers}
             removeSortingForColumnIds={[
@@ -264,60 +169,63 @@ function UsersTable() {
               "completed",
               "tasks",
               "overdue",
-              "1_tasks_"
+              "1_tasks_progress",
             ]}
           />
         </div>
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent className="bg-gray-100">
-        <SheetHeader>
-          <SheetTitle>Add User</SheetTitle>
-          <SheetDescription>
-          </SheetDescription>
-        </SheetHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input
-              id="name"
-              placeholder="Enter name"
-              className="col-span-3 border border-gray-300 p-2 rounded"
-              type="text"
-  />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Email
-            </Label>
-            <Input
-              id="email"
-              placeholder="Enter Email"
-              className="col-span-3 border border-gray-300 p-2 rounded"
-              type="text"
-  />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="mobile number" className="text-right">
-              Mobile Number
-            </Label>
-            <Input
-              id="phonenumber"
-              placeholder="Enter Mobile Number"
-              className="col-span-3 border border-gray-300 p-2 rounded"
-              type="text"
-  />
-          </div>
-        </div>
-        <SheetFooter>
-        <Button variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-          <SheetClose asChild>
-            <Button type="submit" onClick={addUser}>Submit</Button>
-          </SheetClose>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+          <SheetContent className="bg-gray-100">
+            <SheetHeader>
+              <SheetTitle>Add User</SheetTitle>
+              <SheetDescription></SheetDescription>
+            </SheetHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Name
+                </Label>
+                <Input
+                  id="name"
+                  placeholder="Enter name"
+                  className="col-span-3 border border-gray-300 p-2 rounded"
+                  type="text"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="username" className="text-right">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  placeholder="Enter Email"
+                  className="col-span-3 border border-gray-300 p-2 rounded"
+                  type="text"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="mobile number" className="text-right">
+                  Mobile Number
+                </Label>
+                <Input
+                  id="phonenumber"
+                  placeholder="Enter Mobile Number"
+                  className="col-span-3 border border-gray-300 p-2 rounded"
+                  type="text"
+                />
+              </div>
+            </div>
+            <SheetFooter>
+              <Button variant="outline" onClick={() => setIsOpen(false)}>
+                Cancel
+              </Button>
+              <SheetClose asChild>
+                <Button type="submit" onClick={addUser}>
+                  Submit
+                </Button>
+              </SheetClose>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
       </div>
     </div>
   );
