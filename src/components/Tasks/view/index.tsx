@@ -1,14 +1,75 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { UploadIcon } from "lucide-react";
 import { toast } from "sonner";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
+import { addPostCommentsAPI, getCommentsAPI } from "@/lib/services/tasks";
+import { useQuery } from "@tanstack/react-query";
 
 const TaskView = () => {
   const navigate = useNavigate();
+  const { taskId } = useParams({ strict: false });
+  const [commentsData, setCommentsData] = useState<any>([]);
+  // const [taskId, setTaskId] = useState<any>("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<string>("");
+  const [commentedby, setCommentBy] = useState<string>("");
+
+  const getAllComments = async () => {
+    try {
+      const response = await getCommentsAPI();
+      if (response.success) {
+        const data = response?.data?.data;
+        setCommentsData(data);
+      } else {
+        throw response;
+      }
+    } catch (errData) {
+      console.error(errData);
+      // Optionally display error message
+      // errPopper(errData);
+    }
+  };
+
+  const addComment = async () => {
+    setLoading(true);
+    try {
+      const payload = {
+        task_id: taskId,
+        message: message,
+        commented_by: commentedby,
+        created_at: "",
+        updated_at: "",
+      };
+      const response = await addPostCommentsAPI(taskId, payload);
+      if (response?.status === 200 || response?.status === 201) {
+        toast.success(response?.data?.message || "Comment Added successfully");
+        navigate({
+          to: "/tasks",
+        });
+      } else if (response?.status === 422 || response?.status === 409) {
+        // setErrorMessages(response?.data?.errors);
+      } else {
+        throw response;
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const { isFetching } = useQuery({
+    queryKey: ["getAllComments"],
+    queryFn: getAllComments,
+    refetchOnWindowFocus: false,
+    //  enabled:taskId,
+  });
+
   const task = {
     title: " Millinium Medication Care",
     project: "DLW Sales",
@@ -65,16 +126,18 @@ const TaskView = () => {
         replyTo: "@Pavan",
       },
     ],
+    comment: commentsData,
   };
 
-  const firstHalf = task.comments.slice(0, Math.ceil(task.comments.length / 2));
-  const secondHalf = task.comments.slice(Math.ceil(task.comments.length / 2));
-  const handleClick = () => {
-    toast.success("Comment Added Successfully");
-    navigate({
-      to: "/tasks",
-    });
-  };
+  //   //  const firstHalf = task.comments.slice(0, Math.ceil(task.comments.length / 2));
+  //   //  const secondHalf = task.comments.slice(Math.ceil(task.comments.length / 2));
+  // const handleClick = () => {
+  //   toast.success("Comment Added Successfully");
+  //   navigate({
+  //     to: "/tasks",
+  //   });
+  // };
+  console.log(commentsData, "ss");
   return (
     <div className="grid grid-cols-[60%_40%] gap-4">
       <div>
@@ -165,7 +228,7 @@ const TaskView = () => {
 
                   <div className="bg-purple-50 p-4 rounded-lg shadow-md max-w-lg">
                     <div className="flex justify-between items-center">
-                      <p className="font-semibold">{comment.author}</p>
+                      <p className="font-semibold">{comment.author}</p>{" "}
                       <p className="text-xs text-gray-500">
                         {comment.timestamp}
                       </p>
@@ -221,10 +284,12 @@ const TaskView = () => {
                 <Input
                   placeholder="Add a comment..."
                   className="flex-grow bg-transparent border-none"
+                  // value={message} // Bind the state to the input field
+                  // onChange={(e) => setMessage(e.target.value)} // Update the state on input change
                 />
                 <Button
                   className="text-white bg-blue-600 rounded-full px-4 py-2 ml-2"
-                  onClick={handleClick}
+                  onClick={addComment}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

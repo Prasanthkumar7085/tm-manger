@@ -3,10 +3,15 @@ import { PaginationState } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 
 import { Button } from "../ui/button";
-import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useRouter,
+} from "@tanstack/react-router";
 import { addSerial } from "@/lib/helpers/addSerial";
 import TanStackTable from "../core/TanstackTable";
-import { getAllPaginatedTasks } from "@/lib/services/tasks";
+import { getAllPaginatedTasks} from "@/lib/services/tasks";
 import { taskColumns } from "./TaskColumns";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
 import Loading from "../core/Loading";
@@ -16,6 +21,7 @@ const Tasks = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
+
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 10;
@@ -30,7 +36,7 @@ const Tasks = () => {
     order_by: orderBY,
   });
 
-  const { isLoading, isError, error, data, isFetching } = useQuery({
+  const { isLoading, isError, data, error,isFetching} = useQuery({
     queryKey: ["tasks", pagination],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
