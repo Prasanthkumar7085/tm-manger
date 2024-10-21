@@ -5,6 +5,7 @@ interface GetAllPaginatedUsersPropTypes {
   pageSize: number;
   order_by: any;
   search: any;
+  projectId: any;
 }
 
 export const getAllPaginatedProjectss = async ({

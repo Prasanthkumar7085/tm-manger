@@ -2,8 +2,14 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import "tailwindcss/tailwind.css";
 import GlobalDateRangeFilter from "./core/DateRangePicker";
+import { useState } from "react";
+import DatePickerField from "./core/DateRangePicker";
 
 const StatsAndGraph = () => {
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    new Date()
+  );
+
   const options = {
     chart: {
       type: "spline",
@@ -35,7 +41,7 @@ const StatsAndGraph = () => {
       {
         name: "Completed",
         data: [100, 120, 140, 180, 160, 130, 120],
-        color: "#8000FF", // Purple color
+        color: "#8000FF",
         marker: {
           enabled: false,
         },
@@ -83,12 +89,16 @@ const StatsAndGraph = () => {
     },
   };
 
-  const handleDateChange = (data: any) => {};
+  const handleDateChange = (date: Date | undefined) => {
+    setSelectedDate(date);
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold text-gray-800">Tasks</h2>
-        <GlobalDateRangeFilter onChangeData={handleDateChange} />
+
+        <DatePickerField value={selectedDate} onChange={handleDateChange} />
       </div>
       <HighchartsReact highcharts={Highcharts} options={options} />
     </div>

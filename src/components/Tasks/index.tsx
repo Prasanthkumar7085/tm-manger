@@ -11,6 +11,11 @@ import { taskColumns } from "./TaskColumns";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
 import Loading from "../core/Loading";
 import TotalCounts from "./Counts";
+import SearchField from "../core/CommonComponents/SearchFilter";
+
+import DatePickerField from "../core/DateRangePicker";
+import { StatusFilter } from "../core/StatusFilter";
+import ProjectDropDown from "./ProjectsDropDown";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -23,6 +28,9 @@ const Tasks = () => {
   const initialSearch = searchParams.get("search") || "";
   const [searchString, setSearchString] = useState(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    new Date()
+  );
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
@@ -107,26 +115,36 @@ const Tasks = () => {
       to: "/tasks/add",
     });
   };
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchString(event.target.value);
+  };
+
+  const handleDateChange = (date: Date | undefined) => {
+    setSelectedDate(date);
+  };
 
   const isDashboard = location.pathname === "/dashboard";
 
   return (
     <>
       <div>{!isDashboard && <TotalCounts />}</div>
+
       <div className="relative mt-3">
         <div className="flex justify-between mb-4 gap-3">
           <h2>Tasks</h2>
           <div className="flex flex-row gap-2">
+            <DatePickerField value={selectedDate} onChange={handleDateChange} />
+            <div className="flex">
+              <StatusFilter />
+            </div>
+
+            <SearchField value={searchString} onChange={handleSearchChange} />
             <Button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               onClick={handleNavigation}
             >
               Add Task
             </Button>
-            <SearchFilter
-              searchString={searchString}
-              setSearchString={setSearchString}
-            />
           </div>
         </div>
 
