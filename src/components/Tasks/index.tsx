@@ -11,11 +11,10 @@ import { taskColumns } from "./TaskColumns";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
 import Loading from "../core/Loading";
 import TotalCounts from "./Counts";
-import SearchField from "../core/CommonComponents/SearchFilter";
-
+import viewButtonIcon from "@/assets/view.svg";
 import DatePickerField from "../core/DateRangePicker";
 import { StatusFilter } from "../core/StatusFilter";
-import ProjectDropDown from "./ProjectsDropDown";
+import SearchField from "../core/CommonComponents/SearchFilter";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -92,12 +91,7 @@ const Tasks = () => {
               variant={"ghost"}
               onClick={handleView}
             >
-              <img
-                src={"/src/assets/view.svg"}
-                alt="view"
-                height={16}
-                width={16}
-              />
+              <img src={viewButtonIcon} alt="view" height={16} width={16} />
             </Button>
           </div>
         );

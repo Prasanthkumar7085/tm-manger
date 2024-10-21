@@ -57,7 +57,11 @@
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.447.0",
     "react": "^18.3.1",
+<<<<<<< HEAD
     "react-day-picker": "^8.10.1",
+=======
+    "react-countup": "^6.5.3",
+>>>>>>> e9951d2be7d6746438cdb11b762e6619e28551e5
     "react-dom": "^18.3.1",
     "react-redux": "^9.1.2",
     "redux-persist": "^6.0.0",

@@ -4,6 +4,7 @@ import todoTasksIcon from "@/assets/todo-tasks-icon.svg";
 import inprogressTasksIcon from "@/assets/inprogress-tasks-icon.svg";
 import completedTasksIcon from "@/assets/completed-tasks-icon.svg";
 import overDueTasksIcon from "@/assets/overdue-tasks-icon.svg";
+import CountUp from "react-countup";
 
 const TotalCounts = () => {
   return (
@@ -13,7 +14,7 @@ const TotalCounts = () => {
         <div className="flex flex-col">
           <h3 className="text-gray-700 text-sm font-semibold">Total Tasks</h3>
           <CardContent className="text-2xl font-bold text-gray-800">
-            1000
+          <CountUp end={1000} duration={2.5} />
           </CardContent>
         </div>
         <img
@@ -28,7 +29,7 @@ const TotalCounts = () => {
         <div className="flex flex-col">
           <h3 className="text-gray-700 text-sm font-semibold">To Do</h3>
           <CardContent className="text-2xl font-bold text-purple-600">
-            100
+          <CountUp end={100} duration={2.5} />
           </CardContent>
         </div>
         <img
@@ -43,7 +44,7 @@ const TotalCounts = () => {
         <div className="flex flex-col">
           <h3 className="text-gray-700 text-sm font-semibold">In Progress</h3>
           <CardContent className="text-2xl font-bold text-blue-500">
-            700
+          <CountUp end={700} duration={2.5} />
           </CardContent>
         </div>
         <img
@@ -58,7 +59,7 @@ const TotalCounts = () => {
         <div className="flex flex-col">
           <h3 className="text-gray-700 text-sm font-semibold">Overdue</h3>
           <CardContent className="text-2xl font-bold text-red-600">
-            100
+          <CountUp end={100} duration={2.5} />
           </CardContent>
         </div>
         <img
@@ -73,7 +74,7 @@ const TotalCounts = () => {
         <div className="flex flex-col">
           <h3 className="text-gray-700 text-sm font-semibold">Completed</h3>
           <CardContent className="text-2xl font-bold text-green-600">
-            100
+          <CountUp end={100} duration={2.5} />
           </CardContent>
         </div>
         <img
