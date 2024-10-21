@@ -6,13 +6,16 @@ interface IAPIResponse {
   status: number;
   data: any;
 }
+
 class FetchService {
   authStatusCodes: number[] = [401, 403];
-  authErrorURLs: string[] = []; //Auth API URL endpoints here
-
+  authErrorURLs: string[] = [];
   private _fetchType: string;
-  constructor(fetchTypeValue = "json") {
+  private _apiUrl: string;
+
+  constructor(fetchTypeValue = "json", apiUrl: string) {
     this._fetchType = fetchTypeValue;
+    this._apiUrl = apiUrl;
   }
 
   configureAuthorization(config: any) {
@@ -20,9 +23,11 @@ class FetchService {
     accessToken += Cookies.get("token");
     config.headers["Authorization"] = accessToken;
   }
+
   setHeader(config: any) {
     config.headers = {};
   }
+
   setDefaultHeaders(config: any) {
     config.headers = {
       "Content-Type": "application/json",
@@ -34,6 +39,7 @@ class FetchService {
       path.includes(arrayUrl)
     );
   }
+
   isAuthRequest(path: string) {
     return this.authErrorURLs.includes(path);
   }
@@ -46,14 +52,13 @@ class FetchService {
       this.configureAuthorization(config);
     }
 
-    // request interceptor starts
-
-    let url = import.meta.env.VITE_PUBLIC_API_URL + path;
+    // Construct the URL using the instance-specific API URL
+    let url = this._apiUrl + path;
 
     const response: any = await fetch(url, config);
 
-    if (response?.status == 200 || response?.status == 201) {
-      if (this._fetchType == "response") {
+    if (response?.status === 200 || response?.status === 201) {
+      if (this._fetchType === "response") {
         return {
           success: true,
           status: response.status,
@@ -87,12 +92,14 @@ class FetchService {
       };
     }
   }
+
   async post(url: string, payload?: any) {
     return await this.hit(url, {
       method: "POST",
       body: payload ? JSON.stringify(payload) : undefined,
     });
   }
+
   async postFormData(url: string, file?: any) {
     return await this.hit(url, {
       method: "POST",
@@ -108,23 +115,27 @@ class FetchService {
       method: "GET",
     });
   }
+
   async delete(url: string, payload = {}) {
     return this.hit(url, {
       method: "DELETE",
       body: JSON.stringify(payload),
     });
   }
+
   async deleteWithOutPayload(url: string) {
     return this.hit(url, {
       method: "DELETE",
     });
   }
+
   async put(url: string, payload = {}) {
     return this.hit(url, {
       method: "PUT",
       body: JSON.stringify(payload),
     });
   }
+
   async patch(url: string, payload = {}) {
     return this.hit(url, {
       method: "PATCH",
@@ -132,5 +143,13 @@ class FetchService {
     });
   }
 }
-// for app search
-export const $fetch = new FetchService();
+
+// Create instances for different API URLs
+export const $fetch = new FetchService(
+  "json",
+  import.meta.env.VITE_PUBLIC_DUMMY_API_URL
+);
+export const $authFetch = new FetchService(
+  "json",
+  import.meta.env.VITE_PUBLIC_API_URL
+);
