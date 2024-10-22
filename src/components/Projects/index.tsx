@@ -9,6 +9,7 @@ import { Input } from "../ui/input";
 import SearchField from "../core/CommonComponents/SearchFilter";
 import ProjectDropDown from "../Tasks/ProjectsDropDown";
 import { StatusFilter } from "../core/StatusFilter";
+import Pagination from "../core/Pagination";
 
 const Projects = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const Projects = () => {
   const pageSizeParam = Number(searchParams.get("page_size")) || 10;
   const orderBY = searchParams.get("order_by") || "";
   const initialSearch = searchParams.get("search") || "";
+
   const [searchString, setSearchString] = useState(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedProject, setSelectedProject] = useState("");
@@ -64,6 +66,22 @@ const Projects = () => {
     setPagination({ ...pagination, pageIndex: 1 });
   };
 
+  // Handle page and limit change from pagination component
+  const handlePageChange = (page: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      pageIndex: page,
+    }));
+  };
+
+  const handlePageSizeChange = (limit: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      pageSize: limit,
+      pageIndex: 1, // Reset to first page if limit changes
+    }));
+  };
+
   return (
     <div className="p-4 ">
       <div className="flex w-6/12">
@@ -93,6 +111,14 @@ const Projects = () => {
             <ProjectCard key={project.id} project={project} />
           ))
         )}
+      </div>
+
+      <div className="mt-4">
+        <Pagination
+          paginationDetails={data?.data}
+          capturePageNum={handlePageChange}
+          captureRowPerItems={handlePageSizeChange}
+        />
       </div>
     </div>
   );
