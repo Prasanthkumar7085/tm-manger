@@ -5,7 +5,6 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -13,14 +12,14 @@ import {
 } from "@/components/ui/sheet";
 import { useState } from "react";
 
-// Define a dedicated Props type
+// Define Props for SheetDemo
 type SheetDemoProps = {
   label: string;
-  onOKClick: any;
-
   sheetTitle: string;
-  extraField: any;
-  onSubmit: any;
+  onOKClick: () => void;
+  extraField: string; // Extra field label
+  memberData: { user_id: string; role: string };
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export const SheetDemo = ({
@@ -28,9 +27,11 @@ export const SheetDemo = ({
   label,
   onOKClick,
   extraField,
-  onSubmit,
+  memberData,
+  handleInputChange,
 }: SheetDemoProps) => {
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
@@ -42,22 +43,41 @@ export const SheetDemo = ({
         </SheetHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
+            <Label htmlFor="user_id" className="text-right">
               Name
             </Label>
-            <Input id="name" value="Pedro Duarte" className="col-span-3" />
+            <Input
+              id="user_id"
+              name="user_id"
+              value={memberData.user_id}
+              placeholder="Enter User ID"
+              onChange={handleInputChange}
+              className="col-span-3"
+            />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Email
+            <Label htmlFor="role" className="text-right">
+              Role
             </Label>
-            <Input id="username" value="@peduarte" className="col-span-3" />
+            <Input
+              id="role"
+              name="role"
+              value={memberData.role}
+              placeholder="Enter Role"
+              onChange={handleInputChange}
+              className="col-span-3"
+            />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
+            <Label htmlFor="password" className="text-right">
               {extraField}
             </Label>
-            <Input id="username" value="@peduarte" className="col-span-3" />
+            <Input
+              id="password"
+              name="password"
+              placeholder="Enter Password"
+              className="col-span-3"
+            />
           </div>
         </div>
         <SheetFooter>
@@ -66,7 +86,7 @@ export const SheetDemo = ({
           </Button>
           <SheetClose asChild>
             <Button type="submit" onClick={onOKClick}>
-              {onSubmit}
+              Add
             </Button>
           </SheetClose>
         </SheetFooter>

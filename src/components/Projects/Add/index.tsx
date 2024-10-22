@@ -1,172 +1,118 @@
-import { SheetDemo } from "@/components/core/CommonComponents/Sheet";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@radix-ui/react-popover";
+import { Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   Command,
-  CommandEmpty,
-  CommandGroup,
   CommandInput,
-  CommandItem,
   CommandList,
+  CommandItem,
+  CommandGroup,
+  CommandEmpty,
 } from "@/components/ui/command";
-import { Input } from "@/components/ui/input";
-import { Popover } from "@/components/ui/popover";
-import { Textarea } from "@/components/ui/textarea";
-import { membersConstants } from "@/lib/helpers/memberConstants";
-import {
-  addProjectAPI,
-  updateProjectAPI,
-  viewProjectAPI,
-} from "@/lib/services/projects";
-import { cn } from "@/lib/utils";
-import { PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "@tanstack/react-router";
-import { Check } from "lucide-react";
-import { useState } from "react";
 import { toast } from "sonner";
-import AddMember from "../Members/Add";
+import { membersConstants } from "@/lib/helpers/memberConstants";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+} from "@/components/ui/select";
 
 interface ProjectPayload {
   title: string;
   description: string;
-  select: string[];
+  members: { name: string; role: string }[];
 }
 
 const AddProject = () => {
-  const navigate = useNavigate();
-  const { projectId } = useParams({ strict: false });
-  const [projectData, setProjectData] = useState<any>({});
-  const [errorMessages, setErrorMessages] = useState<any>({});
+  const [projectData, setProjectData] = useState({
+    title: "",
+    description: "",
+  });
+  const [selectedMembers, setSelectedMembers] = useState<
+    { name: string; role: string }[]
+  >([]);
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
-  const [selectedMember, setSelectedMember] = useState<string[]>([]); // Initialize as array of strings
-
-  const { mutate, isPending, isError, error, data, isSuccess } = useMutation({
-    mutationFn: async (payload: ProjectPayload) => {
-      if (projectId) {
-        return await updateProjectAPI(payload, projectId);
-      } else {
-        return await addProjectAPI(payload);
-      }
-    },
-    onSuccess: (response: any) => {
-      if (response?.status === 200 || response?.status === 201) {
-        toast.success(response?.data?.message);
-        navigate({
-          to: "/projects",
-        });
-      }
-      if (response?.status === 422) {
-        setErrorMessages(response?.data?.errData || [""]);
-        toast.error(response?.data?.message);
-      }
-    },
-  });
-
-  const addProject = () => {
-    const payload: ProjectPayload = {
-      title: projectData?.title,
-      description: projectData?.description,
-      select: selectedMember, // Use selected members for API payload
-    };
-
-    mutate(payload);
-  };
-
-  const { isFetching } = useQuery({
-    queryKey: ["getProject", projectId],
-    queryFn: async () => {
-      if (!projectId) return;
-      try {
-        const response = await viewProjectAPI(projectId);
-
-        if (response.success) {
-          const data = response?.data?.data;
-          setProjectData({
-            title: data?.title,
-            description: data?.description,
-            prirority: data?.prirority,
-            due_date: data?.due_date,
-          });
-        } else {
-          throw response;
-        }
-      } catch (errData) {
-        console.error(errData);
-      }
-    },
-    enabled: Boolean(projectId),
-  });
+  const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
 
   const handleInputChange = (e: any) => {
-    let { name, value } = e.target;
-    const updatedValue = value
-      .replace(/[^a-zA-Z\s]/g, "")
-      .replace(/^\s+/g, "")
-      .replace(/\s{2,}/g, " ");
-    setProjectData({
-      ...projectData,
-      [name]: updatedValue,
-    });
+    const { name, value } = e.target;
+    setProjectData({ ...projectData, [name]: value });
   };
 
   const toggleValue = (currentValue: string) => {
-    setSelectedMember((prev) =>
+    setTempSelectedMember((prev) =>
       prev.includes(currentValue)
         ? prev.filter((value) => value !== currentValue)
         : [...prev, currentValue]
     );
   };
 
+  const confirmSelection = () => {
+    tempSelectedMember.forEach((memberValue) => {
+      const memberLabel = membersConstants.find(
+        (member) => member.value === memberValue
+      )?.label;
+      if (memberLabel && !selectedMembers.some((m) => m.name === memberLabel)) {
+        setSelectedMembers((prev) => [
+          ...prev,
+          { name: memberLabel, role: "User" },
+        ]);
+      }
+    });
+    setTempSelectedMember([]);
+    setOpen(false);
+  };
+
+  const removeMember = (memberName: string) => {
+    setSelectedMembers(
+      selectedMembers.filter((member) => member.name !== memberName)
+    );
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
-      <div className="flex items-center space-x-4">
-        <div>
-          <h2 className="text-2xl font-semibold">Add Project</h2>
-        </div>
-      </div>
+      <h2 className="text-2xl font-semibold">Add Project</h2>
 
       <div className="space-y-4">
         <Input
           id="title"
           placeholder="Enter title"
-          value={projectData?.title}
+          value={projectData.title}
           name="title"
           onChange={handleInputChange}
         />
         <Textarea
-          placeholder="Enter project Description"
+          placeholder="Enter project description"
           id="description"
-          value={projectData?.description}
+          value={projectData.description}
           name="description"
           onChange={handleInputChange}
         />
       </div>
 
-      <div className="flex space-x-4 items-center">
+      <div className="space-y-4">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={open}
-              className="w-[200px] justify-between"
-            >
-              {selectedMember.length > 0
-                ? selectedMember
-                    .map(
-                      (value) =>
-                        membersConstants.find(
-                          (member) => member.value === value
-                        )?.label
-                    )
-                    .join(", ")
+            <Button variant="outline" className="w-[200px]">
+              {selectedMembers.length > 0
+                ? selectedMembers.map((member) => member.name).join(", ")
                 : "Select Members"}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0">
             <Command>
-              <CommandInput placeholder="Select Member" />
+              <CommandInput placeholder="Search Members" />
               <CommandList>
                 <CommandEmpty>No Members Found</CommandEmpty>
                 <CommandGroup>
@@ -174,14 +120,12 @@ const AddProject = () => {
                     <CommandItem
                       key={member?.value}
                       value={member?.value}
-                      onSelect={() => {
-                        toggleValue(member.value);
-                      }}
+                      onSelect={() => toggleValue(member.value)}
                     >
                       <Check
                         className={cn(
                           "mr-2 h-4 w-4",
-                          selectedMember.includes(member.value)
+                          tempSelectedMember.includes(member.value)
                             ? "opacity-100"
                             : "opacity-0"
                         )}
@@ -191,26 +135,77 @@ const AddProject = () => {
                   ))}
                 </CommandGroup>
               </CommandList>
+              <div className="flex justify-end space-x-2 p-2 border-t">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setTempSelectedMember([])}
+                >
+                  Clear
+                </Button>
+                <Button size="sm" onClick={confirmSelection}>
+                  Confirm
+                </Button>
+              </div>
             </Command>
           </PopoverContent>
         </Popover>
 
-        <AddMember />
+        {selectedMembers.length > 0 && (
+          <table className="min-w-full border">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border px-4 py-2">S No</th>
+                <th className="border px-4 py-2">Name</th>
+                <th className="border px-4 py-2">Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedMembers.map((member, index) => (
+                <tr key={member.name}>
+                  <td className="border px-4 py-2">{index + 1}</td>
+                  <td className="border px-4 py-2">{member.name}</td>
+                  <td className="border px-4 py-2 flex">
+                    <Select
+                      value={member.role}
+                      onValueChange={(value) =>
+                        setSelectedMembers((prev) =>
+                          prev.map((m) =>
+                            m.name === member.name ? { ...m, role: value } : m
+                          )
+                        )
+                      }
+                    >
+                      <SelectTrigger className="w-[120px]">
+                        <SelectValue placeholder="Select role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="User">User</SelectItem>
+                          <SelectItem value="Admin">Admin</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      onClick={() => removeMember(member.name)}
+                      className="text-red-500"
+                    >
+                      ✖
+                    </Button>
+                  </td>
+                  <td className="border px-4 py-2"></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       <div className="flex justify-end space-x-4">
-        <Button
-          type="button"
-          className="px-6 py-2 bg-red-500 text-white rounded-md mr-2"
-          onClick={() => navigate({ to: "/projects" })}
-        >
+        <Button variant="outline" onClick={() => console.log("Cancel")}>
           Cancel
         </Button>
-        <Button
-          type="submit"
-          className="px-6 py-2 bg-blue-600 text-white rounded-md"
-          onClick={addProject}
-        >
+        <Button onClick={() => toast.success("Project submitted!")}>
           Submit
         </Button>
       </div>
