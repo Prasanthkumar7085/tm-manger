@@ -27,25 +27,60 @@ import {
   SelectGroup,
   SelectItem,
 } from "@/components/ui/select";
+import { useMutation } from "@tanstack/react-query";
+import { addProjectAPI, updateProjectAPI } from "@/lib/services/projects";
+import { useNavigate, useParams } from "@tanstack/react-router";
 
 interface ProjectPayload {
   title: string;
   description: string;
-  members: { name: string; role: string }[];
+  project_members: { user_id: number; role: string }[];
 }
 
 const AddProject = () => {
+  const navigate = useNavigate();
+  const { projectId } = useParams({ strict: false });
   const [projectData, setProjectData] = useState({
     title: "",
     description: "",
   });
   const [selectedMembers, setSelectedMembers] = useState<
-    { name: string; role: string }[]
+    { user_id: number; role: string }[]
   >([]);
   const [open, setOpen] = useState(false);
   const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
 
-  const handleInputChange = (e: any) => {
+  const { mutate } = useMutation({
+    mutationFn: async (payload: ProjectPayload) => {
+      if (projectId) {
+        return await updateProjectAPI(payload, projectId);
+      } else {
+        return await addProjectAPI(payload);
+      }
+    },
+    onSuccess: (response: any) => {
+      if (response?.status === 200 || response?.status === 201) {
+        toast.success(response?.data?.message);
+        navigate({ to: "/projects" });
+      } else if (response?.status === 422) {
+        toast.error(response?.data?.message);
+      }
+    },
+  });
+
+  const addProject = () => {
+    const payload: ProjectPayload = {
+      title: projectData.title,
+      description: projectData.description,
+      project_members: selectedMembers,
+    };
+
+    mutate(payload);
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setProjectData({ ...projectData, [name]: value });
   };
@@ -60,13 +95,16 @@ const AddProject = () => {
 
   const confirmSelection = () => {
     tempSelectedMember.forEach((memberValue) => {
-      const memberLabel = membersConstants.find(
+      const member = membersConstants.find(
         (member) => member.value === memberValue
-      )?.label;
-      if (memberLabel && !selectedMembers.some((m) => m.name === memberLabel)) {
-        setSelectedMembers((prev) => [
+      );
+      if (
+        member &&
+        !selectedMembers.some((m: any) => m.user_id === member.value)
+      ) {
+        setSelectedMembers((prev: any) => [
           ...prev,
-          { name: memberLabel, role: "User" },
+          { user_id: member.value, role: "USER" },
         ]);
       }
     });
@@ -74,10 +112,24 @@ const AddProject = () => {
     setOpen(false);
   };
 
-  const removeMember = (memberName: string) => {
+  const removeMember = (userId: number) => {
     setSelectedMembers(
-      selectedMembers.filter((member) => member.name !== memberName)
+      selectedMembers.filter((member) => member.user_id !== userId)
     );
+  };
+
+  const handleSubmit = () => {
+    const payload: ProjectPayload = {
+      title: projectData.title,
+      description: projectData.description,
+      project_members: selectedMembers,
+    };
+
+    mutate(payload);
+  };
+
+  const handleNavigation = () => {
+    navigate({ to: "/projects" });
   };
 
   return (
@@ -106,7 +158,7 @@ const AddProject = () => {
           <PopoverTrigger asChild>
             <Button variant="outline" className="w-[200px]">
               {selectedMembers.length > 0
-                ? selectedMembers.map((member) => member.name).join(", ")
+                ? selectedMembers.map((member) => member.user_id).join(", ")
                 : "Select Members"}
             </Button>
           </PopoverTrigger>
@@ -156,22 +208,24 @@ const AddProject = () => {
             <thead>
               <tr className="bg-gray-200">
                 <th className="border px-4 py-2">S No</th>
-                <th className="border px-4 py-2">Name</th>
+                <th className="border px-4 py-2">User ID</th>
                 <th className="border px-4 py-2">Role</th>
               </tr>
             </thead>
             <tbody>
               {selectedMembers.map((member, index) => (
-                <tr key={member.name}>
+                <tr key={member.user_id}>
                   <td className="border px-4 py-2">{index + 1}</td>
-                  <td className="border px-4 py-2">{member.name}</td>
+                  <td className="border px-4 py-2">{member.user_id}</td>
                   <td className="border px-4 py-2 flex">
                     <Select
                       value={member.role}
                       onValueChange={(value) =>
                         setSelectedMembers((prev) =>
                           prev.map((m) =>
-                            m.name === member.name ? { ...m, role: value } : m
+                            m.user_id === member.user_id
+                              ? { ...m, role: value }
+                              : m
                           )
                         )
                       }
@@ -181,19 +235,18 @@ const AddProject = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="User">User</SelectItem>
-                          <SelectItem value="Admin">Admin</SelectItem>
+                          <SelectItem value="USER">User</SelectItem>
+                          <SelectItem value="ADMIN">Admin</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
                     <Button
-                      onClick={() => removeMember(member.name)}
+                      onClick={() => removeMember(member.user_id)}
                       className="text-red-500"
                     >
                       ✖
                     </Button>
                   </td>
-                  <td className="border px-4 py-2"></td>
                 </tr>
               ))}
             </tbody>
@@ -202,12 +255,10 @@ const AddProject = () => {
       </div>
 
       <div className="flex justify-end space-x-4">
-        <Button variant="outline" onClick={() => console.log("Cancel")}>
+        <Button variant="outline" onClick={handleNavigation}>
           Cancel
         </Button>
-        <Button onClick={() => toast.success("Project submitted!")}>
-          Submit
-        </Button>
+        <Button onClick={handleSubmit}>Submit</Button>
       </div>
     </div>
   );
