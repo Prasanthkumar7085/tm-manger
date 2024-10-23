@@ -100,6 +100,9 @@ const Projects = () => {
           >
             Add Project
           </Button>
+          <Button onClick={() => navigate({ to: "/projects/view" })}>
+            VIEW
+          </Button>
         </div>
       </div>
 

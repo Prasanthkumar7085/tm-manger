@@ -21,6 +21,7 @@ import { Route as LayoutProjectsIndexImport } from './routes/_layout/projects/in
 import { Route as LayoutDashboardIndexImport } from './routes/_layout/dashboard/index'
 import { Route as LayoutTasksViewIndexImport } from './routes/_layout/tasks/view/index'
 import { Route as LayoutTasksAddIndexImport } from './routes/_layout/tasks/add/index'
+import { Route as LayoutProjectsViewIndexImport } from './routes/_layout/projects/view/index'
 import { Route as LayoutProjectsAddIndexImport } from './routes/_layout/projects/add/index'
 import { Route as LayoutProjectsProjectIdIndexImport } from './routes/_layout/projects/$projectId/index'
 import { Route as LayoutTasksTaskIdUpdateImport } from './routes/_layout/tasks/$taskId/update'
@@ -74,6 +75,11 @@ const LayoutTasksViewIndexRoute = LayoutTasksViewIndexImport.update({
 
 const LayoutTasksAddIndexRoute = LayoutTasksAddIndexImport.update({
   path: '/tasks/add/',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutProjectsViewIndexRoute = LayoutProjectsViewIndexImport.update({
+  path: '/projects/view/',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -174,6 +180,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutProjectsAddIndexImport
       parentRoute: typeof LayoutImport
     }
+    '/_layout/projects/view/': {
+      id: '/_layout/projects/view/'
+      path: '/projects/view'
+      fullPath: '/projects/view'
+      preLoaderRoute: typeof LayoutProjectsViewIndexImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/tasks/add/': {
       id: '/_layout/tasks/add/'
       path: '/tasks/add'
@@ -201,6 +214,7 @@ interface LayoutRouteChildren {
   LayoutTasksTaskIdUpdateRoute: typeof LayoutTasksTaskIdUpdateRoute
   LayoutProjectsProjectIdIndexRoute: typeof LayoutProjectsProjectIdIndexRoute
   LayoutProjectsAddIndexRoute: typeof LayoutProjectsAddIndexRoute
+  LayoutProjectsViewIndexRoute: typeof LayoutProjectsViewIndexRoute
   LayoutTasksAddIndexRoute: typeof LayoutTasksAddIndexRoute
   LayoutTasksViewIndexRoute: typeof LayoutTasksViewIndexRoute
 }
@@ -213,6 +227,7 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutTasksTaskIdUpdateRoute: LayoutTasksTaskIdUpdateRoute,
   LayoutProjectsProjectIdIndexRoute: LayoutProjectsProjectIdIndexRoute,
   LayoutProjectsAddIndexRoute: LayoutProjectsAddIndexRoute,
+  LayoutProjectsViewIndexRoute: LayoutProjectsViewIndexRoute,
   LayoutTasksAddIndexRoute: LayoutTasksAddIndexRoute,
   LayoutTasksViewIndexRoute: LayoutTasksViewIndexRoute,
 }
@@ -232,6 +247,7 @@ export interface FileRoutesByFullPath {
   '/tasks/$taskId/update': typeof LayoutTasksTaskIdUpdateRoute
   '/projects/$projectId': typeof LayoutProjectsProjectIdIndexRoute
   '/projects/add': typeof LayoutProjectsAddIndexRoute
+  '/projects/view': typeof LayoutProjectsViewIndexRoute
   '/tasks/add': typeof LayoutTasksAddIndexRoute
   '/tasks/view': typeof LayoutTasksViewIndexRoute
 }
@@ -248,6 +264,7 @@ export interface FileRoutesByTo {
   '/tasks/$taskId/update': typeof LayoutTasksTaskIdUpdateRoute
   '/projects/$projectId': typeof LayoutProjectsProjectIdIndexRoute
   '/projects/add': typeof LayoutProjectsAddIndexRoute
+  '/projects/view': typeof LayoutProjectsViewIndexRoute
   '/tasks/add': typeof LayoutTasksAddIndexRoute
   '/tasks/view': typeof LayoutTasksViewIndexRoute
 }
@@ -265,6 +282,7 @@ export interface FileRoutesById {
   '/_layout/tasks/$taskId/update': typeof LayoutTasksTaskIdUpdateRoute
   '/_layout/projects/$projectId/': typeof LayoutProjectsProjectIdIndexRoute
   '/_layout/projects/add/': typeof LayoutProjectsAddIndexRoute
+  '/_layout/projects/view/': typeof LayoutProjectsViewIndexRoute
   '/_layout/tasks/add/': typeof LayoutTasksAddIndexRoute
   '/_layout/tasks/view/': typeof LayoutTasksViewIndexRoute
 }
@@ -283,6 +301,7 @@ export interface FileRouteTypes {
     | '/tasks/$taskId/update'
     | '/projects/$projectId'
     | '/projects/add'
+    | '/projects/view'
     | '/tasks/add'
     | '/tasks/view'
   fileRoutesByTo: FileRoutesByTo
@@ -298,6 +317,7 @@ export interface FileRouteTypes {
     | '/tasks/$taskId/update'
     | '/projects/$projectId'
     | '/projects/add'
+    | '/projects/view'
     | '/tasks/add'
     | '/tasks/view'
   id:
@@ -313,6 +333,7 @@ export interface FileRouteTypes {
     | '/_layout/tasks/$taskId/update'
     | '/_layout/projects/$projectId/'
     | '/_layout/projects/add/'
+    | '/_layout/projects/view/'
     | '/_layout/tasks/add/'
     | '/_layout/tasks/view/'
   fileRoutesById: FileRoutesById
@@ -363,6 +384,7 @@ export const routeTree = rootRoute
         "/_layout/tasks/$taskId/update",
         "/_layout/projects/$projectId/",
         "/_layout/projects/add/",
+        "/_layout/projects/view/",
         "/_layout/tasks/add/",
         "/_layout/tasks/view/"
       ]
@@ -399,6 +421,10 @@ export const routeTree = rootRoute
     },
     "/_layout/projects/add/": {
       "filePath": "_layout/projects/add/index.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/projects/view/": {
+      "filePath": "_layout/projects/view/index.tsx",
       "parent": "/_layout"
     },
     "/_layout/tasks/add/": {
