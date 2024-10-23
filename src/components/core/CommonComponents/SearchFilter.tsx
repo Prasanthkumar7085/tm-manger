@@ -5,7 +5,7 @@ import { Search } from "lucide-react";
 export interface IReportsFilters {
   searchString: string;
   setSearchString: any;
-  title: string;
+  title?: string;
 }
 
 const SearchFilter: React.FC<IReportsFilters> = ({

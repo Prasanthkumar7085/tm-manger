@@ -2,7 +2,7 @@ import { DateRangePicker } from "rsuite";
 
 import dayjs from "dayjs";
 import { predefinedRanges } from "./CommonComponents/DatePickerRanges";
-import "rsuite/DatePicker/styles/index.css";
+import "rsuite/dist/rsuite.css";
 
 const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
   const updateDateValues = (newDate: any) => {
@@ -21,8 +21,8 @@ const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
     <DateRangePicker
       editable={false}
       placeholder={"Select Date"}
-      ranges={predefinedRanges}
       placement="bottomEnd"
+      ranges={predefinedRanges}
       value={dateValue}
       onChange={updateDateValues}
       showHeader={false}

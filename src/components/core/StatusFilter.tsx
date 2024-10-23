@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, X } from "lucide-react"; // Import the X icon
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -44,9 +44,18 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
             ? statusConstants.find((item) => item.value === value)?.label
             : "Select Status"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          {value && (
+            <X
+              className="ml-2 h-4 w-4 cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                setValue("");
+              }}
+            />
+          )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-[200px] p-0 bg-white">
         <Command>
           <CommandInput placeholder="Search Status" />
           <CommandList>

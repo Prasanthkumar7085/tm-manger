@@ -130,9 +130,13 @@ const Pagination = ({
           <SelectTrigger className="w-[120px]">
             <SelectValue placeholder="Items per page" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="w-[120px] bg-white pointer">
             {limitOptions.map((item, index) => (
-              <SelectItem value={item.value?.toString()} key={index}>
+              <SelectItem
+                value={item.value?.toString()}
+                key={index}
+                className="cursor-pointer"
+              >
                 {item.title}
               </SelectItem>
             ))}

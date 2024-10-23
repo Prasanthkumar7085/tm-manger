@@ -2,17 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ProjectCard from "./Card";
 import { Button } from "../ui/button";
-import { useLocation, useNavigate } from "@tanstack/react-router";
+import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
 import { addSerial } from "@/lib/helpers/addSerial";
 import { getAllPaginatedProjectss } from "@/lib/services/projects";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
 import { StatusFilter } from "../core/StatusFilter";
 import Pagination from "../core/Pagination";
 import DateRangeFilter from "../core/DateRangePicker";
+import LoadingComponent from "../core/LoadingComponent";
 
 const Projects = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const router = useRouter();
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 10;
@@ -53,6 +55,22 @@ const Projects = () => {
         start_date: dateValue ? dateValue[0]?.toISOString() : null,
         end_date: dateValue ? dateValue[1]?.toISOString() : null,
       });
+
+      const queryParams = {
+        current_page: +pagination.pageIndex,
+        page_size: +pagination.pageSize,
+        order_by: pagination.order_by ? pagination.order_by : undefined,
+        search: debouncedSearch || undefined,
+        project_id: selectedProject || undefined,
+        status: selectedStatus || undefined,
+        start_date: dateValue ? dateValue[0]?.toISOString() : undefined,
+        end_date: dateValue ? dateValue[1]?.toISOString() : undefined,
+      };
+      router.navigate({
+        to: "/projects",
+        search: queryParams,
+      });
+
       return response;
     },
   });
@@ -70,24 +88,27 @@ const Projects = () => {
     });
   };
 
-  // const handleProjectSelect = (projectId: string) => {
-  //   setSelectedProject(projectId);
-  //   setPagination({ ...pagination, pageIndex: 1 });
-  // };
-
-  const handlePageChange = (page: number) => {
-    setPagination((prev) => ({
-      ...prev,
-      pageIndex: page,
-    }));
+  const getAllProjects = async ({ pageIndex, pageSize, order_by }: any) => {
+    setPagination({ pageIndex, pageSize, order_by });
   };
 
-  const handlePageSizeChange = (limit: number) => {
-    setPagination((prev) => ({
-      ...prev,
-      pageSize: limit,
+  const capturePageNum = (value: number) => {
+    getAllProjects({
+      ...searchParams,
+      pageSize: searchParams.get("page_size")
+        ? searchParams.get("page_size")
+        : 25,
+      pageIndex: value,
+      order_by: searchParams.get("order_by"),
+    });
+  };
+  const captureRowPerItems = (value: number) => {
+    getAllProjects({
+      ...searchParams,
+      pageSize: value,
       pageIndex: 1,
-    }));
+      order_by: searchParams.get("order_by"),
+    });
   };
 
   const handleDateChange = (startDate: string, endDate: string) => {
@@ -99,8 +120,20 @@ const Projects = () => {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
+      if (searchString) {
+        getAllProjects({
+          pageIndex: 1,
+          pageSize: pageSizeParam,
+          order_by: orderBY,
+        });
+      } else {
+        getAllProjects({
+          pageIndex: pageIndexParam,
+          pageSize: pageSizeParam,
+          order_by: orderBY,
+        });
+      }
     }, 500);
-
     return () => {
       clearTimeout(handler);
     };
@@ -108,7 +141,7 @@ const Projects = () => {
 
   return (
     <div className="p-4">
-      <div className="flex w-6/12">
+      <div className="flex w-full gap-4 justify-end">
         <SearchFilter
           searchString={searchString}
           setSearchString={setSearchString}
@@ -118,7 +151,7 @@ const Projects = () => {
         <DateRangeFilter
           dateValue={dateValue}
           onChangeData={handleDateChange}
-        />{" "}
+        />
         <div className="flex">
           <Button
             className="px-4 py-2 bg-blue-600 text-white rounded-lg"
@@ -129,8 +162,8 @@ const Projects = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto h-[70vh]">
-        {projectsData.length === 0 ? (
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto h-[70vh] mt-3">
+        {projectsData.length === 0 && isLoading == false ? (
           <div className="col-span-full text-center">No Projects Found</div>
         ) : (
           projectsData.map((project: any) => (
@@ -141,11 +174,12 @@ const Projects = () => {
 
       <div className="mt-4">
         <Pagination
-          paginationDetails={data?.data}
-          capturePageNum={handlePageChange}
-          captureRowPerItems={handlePageSizeChange}
+          paginationDetails={data?.data?.data?.pagination_info}
+          capturePageNum={capturePageNum}
+          captureRowPerItems={captureRowPerItems}
         />
       </div>
+      <LoadingComponent loading={isLoading} />
     </div>
   );
 };
