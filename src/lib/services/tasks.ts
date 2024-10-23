@@ -45,16 +45,16 @@ export const updateTasksAPI = async (taskId: any, payload: any) => {
     throw err;
   }
 };
-export const postCommentsAPI = async (taskId: any, payload: any) => {
+export const addPostCommentsAPI = async ( task_id:any,payload: any) => {
   try {
-    return await $fetch.post(`/tasks/${taskId}/comments`, payload);
+    return await $fetch.post(`/tasks/${task_id}/comments`, payload);
   } catch (err: any) {
     throw err;
   }
 };
-export const getCommentsAPI = async (taskId: any) => {
+export const getCommentsAPI = async () => {
   try {
-    return await $fetch.get(`/tasks/${taskId}/comments`);
+    return await $fetch.get(`/tasks/2/comments`);
   } catch (err: any) {
     throw err;
   }
