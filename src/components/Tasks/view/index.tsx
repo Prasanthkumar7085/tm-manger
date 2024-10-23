@@ -13,7 +13,6 @@ const TaskView = () => {
   const navigate = useNavigate();
   const { taskId } = useParams({ strict: false });
   const [commentsData, setCommentsData] = useState<any>([]);
-  // const [taskId, setTaskId] = useState<any>("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [commentedby, setCommentBy] = useState<string>("");

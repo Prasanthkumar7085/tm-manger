@@ -31,3 +31,17 @@ export const addUsersAPI = async (payload: any) => {
       throw err;
     }
   };
+  export const deleteUsersAPI = async (id:string) => {
+    try {
+        return await $fetch.delete(`/users/${id}`);
+    } catch (err) {
+        throw err
+    }
+}
+export const updateUserStatueAPI = async (userId:any, payload:any) => {
+  try {
+    return await $fetch.patch(`/users/${userId}/status`, payload);
+  } catch (err) {
+    throw err;
+  }
+};

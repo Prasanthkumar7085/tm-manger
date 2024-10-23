@@ -1,6 +1,11 @@
 import dayjs from "dayjs";
 import { Badge } from "@/components/ui/badge";
+import { useRef, useState } from "react";
+import { Popover } from "../ui/popover";
+import { updateUserStatueAPI } from "@/lib/services/users";
+import { toast } from "sonner";
 export const userColumns = [
+
   {
     accessorFn: (row: any) => row.serial,
     id: "serial",
@@ -9,8 +14,12 @@ export const userColumns = [
     width: "60px",
     maxWidth: "60px",
     minWidth: "60px",
+    cell: (props: any) => (
+      <div style={{ padding: '16px', textAlign: 'left' }}>
+        {props.getValue()}
+      </div>
+    ),
   },
-
   {
     accessorFn: (row: any) => row.profile_pic,
     id: "profile_pic",
@@ -30,7 +39,11 @@ export const userColumns = [
     id: "fname",
     cell: (info: any) => {
       let title = info.getValue();
-      return <span>{title ? title : "-"}</span>;
+      return (
+        <div style={{ padding: "16px",textAlign: 'left' }}>
+          <span>{title ? title : "-"}</span>
+        </div>
+      );
     },
     width: "150px",
     maxWidth: "150px",
@@ -44,7 +57,11 @@ export const userColumns = [
     id: "lname",
     cell: (info: any) => {
       let title = info.getValue();
-      return <span>{title ? title : "-"}</span>;
+      return (
+        <div style={{ padding: "16px",textAlign: 'left' }}>
+          <span>{title ? title : "-"}</span>
+        </div>
+      );
     },
     width: "150px",
     maxWidth: "150px",
@@ -58,7 +75,11 @@ export const userColumns = [
     id: "created_at",
     cell: (info: any) => {
       const date: string = info.getValue();
-      return <span>{date ? dayjs(date).format("MM/DD/YYYY") : "-"}</span>;
+      return (
+        <div style={{ padding: "16px",textAlign: 'left'  }}>
+          <span>{date ? dayjs(date).format("MM/DD/YYYY") : "-"}</span>
+        </div>
+      );
     },
     width: "150px",
     maxWidth: "150px",
@@ -85,7 +106,11 @@ export const userColumns = [
     id: "phone_number",
     cell: (info: any) => {
       let title = info.getValue();
-      return <span>{title ? title : "-"}</span>;
+      return (
+        <div style={{ padding: "16px",textAlign: 'left' }}>
+          <span>{title ? title : "-"}</span>
+        </div>
+      );
     },
     width: "150px",
     maxWidth: "150px",
@@ -100,19 +125,52 @@ export const userColumns = [
     width: "150px",
     maxWidth: "150px",
     minWidth: "150px",
+    cell: (info: any) => {
+      const userType = info.getValue();
+      return (
+        <div style={{ padding: "16px",textAlign: 'left'  }}>
+          <span>{userType ? userType : "-"}</span>
+        </div>
+      );
+    },
     header: () => <span>Users</span>,
     footer: (props: any) => props.column.id,
   },
-
   {
     accessorFn: (row: any) => row.active,
     id: "active",
     cell: (info: any) => {
-      const isActive = info.getValue();
+      const [isActive, setIsActive] = useState(info.getValue());
+      const [isOpen, setIsOpen] = useState(false);
+      const popoverRef = useRef<HTMLDivElement>(null);
+      const userId = info.row.id;
+      const togglePopover = () => setIsOpen(!isOpen);
+  
+      const updateUserStatus = async (status: boolean) => {
+        try {
+          const body= {
+            active: status,
+          };
+          
+          const response = await updateUserStatueAPI(userId,body); 
+          if (response?.status === 200 || response?.status === 201) {
+            setIsActive(status);
+            // toast.success(response?.message || "Status changed successfully");
+          } else {
+            // throw new Error(response?.message || "Failed to update status");
+          }
+          console.log(`Status changed to: ${status ? "Active" : "Inactive"}`);
+        } catch (err: any) {
+          toast.error(err?.message || "Something went wrong");
+          console.error(err);
+        } finally {
+          setIsOpen(false);
+        }
+      };
+  
       return (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Badge
-            variant="outline"
+        <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
+          <div
             style={{
               color: isActive ? "green" : "red",
               borderColor: isActive ? "green" : "red",
@@ -121,7 +179,10 @@ export const userColumns = [
               padding: "2px 6px",
               display: "flex",
               alignItems: "center",
+              borderRadius: "5px",
+              cursor: "pointer",
             }}
+            onClick={togglePopover}
           >
             <span
               style={{
@@ -133,7 +194,45 @@ export const userColumns = [
               }}
             ></span>
             {isActive ? "Active" : "Inactive"}
-          </Badge>
+          </div>
+          {isOpen && (
+            <div
+              ref={popoverRef}
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: "0",
+                marginTop: "5px",
+                padding: "5px",
+                backgroundColor: "white",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+                zIndex: 100,
+              }}
+            >
+              <div
+                style={{
+                  padding: "5px 10px",
+                  cursor: "pointer",
+                  color: "green",
+                }}
+                onClick={() => updateUserStatus(true)}
+              >
+                Active
+              </div>
+              <div
+                style={{
+                  padding: "5px 10px",
+                  cursor: "pointer",
+                  color: "red",
+                }}
+                onClick={() => updateUserStatus(false)}
+              >
+                Inactive
+              </div>
+            </div>
+          )}
         </div>
       );
     },
@@ -142,60 +241,5 @@ export const userColumns = [
     minWidth: "150px",
     header: () => <span>Status</span>,
     footer: (props: any) => props.column.id,
-  },
-
-  // columns: [
-  //   {
-  //     accessorFn: (row: any) => row.progress,
-  //     id: "progress",
-  //     width: "150px",
-  //     maxWidth: "150px",
-  //     minWidth: "150px",
-  //     cell: (info: any) => {
-  //       let title = info.getValue();
-  //       return <span>{40}</span>;
-  //     },
-  //     header: () => <span>progress</span>,
-  //     footer: (props: any) => props.column.id,
-  //   },
-  //   {
-  //     accessorFn: (row: any) => row.completed,
-  //     id: "completed",
-  //     width: "150px",
-  //     maxWidth: "150px",
-  //     minWidth: "150px",
-  //     cell: (info: any) => {
-  //       let title = info.getValue();
-  //       return <span>{15}</span>;
-  //     },
-  //     header: () => <span>completed</span>,
-  //     footer: (props: any) => props.column.id,
-  //   },
-  //   {
-  //     accessorFn: (row: any) => row.pending,
-  //     id: "pending",
-  //     width: "150px",
-  //     maxWidth: "150px",
-  //     minWidth: "150px",
-  //     cell: (info: any) => {
-  //       let title = info.getValue();
-  //       return <span>{20}</span>;
-  //     },
-  //     header: () => <span>pending</span>,
-  //     footer: (props: any) => props.column.id,
-  //   },
-  //   {
-  //     accessorFn: (row: any) => row.overdue,
-  //     id: "overdue",
-  //     width: "150px",
-  //     maxWidth: "150px",
-  //     minWidth: "150px",
-  //     cell: (info: any) => {
-  //       let title = info.getValue();
-  //       return <span>{5}</span>;
-  //     },
-  //     header: () => <span>Overdue</span>,
-  //     footer: (props: any) => props.column.id,
-  //   },
-  // ],
+  }
 ];
