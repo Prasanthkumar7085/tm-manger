@@ -1,55 +1,33 @@
-import React, { FC, useState } from "react";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
+import { DateRangePicker } from "rsuite";
 
-interface DatePickerFieldProps {
-  value: Date | undefined;
-  onChange: (date: Date | undefined) => void;
-}
+import dayjs from "dayjs";
+import { predefinedRanges } from "./CommonComponents/DatePickerRanges";
+import "rsuite/DatePicker/styles/index.css";
 
-const DatePickerField: FC<DatePickerFieldProps> = ({ value, onChange }) => {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(value);
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
+  const updateDateValues = (newDate: any) => {
+    if (newDate) {
+      const [fromDate, toDate] = newDate;
+      const date1 = dayjs(fromDate).startOf("day").toISOString();
+      const date2 = dayjs(toDate).endOf("day").toISOString();
 
-  const handleDateChange = (date: Date | undefined) => {
-    setSelectedDate(date);
-    onChange(date);
-    setIsCalendarOpen(false);
-  };
-
-  const toggleCalendar = () => {
-    setIsCalendarOpen(!isCalendarOpen);
+      onChangeData(date1, date2);
+    } else {
+      onChangeData("", "");
+    }
   };
 
   return (
-    <div className="relative w-full">
-      <div
-        className="flex items-center border border-gray-300 rounded-md shadow-sm p-2 cursor-pointer"
-        onClick={toggleCalendar}
-      >
-        <input
-          type="text"
-          value={
-            selectedDate ? selectedDate.toLocaleDateString() : "Select Date"
-          }
-          readOnly
-          className="flex-grow outline-none"
-        />
-        <CalendarIcon className="text-gray-500 ml-2" />{" "}
-      </div>
-
-      {isCalendarOpen && (
-        <div className="absolute top-medium mt-2 z-10 p-4 bg-white border border-gray-300 rounded-md shadow-md">
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={handleDateChange}
-            className="border border-gray-300 rounded-md shadow-sm"
-          />
-        </div>
-      )}
-    </div>
+    <DateRangePicker
+      editable={false}
+      placeholder={"Select Date"}
+      ranges={predefinedRanges}
+      placement="bottomEnd"
+      value={dateValue}
+      onChange={updateDateValues}
+      showHeader={false}
+    />
   );
 };
 
-export default DatePickerField;
+export default DateRangeFilter;

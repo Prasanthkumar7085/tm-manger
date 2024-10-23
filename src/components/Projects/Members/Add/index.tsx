@@ -6,18 +6,17 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 interface MemberPayload {
-  user_id: string;
+  user_id: number; // Ensure user_id is a number
   role: string;
 }
 
 interface AddMemberProps {
-  addNewMember: (newMember: { value: string; label: string }) => void;
+  addNewMember: (newMember: { value: number; label: string }) => any; // Change type to match
 }
-
 const AddMember = ({ addNewMember }: AddMemberProps) => {
   const { projectId } = useParams({ strict: false });
   const [memberData, setMemberData] = useState<MemberPayload>({
-    user_id: "",
+    user_id: 0, // user_id is a number
     role: "",
   });
 
@@ -29,9 +28,10 @@ const AddMember = ({ addNewMember }: AddMemberProps) => {
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message);
         addNewMember({
-          value: memberData.user_id,
+          value: memberData.user_id, // user_id is passed as a number
           label: memberData.role,
         });
+        setMemberData({ user_id: 0, role: "" }); // Reset state
       }
       if (response?.status === 422) {
         toast.error(response?.data?.message);
@@ -41,13 +41,26 @@ const AddMember = ({ addNewMember }: AddMemberProps) => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setMemberData({
-      ...memberData,
-      [name]: value,
-    });
+
+    // Convert user_id to number
+    if (name === "user_id") {
+      setMemberData({
+        ...memberData,
+        [name]: Number(value), // Ensure the input is converted to a number
+      });
+    } else {
+      setMemberData({
+        ...memberData,
+        [name]: value,
+      });
+    }
   };
 
   const addMember = () => {
+    if (memberData.user_id <= 0) {
+      toast.error("User ID must be a valid number.");
+      return;
+    }
     mutate(memberData);
   };
 

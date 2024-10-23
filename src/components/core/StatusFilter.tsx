@@ -20,9 +20,16 @@ import {
 } from "@/components/ui/popover";
 import { statusConstants } from "@/lib/helpers/statusConstants";
 
-export const StatusFilter = () => {
+interface StatusFilterProps {
+  value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const StatusFilter: React.FC<StatusFilterProps> = ({
+  value,
+  setValue,
+}) => {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

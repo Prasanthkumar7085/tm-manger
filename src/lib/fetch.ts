@@ -147,9 +147,9 @@ class FetchService {
 // Create instances for different API URLs
 export const $fetch = new FetchService(
   "json",
-  import.meta.env.VITE_PUBLIC_DUMMY_API_URL
-);
-export const $authFetch = new FetchService(
-  "json",
   import.meta.env.VITE_PUBLIC_API_URL
+);
+export const $dummyFetch = new FetchService(
+  "json",
+  import.meta.env.VITE_PUBLIC_DUMMY_API_URL
 );

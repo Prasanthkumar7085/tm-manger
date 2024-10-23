@@ -4,22 +4,31 @@ interface GetAllPaginatedUsersPropTypes {
   pageIndex: number;
   pageSize: number;
   order_by: any;
-  search: any;
+  search_string: any;
   projectId: any;
+  status: any;
+  start_date: any;
+  end_date: any;
 }
 
 export const getAllPaginatedProjectss = async ({
   pageIndex,
   pageSize,
   order_by,
-  search,
+  search_string,
+  status,
+  start_date,
+  end_date,
 }: GetAllPaginatedUsersPropTypes) => {
   try {
     const queryParams = {
       page: pageIndex,
       page_size: pageSize,
       order_by: order_by,
-      search_string: search,
+      search_string: search_string,
+      status: status,
+      start_date,
+      end_date,
     };
     return await $fetch.get("/projects", queryParams);
   } catch (err) {

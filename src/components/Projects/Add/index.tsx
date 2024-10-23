@@ -30,6 +30,8 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { addProjectAPI, updateProjectAPI } from "@/lib/services/projects";
 import { useNavigate, useParams } from "@tanstack/react-router";
+import Loading from "@/components/core/Loading";
+import AddMember from "../Members/Add";
 
 interface ProjectPayload {
   title: string;
@@ -44,6 +46,7 @@ const AddProject = () => {
     title: "",
     description: "",
   });
+  const [errorMessages, setErrorMessages] = useState<any>();
   const [selectedMembers, setSelectedMembers] = useState<
     { user_id: number; role: string }[]
   >([]);
@@ -63,7 +66,7 @@ const AddProject = () => {
         toast.success(response?.data?.message);
         navigate({ to: "/projects" });
       } else if (response?.status === 422) {
-        toast.error(response?.data?.message);
+        setErrorMessages(response?.data?.errData || [""]);
       }
     },
   });
@@ -94,7 +97,7 @@ const AddProject = () => {
   };
 
   const confirmSelection = () => {
-    tempSelectedMember.forEach((memberValue) => {
+    tempSelectedMember.forEach((memberValue: any) => {
       const member = membersConstants.find(
         (member) => member.value === memberValue
       );
@@ -132,6 +135,17 @@ const AddProject = () => {
     navigate({ to: "/projects" });
   };
 
+  const addNewMember = (newMember: { value: number; label: string }) => {
+    if (
+      !selectedMembers.some((member: any) => member.user_id === newMember.value)
+    ) {
+      setSelectedMembers((prev: any) => [
+        ...prev,
+        { user_id: newMember.value, role: "USER" },
+      ]);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
       <h2 className="text-2xl font-semibold">Add Project</h2>
@@ -144,6 +158,9 @@ const AddProject = () => {
           name="title"
           onChange={handleInputChange}
         />
+        {errorMessages?.title && (
+          <p style={{ color: "red" }}>{errorMessages.title[0]}</p>
+        )}
         <Textarea
           placeholder="Enter project description"
           id="description"
@@ -158,7 +175,14 @@ const AddProject = () => {
           <PopoverTrigger asChild>
             <Button variant="outline" className="w-[200px]">
               {selectedMembers.length > 0
-                ? selectedMembers.map((member) => member.user_id).join(", ")
+                ? selectedMembers
+                    .map((member) => {
+                      const memberDetails = membersConstants.find(
+                        (m) => m.value === member.user_id
+                      );
+                      return memberDetails?.label || member.user_id;
+                    })
+                    .join(", ")
                 : "Select Members"}
             </Button>
           </PopoverTrigger>
@@ -168,7 +192,7 @@ const AddProject = () => {
               <CommandList>
                 <CommandEmpty>No Members Found</CommandEmpty>
                 <CommandGroup>
-                  {membersConstants.map((member) => (
+                  {membersConstants.map((member: any) => (
                     <CommandItem
                       key={member?.value}
                       value={member?.value}
@@ -187,6 +211,7 @@ const AddProject = () => {
                   ))}
                 </CommandGroup>
               </CommandList>
+
               <div className="flex justify-end space-x-2 p-2 border-t">
                 <Button
                   variant="outline"
@@ -202,53 +227,65 @@ const AddProject = () => {
             </Command>
           </PopoverContent>
         </Popover>
+        <div className="flex">
+          <AddMember addNewMember={addNewMember} />
+        </div>
 
         {selectedMembers.length > 0 && (
           <table className="min-w-full border">
             <thead>
               <tr className="bg-gray-200">
                 <th className="border px-4 py-2">S No</th>
-                <th className="border px-4 py-2">User ID</th>
+                <th className="border px-4 py-2">Member Name</th>{" "}
+                {/* Updated column name */}
                 <th className="border px-4 py-2">Role</th>
               </tr>
             </thead>
             <tbody>
-              {selectedMembers.map((member, index) => (
-                <tr key={member.user_id}>
-                  <td className="border px-4 py-2">{index + 1}</td>
-                  <td className="border px-4 py-2">{member.user_id}</td>
-                  <td className="border px-4 py-2 flex">
-                    <Select
-                      value={member.role}
-                      onValueChange={(value) =>
-                        setSelectedMembers((prev) =>
-                          prev.map((m) =>
-                            m.user_id === member.user_id
-                              ? { ...m, role: value }
-                              : m
+              {selectedMembers.map((member, index) => {
+                const memberDetails = membersConstants.find(
+                  (m) => m.value === member.user_id
+                );
+                return (
+                  <tr key={member.user_id}>
+                    <td className="border px-4 py-2">{index + 1}</td>
+                    <td className="border px-4 py-2">
+                      {memberDetails?.label || "Unknown"}
+                    </td>{" "}
+                    {/* Show label */}
+                    <td className="border px-4 py-2 flex">
+                      <Select
+                        value={member.role}
+                        onValueChange={(value) =>
+                          setSelectedMembers((prev) =>
+                            prev.map((m) =>
+                              m.user_id === member.user_id
+                                ? { ...m, role: value }
+                                : m
+                            )
                           )
-                        )
-                      }
-                    >
-                      <SelectTrigger className="w-[120px]">
-                        <SelectValue placeholder="Select role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem value="USER">User</SelectItem>
-                          <SelectItem value="ADMIN">Admin</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <Button
-                      onClick={() => removeMember(member.user_id)}
-                      className="text-red-500"
-                    >
-                      ✖
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+                        }
+                      >
+                        <SelectTrigger className="w-[120px]">
+                          <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem value="USER">User</SelectItem>
+                            <SelectItem value="ADMIN">Admin</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        onClick={() => removeMember(member.user_id)}
+                        className="text-red-500"
+                      >
+                        ✖
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
@@ -258,8 +295,9 @@ const AddProject = () => {
         <Button variant="outline" onClick={handleNavigation}>
           Cancel
         </Button>
-        <Button onClick={handleSubmit}>Submit</Button>
+        <Button onClick={handleSubmit}>Add</Button>
       </div>
+      {/* <Loading loading={isLoading || isFetching} /> */}
     </div>
   );
 };

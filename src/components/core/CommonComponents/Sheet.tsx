@@ -12,13 +12,12 @@ import {
 } from "@/components/ui/sheet";
 import { useState } from "react";
 
-// Define Props for SheetDemo
 type SheetDemoProps = {
   label: string;
   sheetTitle: string;
   onOKClick: () => void;
-  extraField: string; // Extra field label
-  memberData: { user_id: string; role: string };
+  extraField: string;
+  memberData: { user_id: number; role: string };
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -26,7 +25,6 @@ export const SheetDemo = ({
   sheetTitle,
   label,
   onOKClick,
-  extraField,
   memberData,
   handleInputChange,
 }: SheetDemoProps) => {
@@ -44,7 +42,7 @@ export const SheetDemo = ({
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="user_id" className="text-right">
-              Name
+              User ID
             </Label>
             <Input
               id="user_id"
@@ -65,17 +63,6 @@ export const SheetDemo = ({
               value={memberData.role}
               placeholder="Enter Role"
               onChange={handleInputChange}
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="password" className="text-right">
-              {extraField}
-            </Label>
-            <Input
-              id="password"
-              name="password"
-              placeholder="Enter Password"
               className="col-span-3"
             />
           </div>

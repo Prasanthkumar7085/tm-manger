@@ -1,22 +1,22 @@
 export const membersConstants = [
   {
-    value: "rakesh",
+    value: 1,
     label: "Rakesh",
   },
   {
-    value: "hari",
+    value: 2,
     label: "Hari",
   },
   {
-    value: "teja",
+    value: 3,
     label: "Teja",
   },
   {
-    value: "tejansh",
+    value: 4,
     label: "Tejansh",
   },
   {
-    value: "astro",
+    value: 5,
     label: "Astro",
   },
 ];

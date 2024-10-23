@@ -1,11 +1,11 @@
-import { $authFetch } from "../fetch";
+import { $fetch } from "../fetch";
 
 export const loginAPI = async (payload: {
   email: string;
   password: string;
 }) => {
   try {
-    const response = await $authFetch.post("/auth/login", payload);
+    const response = await $fetch.post("/auth/login", payload);
     return response;
   } catch (err) {
     throw err;
@@ -13,7 +13,7 @@ export const loginAPI = async (payload: {
 };
 export const forgotAPI = async (payload: { email: string }) => {
   try {
-    const response = await $authFetch.post("/auth/forgot-password", payload);
+    const response = await $fetch.post("/auth/forgot-password", payload);
     return response;
   } catch (err) {
     throw err;
@@ -25,7 +25,7 @@ export const resetPasswordAPI = async (payload: {
   reset_password_token: string;
 }) => {
   try {
-    const response = await $authFetch.post("/auth/reset-password", payload);
+    const response = await $fetch.post("/auth/reset-password", payload);
     return response;
   } catch (err) {
     throw err;

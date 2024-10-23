@@ -5,11 +5,10 @@ import { Button } from "../ui/button";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { addSerial } from "@/lib/helpers/addSerial";
 import { getAllPaginatedProjectss } from "@/lib/services/projects";
-import { Input } from "../ui/input";
-import SearchField from "../core/CommonComponents/SearchFilter";
-import ProjectDropDown from "../Tasks/ProjectsDropDown";
+import SearchFilter from "../core/CommonComponents/SearchFilter";
 import { StatusFilter } from "../core/StatusFilter";
 import Pagination from "../core/Pagination";
+import DateRangeFilter from "../core/DateRangePicker";
 
 const Projects = () => {
   const navigate = useNavigate();
@@ -23,6 +22,10 @@ const Projects = () => {
   const [searchString, setSearchString] = useState(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedProject, setSelectedProject] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [dateValue, setDateValue] = useState<[Date | null, Date | null] | null>(
+    null
+  );
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
@@ -30,23 +33,33 @@ const Projects = () => {
     order_by: orderBY,
   });
 
-  const { isLoading, isError, error, data, isFetching } = useQuery({
-    queryKey: ["projects", pagination, selectedProject],
+  const { isLoading, isError, error, data } = useQuery({
+    queryKey: [
+      "projects",
+      pagination,
+      selectedProject,
+      debouncedSearch,
+      selectedStatus,
+      dateValue,
+    ],
     queryFn: async () => {
       const response = await getAllPaginatedProjectss({
         pageIndex: pagination.pageIndex,
         pageSize: pagination.pageSize,
         order_by: pagination.order_by,
-        search: debouncedSearch,
+        search_string: debouncedSearch,
         projectId: selectedProject,
+        status: selectedStatus,
+        start_date: dateValue ? dateValue[0]?.toISOString() : null,
+        end_date: dateValue ? dateValue[1]?.toISOString() : null,
       });
       return response;
     },
   });
 
-  const usersData =
+  const projectsData =
     addSerial(
-      data?.data?.Projects,
+      data?.data?.data?.records,
       data?.data?.pagination?.page,
       data?.data?.pagination?.limit
     ) || [];
@@ -57,16 +70,11 @@ const Projects = () => {
     });
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchString(event.target.value);
-  };
+  // const handleProjectSelect = (projectId: string) => {
+  //   setSelectedProject(projectId);
+  //   setPagination({ ...pagination, pageIndex: 1 });
+  // };
 
-  const handleProjectSelect = (projectId: string) => {
-    setSelectedProject(projectId);
-    setPagination({ ...pagination, pageIndex: 1 });
-  };
-
-  // Handle page and limit change from pagination component
   const handlePageChange = (page: number) => {
     setPagination((prev) => ({
       ...prev,
@@ -78,21 +86,39 @@ const Projects = () => {
     setPagination((prev) => ({
       ...prev,
       pageSize: limit,
-      pageIndex: 1, // Reset to first page if limit changes
+      pageIndex: 1,
     }));
   };
 
+  const handleDateChange = (startDate: string, endDate: string) => {
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
+    setDateValue([start, end]);
+  };
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchString);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchString]);
+
   return (
-    <div className="p-4 ">
+    <div className="p-4">
       <div className="flex w-6/12">
-        <SearchField value={searchString} onChange={handleSearchChange} />
-        <StatusFilter />
-        <div className="flex ">
-          <ProjectDropDown
-            projects={data?.data?.Projects}
-            onSelectProject={handleProjectSelect}
-          />
-        </div>
+        <SearchFilter
+          searchString={searchString}
+          setSearchString={setSearchString}
+          title="Search By Name"
+        />
+        <StatusFilter value={selectedStatus} setValue={setSelectedStatus} />
+        <DateRangeFilter
+          dateValue={dateValue}
+          onChangeData={handleDateChange}
+        />{" "}
         <div className="flex">
           <Button
             className="px-4 py-2 bg-blue-600 text-white rounded-lg"
@@ -100,17 +126,14 @@ const Projects = () => {
           >
             Add Project
           </Button>
-          <Button onClick={() => navigate({ to: "/projects/view" })}>
-            VIEW
-          </Button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto h-[70vh]">
-        {usersData?.length === 0 ? (
+        {projectsData.length === 0 ? (
           <div className="col-span-full text-center">No Projects Found</div>
         ) : (
-          usersData?.map((project: any) => (
+          projectsData.map((project: any) => (
             <ProjectCard key={project.id} project={project} />
           ))
         )}
