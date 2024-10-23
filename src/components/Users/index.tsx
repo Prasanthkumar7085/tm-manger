@@ -4,10 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import TanStackTable from "../core/TanstackTable";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { userColumns } from "./UserColumns";
 import { Button } from "../ui/button";
-import Box from "@mui/material/Box";
-import { Typography } from "@mui/material";
 import { Input } from "../ui/input";
 import {
   Sheet,
@@ -21,6 +20,17 @@ import {
 } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
+import {
+  Check,
+  ChevronDown,
+  ChevronUp,
+  X,
+} from "lucide-react";
+import { toast } from "sonner";
+
+import { cn } from "@/lib/utils";
+import { userTypes } from "@/utils/conistance/users";
+import Loading from "../core/Loading";
 
 interface ReportPayload {
   full_name: string;
@@ -33,15 +43,19 @@ function UsersTable() {
   const location = useLocation();
   const router = useRouter();
   const searchParams = new URLSearchParams(location.search);
-  const pageIndexParam = Number(searchParams.get("page")) || 1;
-  const pageSizeParam = Number(searchParams.get("page_size")) || 8;
+  const pageIndexParam = Number(searchParams.get("current_page")) || 1;
+  const pageSizeParam = Number(searchParams.get("page_size")) || 5;
   const orderBY = searchParams.get("order_by")
     ? searchParams.get("order_by")
     : "";
   const initialSearch = searchParams.get("search") || "";
   const [searchString, setSearchString] = useState(initialSearch);
+  const [loading, setLoading] = useState(false);
+  const [userTypeOpen, setUserTypeOpen] = useState(false);
+  const [errors, setErrors] = useState<any>({});
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
-  // const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [userType, setUserType] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   const [pagination, setPagination] = useState({
@@ -50,9 +64,10 @@ function UsersTable() {
     order_by: orderBY,
   });
   const [userData, setUserData] = useState<any>({
-    full_name: "",
+    fname: "",
+    lname: "",
     email: "",
-    phone_number: "",
+    password: "",
   });
 
   const { isLoading, isError, error, data, isFetching } = useQuery({
@@ -81,44 +96,53 @@ function UsersTable() {
   const getAllUsers = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
-
-  // const { mutate, isPending, isError, error, data, isSuccess } = useMutation({
-  //   mutationFn: async (payload: ReportPayload) => {
-  //     if () {
-  //       //   return await updateUserAPI(payload);
-  //     } else {
-  //       return await addUsersAPI(payload);
-  //     }
-  //   },
-  //   onSuccess: (response: any) => {
-  //     if (response?.status === 200 || response?.status === 201) {
-  //       toast.success(response?.data?.message);
-  //       navigate({
-  //         to: "/users",
-  //       });
-  //     }
-  //     if (response?.status === 422) {
-  //       // setErrorMessages(response?.data?.errData || [""]);
-  //       toast.error(response?.data?.message);
-  //     }
-  //   },
-  // });
-
-  const addUser = () => {
-    const payload = {
-      full_name: userData?.full_name,
-      email: userData?.email,
-      phone_number: userData?.phone_number,
-    };
-    payload;
+ 
+  const addUser = async () => {
+    try {
+      setLoading(true);
+      const payload = {
+        fname: userData?.fname,
+        lname: userData?.lname,
+        email: userData?.email,
+        password: userData?.password,
+        user_type: userType,
+      };
+      const response = await addUsersAPI(payload);
+      if (response?.status === 200 || response?.status === 201) {
+        toast.success(response?.data?.message || "User Added successfully");
+        setIsOpen(false);
+        setUserData({
+          fname: "",
+          lname: "",
+          email: "",
+          password: "",
+        });
+        setUserType("");
+        await getAllUsers("");
+      } else if (response?.status === 422) {
+        console.log(response);
+        const errData = response?.data?.errData;
+        setErrors(errData);
+        throw response;
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const usersData =
-    addSerial(
-      data?.data?.Users,
-      data?.data?.pagination?.page,
-      data?.data?.pagination?.limit
-    ) || [];
+   const usersData =
+     addSerial(
+       data?.data?.data?.records,
+       data?.data?.data?.pagination_info?.current_page,
+       data?.data?.data?.pagination_info?.page_size
+     ) || [];
+
+  const onChangeStatus = (value: string) => {
+    setUserType(value);
+  };
 
   const handleDrawerOpen = () => {
     setIsOpen(true);
@@ -127,6 +151,86 @@ function UsersTable() {
   const handleDrawerClose = () => {
     setIsOpen(false);
   };
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
+  const handleInputChange = (e: any) => {
+    let { name, value } = e.target;
+    const updatedValue = value
+      .replace(/[^a-zA-Z\s]/g, "")
+      .replace(/^\s+/g, "")
+      .replace(/\s{2,}/g, " ");
+    setUserData({
+      ...userData,
+      [name]: updatedValue,
+    });
+  };
+
+  const handleChangeEmail = (e: any) => {
+    let { name, value } = e.target;
+    setUserData({
+      ...userData,
+      [name]: value,
+    });
+  };
+
+  const handleChangePassword = (e: any) => {
+    let { name, value } = e.target;
+    setUserData({
+      ...userData,
+      [name]: value,
+    });
+  };
+
+  const handleCancel = () => {
+    setUserData({
+      fname: "",
+      lname: "",
+      email: "",
+      password: "",
+    });
+    setUserType("");
+    setErrors({});
+    setIsOpen(false);
+  };
+
+  const onClickOpen = (id: any) => {
+    // setOpen(true);
+    // setDeleteId(id);
+  };
+
+  const userActions = [
+    {
+      accessorFn: (row: any) => row.actions,
+      id: "actions",
+      cell: (info: any) => {
+        return (
+          <div>
+            <Button
+              title="delete"
+              onClick={() => onClickOpen(info.row.original.id)}
+              size={"sm"}
+              variant={"ghost"}
+            >
+              <img
+                src={"/table/delete.svg"}
+                alt="view"
+                height={16}
+                width={16}
+              />
+            </Button>
+          </div>
+        );
+      },
+      header: () => <span>Actions</span>,
+      footer: (props: any) => props.column.id,
+      width: "80px",
+      minWidth: "80px",
+      maxWidth: "80px",
+    },
+  ];
   return (
     <div className="relative">
       <div className="flex justify-end mb-4 gap-3">
@@ -136,86 +240,179 @@ function UsersTable() {
         />
         <Button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          // onClick={handleNavigation}
           onClick={handleDrawerOpen}
         >
           +Add Users
         </Button>
-        <Button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          // onClick={handleNavigation}
-          // onClick={handleDrawerOpen}
-        >
+
+        <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
           import
         </Button>
       </div>
-
       <div>
-        <div>
-          <TanStackTable
-            data={usersData}
-            columns={[...userColumns]}
-            paginationDetails={data?.data}
-            getData={getAllUsers}
-            removeSortingForColumnIds={[
-              "serial",
-              "full_name",
-              "email",
-              "phone_number",
-              "user_type",
-              "created_at",
-              "progress",
-              "pending",
-              "completed",
-              "tasks",
-              "overdue",
-              "1_tasks_progress",
-            ]}
-          />
-        </div>
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetContent className="bg-gray-100">
+        <TanStackTable
+          data={usersData}
+          columns={[...userColumns,...userActions]}
+          paginationDetails={data?.data?.data?.pagination_info}
+          getData={getAllUsers}
+          removeSortingForColumnIds={["serial"]}
+        />
+      </div>
+      <div>
+        <Sheet open={isOpen}>
+          <SheetContent className="bg-gray-100"> 
             <SheetHeader>
               <SheetTitle>Add User</SheetTitle>
               <SheetDescription></SheetDescription>
             </SheetHeader>
             <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Name
+              <div className="flex flex-col space-y-1">
+                <Label
+                  className="font-normal capitalize text-lg"
+                  htmlFor="firstname"
+                >
+                  First Name
                 </Label>
                 <Input
-                  id="name"
-                  placeholder="Enter name"
-                  className="col-span-3 border border-gray-300 p-2 rounded"
-                  type="text"
+                  className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
+                  id="fname"
+                  placeholder="Enter First Name"
+                  value={userData.fname}
+                  name="fname"
+                  onChange={handleInputChange}
                 />
+                {errors?.fname && (
+                  <p style={{ color: "red" }}>{errors?.fname[0]}</p>
+                )}
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
+              <div className="flex flex-col space-y-1">
+                <Label
+                  className="font-normal capitalize text-lg"
+                  htmlFor="lastname"
+                >
+                  Last Name
+                </Label>
+                <Input
+                  className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
+                  id="lname"
+                  placeholder="Enter Last Name"
+                  value={userData.lname}
+                  name="lname"
+                  onChange={handleInputChange}
+                />
+                {errors?.lname && (
+                  <p style={{ color: "red" }}>{errors?.lname[0]}</p>
+                )}
+              </div>
+              <div className="flex flex-col space-y-1">
+                <Label
+                  className="font-normal capitalize text-lg"
+                  htmlFor="email"
+                >
                   Email
                 </Label>
                 <Input
+                  className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
                   id="email"
                   placeholder="Enter Email"
-                  className="col-span-3 border border-gray-300 p-2 rounded"
-                  type="text"
+                  name="email"
+                  value={userData.email}
+                  onChange={handleChangeEmail}
                 />
+                {errors?.email && (
+                  <p style={{ color: "red" }}>{errors?.email[0]}</p>
+                )}
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="mobile number" className="text-right">
-                  Mobile Number
+
+              <div className="flex flex-col space-y-1">
+                <Label
+                  className="font-normal capitalize text-lg"
+                  htmlFor="password"
+                >
+                  Password
                 </Label>
                 <Input
-                  id="phonenumber"
-                  placeholder="Enter Mobile Number"
-                  className="col-span-3 border border-gray-300 p-2 rounded"
-                  type="text"
+                  className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
+                  id="password"
+                  placeholder="Enter Password"
+                  value={userData.password}
+                  name="password"
+                  onChange={handleChangePassword}
                 />
+                {errors?.password && (
+                  <p style={{ color: "red" }}>{errors?.password[0]}</p>
+                )}
+              </div>
+              <div>
+                <label
+                  htmlFor="panNumber"
+                  className="block text-sm font-medium"
+                >
+                  User Type<span className="text-red-500">*</span>
+                </label>
+                <Popover open={userTypeOpen} onOpenChange={setUserTypeOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={userTypeOpen}
+                      className="w-[200px] justify-between bg-white-700"
+                    >
+                      {userType
+                        ? userTypes.find((type) => type.value === userType)
+                            ?.label
+                        : "Select Status"}
+                      <div className="flex">
+                        {userType && (
+                          <X
+                            className="mr-2 h-4 w-4 shrink-0 opacity-50"
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                              onChangeStatus("");
+                              setUserTypeOpen(false);
+                            }}
+                          />
+                        )}
+                        {userTypeOpen ? (
+                          <ChevronUp className="h-4 w-4 shrink-0 opacity-50" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+                        )}
+                      </div>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0">
+                    <div className="max-h-[300px] overflow-y-auto">
+                      {userTypes?.map((type) => (
+                        <Button
+                          key={type.value}
+                          onClick={() => {
+                            onChangeStatus(type.value);
+                            setUserTypeOpen(false);
+                          }}
+                          className="w-full justify-start font-normal bg-white text-violet-600 border border-indigo-600 capitalize mb-2 hover:bg-violet-600  hover:text-white "
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              userType === type.value
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {type.label}
+                        </Button>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                {errors?.user_type && (
+                  <p style={{ color: "red" }}>{errors.user_type[0]}</p>
+                )}
               </div>
             </div>
             <SheetFooter>
-              <Button variant="outline" onClick={() => setIsOpen(false)}>
+              <Button variant="outline" onClick={handleCancel}>
                 Cancel
               </Button>
               <SheetClose asChild>
@@ -227,8 +424,8 @@ function UsersTable() {
           </SheetContent>
         </Sheet>
       </div>
+      <Loading loading={isLoading || isFetching || loading} />
     </div>
   );
 }
-
 export default UsersTable;
