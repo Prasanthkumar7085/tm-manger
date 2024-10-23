@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import downArrowIcon from "@/assets/down-arrow.svg";
 
 interface titleProps {
   title: string;
@@ -53,7 +54,7 @@ function TopBar() {
           </DropdownMenuContent>
         </DropdownMenu>
         <img
-          src={"src/assets/down-arrow.svg"}
+          src={downArrowIcon}
           alt="dashboard"
           className="h-[13px] w-[13px]"
         />

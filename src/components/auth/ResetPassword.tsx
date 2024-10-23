@@ -48,7 +48,6 @@ function ResetPassword() {
           });
         } else if (response?.status === 422) {
           const errData = response?.data?.errData;
-          console.log(response);
           setErrors(errData);
         } else {
           throw response;
@@ -152,7 +151,7 @@ function ResetPassword() {
           <div className="mt-10">
             <ul>
               <li className="mb-4" style={{ lineHeight: "1.2" }}>
-              • New password must be at least 6 characters long
+                • New password must be at least 6 characters long
               </li>
             </ul>
             <Button
