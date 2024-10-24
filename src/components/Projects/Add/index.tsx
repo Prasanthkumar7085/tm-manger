@@ -1,3 +1,4 @@
+import LoadingComponent from "@/components/core/LoadingComponent";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -178,7 +179,7 @@ const AddProject = () => {
         />
       </div>
       <div className="space-y-4">
-        <div className="flex justify-start gap-4">
+        <div className="flex flex-col justify-start gap-4">
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-[200px]">
@@ -272,15 +273,19 @@ const AddProject = () => {
             <p>No members selected.</p>
           )}
         </div>
+        {errorMessages.project_members && (
+          <p style={{ color: "red" }}>{errorMessages?.project_members?.[0]}</p>
+        )}
       </div>
       <div className="flex justify-end space-x-4">
         <Button variant="outline" onClick={() => navigate({ to: "/projects" })}>
           Cancel
         </Button>
-        <Button onClick={handleSubmit} disabled={loading}>
-          {loading ? "" : projectId ? "Update Project" : "Add Project"}
+        <Button variant="outline" onClick={handleSubmit} disabled={loading}>
+          {projectId ? "Update Project" : "Add Project"}
         </Button>
       </div>
+      <LoadingComponent loading={loading} />
     </div>
   );
 };

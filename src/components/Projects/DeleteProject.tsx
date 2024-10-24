@@ -3,16 +3,25 @@ import { toast } from "sonner";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { deleteProjectAPI } from "@/lib/services/users";
 import DeleteDialog from "../core/deleteDialog";
+import { useLocation } from "@tanstack/react-router";
 
 interface deleteProps {
   setDel: Dispatch<SetStateAction<number>>;
   del: any;
   project: any;
+  getAllProjects: any;
 }
 
-const DeleteProjects = ({ del, setDel, project }: deleteProps) => {
+const DeleteProjects = ({
+  del,
+  setDel,
+  project,
+  getAllProjects,
+}: deleteProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const queryClient = useQueryClient();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (id: number) => {
@@ -22,6 +31,10 @@ const DeleteProjects = ({ del, setDel, project }: deleteProps) => {
           toast.success(response?.data?.message);
           setDel((prev) => prev + 1);
           setDeleteDialogOpen(false);
+          getAllProjects({
+            pageIndex: 1,
+            pageSize: Number(searchParams.get("page_size")) || 10,
+          });
         } else {
           toast.error(response?.data?.message);
         }
@@ -38,7 +51,13 @@ const DeleteProjects = ({ del, setDel, project }: deleteProps) => {
   return (
     <>
       <button onClick={() => setDeleteDialogOpen(true)} title="delete">
-        <img src={"/table/delete.svg"} alt="delete" height={16} width={16} />
+        <img
+          src={"/table/delete.svg"}
+          alt="delete"
+          className="cursor-pointer"
+          height={16}
+          width={16}
+        />
       </button>
 
       <DeleteDialog

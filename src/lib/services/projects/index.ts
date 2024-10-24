@@ -7,8 +7,8 @@ interface GetAllPaginatedUsersPropTypes {
   search_string: any;
   projectId: any;
   status: any;
-  start_date: any;
-  end_date: any;
+  from_date: any;
+  to_date: any;
 }
 
 export const getAllPaginatedProjectss = async ({
@@ -17,8 +17,8 @@ export const getAllPaginatedProjectss = async ({
   order_by,
   search_string,
   status,
-  start_date,
-  end_date,
+  from_date,
+  to_date,
 }: GetAllPaginatedUsersPropTypes) => {
   try {
     const queryParams = {
@@ -27,8 +27,8 @@ export const getAllPaginatedProjectss = async ({
       order_by: order_by,
       search_string: search_string,
       status: status,
-      start_date,
-      end_date,
+      from_date,
+      to_date,
     };
     return await $fetch.get("/projects", queryParams);
   } catch (err) {

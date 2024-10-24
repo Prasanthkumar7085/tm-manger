@@ -1,40 +1,98 @@
+import React, { useState, useEffect } from "react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import React from "react";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"; // Adjust the import based on your setup
+import { Button } from "@/components/ui/button"; // Adjust the import based on your setup
+import { Input } from "@/components/ui/input"; // Adjust the import based on your setup
+import { X, ChevronUp, ChevronDown } from "lucide-react"; // Adjust the icons as needed
 
 const sortOptions = [
-  { label: "Title Asc", value: "title asc" },
-  { label: "Title Desc", value: "title desc" },
-  { label: "Created At Asc", value: "created_at asc" },
-  { label: "Created At Desc", value: "created_at desc" },
+  { label: "Title Asc", value: "title:asc" },
+  { label: "Title Desc", value: "title:desc" },
+  { label: "Created At Asc", value: "created_at:asc" },
+  { label: "Created At Desc", value: "created_at:desc" },
 ];
 
-const SortDropDown = ({ selectedSort, setSelectedSort }: any) => {
-  const handleSortChange = (value: string) => {
+const SortPopover = ({ selectedSort, setSelectedSort }: any) => {
+  const [isSortSelected, setIsSortSelected] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortPopoverOpen, setSortPopoverOpen] = useState(false);
+
+  useEffect(() => {
+    setIsSortSelected(!!selectedSort);
+  }, [selectedSort]);
+
+  const handleSortChange = (value: any) => {
     setSelectedSort(value);
+    setSortPopoverOpen(false);
   };
 
+  const handleRemoveSort = (e: any) => {
+    e.stopPropagation();
+    setSelectedSort(null);
+    setSortPopoverOpen(false);
+  };
+
+  const filteredOptions = sortOptions.filter((option) =>
+    option.label.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger className="px-4 py-2 bg-gray-200 text-black rounded-lg">
-        Sort By
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        {sortOptions.map((option) => (
-          <DropdownMenuItem
-            key={option.value}
-            onSelect={() => handleSortChange(option.value)}
-          >
-            {option.label}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Popover open={sortPopoverOpen} onOpenChange={setSortPopoverOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={sortPopoverOpen}
+          className="w-[200px] justify-between bg-white"
+        >
+          {isSortSelected
+            ? sortOptions.find((option) => option.value === selectedSort)?.label
+            : "Select Sort"}
+          <div className="flex">
+            {isSortSelected && (
+              <X
+                className="mr-2 h-4 w-4 shrink-0 opacity-50"
+                onClick={handleRemoveSort}
+              />
+            )}
+            {sortPopoverOpen ? (
+              <ChevronUp className="h-4 w-4 shrink-0 opacity-50" />
+            ) : (
+              <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+            )}
+          </div>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-0">
+        <div className="p-2">
+          <Input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="mb-2"
+          />
+        </div>
+        <div className="max-h-[300px] overflow-y-auto">
+          {filteredOptions.map((option) => (
+            <Button
+              key={option.value}
+              onClick={() => handleSortChange(option.value)}
+              className="w-full justify-start font-normal bg-white text-violet-600 border border-indigo-600 capitalize mb-2 hover:bg-violet-600 hover:text-white"
+            >
+              {isSortSelected && selectedSort === option.value && (
+                <span className="mr-2">✓</span> // Checkmark for selected option
+              )}
+              {option.label}
+            </Button>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 };
 
-export default SortDropDown;
+export default SortPopover;

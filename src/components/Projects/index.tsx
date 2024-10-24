@@ -11,6 +11,7 @@ import Pagination from "../core/Pagination";
 import DateRangeFilter from "../core/DateRangePicker";
 import LoadingComponent from "../core/LoadingComponent";
 import SortDropDown from "../core/CommonComponents/SortDropDown";
+import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 
 const Projects = () => {
   const navigate = useNavigate();
@@ -30,11 +31,12 @@ const Projects = () => {
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedProject, setSelectedProject] = useState("");
   const [selectedStatus, setSelectedStatus] = useState(initialStatus);
-  const [dateValue, setDateValue] = useState<[Date | null, Date | null] | null>(
+  const [dateValue, setDateValue] = useState<any>(
     initialStartDate && initialEndDate
       ? [new Date(initialStartDate), new Date(initialEndDate)]
       : null
   );
+  const [selectedDate, setSelectedDate] = useState<any>();
   const [selectedSort, setSelectedSort] = useState(orderBY);
   const [del, setDel] = useState<any>();
 
@@ -44,7 +46,7 @@ const Projects = () => {
     order_by: selectedSort || orderBY,
   });
 
-  const { isLoading, isError, error, data } = useQuery({
+  const { isLoading, isError, error, data, isFetching } = useQuery({
     queryKey: [
       "projects",
       pagination,
@@ -52,28 +54,29 @@ const Projects = () => {
       debouncedSearch,
       selectedStatus,
       dateValue,
+      selectedSort,
     ],
     queryFn: async () => {
       const response = await getAllPaginatedProjectss({
         pageIndex: pagination.pageIndex,
         pageSize: pagination.pageSize,
-        order_by: pagination.order_by,
+        order_by: selectedSort,
         search_string: debouncedSearch,
         projectId: selectedProject,
         status: selectedStatus,
-        start_date: dateValue ? dateValue[0]?.toISOString() : null,
-        end_date: dateValue ? dateValue[1]?.toISOString() : null,
+        from_date: selectedDate?.length ? selectedDate[0] : null,
+        to_date: selectedDate?.length ? selectedDate[1] : null,
       });
 
       const queryParams = {
         current_page: +pagination.pageIndex,
         page_size: +pagination.pageSize,
-        order_by: pagination.order_by ? pagination.order_by : undefined,
+        order_by: selectedSort ? selectedSort : undefined,
         search: debouncedSearch || undefined,
         project_id: selectedProject || undefined,
         status: selectedStatus || undefined,
-        start_date: dateValue ? dateValue[0]?.toISOString() : undefined,
-        end_date: dateValue ? dateValue[1]?.toISOString() : undefined,
+        from_date: selectedDate?.length ? selectedDate[0] : undefined,
+        to_date: selectedDate?.length ? selectedDate[1] : undefined,
       };
       router.navigate({
         to: "/projects",
@@ -121,10 +124,14 @@ const Projects = () => {
     });
   };
 
-  const handleDateChange = (startDate: string, endDate: string) => {
-    const start = startDate ? new Date(startDate) : null;
-    const end = endDate ? new Date(endDate) : null;
-    setDateValue([start, end]);
+  const handleDateChange = (fromDate: any, toDate: any) => {
+    if (fromDate) {
+      setDateValue(changeDateToUTC(fromDate, toDate));
+      setSelectedDate([fromDate, toDate]);
+    } else {
+      setDateValue([]);
+      setSelectedDate([]);
+    }
   };
 
   useEffect(() => {
@@ -155,7 +162,7 @@ const Projects = () => {
         <SearchFilter
           searchString={searchString}
           setSearchString={setSearchString}
-          title="Search By Name"
+          title="Search By title"
         />
         <StatusFilter value={selectedStatus} setValue={setSelectedStatus} />
         <DateRangeFilter
@@ -187,6 +194,7 @@ const Projects = () => {
               project={project}
               del={del}
               setDel={setDel}
+              getAllProjects={getAllProjects}
             />
           ))
         )}
@@ -199,7 +207,7 @@ const Projects = () => {
           captureRowPerItems={captureRowPerItems}
         />
       </div>
-      <LoadingComponent loading={isLoading} />
+      <LoadingComponent loading={isLoading || isFetching} />
     </div>
   );
 };

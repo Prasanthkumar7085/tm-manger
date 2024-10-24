@@ -3,8 +3,9 @@ import { useNavigate } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Eye } from "lucide-react";
 import DeleteProjects from "./DeleteProject";
+import dayjs from "dayjs";
 
-const ProjectCard = ({ project, del, setDel }: any) => {
+const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
   const navigate = useNavigate();
 
   const getStatusLabel = (isActive: boolean) => {
@@ -25,14 +26,21 @@ const ProjectCard = ({ project, del, setDel }: any) => {
         </div>
         <div className="text-lg font-semibold">{project.title}</div>
         <p className="text-sm text-gray-500">{project.description}</p>
-        <p className="text-sm text-gray-500">
-          <Badge>{getStatusLabel(project.active)}</Badge>
-        </p>
-
-        <div className="flex gap-3">
+        <div className="flex flex-row justify-between items-center w-full">
+          <p className="text-sm text-gray-500">
+            {dayjs(project.created_at).format("MM-DD-YYYY")}
+          </p>
+          <p
+            className={`text-sm text-gray-500 ${getStatusLabel(project.active) == "Active" ? "text-[green]" : "text-[red]"}`}
+          >
+            {getStatusLabel(project.active)}
+          </p>
+        </div>
+        <div className="flex gap-3 justify-end w-full">
           <Eye
             height={16}
             width={16}
+            className="cursor-pointer"
             onClick={() => {
               navigate({
                 to: "/projects/view",
@@ -44,6 +52,7 @@ const ProjectCard = ({ project, del, setDel }: any) => {
             alt="edit"
             height={16}
             width={16}
+            className="cursor-pointer"
             onClick={() => {
               navigate({
                 to: `/projects/${project.id}`,
@@ -51,7 +60,12 @@ const ProjectCard = ({ project, del, setDel }: any) => {
             }}
           />
 
-          <DeleteProjects setDel={setDel} del={del} project={project} />
+          <DeleteProjects
+            setDel={setDel}
+            del={del}
+            project={project}
+            getAllProjects={getAllProjects}
+          />
         </div>
       </div>
     </div>
