@@ -1,48 +1,38 @@
-import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { addProjectAPI, updateProjectAPI } from "@/lib/services/projects";
+import { getAllPaginatedUsersAPI } from "@/lib/services/users";
+import { cn } from "@/lib/utils";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@radix-ui/react-popover";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useLocation, useNavigate, useParams } from "@tanstack/react-router";
 import { Check } from "lucide-react";
-import { cn } from "@/lib/utils";
-import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandItem,
-  CommandGroup,
-  CommandEmpty,
-} from "@/components/ui/command";
+import React, { useState } from "react";
 import { toast } from "sonner";
-import { membersConstants } from "@/lib/helpers/memberConstants";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-} from "@/components/ui/select";
-import { useMutation } from "@tanstack/react-query";
-import { addProjectAPI, updateProjectAPI } from "@/lib/services/projects";
-import { useNavigate, useParams } from "@tanstack/react-router";
-import AddMember from "../Members/Add";
-import LoadingComponent from "@/components/core/LoadingComponent";
-
 interface ProjectPayload {
   title: string;
   description: string;
-  code: string;
   project_members: { user_id: number; role: string }[];
+  code: string;
 }
-
 const AddProject = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { projectId } = useParams({ strict: false });
+  const [users, setUsers] = useState<any[]>([]);
   const [projectData, setProjectData] = useState({
     title: "",
     description: "",
@@ -55,38 +45,31 @@ const AddProject = () => {
   const [open, setOpen] = useState(false);
   const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [projectError, setProjectError] = useState<any>("");
-
+  const searchParams = new URLSearchParams(location.search);
+  const pageIndexParam = Number(searchParams.get("current_page")) || 1;
+  const pageSizeParam = Number(searchParams.get("page_size")) || 10;
+  const [pagination, setPagination] = useState({
+    pageIndex: pageIndexParam,
+    pageSize: pageSizeParam,
+  });
   const { mutate } = useMutation({
     mutationFn: async (payload: ProjectPayload) => {
-      if (projectId) {
-        setErrorMessages({});
-        setProjectError("");
-        setLoading(true);
-        return await updateProjectAPI(payload, projectId);
-      } else {
-        setErrorMessages({});
-        setProjectError("");
-        setLoading(true);
-        return await addProjectAPI(payload);
-      }
+      setErrorMessages({});
+      setLoading(true);
+      return projectId
+        ? updateProjectAPI(payload, projectId)
+        : addProjectAPI(payload);
     },
-
     onSuccess: (response: any) => {
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message);
         navigate({ to: "/projects" });
-        setLoading(false);
       } else if (response?.status === 422) {
         setErrorMessages(response?.data?.errData || {});
-        setLoading(false);
       } else if (response?.status === 409) {
-        setProjectError(response?.data?.message);
-        setLoading(false);
-      } else {
-        throw response;
-        setLoading(false);
+        setErrorMessages(response?.data?.errData || {});
       }
+      setLoading(false);
     },
     onError: (error: any) => {
       toast.error("An error occurred. Please try again.");
@@ -94,14 +77,23 @@ const AddProject = () => {
       setLoading(false);
     },
   });
-
+  const { isLoading, isError, error, data, isFetching } = useQuery({
+    queryKey: ["users", pagination],
+    queryFn: async () => {
+      const response = await getAllPaginatedUsersAPI({
+        pageIndex: pagination.pageIndex,
+        pageSize: pagination.pageSize,
+      });
+      setUsers(response.data?.data?.records);
+      return response;
+    },
+  });
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setProjectData({ ...projectData, [name]: value });
   };
-
   const toggleValue = (currentValue: string) => {
     setTempSelectedMember((prev) =>
       prev.includes(currentValue)
@@ -109,47 +101,37 @@ const AddProject = () => {
         : [...prev, currentValue]
     );
   };
-
   const confirmSelection = () => {
-    tempSelectedMember.forEach((memberValue: any) => {
-      const member = membersConstants.find(
-        (member) => member.value === memberValue
-      );
-      if (
-        member &&
-        !selectedMembers.some((m: any) => m.user_id === member.value)
-      ) {
-        setSelectedMembers((prev: any) => [
-          ...prev,
-          { user_id: member.value, role: "USER" },
-        ]);
-      }
-    });
+    const newMembers = tempSelectedMember
+      .map((memberValue: string) => {
+        const member = users.find((user) => user.id.toString() === memberValue);
+        return (
+          member &&
+          !selectedMembers.some((m) => m.user_id === member.id) && {
+            user_id: member.id,
+            role: "USER",
+          }
+        );
+      })
+      .filter(Boolean);
+    setSelectedMembers((prev) => [...prev, ...newMembers]);
     setTempSelectedMember([]);
     setOpen(false);
   };
-
   const removeMember = (userId: number) => {
     setSelectedMembers(
       selectedMembers.filter((member) => member.user_id !== userId)
     );
   };
-
   const handleSubmit = () => {
     const payload: ProjectPayload = {
       title: projectData.title,
+      code: projectData.code,
       description: projectData.description,
       project_members: selectedMembers,
-      code: projectData.code,
     };
-
     mutate(payload);
   };
-
-  const handleNavigation = () => {
-    navigate({ to: "/projects" });
-  };
-
   const addNewMember = (newMember: { value: number; label: string }) => {
     if (
       !selectedMembers.some((member: any) => member.user_id === newMember.value)
@@ -160,11 +142,12 @@ const AddProject = () => {
       ]);
     }
   };
-
+  const getFullName = (user: any) => {
+    return `${user.fname} ${user.lname}`;
+  };
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
       <h2 className="text-2xl font-semibold">Add Project</h2>
-
       <div className="space-y-4">
         <Input
           id="title"
@@ -176,17 +159,14 @@ const AddProject = () => {
         {errorMessages.title && (
           <p style={{ color: "red" }}>{errorMessages?.title?.[0]}</p>
         )}
-
-        {projectError && <p style={{ color: "red" }}>{projectError}</p>}
-
         <Input
           id="code"
-          placeholder="Enter project code"
+          placeholder="Enter Code"
           value={projectData.code}
           name="code"
           onChange={handleInputChange}
         />
-        {errorMessages.title && (
+        {errorMessages.code && (
           <p style={{ color: "red" }}>{errorMessages?.code?.[0]}</p>
         )}
         <Textarea
@@ -197,7 +177,6 @@ const AddProject = () => {
           onChange={handleInputChange}
         />
       </div>
-
       <div className="space-y-4">
         <div className="flex justify-start gap-4">
           <Popover open={open} onOpenChange={setOpen}>
@@ -210,31 +189,30 @@ const AddProject = () => {
               <Command>
                 <CommandInput placeholder="Search Members" />
                 <CommandList>
-                  <CommandEmpty>No Members Found</CommandEmpty>
                   <CommandGroup>
-                    {membersConstants.map((member: any) => (
+                    {users.map((user: any) => (
                       <CommandItem
-                        key={member?.value}
-                        value={member?.value}
-                        onSelect={() => toggleValue(member.value)}
+                        key={user.id}
+                        value={user.id.toString()}
+                        onSelect={() => toggleValue(user.id.toString())}
                         disabled={selectedMembers.some(
-                          (m: any) => m.user_id === member.value
+                          (m: any) => m.user_id === user.id
                         )}
                       >
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            tempSelectedMember.includes(member.value)
+                            tempSelectedMember.includes(user.id.toString())
                               ? "opacity-100"
                               : "opacity-0"
                           )}
                         />
-                        {member.label}
+                        {getFullName(user)}
                       </CommandItem>
                     ))}
                   </CommandGroup>
+                  <CommandEmpty>No members found.</CommandEmpty>
                 </CommandList>
-
                 <div className="flex justify-end space-x-2 p-2 border-t">
                   <Button
                     variant="outline"
@@ -254,86 +232,56 @@ const AddProject = () => {
               </Command>
             </PopoverContent>
           </Popover>
-          <div className="flex">
-            <AddMember addNewMember={addNewMember} />
-          </div>
+          {selectedMembers.length > 0 ? (
+            <table className="min-w-full border">
+              <thead>
+                <tr className="bg-gray-200">
+                  <th className="border px-4 py-2">S No</th>
+                  <th className="border px-4 py-2">Member Name</th>
+                  <th className="border px-4 py-2">Role</th>
+                  <th className="border px-4 py-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedMembers.map((member, index) => {
+                  const memberDetails = users.find(
+                    (m) => m.id === member.user_id
+                  );
+                  return (
+                    <tr key={member.user_id} className="border-b">
+                      <td className="border px-4 py-2">{index + 1}</td>
+                      <td className="border px-4 py-2">
+                        {memberDetails ? getFullName(memberDetails) : "N/A"}
+                      </td>
+                      <td className="border px-4 py-2">{member.role}</td>
+                      <td className="border px-4 py-2">
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => removeMember(member.user_id)}
+                        >
+                          Remove
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          ) : (
+            <p>No members selected.</p>
+          )}
         </div>
-        {errorMessages.title && (
-          <p style={{ color: "red" }}>{errorMessages?.project_members?.[0]}</p>
-        )}
-        {selectedMembers.length > 0 ? (
-          <table className="min-w-full border">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="border px-4 py-2">S No</th>
-                <th className="border px-4 py-2">Member Name</th>
-                <th className="border px-4 py-2">Role</th>
-              </tr>
-            </thead>
-            <tbody>
-              {selectedMembers.map((member, index) => {
-                const memberDetails = membersConstants.find(
-                  (m) => m.value === member.user_id
-                );
-                return (
-                  <tr key={member.user_id}>
-                    <td className="border px-4 py-2">{index + 1}</td>
-                    <td className="border px-4 py-2">
-                      {memberDetails?.label || "Unknown"}
-                    </td>
-                    <td className="border px-4 py-2 flex">
-                      <Select
-                        value={member.role}
-                        onValueChange={(value) =>
-                          setSelectedMembers((prev) =>
-                            prev.map((m) =>
-                              m.user_id === member.user_id
-                                ? { ...m, role: value }
-                                : m
-                            )
-                          )
-                        }
-                      >
-                        <SelectTrigger className="w-[120px]">
-                          <SelectValue placeholder="Select role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem value="USER">User</SelectItem>
-                            <SelectItem value="ADMIN">Admin</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                      <Button
-                        onClick={() => removeMember(member.user_id)}
-                        className="text-red-500"
-                      >
-                        ✖
-                      </Button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        ) : (
-          <div className="flex justify-center items-center">
-            "No Members Selected"
-          </div>
-        )}
       </div>
-
       <div className="flex justify-end space-x-4">
-        <Button variant="outline" onClick={handleNavigation}>
+        <Button variant="outline" onClick={() => navigate({ to: "/projects" })}>
           Cancel
         </Button>
-        <Button variant="outline" onClick={handleSubmit} disabled={loading}>
-          {loading ? "Adding..." : "Add"}
+        <Button onClick={handleSubmit} disabled={loading}>
+          {loading ? "" : projectId ? "Update Project" : "Add Project"}
         </Button>
       </div>
-      <LoadingComponent loading={loading} />
     </div>
   );
 };
-
 export default AddProject;

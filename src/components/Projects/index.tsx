@@ -10,29 +10,38 @@ import { StatusFilter } from "../core/StatusFilter";
 import Pagination from "../core/Pagination";
 import DateRangeFilter from "../core/DateRangePicker";
 import LoadingComponent from "../core/LoadingComponent";
+import SortDropDown from "../core/CommonComponents/SortDropDown";
 
 const Projects = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
   const searchParams = new URLSearchParams(location.search);
+
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 10;
   const orderBY = searchParams.get("order_by") || "";
   const initialSearch = searchParams.get("search") || "";
+  const initialStatus = searchParams.get("status") || "";
+  const initialStartDate = searchParams.get("start_date") || null;
+  const initialEndDate = searchParams.get("end_date") || null;
 
   const [searchString, setSearchString] = useState(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedProject, setSelectedProject] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState(initialStatus);
   const [dateValue, setDateValue] = useState<[Date | null, Date | null] | null>(
-    null
+    initialStartDate && initialEndDate
+      ? [new Date(initialStartDate), new Date(initialEndDate)]
+      : null
   );
+  const [selectedSort, setSelectedSort] = useState(orderBY);
+  const [del, setDel] = useState<any>();
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
-    order_by: orderBY,
+    order_by: selectedSort || orderBY,
   });
 
   const { isLoading, isError, error, data } = useQuery({
@@ -99,15 +108,16 @@ const Projects = () => {
         ? searchParams.get("page_size")
         : 25,
       pageIndex: value,
-      order_by: searchParams.get("order_by"),
+      order_by: selectedSort || searchParams.get("order_by"),
     });
   };
+
   const captureRowPerItems = (value: number) => {
     getAllProjects({
       ...searchParams,
       pageSize: value,
       pageIndex: 1,
-      order_by: searchParams.get("order_by"),
+      order_by: selectedSort || searchParams.get("order_by"),
     });
   };
 
@@ -120,24 +130,24 @@ const Projects = () => {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
-      if (searchString) {
+      if (searchString || selectedStatus || dateValue) {
         getAllProjects({
           pageIndex: 1,
           pageSize: pageSizeParam,
-          order_by: orderBY,
+          order_by: selectedSort || orderBY,
         });
       } else {
         getAllProjects({
           pageIndex: pageIndexParam,
           pageSize: pageSizeParam,
-          order_by: orderBY,
+          order_by: selectedSort || orderBY,
         });
       }
     }, 500);
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString]);
+  }, [searchString, selectedSort, selectedStatus, dateValue]);
 
   return (
     <div className="p-4">
@@ -152,6 +162,11 @@ const Projects = () => {
           dateValue={dateValue}
           onChangeData={handleDateChange}
         />
+        <SortDropDown
+          selectedSort={selectedSort}
+          setSelectedSort={setSelectedSort}
+        />
+
         <div className="flex">
           <Button
             className="px-4 py-2 bg-blue-600 text-white rounded-lg"
@@ -167,7 +182,12 @@ const Projects = () => {
           <div className="col-span-full text-center">No Projects Found</div>
         ) : (
           projectsData.map((project: any) => (
-            <ProjectCard key={project.id} project={project} />
+            <ProjectCard
+              key={project.id}
+              project={project}
+              del={del}
+              setDel={setDel}
+            />
           ))
         )}
       </div>
