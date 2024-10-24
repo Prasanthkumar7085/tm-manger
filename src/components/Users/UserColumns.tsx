@@ -20,20 +20,37 @@ export const userColumns = [
     ),
   },
   {
-    accessorFn: (row: any) => `${row.fname} ${row.lname}`,
-    id: "fullName",
+    accessorFn: (row: any) => row.fname,
+    id: "fname",
     cell: (info: any) => {
-      let fullName = info.getValue();
+      let title = info.getValue();
       return (
         <div style={{ padding: "16px", textAlign: "left" }}>
-          <span>{fullName ? fullName : "-"}</span>
+          <span>{title ? title : "-"}</span>
         </div>
       );
     },
-    width: "300px",
-    maxWidth: "300px",
-    minWidth: "300px",
-    header: () => <span>Full Name</span>,
+    width: "150px",
+    maxWidth: "150px",
+    minWidth: "150px",
+    header: () => <span>First Name</span>,
+    footer: (props: any) => props.column.id,
+  },
+  {
+    accessorFn: (row: any) => row.lname,
+    id: "lname",
+    cell: (info: any) => {
+      let title = info.getValue();
+      return (
+        <div style={{ padding: "16px", textAlign: "left" }}>
+          <span>{title ? title : "-"}</span>
+        </div>
+      );
+    },
+    width: "150px",
+    maxWidth: "150px",
+    minWidth: "150px",
+    header: () => <span>Last Name</span>,
     footer: (props: any) => props.column.id,
   },
   {
@@ -92,7 +109,7 @@ export const userColumns = [
       const [isActive, setIsActive] = useState(info.getValue());
       const [isOpen, setIsOpen] = useState(false);
       const popoverRef = useRef<HTMLDivElement>(null);
-      const userId = info.row.id;
+      const userId = info.row.original.id;
       const togglePopover = () => setIsOpen(!isOpen);
 
       const updateUserStatus = async (status: boolean) => {
@@ -103,10 +120,14 @@ export const userColumns = [
 
           const response = await updateUserStatueAPI(userId, body);
           if (response?.status === 200 || response?.status === 201) {
+            toast.success(
+              status 
+                ? "User activated successfully" 
+                : "User deactivated successfully"
+            );
             setIsActive(status);
-            // toast.success(response?.message || "Status changed successfully");
           } else {
-            // throw new Error(response?.message || "Failed to update status");
+            toast.error("Failed to change status");
           }
         } catch (err: any) {
           toast.error(err?.message || "Something went wrong");
