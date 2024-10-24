@@ -7,10 +7,8 @@ import "rsuite/dist/rsuite.css";
 const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
   const updateDateValues = (newDate: any) => {
     if (newDate) {
-      const [fromDate, toDate] = newDate;
-      const date1 = dayjs(fromDate).startOf("day").toISOString();
-      const date2 = dayjs(toDate).endOf("day").toISOString();
-
+      const date1 = dayjs(newDate[0]).format("YYYY-MM-DD");
+      const date2 = dayjs(newDate[1]).format("YYYY-MM-DD");
       onChangeData(date1, date2);
     } else {
       onChangeData("", "");

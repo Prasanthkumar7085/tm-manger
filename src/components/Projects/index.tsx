@@ -78,8 +78,8 @@ const Projects = () => {
   const projectsData =
     addSerial(
       data?.data?.data?.records,
-      data?.data?.pagination?.page,
-      data?.data?.pagination?.limit
+      data?.data?.data?.pagination_info?.current_page,
+      data?.data?.data?.pagination_info?.page_size
     ) || [];
 
   const handleNavigation = () => {
@@ -172,7 +172,7 @@ const Projects = () => {
         )}
       </div>
 
-      <div className="mt-4">
+      <div className="mb-0 bg-white">
         <Pagination
           paginationDetails={data?.data?.data?.pagination_info}
           capturePageNum={capturePageNum}

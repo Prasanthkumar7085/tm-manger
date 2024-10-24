@@ -36,6 +36,7 @@ import LoadingComponent from "@/components/core/LoadingComponent";
 interface ProjectPayload {
   title: string;
   description: string;
+  code: string;
   project_members: { user_id: number; role: string }[];
 }
 
@@ -45,6 +46,7 @@ const AddProject = () => {
   const [projectData, setProjectData] = useState({
     title: "",
     description: "",
+    code: "",
   });
   const [errorMessages, setErrorMessages] = useState<any>({});
   const [selectedMembers, setSelectedMembers] = useState<
@@ -53,15 +55,18 @@ const AddProject = () => {
   const [open, setOpen] = useState(false);
   const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [projectError, setProjectError] = useState<any>("");
 
   const { mutate } = useMutation({
     mutationFn: async (payload: ProjectPayload) => {
       if (projectId) {
         setErrorMessages({});
+        setProjectError("");
         setLoading(true);
         return await updateProjectAPI(payload, projectId);
       } else {
         setErrorMessages({});
+        setProjectError("");
         setLoading(true);
         return await addProjectAPI(payload);
       }
@@ -74,6 +79,12 @@ const AddProject = () => {
         setLoading(false);
       } else if (response?.status === 422) {
         setErrorMessages(response?.data?.errData || {});
+        setLoading(false);
+      } else if (response?.status === 409) {
+        setProjectError(response?.data?.message);
+        setLoading(false);
+      } else {
+        throw response;
         setLoading(false);
       }
     },
@@ -129,6 +140,7 @@ const AddProject = () => {
       title: projectData.title,
       description: projectData.description,
       project_members: selectedMembers,
+      code: projectData.code,
     };
 
     mutate(payload);
@@ -163,6 +175,19 @@ const AddProject = () => {
         />
         {errorMessages.title && (
           <p style={{ color: "red" }}>{errorMessages?.title?.[0]}</p>
+        )}
+
+        {projectError && <p style={{ color: "red" }}>{projectError}</p>}
+
+        <Input
+          id="code"
+          placeholder="Enter project code"
+          value={projectData.code}
+          name="code"
+          onChange={handleInputChange}
+        />
+        {errorMessages.title && (
+          <p style={{ color: "red" }}>{errorMessages?.code?.[0]}</p>
         )}
         <Textarea
           placeholder="Enter project description"

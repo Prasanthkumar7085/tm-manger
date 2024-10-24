@@ -3,21 +3,24 @@ interface GetAllPaginatedUsersPropTypes {
   pageIndex: number;
   pageSize: number;
   order_by: any;
-  search: any;
+  search_string: any;
+  from_date: string;
+  to_date: string;
 }
 
 export const getAllPaginatedTasks = async ({
   pageIndex,
   pageSize,
   order_by,
-  search,
+  search_string,
+  from_date,
 }: GetAllPaginatedUsersPropTypes) => {
   try {
     const queryParams = {
       page: pageIndex,
       page_size: pageSize,
       order_by: order_by,
-      search_string: search,
+      search_string: search_string,
     };
     return await $fetch.get("/tasks", queryParams);
   } catch (err) {
@@ -45,7 +48,7 @@ export const updateTasksAPI = async (taskId: any, payload: any) => {
     throw err;
   }
 };
-export const addPostCommentsAPI = async ( task_id:any,payload: any) => {
+export const addPostCommentsAPI = async (task_id: any, payload: any) => {
   try {
     return await $fetch.post(`/tasks/${task_id}/comments`, payload);
   } catch (err: any) {

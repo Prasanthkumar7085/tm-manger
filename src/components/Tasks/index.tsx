@@ -11,7 +11,7 @@ import {
 } from "@tanstack/react-router";
 import { addSerial } from "@/lib/helpers/addSerial";
 import TanStackTable from "../core/TanstackTable";
-import { getAllPaginatedTasks} from "@/lib/services/tasks";
+import { getAllPaginatedTasks } from "@/lib/services/tasks";
 import { taskColumns } from "./TaskColumns";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
 import Loading from "../core/Loading";
@@ -20,6 +20,8 @@ import viewButtonIcon from "@/assets/view.svg";
 import DatePickerField from "../core/DateRangePicker";
 import { StatusFilter } from "../core/StatusFilter";
 import SearchField from "../core/CommonComponents/SearchFilter";
+import DateRangeFilter from "../core/DateRangePicker";
+import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -31,11 +33,11 @@ const Tasks = () => {
   const pageSizeParam = Number(searchParams.get("page_size")) || 10;
   const orderBY = searchParams.get("order_by") || "";
   const initialSearch = searchParams.get("search") || "";
-  const [searchString, setSearchString] = useState(initialSearch);
+  const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    new Date()
-  );
+  const [selectedDate, setSelectedDate] = useState<any>(new Date());
+  const [dateValue, setDateValue] = useState<any>(null);
+  console.log(dateValue, "dataiejjrew");
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
@@ -43,14 +45,28 @@ const Tasks = () => {
     order_by: orderBY,
   });
 
-  const { isLoading, isError, data, error,isFetching} = useQuery({
-    queryKey: ["tasks", pagination],
+  const { isLoading, isError, data, error, isFetching } = useQuery({
+    queryKey: ["tasks", pagination, debouncedSearch, selectedDate],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
         pageIndex: pagination.pageIndex,
         pageSize: pagination.pageSize,
         order_by: pagination.order_by,
-        search: debouncedSearch,
+        search_string: debouncedSearch,
+        from_date: selectedDate?.length ? selectedDate[0] : null,
+        to_date: selectedDate?.length ? selectedDate[1] : null,
+      });
+      const queryParams = {
+        current_page: +pagination.pageIndex,
+        page_size: +pagination.pageSize,
+        order_by: pagination.order_by ? pagination.order_by : undefined,
+        search_string: debouncedSearch || undefined,
+        from_date: selectedDate?.length ? selectedDate[0] : undefined,
+        to_date: selectedDate?.length ? selectedDate[1] : undefined,
+      };
+      router.navigate({
+        to: "/tasks",
+        search: queryParams,
       });
 
       return response;
@@ -59,12 +75,12 @@ const Tasks = () => {
 
   const usersData =
     addSerial(
-      data?.data?.Tasks,
+      data?.data?.data?.records,
       data?.data?.pagination?.page,
       data?.data?.pagination?.limit
     ) || [];
 
-  const getAllUsers = async ({ pageIndex, pageSize, order_by }: any) => {
+  const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
 
@@ -119,8 +135,14 @@ const Tasks = () => {
     setSearchString(event.target.value);
   };
 
-  const handleDateChange = (date: Date | undefined) => {
-    setSelectedDate(date);
+  const handleDateChange = (fromDate: any, toDate: any) => {
+    if (fromDate) {
+      setDateValue(changeDateToUTC(fromDate, toDate));
+      setSelectedDate([fromDate, toDate]);
+    } else {
+      setDateValue([]);
+      setSelectedDate([]);
+    }
   };
 
   const isDashboard = location.pathname === "/dashboard";
@@ -133,12 +155,15 @@ const Tasks = () => {
         <div className="flex justify-between mb-4 gap-3">
           <h2>Tasks</h2>
           <div className="flex flex-row gap-2">
-            <DatePickerField value={selectedDate} onChange={handleDateChange} />
-            <div className="flex">
-              <StatusFilter />
-            </div>
-
-            <SearchField value={searchString} onChange={handleSearchChange} />
+            <SearchFilter
+              searchString={searchString}
+              setSearchString={setSearchString}
+              title="Search By Name"
+            />
+            <DateRangeFilter
+              dateValue={dateValue}
+              onChangeData={handleDateChange}
+            />
             <Button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               onClick={handleNavigation}
@@ -156,8 +181,8 @@ const Tasks = () => {
               <TanStackTable
                 data={usersData}
                 columns={[...taskColumns, ...userActions]}
-                paginationDetails={data?.data}
-                getData={getAllUsers}
+                paginationDetails={data?.data?.data?.pagination_info}
+                getData={getAllTasks}
                 removeSortingForColumnIds={[
                   "serial",
                   "actions",
