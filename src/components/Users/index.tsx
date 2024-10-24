@@ -85,8 +85,8 @@ function UsersTable() {
     confirm_new_password:"",
   });
 
-  const { isLoading, isError, error, data, isFetching } = useQuery({
-    queryKey: ["users", pagination, debouncedSearch],
+  const { isLoading, isError, error, data, isFetching, } = useQuery({
+    queryKey: ["users", pagination, debouncedSearch,del],
     queryFn: async () => {
       const response = await getAllPaginatedUsers({
         pageIndex: pagination.pageIndex,
@@ -134,7 +134,6 @@ function UsersTable() {
           password: "",
         });
         setUserType("");
-        await getAllUsers("");
       } else if (response?.status === 422) {
         const errData = response?.data?.errData;
         setErrors(errData);
@@ -152,9 +151,9 @@ function UsersTable() {
       setDeleteLoading(true);
       const response = await deleteUsersAPI(deleteuserId);
       if (response?.status === 200 || response?.status === 201) {
-        getAllUsers({});
          onClickClose();
         toast.success(response?.data?.message || "User Deleted Successfully");
+        setDel((prev) => prev + 1);
       }
     } catch (err: any) {
       toast.error(err?.message || "Something went wrong");
@@ -175,14 +174,12 @@ function UsersTable() {
       const response = await updatePasswordUsersAPI(payload); 
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message || "Update Password successfully");
-        setIsOpen(false);
+        setIsPasswordSheetOpen(false)
         setUsePasswordData({
           current_password:"",
           new_password:"",
           confirm_new_password:"",
         });
-        await getAllUsers("");
-
       } else if (response?.status === 422) {
         const errData = response?.data?.errData;
         setErrors(errData);
@@ -276,7 +273,6 @@ function UsersTable() {
       ...userData,
       [name]: updatedValue,
     });
-    setSearchString(updatedValue); 
   };
 
   const handleChangeEmail = (e: any) => {
