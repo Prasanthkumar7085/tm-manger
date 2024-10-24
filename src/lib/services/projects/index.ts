@@ -49,6 +49,14 @@ export const updateProjectAPI = async (projectId: any, payload: any) => {
     throw err;
   }
 };
+
+export const getDropDownForProjects = async () => {
+  try {
+    return await $fetch.get(`/projects/projects-all`);
+  } catch (err: any) {
+    throw err;
+  }
+};
 export const viewProjectAPI = async (projectId: any) => {
   try {
     return await $fetch.post(`/projects/${projectId}`);

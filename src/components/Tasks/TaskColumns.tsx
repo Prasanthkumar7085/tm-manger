@@ -2,14 +2,45 @@ import dayjs from "dayjs";
 import { Button } from "../ui/button";
 import { useNavigate } from "@tanstack/react-router";
 import viewButtonIcon from "@/assets/view.svg";
+import { useState } from "react";
+import DeleteDialog from "../core/deleteDialog";
+import { toast } from "sonner";
+import { deleteTaskAPI } from "@/lib/services/tasks";
 
 export const taskColumns = () => {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [deleteTaskId, setDeleteTaskId] = useState("");
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const deleteTask = async () => {
+    try {
+      setDeleteLoading(true);
+      const response = await deleteTaskAPI(deleteTaskId);
+      if (response?.status === 200 || response?.status === 201) {
+        onClickClose();
+        toast.success(response?.data?.message || "User Task Successfully");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Something went wrong");
+      console.error(err);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
 
   const handleView = () => {
     navigate({
       to: "/tasks/view",
     });
+  };
+
+  const onClickClose = () => {
+    setOpen(false);
+  };
+  const onClickOpen = (id: any) => {
+    setOpen(true);
+    setDeleteTaskId(id);
   };
 
   return [
@@ -101,6 +132,26 @@ export const taskColumns = () => {
             >
               <img src={viewButtonIcon} alt="view" height={16} width={16} />
             </Button>
+            <Button
+              title="delete"
+              onClick={() => onClickOpen(info.row.original.id)}
+              size={"sm"}
+              variant={"ghost"}
+            >
+              <img
+                src={"/table/delete.svg"}
+                alt="view"
+                height={16}
+                width={16}
+              />
+            </Button>
+            <DeleteDialog
+              openOrNot={open}
+              label="Are you sure you want to Delete this task?"
+              onCancelClick={onClickClose}
+              onOKClick={deleteTask}
+              deleteLoading={deleteLoading}
+            />
           </div>
         );
       },
