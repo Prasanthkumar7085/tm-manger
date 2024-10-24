@@ -1,123 +1,99 @@
-import React from "react";
-import TotalProjectsCounts from "../TotalCounts";
-
-const projectData = {
-  name: "DLW Gowtham",
-  totalTasks: 500,
-  toDo: 100,
-  inProgress: 300,
-  overdue: 50,
-  completed: 50,
-  createdAt: "04-01-2023",
-  createdBy: "Mark",
-  tasks: {
-    todo: [
-      {
-        title: "DLW Sales",
-        description: "Give flyers to Millinium medication care",
-        comments: 76,
-        members: 3,
-      },
-    ],
-    completed: [
-      {
-        title: "DLW Sample Management",
-        description: "Take Monthly Kits deliver to Texas Region",
-        comments: 76,
-        members: 3,
-      },
-      {
-        title: "DLW Lab Operations",
-        description: "Operations for the lab",
-        comments: 66,
-        members: 4,
-      },
-    ],
-    overdue: [
-      {
-        title: "DLW Data Entry",
-        description: "Add more data entry team",
-        comments: 76,
-        members: 3,
-      },
-      {
-        title: "DLW Billing",
-        description: "Add more billing entries",
-        comments: 66,
-        members: 2,
-      },
-    ],
-  },
-};
+import completedTasksIcon from "@/assets/completed-tasks-icon.svg";
+import inprogressTasksIcon from "@/assets/inprogress-tasks-icon.svg";
+import overDueTasksIcon from "@/assets/overdue-tasks-icon.svg";
+import todoTasksIcon from "@/assets/todo-tasks-icon.svg";
+import totalTasksicon from "@/assets/total-tasks-icon.svg";
+import { Card, CardContent } from "@/components/ui/card";
+import CountUp from "react-countup";
 
 const ProjectView = () => {
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Main content */}
-      <main className="flex-1 p-10">
-        <h1 className="text-4xl font-semibold">Project View</h1>
-
-        {/* Project Info */}
-        {/* <div className="mt-6 flex items-center justify-between bg-white p-6 rounded-lg shadow"> */}
-        <div className="flex items-center">
-          <div>
-            <h2 className="text-xl font-semibold">{projectData.name}</h2>
-            <p>Add all Sales Repo Monthly Targets for UTI</p>
+    <div className="flex flex-col justify-between  space-x-4 py-4 w-full">
+      <div className="flex justify-between items-center gap-4 py-4 bg-gradient-to-rrounded-lg  px-6">
+        {/* Total Tasks */}
+        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
+          <div className="flex flex-col">
+            <h3 className="text-gray-700 text-sm font-semibold">Total Tasks</h3>
+            <CardContent className="text-2xl font-bold text-gray-800">
+              <CountUp end={1000} duration={2.5} />
+            </CardContent>
           </div>
+          <img
+            src={totalTasksicon}
+            alt="Total Tasks"
+            className="w-12 h-12 ml-auto"
+          />
+        </Card>
+
+        {/* To Do */}
+        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
+          <div className="flex flex-col">
+            <h3 className="text-gray-700 text-sm font-semibold">To Do</h3>
+            <CardContent className="text-2xl font-bold text-purple-600">
+              <CountUp end={100} duration={2.5} />
+            </CardContent>
+          </div>
+          <img
+            src={todoTasksIcon}
+            alt="To Do Tasks"
+            className="w-12 h-12 ml-auto"
+          />
+        </Card>
+
+        {/* In Progress */}
+        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
+          <div className="flex flex-col">
+            <h3 className="text-gray-700 text-sm font-semibold">In Progress</h3>
+            <CardContent className="text-2xl font-bold text-blue-500">
+              <CountUp end={700} duration={2.5} />
+            </CardContent>
+          </div>
+          <img
+            src={inprogressTasksIcon}
+            alt="In Progress Tasks"
+            className="w-12 h-12 ml-auto"
+          />
+        </Card>
+
+        {/* Overdue */}
+        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
+          <div className="flex flex-col">
+            <h3 className="text-gray-700 text-sm font-semibold">Overdue</h3>
+            <CardContent className="text-2xl font-bold text-red-600">
+              <CountUp end={100} duration={2.5} />
+            </CardContent>
+          </div>
+          <img
+            src={overDueTasksIcon}
+            alt="Overdue Tasks"
+            className="w-12 h-12 ml-auto"
+          />
+        </Card>
+
+        {/* Completed */}
+        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
+          <div className="flex flex-col">
+            <h3 className="text-gray-700 text-sm font-semibold">Completed</h3>
+            <CardContent className="text-2xl font-bold text-green-600">
+              <CountUp end={100} duration={2.5} />
+            </CardContent>
+          </div>
+          <img
+            src={completedTasksIcon}
+            alt="Completed Tasks"
+            className="w-12 h-12 ml-auto"
+          />
+        </Card>
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <div>
+          <h2 className="text-xl font-semibold">DLW Gowtham</h2>
+          <p className="text-sm text-gray-500">
+            Add all Sales Repo Monthly Targets for UTI
+          </p>
         </div>
-        <div className="flex space-x-6">
-          <TotalProjectsCounts />
-        </div>
-        {/* </div> */}
-
-        {/* Tasks Section */}
-        <div className="mt-8 grid grid-cols-5 gap-4">
-          {/* To Do */}
-          <div className="bg-white p-4 rounded-lg shadow">
-            <h3 className="font-semibold text-lg">To Do</h3>
-            {projectData.tasks.todo.map((task, index) => (
-              <div key={index} className="mt-4 p-3 bg-gray-50 rounded-lg">
-                <h4 className="font-semibold">{task.title}</h4>
-                <p className="text-sm">{task.description}</p>
-                <div className="flex justify-between text-sm mt-2">
-                  <span>Comments: {task.comments}</span>
-                  <span>Members: {task.members}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Completed */}
-          <div className="bg-white p-4 rounded-lg shadow">
-            <h3 className="font-semibold text-lg">Completed</h3>
-            {projectData.tasks.completed.map((task, index) => (
-              <div key={index} className="mt-4 p-3 bg-gray-50 rounded-lg">
-                <h4 className="font-semibold">{task.title}</h4>
-                <p className="text-sm">{task.description}</p>
-                <div className="flex justify-between text-sm mt-2">
-                  <span>Comments: {task.comments}</span>
-                  <span>Members: {task.members}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Overdue */}
-          <div className="bg-white p-4 rounded-lg shadow">
-            <h3 className="font-semibold text-lg">Overdue</h3>
-            {projectData.tasks.overdue.map((task, index) => (
-              <div key={index} className="mt-4 p-3 bg-gray-50 rounded-lg">
-                <h4 className="font-semibold">{task.title}</h4>
-                <p className="text-sm">{task.description}</p>
-                <div className="flex justify-between text-sm mt-2">
-                  <span>Comments: {task.comments}</span>
-                  <span>Members: {task.members}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </main>
+      </div>
     </div>
   );
 };
