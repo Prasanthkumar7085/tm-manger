@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -15,24 +15,19 @@ import {
   CommandEmpty,
 } from "@/components/ui/command";
 import { toast } from "sonner";
-import { membersConstants } from "@/lib/helpers/memberConstants";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-} from "@/components/ui/select";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addProjectAPI, updateProjectAPI } from "@/lib/services/projects";
-import { useLocation, useNavigate, useParams } from "@tanstack/react-router";
+import {
+  addProjectAPI,
+  updateProjectAPI,
+  viewProjectAPI,
+} from "@/lib/services/projects";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import LoadingComponent from "@/components/core/LoadingComponent";
 import { getAllPaginatedUsersAPI } from "@/lib/services/users";
-import Loading from "@/components/core/Loading";
+import { errPopper } from "@/lib/helpers/errPopper";
 
 interface ProjectPayload {
   title: string;
@@ -43,7 +38,6 @@ interface ProjectPayload {
 
 const AddProject = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { projectId } = useParams({ strict: false });
   const [users, setUsers] = useState<any[]>([]);
   const [projectData, setProjectData] = useState({
@@ -58,12 +52,45 @@ const AddProject = () => {
   const [open, setOpen] = useState(false);
   const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const searchParams = new URLSearchParams(location.search);
-  const pageIndexParam = Number(searchParams.get("current_page")) || 1;
-  const pageSizeParam = Number(searchParams.get("page_size")) || 10;
-  const [pagination, setPagination] = useState({
-    pageIndex: pageIndexParam,
-    pageSize: pageSizeParam,
+
+  const { isLoading: isUsersLoading } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const response = await getAllPaginatedUsersAPI({
+        pageIndex: 1,
+        pageSize: 10,
+      });
+      setUsers(response.data?.data?.records);
+      return response;
+    },
+  });
+
+  const { isFetching } = useQuery({
+    queryKey: ["getSingleProject", projectId],
+    queryFn: async () => {
+      if (!projectId) return;
+
+      try {
+        const response = await viewProjectAPI(projectId);
+
+        if (response.success) {
+          const data = response.data?.data;
+          console.log(data, "data");
+          setProjectData({
+            title: data.title,
+            description: data.description,
+            code: data.code,
+          });
+          setSelectedMembers(data.project_members || []);
+        } else {
+          throw response;
+        }
+      } catch (errData) {
+        console.error(errData);
+        errPopper(errData);
+      }
+    },
+    enabled: Boolean(projectId),
   });
 
   const { mutate } = useMutation({
@@ -71,36 +98,21 @@ const AddProject = () => {
       setErrorMessages({});
       setLoading(true);
       return projectId
-        ? updateProjectAPI(payload, projectId)
+        ? updateProjectAPI(projectId, payload)
         : addProjectAPI(payload);
     },
     onSuccess: (response: any) => {
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message);
         navigate({ to: "/projects" });
-      } else if (response?.status === 422) {
-        setErrorMessages(response?.data?.errData || {});
-      } else if (response?.status === 409) {
+      } else if (response?.status === 422 || response?.status === 409) {
         setErrorMessages(response?.data?.errData || {});
       }
       setLoading(false);
     },
-    onError: (error: any) => {
+    onError: () => {
       toast.error("An error occurred. Please try again.");
-      console.error(error);
       setLoading(false);
-    },
-  });
-
-  const { isLoading, isError, error, data, isFetching } = useQuery({
-    queryKey: ["users", pagination],
-    queryFn: async () => {
-      const response = await getAllPaginatedUsersAPI({
-        pageIndex: pagination.pageIndex,
-        pageSize: pagination.pageSize,
-      });
-      setUsers(response.data?.data?.records);
-      return response;
     },
   });
 
@@ -122,7 +134,9 @@ const AddProject = () => {
   const confirmSelection = () => {
     const newMembers = tempSelectedMember
       .map((memberValue: string) => {
-        const member = users.find((user) => user.id.toString() === memberValue);
+        const member = users.find(
+          (user: any) => user.id.toString() === memberValue
+        );
         return (
           member &&
           !selectedMembers.some((m) => m.user_id === member.id) && {
@@ -144,6 +158,7 @@ const AddProject = () => {
     );
   };
 
+  // Handle form submission
   const handleSubmit = () => {
     const payload: ProjectPayload = {
       title: projectData.title,
@@ -155,24 +170,13 @@ const AddProject = () => {
     mutate(payload);
   };
 
-  const addNewMember = (newMember: { value: number; label: string }) => {
-    if (
-      !selectedMembers.some((member: any) => member.user_id === newMember.value)
-    ) {
-      setSelectedMembers((prev: any) => [
-        ...prev,
-        { user_id: newMember.value, role: "USER" },
-      ]);
-    }
-  };
-
-  const getFullName = (user: any) => {
-    return `${user.fname} ${user.lname}`;
-  };
+  const getFullName = (user: any) => `${user.fname} ${user.lname}`;
 
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
-      <h2 className="text-2xl font-semibold">Add Project</h2>
+      <h2 className="text-2xl font-semibold">
+        {projectId ? "Edit Project" : "Add Project"}
+      </h2>
 
       <div className="space-y-4">
         <Input
@@ -183,7 +187,7 @@ const AddProject = () => {
           onChange={handleInputChange}
         />
         {errorMessages.title && (
-          <p style={{ color: "red" }}>{errorMessages?.title?.[0]}</p>
+          <p className="text-red-500">{errorMessages.title[0]}</p>
         )}
         <Input
           id="code"
@@ -193,7 +197,7 @@ const AddProject = () => {
           onChange={handleInputChange}
         />
         {errorMessages.code && (
-          <p style={{ color: "red" }}>{errorMessages?.code?.[0]}</p>
+          <p className="text-red-500">{errorMessages.code[0]}</p>
         )}
         <Textarea
           placeholder="Enter project description"
@@ -260,56 +264,52 @@ const AddProject = () => {
               </Command>
             </PopoverContent>
           </Popover>
-          {selectedMembers.length > 0 ? (
+          {selectedMembers?.length > 0 ? (
             <table className="min-w-full border">
               <thead>
-                <tr className="bg-gray-200">
-                  <th className="border px-4 py-2">S No</th>
-                  <th className="border px-4 py-2">Member Name</th>
-                  <th className="border px-4 py-2">Role</th>
-                  <th className="border px-4 py-2">Actions</th>
+                <tr>
+                  <th className="border p-2">Members</th>
+                  <th className="border p-2">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {selectedMembers.map((member, index) => {
-                  const memberDetails = users.find(
-                    (m) => m.id === member.user_id
-                  );
-                  return (
-                    <tr key={member.user_id} className="border-b">
-                      <td className="border px-4 py-2">{index + 1}</td>
-                      <td className="border px-4 py-2">
-                        {memberDetails ? getFullName(memberDetails) : "N/A"}
-                      </td>
-                      <td className="border px-4 py-2">{member.role}</td>
-                      <td className="border px-4 py-2">
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => removeMember(member.user_id)}
-                        >
-                          Remove
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {selectedMembers.map((member) => (
+                  <tr key={member.user_id}>
+                    <td className="border p-2">
+                      {
+                        users.find((user: any) => user.id === member.user_id)
+                          ?.fname
+                      }
+                    </td>
+                    <td className="border p-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeMember(member.user_id)}
+                      >
+                        Remove
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           ) : (
-            <p>No members selected.</p>
+            ""
           )}
         </div>
       </div>
 
-      <div className="flex justify-end space-x-4">
-        <Button variant="outline" onClick={() => navigate({ to: "/projects" })}>
+      <div className="space-x-2">
+        <Button variant="ghost" onClick={() => navigate({ to: "/projects" })}>
           Cancel
         </Button>
-        <Button onClick={handleSubmit} disabled={loading}>
-          {loading ? "" : projectId ? "Update Project" : "Add Project"}
+        <Button onClick={handleSubmit}>
+          {projectId ? "Update Project" : "Add Project"}
         </Button>
       </div>
+
+      {/* {loading && <LoadingComponent />} */}
     </div>
   );
 };
