@@ -45,3 +45,10 @@ export const updateUserStatueAPI = async (userId:any, payload:any) => {
     throw err;
   }
 };
+export const updatePasswordUsersAPI = async (payload:any) => {
+  try {
+    return await $fetch.patch(`/users/update-password`, payload);
+  } catch (err) {
+    throw err;
+  }
+};
