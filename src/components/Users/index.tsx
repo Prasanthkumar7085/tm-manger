@@ -165,6 +165,7 @@ function UsersTable() {
   };
  
   const updateUserPassword = async () => {
+    setLoading(true)
     try {
       const payload = {
         current_password:userPasswordData?.current_password,
@@ -191,7 +192,7 @@ function UsersTable() {
       toast.error(err?.message || "Something went wrong");
       console.error(err);
     } finally {
-      setIsOpen(false);
+      setLoading(false)
     }
   };
 
@@ -400,6 +401,7 @@ function UsersTable() {
         handleUpdateChangePassword={handleUpdateChangePassword}
         updateUserPassword={updateUserPassword}
         errors={errors}
+        loading={loading}
       />
       <div>
         <Sheet open={isOpen}>
