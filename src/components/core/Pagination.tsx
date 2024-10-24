@@ -118,7 +118,6 @@ const Pagination = ({
 
     return pageNumbers;
   };
-  console.log(paginationDetails, "ss");
   return (
     <ShadCNPagination className="flex justify-between px-2 py-0 ">
       <PaginationContent className="px-1 py-0 flex gap-2">

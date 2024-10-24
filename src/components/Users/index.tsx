@@ -1,5 +1,9 @@
 import { addSerial } from "@/lib/helpers/addSerial";
-import { addUsersAPI, deleteUsersAPI, getAllPaginatedUsers } from "@/lib/services/users";
+import {
+  addUsersAPI,
+  deleteUsersAPI,
+  getAllPaginatedUsers,
+} from "@/lib/services/users";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
@@ -20,18 +24,12 @@ import {
 } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
-import {
-  Check,
-  ChevronDown,
-  ChevronUp,
-  X,
-} from "lucide-react";
+import { Check, ChevronDown, ChevronUp, X } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { userTypes } from "@/utils/conistance/users";
 import Loading from "../core/Loading";
 import DeleteDialog from "../core/deleteDialog";
-
 
 interface ReportPayload {
   full_name: string;
@@ -102,7 +100,7 @@ function UsersTable() {
   const getAllUsers = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
- 
+
   const addUser = async () => {
     try {
       setLoading(true);
@@ -126,7 +124,6 @@ function UsersTable() {
         setUserType("");
         await getAllUsers("");
       } else if (response?.status === 422) {
-        console.log(response);
         const errData = response?.data?.errData;
         setErrors(errData);
         throw response;
@@ -144,7 +141,7 @@ function UsersTable() {
       const response = await deleteUsersAPI(deleteuserId);
       if (response?.status === 200 || response?.status === 201) {
         getAllUsers({});
-         onClickClose();
+        onClickClose();
         toast.success(response?.data?.message || "User Deleted Successfully");
       }
     } catch (err: any) {
@@ -154,7 +151,7 @@ function UsersTable() {
       setDeleteLoading(false);
     }
   };
- 
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
@@ -169,20 +166,20 @@ function UsersTable() {
           pageIndex: pageIndexParam,
           pageSize: pageSizeParam,
           order_by: orderBY,
-        })
+        });
       }
     }, 500);
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString]);  
+  }, [searchString]);
 
-   const usersData =
-     addSerial(
-       data?.data?.data?.records,
-       data?.data?.data?.pagination_info?.current_page,
-       data?.data?.data?.pagination_info?.page_size
-     ) || [];
+  const usersData =
+    addSerial(
+      data?.data?.data?.records,
+      data?.data?.data?.pagination_info?.current_page,
+      data?.data?.data?.pagination_info?.page_size
+    ) || [];
 
   const onChangeStatus = (value: string) => {
     setUserType(value);
@@ -195,7 +192,7 @@ function UsersTable() {
   const handleDrawerClose = () => {
     setIsOpen(false);
   };
- 
+
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
@@ -210,7 +207,7 @@ function UsersTable() {
       ...userData,
       [name]: updatedValue,
     });
-    setSearchString(updatedValue); 
+    setSearchString(updatedValue);
   };
 
   const handleChangeEmail = (e: any) => {
@@ -259,7 +256,7 @@ function UsersTable() {
           <div>
             <Button
               title="delete"
-              onClick={() => (info.row.original.id)}
+              onClick={() => info.row.original.id}
               size={"sm"}
               variant={"ghost"}
             >
@@ -272,7 +269,7 @@ function UsersTable() {
             </Button>
             <Button
               title="update password"
-              onClick={() => (info.row.original.id)}
+              onClick={() => info.row.original.id}
               size={"sm"}
               variant={"ghost"}
             >
@@ -283,7 +280,6 @@ function UsersTable() {
                 width={16}
               />
             </Button>
-            
           </div>
         );
       },
@@ -316,22 +312,22 @@ function UsersTable() {
       <div>
         <TanStackTable
           data={usersData}
-          columns={[...userColumns,...userActions]}
+          columns={[...userColumns, ...userActions]}
           paginationDetails={data?.data?.data?.pagination_info}
           getData={getAllUsers}
-          removeSortingForColumnIds={["serial","actions"]}
+          removeSortingForColumnIds={["serial", "actions"]}
         />
       </div>
-       <DeleteDialog
-            openOrNot={open}
-            label="Are you sure you want to Delete this user?"
-            onCancelClick={onClickClose}
-            onOKClick={deleteUser}
-            deleteLoading={deleteLoading}
-          />
+      <DeleteDialog
+        openOrNot={open}
+        label="Are you sure you want to Delete this user?"
+        onCancelClick={onClickClose}
+        onOKClick={deleteUser}
+        deleteLoading={deleteLoading}
+      />
       <div>
         <Sheet open={isOpen}>
-          <SheetContent className="bg-gray-100"> 
+          <SheetContent className="bg-gray-100">
             <SheetHeader>
               <SheetTitle>Add User</SheetTitle>
               <SheetDescription></SheetDescription>

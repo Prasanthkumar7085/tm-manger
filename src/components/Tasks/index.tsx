@@ -1,27 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { PaginationState } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 
-import { Button } from "../ui/button";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useRouter,
-} from "@tanstack/react-router";
 import { addSerial } from "@/lib/helpers/addSerial";
-import TanStackTable from "../core/TanstackTable";
-import { getAllPaginatedTasks } from "@/lib/services/tasks";
-import { taskColumns } from "./TaskColumns";
-import SearchFilter from "../core/CommonComponents/SearchFilter";
-import Loading from "../core/Loading";
-import TotalCounts from "./Counts";
-import viewButtonIcon from "@/assets/view.svg";
-import DatePickerField from "../core/DateRangePicker";
-import { StatusFilter } from "../core/StatusFilter";
-import SearchField from "../core/CommonComponents/SearchFilter";
-import DateRangeFilter from "../core/DateRangePicker";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
+import { getAllPaginatedTasks } from "@/lib/services/tasks";
+import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
+import SearchFilter from "../core/CommonComponents/SearchFilter";
+import DateRangeFilter from "../core/DateRangePicker";
+import Loading from "../core/Loading";
+import TanStackTable from "../core/TanstackTable";
+import { Button } from "../ui/button";
+import TotalCounts from "./Counts";
+import { taskColumns } from "./TaskColumns";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -37,7 +27,6 @@ const Tasks = () => {
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedDate, setSelectedDate] = useState<any>(new Date());
   const [dateValue, setDateValue] = useState<any>(null);
-  console.log(dateValue, "dataiejjrew");
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
@@ -73,11 +62,11 @@ const Tasks = () => {
     },
   });
 
-  const usersData =
+  const taksDataAfterSerial =
     addSerial(
       data?.data?.data?.records,
-      data?.data?.pagination?.page,
-      data?.data?.pagination?.limit
+      data?.data?.data?.pagination_info?.current_page,
+      data?.data?.data?.pagination_info?.page_size
     ) || [];
 
   const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
@@ -93,38 +82,6 @@ const Tasks = () => {
       clearTimeout(handler);
     };
   }, [searchString]);
-
-  const handleView = () => {
-    navigate({
-      to: "/tasks/view",
-    });
-  };
-
-  const userActions = [
-    {
-      accessorFn: (row: any) => row.actions,
-      id: "actions",
-      cell: (info: any) => {
-        return (
-          <div>
-            <Button
-              title="View"
-              size={"sm"}
-              variant={"ghost"}
-              onClick={handleView}
-            >
-              <img src={viewButtonIcon} alt="view" height={16} width={16} />
-            </Button>
-          </div>
-        );
-      },
-      header: () => <span>Actions</span>,
-      footer: (props: any) => props.column.id,
-      width: "80px",
-      minWidth: "80px",
-      maxWidth: "80px",
-    },
-  ];
 
   const handleNavigation = () => {
     navigate({
@@ -179,19 +136,11 @@ const Tasks = () => {
           ) : (
             <div>
               <TanStackTable
-                data={usersData}
-                columns={[...taskColumns, ...userActions]}
+                data={taksDataAfterSerial}
+                columns={taskColumns()}
                 paginationDetails={data?.data?.data?.pagination_info}
                 getData={getAllTasks}
-                removeSortingForColumnIds={[
-                  "serial",
-                  "actions",
-                  "title",
-                  "description",
-                  "priority",
-                  "due_date",
-                  "project",
-                ]}
+                removeSortingForColumnIds={["serial", "actions"]}
               />
             </div>
           )}

@@ -5,7 +5,6 @@ import { Popover } from "../ui/popover";
 import { updateUserStatueAPI } from "@/lib/services/users";
 import { toast } from "sonner";
 export const userColumns = [
-
   {
     accessorFn: (row: any) => row.serial,
     id: "serial",
@@ -15,7 +14,7 @@ export const userColumns = [
     maxWidth: "60px",
     minWidth: "60px",
     cell: (props: any) => (
-      <div style={{ padding: '16px', textAlign: 'left' }}>
+      <div style={{ padding: "16px", textAlign: "left" }}>
         {props.getValue()}
       </div>
     ),
@@ -40,7 +39,7 @@ export const userColumns = [
     cell: (info: any) => {
       let title = info.getValue();
       return (
-        <div style={{ padding: "16px",textAlign: 'left' }}>
+        <div style={{ padding: "16px", textAlign: "left" }}>
           <span>{title ? title : "-"}</span>
         </div>
       );
@@ -58,7 +57,7 @@ export const userColumns = [
     cell: (info: any) => {
       let title = info.getValue();
       return (
-        <div style={{ padding: "16px",textAlign: 'left' }}>
+        <div style={{ padding: "16px", textAlign: "left" }}>
           <span>{title ? title : "-"}</span>
         </div>
       );
@@ -76,7 +75,7 @@ export const userColumns = [
     cell: (info: any) => {
       const date: string = info.getValue();
       return (
-        <div style={{ padding: "16px",textAlign: 'left'  }}>
+        <div style={{ padding: "16px", textAlign: "left" }}>
           <span>{date ? dayjs(date).format("MM/DD/YYYY") : "-"}</span>
         </div>
       );
@@ -107,7 +106,7 @@ export const userColumns = [
     cell: (info: any) => {
       let title = info.getValue();
       return (
-        <div style={{ padding: "16px",textAlign: 'left' }}>
+        <div style={{ padding: "16px", textAlign: "left" }}>
           <span>{title ? title : "-"}</span>
         </div>
       );
@@ -128,7 +127,7 @@ export const userColumns = [
     cell: (info: any) => {
       const userType = info.getValue();
       return (
-        <div style={{ padding: "16px",textAlign: 'left'  }}>
+        <div style={{ padding: "16px", textAlign: "left" }}>
           <span>{userType ? userType : "-"}</span>
         </div>
       );
@@ -145,21 +144,20 @@ export const userColumns = [
       const popoverRef = useRef<HTMLDivElement>(null);
       const userId = info.row.id;
       const togglePopover = () => setIsOpen(!isOpen);
-  
+
       const updateUserStatus = async (status: boolean) => {
         try {
-          const body= {
+          const body = {
             active: status,
           };
-          
-          const response = await updateUserStatueAPI(userId,body); 
+
+          const response = await updateUserStatueAPI(userId, body);
           if (response?.status === 200 || response?.status === 201) {
             setIsActive(status);
             // toast.success(response?.message || "Status changed successfully");
           } else {
             // throw new Error(response?.message || "Failed to update status");
           }
-          console.log(`Status changed to: ${status ? "Active" : "Inactive"}`);
         } catch (err: any) {
           toast.error(err?.message || "Something went wrong");
           console.error(err);
@@ -167,9 +165,15 @@ export const userColumns = [
           setIsOpen(false);
         }
       };
-  
+
       return (
-        <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            position: "relative",
+          }}
+        >
           <div
             style={{
               color: isActive ? "green" : "red",
@@ -241,5 +245,5 @@ export const userColumns = [
     minWidth: "150px",
     header: () => <span>Status</span>,
     footer: (props: any) => props.column.id,
-  }
+  },
 ];

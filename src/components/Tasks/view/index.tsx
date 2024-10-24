@@ -136,7 +136,6 @@ const TaskView = () => {
   //     to: "/tasks",
   //   });
   // };
-  console.log(commentsData, "ss");
   return (
     <div className="grid grid-cols-[60%_40%] gap-4">
       <div>
