@@ -10,6 +10,7 @@ import { StatusFilter } from "../core/StatusFilter";
 import Pagination from "../core/Pagination";
 import DateRangeFilter from "../core/DateRangePicker";
 import LoadingComponent from "../core/LoadingComponent";
+import SortDropDown from "../core/CommonComponents/SortDropDown";
 
 const Projects = () => {
   const navigate = useNavigate();
@@ -28,11 +29,12 @@ const Projects = () => {
   const [dateValue, setDateValue] = useState<[Date | null, Date | null] | null>(
     null
   );
+  const [selectedSort, setSelectedSort] = useState(orderBY);
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
-    order_by: orderBY,
+    order_by: selectedSort || orderBY,
   });
 
   const { isLoading, isError, error, data } = useQuery({
@@ -99,15 +101,16 @@ const Projects = () => {
         ? searchParams.get("page_size")
         : 25,
       pageIndex: value,
-      order_by: searchParams.get("order_by"),
+      order_by: selectedSort || searchParams.get("order_by"),
     });
   };
+
   const captureRowPerItems = (value: number) => {
     getAllProjects({
       ...searchParams,
       pageSize: value,
       pageIndex: 1,
-      order_by: searchParams.get("order_by"),
+      order_by: selectedSort || searchParams.get("order_by"),
     });
   };
 
@@ -124,20 +127,20 @@ const Projects = () => {
         getAllProjects({
           pageIndex: 1,
           pageSize: pageSizeParam,
-          order_by: orderBY,
+          order_by: selectedSort || orderBY,
         });
       } else {
         getAllProjects({
           pageIndex: pageIndexParam,
           pageSize: pageSizeParam,
-          order_by: orderBY,
+          order_by: selectedSort || orderBY,
         });
       }
     }, 500);
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString]);
+  }, [searchString, selectedSort]);
 
   return (
     <div className="p-4">
@@ -152,6 +155,11 @@ const Projects = () => {
           dateValue={dateValue}
           onChangeData={handleDateChange}
         />
+        <SortDropDown
+          selectedSort={selectedSort}
+          setSelectedSort={setSelectedSort}
+        />
+
         <div className="flex">
           <Button
             className="px-4 py-2 bg-blue-600 text-white rounded-lg"
@@ -172,7 +180,7 @@ const Projects = () => {
         )}
       </div>
 
-      <div className="mt-4">
+      <div className="mb-0">
         <Pagination
           paginationDetails={data?.data?.data?.pagination_info}
           capturePageNum={capturePageNum}

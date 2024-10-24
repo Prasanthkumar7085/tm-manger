@@ -1,7 +1,14 @@
+import { statusConstants } from "@/lib/helpers/statusConstants";
 import { useNavigate, useRouter } from "@tanstack/react-router";
+import { Badge } from "@/components/ui/badge";
 
 const ProjectCard = ({ project }: any) => {
   const navigate = useNavigate();
+  const getStatusLabel = (isActive: boolean) => {
+    return isActive
+      ? statusConstants.find((status) => status.value === "true")?.label
+      : statusConstants.find((status) => status.value === "false")?.label;
+  };
 
   return (
     <div
@@ -23,6 +30,10 @@ const ProjectCard = ({ project }: any) => {
         </div>
         <div className="text-lg font-semibold">{project.title}</div>
         <p className="text-sm text-gray-500">{project.description}</p>
+        <p className="text-sm text-gray-500">
+          {" "}
+          <Badge>{getStatusLabel(project.active)}</Badge>
+        </p>
       </div>
     </div>
   );
