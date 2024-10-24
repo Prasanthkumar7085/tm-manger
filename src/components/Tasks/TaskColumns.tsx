@@ -78,7 +78,7 @@ export const taskColumns = () => {
       id: "due_date",
       cell: (info: any) => {
         const date: string = info.getValue();
-        return <span>{date ? dayjs(date).format("MM/DD/YYYY") : "-"}</span>;
+        return <span>{date ? dayjs(date).format("MM-DD-YYYY") : "-"}</span>;
       },
       width: "150px",
       maxWidth: "150px",

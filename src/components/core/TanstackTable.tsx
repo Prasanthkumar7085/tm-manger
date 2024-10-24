@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/table";
 import Pagination from "./Pagination";
 import { getRouteApi, useLocation } from "@tanstack/react-router";
+import path from "node:path/win32";
 
 interface pageProps {
   columns: any[];
@@ -110,7 +111,9 @@ const TanStackTable: FC<pageProps> = ({
 
   return (
     <div className="overflow-x-auto w-full">
-      <div className="max-h-[calc(100vh-265px)] overflow-y-auto">
+      <div
+        className={`overflow-y-auto  w-full overflow-auto relative  bg-white rounded-[12px] ${location.pathname.includes("tasks") ? "h-[calc(100vh-370px)]" : "h-[calc(100vh-200px)]"}`}
+      >
         <Table>
           <TableHeader className="sticky top-[0px] ">
             {table?.getHeaderGroups().map((headerGroup) => {

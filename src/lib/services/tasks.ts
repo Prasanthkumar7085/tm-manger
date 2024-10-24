@@ -14,6 +14,7 @@ export const getAllPaginatedTasks = async ({
   order_by,
   search_string,
   from_date,
+  to_date,
 }: GetAllPaginatedUsersPropTypes) => {
   try {
     const queryParams = {
@@ -21,6 +22,8 @@ export const getAllPaginatedTasks = async ({
       page_size: pageSize,
       order_by: order_by,
       search_string: search_string,
+      from_date: from_date,
+      to_date: to_date,
     };
     return await $fetch.get("/tasks", queryParams);
   } catch (err) {

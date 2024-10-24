@@ -12,6 +12,7 @@ import TanStackTable from "../core/TanstackTable";
 import { Button } from "../ui/button";
 import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
+import LoadingComponent from "../core/LoadingComponent";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -145,7 +146,7 @@ const Tasks = () => {
             </div>
           )}
 
-          <Loading loading={isLoading || isFetching} />
+          <LoadingComponent loading={isLoading || isFetching} />
         </div>
       </div>
     </>
