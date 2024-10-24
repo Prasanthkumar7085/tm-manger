@@ -39,7 +39,17 @@ const ProjectCard = ({ project, del, setDel }: any) => {
               });
             }}
           />
-          <img src={"/table/edit.svg"} alt="edit" height={16} width={16} />
+          <img
+            src={"/table/edit.svg"}
+            alt="edit"
+            height={16}
+            width={16}
+            onClick={() => {
+              navigate({
+                to: `/projects/${project.id}`,
+              });
+            }}
+          />
 
           <DeleteProjects setDel={setDel} del={del} project={project} />
         </div>

@@ -17,17 +17,23 @@ const Projects = () => {
   const location = useLocation();
   const router = useRouter();
   const searchParams = new URLSearchParams(location.search);
+
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 10;
   const orderBY = searchParams.get("order_by") || "";
   const initialSearch = searchParams.get("search") || "";
+  const initialStatus = searchParams.get("status") || "";
+  const initialStartDate = searchParams.get("start_date") || null;
+  const initialEndDate = searchParams.get("end_date") || null;
 
   const [searchString, setSearchString] = useState(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedProject, setSelectedProject] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState(initialStatus);
   const [dateValue, setDateValue] = useState<[Date | null, Date | null] | null>(
-    null
+    initialStartDate && initialEndDate
+      ? [new Date(initialStartDate), new Date(initialEndDate)]
+      : null
   );
   const [selectedSort, setSelectedSort] = useState(orderBY);
   const [del, setDel] = useState<any>();
@@ -124,7 +130,7 @@ const Projects = () => {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
-      if (searchString) {
+      if (searchString || selectedStatus || dateValue) {
         getAllProjects({
           pageIndex: 1,
           pageSize: pageSizeParam,
@@ -141,7 +147,7 @@ const Projects = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString, selectedSort]);
+  }, [searchString, selectedSort, selectedStatus, dateValue]);
 
   return (
     <div className="p-4">
