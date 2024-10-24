@@ -16,8 +16,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useLocation } from "@tanstack/react-router";
 import Pagination from "./Pagination";
+import { getRouteApi, useLocation } from "@tanstack/react-router";
+import path from "node:path/win32";
 
 interface pageProps {
   columns: any[];
@@ -57,8 +58,9 @@ const TanStackTable: FC<pageProps> = ({
       ...searchParams,
       pageSize: searchParams.get("page_size")
         ? searchParams.get("page_size")
-        : 5,
+        : 25,
       pageIndex: value,
+      order_by: searchParams.get("order_by"),
     });
   };
   const captureRowPerItems = (value: number) => {
@@ -66,12 +68,13 @@ const TanStackTable: FC<pageProps> = ({
       ...searchParams,
       pageSize: value,
       pageIndex: 1,
+      order_by: searchParams.get("order_by"),
     });
   };
 
   const getWidth = (id: string) => {
     const widthObj = columns.find((col) => col.id === id);
-    return widthObj ? widthObj?.width || "100px" : "100px";
+    return widthObj ? widthObj?.width || widthObj?.size || "100px" : "100px";
   };
 
   const sortAndGetData = (header: any) => {
@@ -108,97 +111,102 @@ const TanStackTable: FC<pageProps> = ({
 
   return (
     <div className="overflow-x-auto w-full">
-      {/* Outer container with rounded corners and shadow */}
-      <div className="max-h-[80vh] overflow-y-auto rounded-lg shadow-lg border border-gray-200">
-        <table className="min-w-full divide-y divide-gray-200">
-          {/* Table Header */}
-          <thead className="bg-gray-100 rounded-t-lg">
-            {table?.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header, index) => (
-                  <th
-                    key={index}
-                    colSpan={header.colSpan}
-                    className="px-6 py-3 text-left text-xs font-semibold text-gray-700 bg-[#f3e5f6] uppercase tracking-wider"
-                    style={{
-                      minWidth: getWidth(header.id),
-                      width: getWidth(header.id),
-                    }}
-                  >
-                    {header.isPlaceholder ? null : (
-                      <div
-                        className={`${
-                          header.column.getCanSort()
-                            ? "cursor-pointer select-none"
-                            : ""
-                        } flex items-center gap-2`}
-                        onClick={() => sortAndGetData(header)}
+      <div
+        className={`overflow-y-auto  w-full overflow-auto relative  bg-white rounded-[12px] ${location.pathname.includes("tasks") ? "h-[calc(100vh-370px)]" : "h-[calc(100vh-200px)]"}`}
+      >
+        <Table>
+          <TableHeader className="sticky top-[0px] ">
+            {table?.getHeaderGroups().map((headerGroup) => {
+              return (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header: any, index: number) => {
+                    return (
+                      <TableHead
+                        key={index}
+                        colSpan={header.colSpan}
                         style={{
                           minWidth: getWidth(header.id),
                           width: getWidth(header.id),
+                          color: "#000",
+                          background: "#F0EDFF",
                         }}
                       >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
+                        {header.isPlaceholder ? null : (
+                          <div
+                            {...{
+                              className: header.column.getCanSort()
+                                ? "cursor-pointer select-none"
+                                : "",
+                            }}
+                            onClick={() => sortAndGetData(header)}
+                            className="flex items-center gap-2 cursor-pointer"
+                            style={{
+                              minWidth: getWidth(header.id),
+                              width: getWidth(header.id),
+                            }}
+                          >
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                            <SortItems
+                              header={header}
+                              removeSortingForColumnIds={
+                                removeSortingForColumnIds
+                              }
+                            />
+                          </div>
                         )}
-                        {/* Sorting icon component */}
-                        <SortItems
-                          header={header}
-                          removeSortingForColumnIds={removeSortingForColumnIds}
-                        />
-                      </div>
-                    )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          {/* Table Body */}
-          <tbody className="bg-white divide-y divide-gray-100">
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
+          </TableHeader>
+
+          <TableBody>
             {data?.length ? (
               table?.getRowModel().rows.map((row) => (
-                <tr
-                  key={row.id}
-                  className="hover:bg-gray-50 transition duration-150 ease-in-out"
-                >
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <td
-                      key={cell.id}
-                      className="px-6 py-4 text-sm text-gray-800"
-                    >
+                    <TableCell className="p-0" key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
                       )}
-                    </td>
+                    </TableCell>
                   ))}
-                </tr>
+                </TableRow>
               ))
             ) : !loading ? (
-              <tr>
-                <td colSpan={6} className="px-6 py-6 text-center">
-                  No data found
-                </td>
-              </tr>
+              <TableRow>
+                <TableCell colSpan={6} className="p-5 text-center">
+                  <div className="flex justify-center items-center">
+                    <img
+                      src="/table/no-data.svg"
+                      alt="No Data"
+                      height={150}
+                      width={250}
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
             ) : (
-              <tr>
-                <td colSpan={columns.length} className="px-6 py-4 text-center">
+              <TableRow>
+                <TableCell colSpan={columns.length} className="p-5 text-center">
                   Loading...
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
-      {/* Pagination Component */}
-      <div className="mt-4">
-        <Pagination
-          paginationDetails={paginationDetails}
-          capturePageNum={capturePageNum}
-          captureRowPerItems={captureRowPerItems}
-        />
-      </div>
+      <Pagination
+        paginationDetails={paginationDetails}
+        capturePageNum={capturePageNum}
+        captureRowPerItems={captureRowPerItems}
+      />
     </div>
   );
 };

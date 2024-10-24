@@ -1,5 +1,4 @@
 "use client";
-
 import { Input } from "@/components/ui/input";
 import {
   PaginationContent,
@@ -43,20 +42,19 @@ const Pagination = ({
   >([]);
   const totalPages = paginationDetails ? paginationDetails?.total_pages : 1;
 
-  const selectedValue = paginationDetails?.limit;
+  const selectedValue = paginationDetails?.page_size;
 
   useEffect(() => {
     setLimitOptions(
       limitOptionsFromProps?.length
         ? limitOptionsFromProps
         : [
-            { title: "5/pages", value: 5 },
             { title: "10/page", value: 10 },
-            { title: "20/page", value: 20 },
-            { title: "30/page", value: 30 },
+            { title: "25/page", value: 25 },
             { title: "50/page", value: 50 },
-            { title: "70/page", value: 70 },
             { title: "100/page", value: 100 },
+            { title: "250/page", value: 250 },
+            { title: "500/page", value: 500 },
           ]
     );
   }, [limitOptionsFromProps]);
@@ -99,11 +97,11 @@ const Pagination = ({
         for (let i = 1; i <= 4; i++) {
           pageNumbers.push(i);
         }
-        pageNumbers.push(null);
+        pageNumbers.push(null); // For ellipsis
         pageNumbers.push(totalPages);
       } else if (currentPage >= totalPages - 2) {
         pageNumbers.push(1);
-        pageNumbers.push(null);
+        pageNumbers.push(null); // For ellipsis
         for (let i = totalPages - 3; i <= totalPages; i++) {
           pageNumbers.push(i);
         }
@@ -120,11 +118,10 @@ const Pagination = ({
 
     return pageNumbers;
   };
-
   return (
-    <ShadCNPagination className="flex justify-between px-2 py-0">
+    <ShadCNPagination className="flex justify-between px-2 py-0 ">
       <PaginationContent className="px-1 py-0 flex gap-2">
-        <p>Total {paginationDetails?.total || "0"}</p>
+        <p>Total {paginationDetails?.total_records || "0"}</p>
         <Select
           value={selectedValue?.toString()}
           onValueChange={handleRowChange}
@@ -132,9 +129,13 @@ const Pagination = ({
           <SelectTrigger className="w-[120px]">
             <SelectValue placeholder="Items per page" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="w-[120px] bg-white pointer">
             {limitOptions.map((item, index) => (
-              <SelectItem value={item.value?.toString()} key={index}>
+              <SelectItem
+                value={item.value?.toString()}
+                key={index}
+                className="cursor-pointer"
+              >
                 {item.title}
               </SelectItem>
             ))}
@@ -151,7 +152,7 @@ const Pagination = ({
               value={pageValue}
               onChange={(e) => setPageValue(Number(e.target.value))}
               onKeyDown={onKeyDownInPageChange}
-              className="ml-2 w-[50px] text-center "
+              className="ml-2 w-[70px]"
               placeholder="Page"
             />
           </div>

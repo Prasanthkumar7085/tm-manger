@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { useState } from "react";
 import StatsAndGraph from "./StatsAndGraphs";
 import Tasks from "./Tasks";
-import GlobalDateRangeFilter from "./core/DateRangePicker";
+import DatePickerField from "./core/DateRangePicker";
 import dahboardProjectIcon from "@/assets/dashboard-project-icon.svg";
 import dahboardTaskIcon from "@/assets/dashboard-task-icon.svg";
 import dashboardUsersIcon from "@/assets/dashboard-users-icon.svg";
@@ -12,15 +12,21 @@ import CountUp from "react-countup";
 const DashBoard = () => {
   const [totalDetails, setTotalDetails] = useState({});
   const [loading, setLoading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    new Date()
+  );
 
-  const handleDateChange = (data: any) => {};
+  const handleDateChange = (date: Date | undefined) => {
+    setSelectedDate(date);
+  };
+
   return (
     <div className="h-full overflow-auto p-4">
       <div className="grid grid-cols-[60%_40%] gap-3">
         <Card className="p-6 bg-white shadow-lg rounded-lg">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-gray-800">Stats</h2>
-            <GlobalDateRangeFilter onChangeData={handleDateChange} />
+            <DatePickerField value={selectedDate} onChange={handleDateChange} />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">

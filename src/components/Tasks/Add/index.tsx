@@ -4,23 +4,77 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "@tanstack/react-router";
 import React, { useState } from "react";
 import { toast } from "sonner";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Check, ChevronsUpDown, X } from "lucide-react";
+import { statusConstants } from "@/lib/helpers/statusConstants";
+
+const usersList = [
+  { name: "SUNDAR", id: 2 },
+  { name: "Prasad", id: 8 },
+  { name: "John", id: 9 },
+  { name: "Test", id: 12 },
+];
 
 const AddTask = () => {
   const navigate = useNavigate();
-  const [task, setTask] = useState({
-    project: "",
+  const [task, setTask] = useState<any>({
     title: "",
+    ref_id: "",
     description: "",
-    dueDate: "",
+    project_id: null,
     priority: "",
-    tags: "",
-    assignee: "",
+    status: "",
+    due_date: "",
+    tags: [],
+    users: [],
   });
+  const [openStatus, setOpenStatus] = useState(false);
+  const [openUsers, setOpenUsers] = useState(false);
+  const [tagInput, setTagInput] = useState<any>("");
 
   const handleChange = (e: any) => {
     setTask({ ...task, [e.target.name]: e.target.value });
   };
-  const handleSubmit = () => {
+
+  const handleTagSubmit = () => {
+    if (tagInput.trim() && !task.tags.includes(tagInput.trim())) {
+      setTask((prev: any) => ({
+        ...prev,
+        tags: [...prev.tags, tagInput.trim()],
+      }));
+      setTagInput("");
+    }
+  };
+
+  const handleUserSelect = (user: any) => {
+    setTask((prev: any) => {
+      const isSelected = prev.users.some((u: any) => u.id === user.id);
+      const users = isSelected
+        ? prev.users.filter((u: any) => u.id !== user.id)
+        : [...prev.users, user];
+      return { ...prev, users };
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const payload = {
+      ...task,
+      users: task.users.map((user: any) => ({ name: user.name, id: user.id })),
+    };
+    console.log("Payload to submit:", payload);
     toast.success("Task added successfully!");
     navigate({ to: "/tasks" });
   };
@@ -30,24 +84,66 @@ const AddTask = () => {
       <main className="flex-1 p-8">
         <div className="bg-white shadow rounded-lg p-8">
           <h2 className="text-2xl font-bold mb-6">Add Task</h2>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 font-bold mb-2">
-                    Select Project
-                  </label>
-                  <select
-                    name="project"
-                    value={task.project}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  >
-                    <option>Select Project</option>
-                    <option>Labsquire </option>
-                    <option>Analytics</option>
-                  </select>
-                </div>
+                <Popover open={openStatus} onOpenChange={setOpenStatus}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={openStatus}
+                      className="w-[200px] justify-between"
+                    >
+                      {task.status
+                        ? statusConstants.find(
+                            (item) => item.value === task.status
+                          )?.label
+                        : "Select Status"}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      {task.status && (
+                        <X
+                          className="ml-2 h-4 w-4 cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setTask((prev: any) => ({ ...prev, status: "" }));
+                          }}
+                        />
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0 bg-white">
+                    <Command>
+                      <CommandInput placeholder="Search Status" />
+                      <CommandList>
+                        <CommandEmpty>No Status found.</CommandEmpty>
+                        <CommandGroup>
+                          {statusConstants.map((status) => (
+                            <CommandItem
+                              key={status.value}
+                              onSelect={() => {
+                                setTask((prev: any) => ({
+                                  ...prev,
+                                  status: status.value,
+                                }));
+                                setOpenStatus(false);
+                              }}
+                            >
+                              <Check
+                                className="mr-2 h-4 w-4"
+                                style={{
+                                  opacity:
+                                    task.status === status.value ? 1 : 0.5,
+                                }}
+                              />
+                              {status.label}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
 
                 <div className="mb-4">
                   <label className="block text-gray-700 font-bold mb-2">
@@ -88,8 +184,8 @@ const AddTask = () => {
                   </label>
                   <input
                     type="date"
-                    name="dueDate"
-                    value={task.dueDate}
+                    name="due_date"
+                    value={task.due_date}
                     onChange={handleChange}
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
@@ -105,10 +201,10 @@ const AddTask = () => {
                     onChange={handleChange}
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                   >
-                    <option>Select priority</option>
-                    <option>High</option>
-                    <option>Medium</option>
-                    <option>Low</option>
+                    <option value="">Select priority</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
                   </select>
                 </div>
 
@@ -116,35 +212,93 @@ const AddTask = () => {
                   <label className="block text-gray-700 font-bold mb-2">
                     Tags
                   </label>
-                  <input
-                    type="text"
-                    name="tags"
-                    value={task.tags}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                    placeholder="Enter tag"
-                  />
-                  <span className="inline-block mt-2 px-3 py-1 bg-green-100 text-green-800 text-sm rounded">
-                    Restaurant
-                  </span>
+                  <div className="flex">
+                    <input
+                      type="text"
+                      value={tagInput}
+                      onChange={(e) => setTagInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleTagSubmit();
+                          e.preventDefault();
+                        }
+                      }}
+                      className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      placeholder="Enter tag"
+                    />
+                    <Button
+                      type="button"
+                      onClick={handleTagSubmit}
+                      className="ml-2"
+                    >
+                      Add
+                    </Button>
+                  </div>
+                  <div className="flex flex-wrap mt-2">
+                    {task.tags.map((tag: any, index: number) => (
+                      <span
+                        key={index}
+                        className="inline-block mt-2 px-3 py-1 bg-green-100 text-green-800 text-sm rounded mr-2"
+                      >
+                        {tag}
+                        <button
+                          className="ml-1 text-red-500"
+                          onClick={() =>
+                            setTask((prev: any) => ({
+                              ...prev,
+                              tags: prev.tags.filter((t: any) => t !== tag),
+                            }))
+                          }
+                        >
+                          &times;
+                        </button>
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="mb-4">
                   <label className="block text-gray-700 font-bold mb-2">
                     Assign To
                   </label>
-                  <select
-                    name="assignee"
-                    value={task.assignee}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  >
-                    <option>Select a person</option>
-                    <option>Pavan</option>
-                    <option>Gowtham</option>
-                    <option>Sudhakar</option>
-                    <option>Kedar</option>
-                  </select>
+                  <Popover open={openUsers} onOpenChange={setOpenUsers}>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full">
+                        {task.users.length > 0
+                          ? task.users.map((user: any) => user.name).join(", ")
+                          : "Select Users"}
+                        <ChevronsUpDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0 bg-white">
+                      <Command>
+                        <CommandInput placeholder="Search Users" />
+                        <CommandList>
+                          <CommandEmpty>No Users found.</CommandEmpty>
+                          <CommandGroup>
+                            {usersList.map((user) => (
+                              <CommandItem
+                                key={user.id}
+                                onSelect={() => handleUserSelect(user)}
+                              >
+                                <Check
+                                  className="mr-2 h-4 w-4"
+                                  style={{
+                                    opacity: task.users.some(
+                                      (u: any) => u.id === user.id
+                                    )
+                                      ? 1
+                                      : 0.5,
+                                  }}
+                                />
+                                {user.name}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
             </div>
@@ -160,7 +314,6 @@ const AddTask = () => {
               <Button
                 type="submit"
                 className="px-6 py-2 bg-blue-600 text-white rounded-md"
-                onClick={handleSubmit}
               >
                 Submit
               </Button>
@@ -168,7 +321,6 @@ const AddTask = () => {
           </form>
         </div>
       </main>
-      {/* <Loading loading={} /> */}
     </div>
   );
 };

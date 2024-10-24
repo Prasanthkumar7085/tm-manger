@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import loginBackground from "@/assets/login-bg-image.png";
 import { setUserDetails } from "@/redux/Modules/userlogin";
 import { errPopper } from "@/lib/helpers/errPopper";
-import Loading from "../core/Loading";
+
 interface loginProps {
   email: string;
   password: string;

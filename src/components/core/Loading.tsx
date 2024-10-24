@@ -9,7 +9,7 @@ const Loading = ({ loading, label }: { loading: boolean; label?: string }) => {
     >
       <div className="flex flex-col items-center gap-8 lg justify-center">
         {/* <Spinner /> */}
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        <Loader2 className="mr-5 h-7 w-7 animate-spin" />
         <span>{label}</span>
       </div>
     </div>

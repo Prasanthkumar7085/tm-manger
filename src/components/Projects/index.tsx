@@ -1,87 +1,213 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ProjectCard from "./Card";
 import { Button } from "../ui/button";
-import { useNavigate } from "@tanstack/react-router";
+import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
+import { addSerial } from "@/lib/helpers/addSerial";
+import { getAllPaginatedProjectss } from "@/lib/services/projects";
+import SearchFilter from "../core/CommonComponents/SearchFilter";
+import { StatusFilter } from "../core/StatusFilter";
 import Pagination from "../core/Pagination";
-// const navigate = useNavigate();
+import DateRangeFilter from "../core/DateRangePicker";
+import LoadingComponent from "../core/LoadingComponent";
+import SortDropDown from "../core/CommonComponents/SortDropDown";
+import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 
-const dummyProjects = Array(10)
-  .fill(0)
-  .map((_, i) => ({
-    id: i + 1,
-    name: `Project ${i + 1}`,
-    description: `Description for project ${i + 1}`,
-    members: Array(5)
-      .fill(0)
-      .map((_, j) => ({
-        name: `Member ${j + 1}`,
-        avatar: `https://i.pravatar.cc/150?img=${j + 1}`,
-      })),
-  }));
-
-const fetchProjects = async (page: any, search: any) => {
-  return dummyProjects.filter((project) =>
-    project.name.toLowerCase().includes(search.toLowerCase())
-  );
-};
-
-export const Projects = () => {
+const Projects = () => {
   const navigate = useNavigate();
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [paginationDetails, setPaginationDetails] = useState<any>();
+  const location = useLocation();
+  const router = useRouter();
+  const searchParams = new URLSearchParams(location.search);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["projects", page, search],
-    queryFn: () => fetchProjects(page, search),
+  const pageIndexParam = Number(searchParams.get("page")) || 1;
+  const pageSizeParam = Number(searchParams.get("page_size")) || 10;
+  const orderBY = searchParams.get("order_by") || "";
+  const initialSearch = searchParams.get("search") || "";
+  const initialStatus = searchParams.get("status") || "";
+  const initialStartDate = searchParams.get("start_date") || null;
+  const initialEndDate = searchParams.get("end_date") || null;
+
+  const [searchString, setSearchString] = useState(initialSearch);
+  const [debouncedSearch, setDebouncedSearch] = useState(searchString);
+  const [selectedProject, setSelectedProject] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState(initialStatus);
+  const [dateValue, setDateValue] = useState<any>(
+    initialStartDate && initialEndDate
+      ? [new Date(initialStartDate), new Date(initialEndDate)]
+      : null
+  );
+  const [selectedDate, setSelectedDate] = useState<any>();
+  const [selectedSort, setSelectedSort] = useState(orderBY);
+  const [del, setDel] = useState<any>();
+
+  const [pagination, setPagination] = useState({
+    pageIndex: pageIndexParam,
+    pageSize: pageSizeParam,
+    order_by: selectedSort || orderBY,
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  const { isLoading, isError, error, data, isFetching } = useQuery({
+    queryKey: [
+      "projects",
+      pagination,
+      selectedProject,
+      debouncedSearch,
+      selectedStatus,
+      dateValue,
+      selectedSort,
+    ],
+    queryFn: async () => {
+      const response = await getAllPaginatedProjectss({
+        pageIndex: pagination.pageIndex,
+        pageSize: pagination.pageSize,
+        order_by: selectedSort,
+        search_string: debouncedSearch,
+        projectId: selectedProject,
+        status: selectedStatus,
+        from_date: selectedDate?.length ? selectedDate[0] : null,
+        to_date: selectedDate?.length ? selectedDate[1] : null,
+      });
 
-  const capturePageNum = () => {};
-  const captureRowPerItems = () => {};
-  // const handleNavigation = () => {
-  //   navigate({
-  //     to: "/projects/add",
-  //   });
-  // };
+      const queryParams = {
+        current_page: +pagination.pageIndex,
+        page_size: +pagination.pageSize,
+        order_by: selectedSort ? selectedSort : undefined,
+        search: debouncedSearch || undefined,
+        project_id: selectedProject || undefined,
+        status: selectedStatus || undefined,
+        from_date: selectedDate?.length ? selectedDate[0] : undefined,
+        to_date: selectedDate?.length ? selectedDate[1] : undefined,
+      };
+      router.navigate({
+        to: "/projects",
+        search: queryParams,
+      });
+
+      return response;
+    },
+  });
+
+  const projectsData =
+    addSerial(
+      data?.data?.data?.records,
+      data?.data?.data?.pagination_info?.current_page,
+      data?.data?.data?.pagination_info?.page_size
+    ) || [];
+
   const handleNavigation = () => {
     navigate({
       to: "/projects/add",
     });
   };
 
+  const getAllProjects = async ({ pageIndex, pageSize, order_by }: any) => {
+    setPagination({ pageIndex, pageSize, order_by });
+  };
+
+  const capturePageNum = (value: number) => {
+    getAllProjects({
+      ...searchParams,
+      pageSize: searchParams.get("page_size")
+        ? searchParams.get("page_size")
+        : 25,
+      pageIndex: value,
+      order_by: selectedSort || searchParams.get("order_by"),
+    });
+  };
+
+  const captureRowPerItems = (value: number) => {
+    getAllProjects({
+      ...searchParams,
+      pageSize: value,
+      pageIndex: 1,
+      order_by: selectedSort || searchParams.get("order_by"),
+    });
+  };
+
+  const handleDateChange = (fromDate: any, toDate: any) => {
+    if (fromDate) {
+      setDateValue(changeDateToUTC(fromDate, toDate));
+      setSelectedDate([fromDate, toDate]);
+    } else {
+      setDateValue([]);
+      setSelectedDate([]);
+    }
+  };
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchString);
+      if (searchString || selectedStatus || dateValue) {
+        getAllProjects({
+          pageIndex: 1,
+          pageSize: pageSizeParam,
+          order_by: selectedSort || orderBY,
+        });
+      } else {
+        getAllProjects({
+          pageIndex: pageIndexParam,
+          pageSize: pageSizeParam,
+          order_by: selectedSort || orderBY,
+        });
+      }
+    }, 500);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchString, selectedSort, selectedStatus, dateValue]);
+
   return (
     <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <input
-          type="text"
-          placeholder="Search by name"
-          className="border px-3 py-2 rounded-lg"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+      <div className="flex w-full gap-4 justify-end">
+        <SearchFilter
+          searchString={searchString}
+          setSearchString={setSearchString}
+          title="Search By title"
         />
-        <Button
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-          onClick={handleNavigation}
-        >
-          Add Project
-        </Button>
+        <StatusFilter value={selectedStatus} setValue={setSelectedStatus} />
+        <DateRangeFilter
+          dateValue={dateValue}
+          onChangeData={handleDateChange}
+        />
+        <SortDropDown
+          selectedSort={selectedSort}
+          setSelectedSort={setSelectedSort}
+        />
+
+        <div className="flex">
+          <Button
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+            onClick={handleNavigation}
+          >
+            Add Project
+          </Button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto h-[70vh]">
-        {data?.map((project: any) => (
-          <ProjectCard key={project.id} project={project} />
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto h-[70vh] mt-3">
+        {projectsData.length === 0 && isLoading == false ? (
+          <div className="col-span-full text-center">No Projects Found</div>
+        ) : (
+          projectsData.map((project: any) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              del={del}
+              setDel={setDel}
+              getAllProjects={getAllProjects}
+            />
+          ))
+        )}
       </div>
-      <div className="mt-4">
+
+      <div className="mb-0 bg-white">
         <Pagination
-          paginationDetails={paginationDetails}
+          paginationDetails={data?.data?.data?.pagination_info}
           capturePageNum={capturePageNum}
           captureRowPerItems={captureRowPerItems}
         />
       </div>
+      <LoadingComponent loading={isLoading || isFetching} />
     </div>
   );
 };
