@@ -20,70 +20,20 @@ export const userColumns = [
     ),
   },
   {
-    accessorFn: (row: any) => row.profile_pic,
-    id: "profile_pic",
+    accessorFn: (row: any) => `${row.fname} ${row.lname}`,
+    id: "fullName",
     cell: (info: any) => {
-      let title = info.getValue();
-      return <span>{title ? title : "-"}</span>;
-    },
-    width: "150px",
-    maxWidth: "150px",
-    minWidth: "150px",
-    header: () => <span>Profile</span>,
-    footer: (props: any) => props.column.id,
-  },
-
-  {
-    accessorFn: (row: any) => row.fname,
-    id: "fname",
-    cell: (info: any) => {
-      let title = info.getValue();
+      let fullName = info.getValue();
       return (
         <div style={{ padding: "16px", textAlign: "left" }}>
-          <span>{title ? title : "-"}</span>
+          <span>{fullName ? fullName : "-"}</span>
         </div>
       );
     },
-    width: "150px",
-    maxWidth: "150px",
-    minWidth: "150px",
-    header: () => <span>First Name</span>,
-    footer: (props: any) => props.column.id,
-  },
-
-  {
-    accessorFn: (row: any) => row.lname,
-    id: "lname",
-    cell: (info: any) => {
-      let title = info.getValue();
-      return (
-        <div style={{ padding: "16px", textAlign: "left" }}>
-          <span>{title ? title : "-"}</span>
-        </div>
-      );
-    },
-    width: "150px",
-    maxWidth: "150px",
-    minWidth: "150px",
-    header: () => <span>Last Name</span>,
-    footer: (props: any) => props.column.id,
-  },
-
-  {
-    accessorFn: (row: any) => row.created_at,
-    id: "created_at",
-    cell: (info: any) => {
-      const date: string = info.getValue();
-      return (
-        <div style={{ padding: "16px", textAlign: "left" }}>
-          <span>{date ? dayjs(date).format("MM/DD/YYYY") : "-"}</span>
-        </div>
-      );
-    },
-    width: "150px",
-    maxWidth: "150px",
-    minWidth: "150px",
-    header: () => <span>Created on</span>,
+    width: "300px",
+    maxWidth: "300px",
+    minWidth: "300px",
+    header: () => <span>Full Name</span>,
     footer: (props: any) => props.column.id,
   },
   {

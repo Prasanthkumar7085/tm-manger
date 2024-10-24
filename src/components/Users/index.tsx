@@ -3,6 +3,7 @@ import {
   addUsersAPI,
   deleteUsersAPI,
   getAllPaginatedUsers,
+  updatePasswordUsersAPI,
 } from "@/lib/services/users";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
@@ -24,12 +25,13 @@ import {
 } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
-import { Check, ChevronDown, ChevronUp, X } from "lucide-react";
+import { Check, ChevronDown, ChevronUp, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { userTypes } from "@/utils/conistance/users";
 import Loading from "../core/Loading";
 import DeleteDialog from "../core/deleteDialog";
+import SheetRover from "../core/SheetRover";
 
 interface ReportPayload {
   full_name: string;
@@ -60,6 +62,9 @@ function UsersTable() {
   const [deleteuserId, setDeleteUserId] = useState<any>();
   const [del, setDel] = useState(1);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [isPasswordSheetOpen, setIsPasswordSheetOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<any>(null);
+  const [newPassword, setNewPassword] = useState("");
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
@@ -71,6 +76,11 @@ function UsersTable() {
     lname: "",
     email: "",
     password: "",
+  });
+  const [userPasswordData, setUsePasswordData] = useState<any>({
+    current_password: "",
+    new_password: "",
+    confirm_new_password: "",
   });
 
   const { isLoading, isError, error, data, isFetching } = useQuery({
@@ -152,6 +162,39 @@ function UsersTable() {
     }
   };
 
+  const updateUserPassword = async () => {
+    setLoading(true);
+    try {
+      const payload = {
+        current_password: userPasswordData?.current_password,
+        new_password: userPasswordData?.new_password,
+        confirm_new_password: userPasswordData?.confirm_new_password,
+      };
+      const response = await updatePasswordUsersAPI(payload);
+      if (response?.status === 200 || response?.status === 201) {
+        toast.success(
+          response?.data?.message || "Update Password successfully"
+        );
+        setIsOpen(false);
+        setUsePasswordData({
+          current_password: "",
+          new_password: "",
+          confirm_new_password: "",
+        });
+        await getAllUsers("");
+      } else if (response?.status === 422) {
+        const errData = response?.data?.errData;
+        setErrors(errData);
+        throw response;
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Something went wrong");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
@@ -195,6 +238,31 @@ function UsersTable() {
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
+  };
+  const handlePasswordUpdateOpen = (userId: any) => {
+    setSelectedUserId(userId);
+    setIsPasswordSheetOpen(true);
+  };
+
+  const handleUpdateChangePassword = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    setUsePasswordData((prevData: any) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handlePasswordUpdateCancel = () => {
+    setIsPasswordSheetOpen(false);
+    setSelectedUserId(null);
+    setUsePasswordData({
+      current_password: "",
+      new_password: "",
+      confirm_new_password: "",
+    });
+    setErrors({});
   };
 
   const handleInputChange = (e: any) => {
@@ -256,7 +324,7 @@ function UsersTable() {
           <div>
             <Button
               title="delete"
-              onClick={() => info.row.original.id}
+              onClick={() => onClickOpen(info.row.original.id)}
               size={"sm"}
               variant={"ghost"}
             >
@@ -269,7 +337,7 @@ function UsersTable() {
             </Button>
             <Button
               title="update password"
-              onClick={() => info.row.original.id}
+              onClick={() => handlePasswordUpdateOpen(info.row.original.id)}
               size={"sm"}
               variant={"ghost"}
             >
@@ -324,6 +392,15 @@ function UsersTable() {
         onCancelClick={onClickClose}
         onOKClick={deleteUser}
         deleteLoading={deleteLoading}
+      />
+      <SheetRover
+        isOpen={isPasswordSheetOpen}
+        handleCancel={handlePasswordUpdateCancel}
+        userPasswordData={userPasswordData}
+        handleUpdateChangePassword={handleUpdateChangePassword}
+        updateUserPassword={updateUserPassword}
+        errors={errors}
+        loading={loading}
       />
       <div>
         <Sheet open={isOpen}>
@@ -484,7 +561,11 @@ function UsersTable() {
               </Button>
               <SheetClose asChild>
                 <Button type="submit" onClick={addUser}>
-                  Submit
+                  {loading ? (
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  ) : (
+                    "submit"
+                  )}
                 </Button>
               </SheetClose>
             </SheetFooter>
