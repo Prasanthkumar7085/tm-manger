@@ -30,6 +30,7 @@ const Projects = () => {
     null
   );
   const [selectedSort, setSelectedSort] = useState(orderBY);
+  const [del, setDel] = useState<any>();
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
@@ -175,7 +176,12 @@ const Projects = () => {
           <div className="col-span-full text-center">No Projects Found</div>
         ) : (
           projectsData.map((project: any) => (
-            <ProjectCard key={project.id} project={project} />
+            <ProjectCard
+              key={project.id}
+              project={project}
+              del={del}
+              setDel={setDel}
+            />
           ))
         )}
       </div>

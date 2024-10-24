@@ -56,3 +56,10 @@ export const getAllPaginatedUsersAPI = async ({ pageIndex, pageSize }: any) => {
     throw err;
   }
 };
+export const deleteProjectAPI = async (id: number) => {
+  try {
+    return await $fetch.delete(`/projects/${id}`);
+  } catch (err) {
+    throw err;
+  }
+};
