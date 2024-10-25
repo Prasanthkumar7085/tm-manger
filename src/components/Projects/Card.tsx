@@ -13,6 +13,13 @@ import {
 const ProjectCard = ({ project, del, setDel }: any) => {
   const navigate = useNavigate();
 
+  const capitalizeWords = (string: string) => {
+    return string
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
+
   const getStatusLabel = (isActive: boolean) => {
     return isActive
       ? statusConstants.find((status) => status.value === "true")?.label
@@ -35,7 +42,9 @@ const ProjectCard = ({ project, del, setDel }: any) => {
             className="w-full h-full object-contain"
           />
         </div>
-        <div className="text-lg font-semibold uppercase">{project.title}</div>
+        <div className="text-lg font-semibold">
+          {capitalizeWords(project.title)}
+        </div>
 
         {/* Tooltip for the project description */}
         <TooltipProvider>
