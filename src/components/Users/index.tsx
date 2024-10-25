@@ -1,7 +1,14 @@
 import { addSerial } from "@/lib/helpers/addSerial";
-import { addUsersAPI, deleteUsersAPI, getAllPaginatedUsers, updatePasswordUsersAPI } from "@/lib/services/users";
+import {
+  addUsersAPI,
+  deleteUsersAPI,
+  getAllPaginatedUsers,
+  getSingleUserAPI,
+  resetPasswordUsersAPI,
+  updateUserSelectStatueAPI,
+} from "@/lib/services/users";
 import { useQuery } from "@tanstack/react-query";
-import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
+import { useLocation, useNavigate, useParams, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import TanStackTable from "../core/TanstackTable";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -20,20 +27,15 @@ import {
 } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
-import {
-  Check,
-  ChevronDown,
-  ChevronUp,
-  Loader2,
-  X,
-} from "lucide-react";
+import { Check, ChevronDown, ChevronUp, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { userTypes } from "@/utils/conistance/users";
 import Loading from "../core/Loading";
 import DeleteDialog from "../core/deleteDialog";
 import SheetRover from "../core/SheetRover";
-
+import SelectStatusFilter from "../core/CommonComponents/SelectStatusFilter";
+import { errPopper } from "@/lib/helpers/errPopper";
 
 interface ReportPayload {
   full_name: string;
@@ -58,35 +60,42 @@ function UsersTable() {
   const [errors, setErrors] = useState<any>({});
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
-  const [userType, setUserType] = useState("");
+  const [userType, setUserType] = useState<any>("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isClose,setIsClose] = useState(false);
   const [open, setOpen] = useState(false);
   const [deleteuserId, setDeleteUserId] = useState<any>();
+  const [isEditing, setIsEditing] = useState(false);
   const [del, setDel] = useState(1);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [isPasswordSheetOpen, setIsPasswordSheetOpen] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState<any>(null);
+  const [selectedUserId, setSelectedUserId] = useState<any>();
   const [newPassword, setNewPassword] = useState("");
-
+  const [selectedId, setSelectedId] = useState<any>();
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
     order_by: orderBY,
   });
+  // const [userData, setUserData] = useState<any>({
+  //   fname: "",
+  //   lname: "",
+  //   email: "",
+  //   password: "",
+  // });
   const [userData, setUserData] = useState<any>({
+    id: null, // add id to track the current user in edit mode
     fname: "",
     lname: "",
     email: "",
     password: "",
   });
   const [userPasswordData, setUsePasswordData] = useState<any>({
-    current_password:"",
-    new_password:"",
-    confirm_new_password:"",
+    new_password: "",
   });
 
-  const { isLoading, isError, error, data, isFetching, } = useQuery({
-    queryKey: ["users", pagination, debouncedSearch,del],
+  const { isLoading, isError, error, data, isFetching } = useQuery({
+    queryKey: ["users", pagination, debouncedSearch, del],
     queryFn: async () => {
       const response = await getAllPaginatedUsers({
         pageIndex: pagination.pageIndex,
@@ -112,7 +121,7 @@ function UsersTable() {
   const getAllUsers = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
- 
+
   const addUser = async () => {
     try {
       setLoading(true);
@@ -126,14 +135,7 @@ function UsersTable() {
       const response = await addUsersAPI(payload);
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message || "User Added successfully");
-        setIsOpen(false);
-        setUserData({
-          fname: "",
-          lname: "",
-          email: "",
-          password: "",
-        });
-        setUserType("");
+        handleDrawerClose()
       } else if (response?.status === 422) {
         const errData = response?.data?.errData;
         setErrors(errData);
@@ -141,17 +143,43 @@ function UsersTable() {
       }
     } catch (err: any) {
       console.error(err);
-      toast.error(err?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
   };
+  const {} = useQuery({
+    queryKey: ["getSingleUser",selectedId],
+    queryFn: async () => {
+      if (!selectedId) return;
+
+      try {
+        const response = await getSingleUserAPI(selectedId);
+        if (response.success) {
+          const data = response?.data?.data;
+          setUserData({
+            fname: data?.fname,
+            lname: data?.lname,
+            email: data?.email,
+            password: data?.password,  
+          });
+          setUserType(data?.user_type);
+        } else {
+          throw response;
+        }
+      } catch (errData) {
+        console.error(errData);
+        errPopper(errData);
+      }
+    },
+    // enabled: Boolean(id),
+  });
+
   const deleteUser = async () => {
     try {
       setDeleteLoading(true);
       const response = await deleteUsersAPI(deleteuserId);
       if (response?.status === 200 || response?.status === 201) {
-         onClickClose();
+        onClickClose();
         toast.success(response?.data?.message || "User Deleted Successfully");
         setDel((prev) => prev + 1);
       }
@@ -162,23 +190,21 @@ function UsersTable() {
       setDeleteLoading(false);
     }
   };
- 
-  const updateUserPassword = async () => {
-    setLoading(true)
+
+  const resetUserPassword = async () => {
+    setLoading(true);
     try {
       const payload = {
-        current_password:userPasswordData?.current_password,
-        new_password:userPasswordData?.new_password,
-        confirm_new_password:userPasswordData?.confirm_new_password
+        new_password: userPasswordData?.new_password,
       };
-      const response = await updatePasswordUsersAPI(payload); 
+      const response = await resetPasswordUsersAPI(selectedUserId, payload);
       if (response?.status === 200 || response?.status === 201) {
-        toast.success(response?.data?.message || "Update Password successfully");
-        setIsPasswordSheetOpen(false)
+        toast.success(
+          response?.data?.message || "Update Password successfully"
+        );
+        setIsPasswordSheetOpen(false);
         setUsePasswordData({
-          current_password:"",
-          new_password:"",
-          confirm_new_password:"",
+          new_password: "",
         });
       } else if (response?.status === 422) {
         const errData = response?.data?.errData;
@@ -186,13 +212,11 @@ function UsersTable() {
         throw response;
       }
     } catch (err: any) {
-      toast.error(err?.message || "Something went wrong");
       console.error(err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
-
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -208,46 +232,105 @@ function UsersTable() {
           pageIndex: pageIndexParam,
           pageSize: pageSizeParam,
           order_by: orderBY,
-        })
+        });
       }
     }, 500);
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString]);  
+  }, [searchString]);
 
-   const usersData =
-     addSerial(
-       data?.data?.data?.records,
-       data?.data?.data?.pagination_info?.current_page,
-       data?.data?.data?.pagination_info?.page_size
-     ) || [];
+  const usersData =
+    addSerial(
+      data?.data?.data?.records,
+      data?.data?.data?.pagination_info?.current_page,
+      data?.data?.data?.pagination_info?.page_size
+    ) || [];
 
+  const handleFormSubmit = async () => {
+    if (isEditing) {
+      // await updateUser();
+    } else {
+      await addUser();
+    }
+  };
   const onChangeStatus = (value: string) => {
     setUserType(value);
   };
 
-  const handleDrawerOpen = () => {
+  // const handleDrawerOpen = (user = null) => {
+  //   setUserData({
+  //     id: userData?.id || null,
+  //     fname: userData?.fname || "",
+  //     lname: userData?.lname || "",
+  //     email: userData?.email || "",
+  //     password: userData?.password||"",
+  //   });
+  //   setUserType("")
+  //   setIsEditing(!!user);
+  //   setSelectedId(user.id)
+  //   setIsOpen(true);
+  // };
+  const handleDrawerOpen = (user = null) => {
+    if (user) {
+      setUserData({
+        id: userData.id || null,
+        fname: userData.fname || "",
+        lname: userData.lname || "",
+        email: userData.email || "",
+        password: userData.password || "",
+      });
+      setUserType(userType.user_type || "");
+      setIsEditing(true);
+      // setSelectedId(user.id);
+    } else {
+      setUserData({
+        id: null,
+        fname: "",
+        lname: "",
+        email: "",
+        password: "",
+      });
+      setUserType("");
+      setIsEditing(false);
+      setSelectedId(null);
+    }
     setIsOpen(true);
   };
-
   const handleDrawerClose = () => {
+    setUserData({
+      id: null,
+      fname: "",
+      lname: "",
+      email: "",
+      password: "",
+      
+    });
+    setUserType("")
+    setIsEditing(false);
+    setErrors("")
     setIsOpen(false);
   };
- 
+  
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
-  const handlePasswordUpdateOpen = (userId: any) => {
-    setSelectedUserId(userId);
+  const handlePasswordUpdateOpen = (id: any) => {
+    setSelectedUserId(id);
     setIsPasswordSheetOpen(true);
   };
 
-  const handleUpdateChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpdateChangePassword = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const { name, value } = e.target;
-    setUsePasswordData((prevData:any) => ({
+    const updatedValue = value
+      .replace(/[^a-zA-Z\s]/g, "")
+      .replace(/^\s+/g, "")
+      .replace(/\s{2,}/g, " ");
+    setUsePasswordData((prevData: any) => ({
       ...prevData,
-      [name]: value,
+      [name]: updatedValue,
     }));
   };
 
@@ -255,13 +338,10 @@ function UsersTable() {
     setIsPasswordSheetOpen(false);
     setSelectedUserId(null);
     setUsePasswordData({
-      current_password: "",
       new_password: "",
-      confirm_new_password: "",
     });
     setErrors({});
   };
-
 
   const handleInputChange = (e: any) => {
     let { name, value } = e.target;
@@ -289,18 +369,6 @@ function UsersTable() {
       ...userData,
       [name]: value,
     });
-  };
-
-  const handleCancel = () => {
-    setUserData({
-      fname: "",
-      lname: "",
-      email: "",
-      password: "",
-    });
-    setUserType("");
-    setErrors({});
-    setIsOpen(false);
   };
 
   const onClickOpen = (id: any) => {
@@ -333,8 +401,8 @@ function UsersTable() {
               />
             </Button>
             <Button
-              title="update password"
-              onClick={() => handlePasswordUpdateOpen(info.row.original.id)} 
+              title="reset password"
+              onClick={() => handlePasswordUpdateOpen(info.row.original.id)}
               size={"sm"}
               variant={"ghost"}
             >
@@ -344,28 +412,38 @@ function UsersTable() {
                 height={16}
                 width={16}
               />
-            </Button>  
+            </Button>
+            <Button
+              title="edit"
+              onClick={() => handleDrawerOpen(info.row.original.id)}
+              size={"sm"}
+              variant={"ghost"}
+            >
+              <img src={"/table/edit.svg"} alt="view" height={16} width={16} />
+            </Button>
           </div>
         );
       },
       header: () => <span>Actions</span>,
       footer: (props: any) => props.column.id,
-      width: "80px",
-      minWidth: "80px",
-      maxWidth: "80px",
+      width: "90px",
+      minWidth: "90px",
+      maxWidth: "90px",
     },
   ];
 
   return (
     <div className="relative">
       <div className="flex justify-end mb-4 gap-3">
+        <SelectStatusFilter />
+
         <SearchFilter
           searchString={searchString}
           setSearchString={setSearchString}
         />
         <Button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={handleDrawerOpen}
+          onClick={() => handleDrawerOpen()}
         >
           +Add Users
         </Button>
@@ -377,33 +455,33 @@ function UsersTable() {
       <div>
         <TanStackTable
           data={usersData}
-          columns={[...userColumns,...userActions]}
+          columns={[...userColumns, ...userActions]}
           paginationDetails={data?.data?.data?.pagination_info}
           getData={getAllUsers}
-          removeSortingForColumnIds={["serial","actions"]}
+          removeSortingForColumnIds={["serial", "actions"]}
         />
       </div>
-       <DeleteDialog
-            openOrNot={open}
-            label="Are you sure you want to Delete this user?"
-            onCancelClick={onClickClose}
-            onOKClick={deleteUser}
-            deleteLoading={deleteLoading}
-          />
-        <SheetRover
+      <DeleteDialog
+        openOrNot={open}
+        label="Are you sure you want to Delete this user?"
+        onCancelClick={onClickClose}
+        onOKClick={deleteUser}
+        deleteLoading={deleteLoading}
+      />
+      <SheetRover
         isOpen={isPasswordSheetOpen}
         handleCancel={handlePasswordUpdateCancel}
         userPasswordData={userPasswordData}
         handleUpdateChangePassword={handleUpdateChangePassword}
-        updateUserPassword={updateUserPassword}
+        resetUserPassword={resetUserPassword}
         errors={errors}
         loading={loading}
       />
       <div>
         <Sheet open={isOpen}>
-          <SheetContent className="bg-gray-100"> 
+          <SheetContent className="bg-gray-100">
             <SheetHeader>
-              <SheetTitle>Add User</SheetTitle>
+              <SheetTitle>{isEditing ? "Edit User" : "Add User"}</SheetTitle>
               <SheetDescription></SheetDescription>
             </SheetHeader>
             <div className="grid gap-4 py-4">
@@ -553,16 +631,18 @@ function UsersTable() {
               </div>
             </div>
             <SheetFooter>
-              <Button variant="outline" onClick={handleCancel}>
+              <Button variant="outline" onClick={handleDrawerClose}>
                 Cancel
               </Button>
               <SheetClose asChild>
-                <Button type="submit" onClick={addUser}>
-                {loading ? (
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-            ) : (
-              "submit"
-            )}
+                <Button type="submit" onClick={handleFormSubmit}>
+                  {loading ? (
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  ) : isEditing ? (
+                    "Update"
+                  ) : (
+                    "Add"
+                  )}
                 </Button>
               </SheetClose>
             </SheetFooter>
