@@ -4,7 +4,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@radix-ui/react-popover";
-import { Check } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Command,
@@ -58,14 +58,11 @@ const AddProject = () => {
         pageIndex: 1,
         pageSize: 10,
       });
-
-      // Ensure users is correctly set as an array
       if (response?.data?.data && Array.isArray(response.data.data)) {
         setUsers(response.data.data);
       } else {
-        setUsers([]); // Fallback to empty array if not
+        setUsers([]);
       }
-
       return response;
     },
   });
@@ -143,8 +140,6 @@ const AddProject = () => {
         );
       })
       .filter(Boolean);
-    console.log(newMembers, "meme");
-
     setSelectedMembers((prev) => [...prev, ...newMembers]);
     setTempSelectedMember([]);
     setOpen(false);
@@ -154,7 +149,15 @@ const AddProject = () => {
       selectedMembers.filter((member) => member.user_id !== userId)
     );
   };
-  // Handle form submission
+
+  const changeRole = (userId: number, role: string) => {
+    setSelectedMembers((prev) =>
+      prev.map((member) =>
+        member.user_id === userId ? { ...member, role } : member
+      )
+    );
+  };
+
   const handleSubmit = () => {
     const payload: ProjectPayload = {
       title: projectData.title,
@@ -164,9 +167,9 @@ const AddProject = () => {
     };
     mutate(payload);
   };
-  const getFullName = (user: any) => `${user.fname} ${user.lname}`;
-  const handleNavigation = () => {
-    navigate({ to: "/projects" });
+
+  const getFullName = (user: any) => {
+    return `${user.fname} ${user.lname}`;
   };
 
   return (
@@ -204,7 +207,7 @@ const AddProject = () => {
         />
       </div>
       <div className="space-y-4">
-        <div className="flex justify-start gap-4">
+        <div className="flex flex-col justify-start gap-4">
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-[200px]">
@@ -264,6 +267,7 @@ const AddProject = () => {
               <thead>
                 <tr>
                   <th className="border p-2">Members</th>
+                  <th className="border p-2">Role</th>
                   <th className="border p-2">Action</th>
                 </tr>
               </thead>
@@ -271,19 +275,28 @@ const AddProject = () => {
                 {selectedMembers.map((member) => (
                   <tr key={member.user_id}>
                     <td className="border p-2">
-                      {
+                      {getFullName(
                         users.find((user: any) => user.id === member.user_id)
-                          ?.fname
-                      }
+                      )}
                     </td>
                     <td className="border p-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
+                      <select
+                        value={member.role}
+                        onChange={(e) =>
+                          changeRole(member.user_id, e.target.value)
+                        }
+                      >
+                        <option value="ADMIN">Admin</option>
+                        <option value="MANAGER">Manager</option>
+                      </select>
+                    </td>
+                    <td className="border p-2">
+                      <button
+                        type="button"
                         onClick={() => removeMember(member.user_id)}
                       >
-                        Remove
-                      </Button>
+                        <X className="w-4 h-4 text-red-500" />
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -291,24 +304,19 @@ const AddProject = () => {
             </table>
           )}
         </div>
-        <div className="flex">
-          <Button onClick={handleNavigation}>Cancel</Button>
-
-          <Button
-            onClick={handleSubmit}
-            disabled={loading || isFetching}
-            className="w-full"
-          >
-            {loading ? (
-              <LoadingComponent loading />
-            ) : (
-              <span>{projectId ? "Update Project" : "Add Project"}</span>
-            )}
-          </Button>
-        </div>
+        {errorMessages.project_members && (
+          <p className="text-red-500">{errorMessages.project_members[0]}</p>
+        )}
       </div>
-
-      {isUsersLoading && <LoadingComponent loading />}
+      <div className="flex justify-end space-x-4">
+        <Button variant="outline" onClick={() => navigate({ to: "/projects" })}>
+          Cancel
+        </Button>
+        <Button variant="outline" onClick={handleSubmit} disabled={loading}>
+          {projectId ? "Update Project" : "Add Project"}
+        </Button>
+      </div>
+      <LoadingComponent loading={loading} />
     </div>
   );
 };
