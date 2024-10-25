@@ -181,7 +181,7 @@ const Projects = () => {
           dateValue={dateValue}
           onChangeData={handleDateChange}
         /> */}
-        <Select
+        {/* <Select
           isMulti
           options={userOptions}
           placeholder="Select User"
@@ -189,7 +189,7 @@ const Projects = () => {
           isLoading={usersLoading}
           onChange={(selectedOption) => {}}
           className="w-200"
-        />
+        /> */}
         <SortDropDown
           selectedSort={selectedSort}
           setSelectedSort={setSelectedSort}

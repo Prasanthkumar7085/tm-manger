@@ -88,7 +88,7 @@ const ProjectMembersManagment = () => {
       ),
     ];
     let payload = allMembers.map((member: any) => {
-      return { user_id: member.id, role: member.role };
+      return { user_id: member.user_id, role: member.role };
     });
     setUpdatedOrNot(true);
 
@@ -101,7 +101,7 @@ const ProjectMembersManagment = () => {
     setSelectedMembers(
       selectedMembers.filter((member: any) => member.id !== memberDetails?.id)
     );
-    removeMembers({ user_id: memberDetails?.id });
+    removeMembers({ project_member_id: memberDetails?.id });
   };
 
   const toggleValue = (currentValue: string) => {
@@ -223,10 +223,10 @@ const ProjectMembersManagment = () => {
                 Select Members
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0 bg-white border">
+            <PopoverContent className="w-[200px] p-0 bg-white border z-[99999]">
               <Command>
                 <CommandInput placeholder="Search Members" />
-                <CommandList className="max-h-[200px]">
+                <CommandList className="max-h-[200px] z-[99999]">
                   <CommandGroup>
                     {Array.isArray(users) &&
                       users.map((user: any) => (
@@ -235,7 +235,7 @@ const ProjectMembersManagment = () => {
                           value={getFullName(user)}
                           onSelect={() => toggleValue(user.id.toString())}
                           disabled={selectedMembers.some(
-                            (m: any) => m.id == user.id
+                            (m: any) => m.user_id == user.id
                           )}
                         >
                           <Check
@@ -287,7 +287,9 @@ const ProjectMembersManagment = () => {
               <tbody>
                 {selectedMembers.map((member: any) => (
                   <tr key={member.id}>
-                    <td className="border p-2">{getFullName(member)}</td>
+                    <td className="border p-2 capitalize">
+                      {getFullName(member)}
+                    </td>
                     <td className="border p-2">{member?.phone || "---"}</td>
                     <td className="border p-2">
                       <select
@@ -308,6 +310,7 @@ const ProjectMembersManagment = () => {
                     <td className="border p-2">
                       <button
                         type="button"
+                        title="Remove"
                         onClick={() => removeMember(member)}
                       >
                         <X className="w-4 h-4 text-red-500" />
