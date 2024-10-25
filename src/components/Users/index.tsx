@@ -7,7 +7,7 @@ import {
   resetPasswordUsersAPI,
   updateUserSelectStatueAPI,
 } from "@/lib/services/users";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate, useParams, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import TanStackTable from "../core/TanstackTable";
@@ -77,12 +77,6 @@ function UsersTable() {
     pageSize: pageSizeParam,
     order_by: orderBY,
   });
-  // const [userData, setUserData] = useState<any>({
-  //   fname: "",
-  //   lname: "",
-  //   email: "",
-  //   password: "",
-  // });
   const [userData, setUserData] = useState<any>({
     id: null, // add id to track the current user in edit mode
     fname: "",
@@ -147,13 +141,12 @@ function UsersTable() {
       setLoading(false);
     }
   };
-  const {} = useQuery({
-    queryKey: ["getSingleUser",selectedId],
-    queryFn: async () => {
-      if (!selectedId) return;
 
+ 
+  const {mutate,data: singledata} = useMutation({
+    mutationFn: async () => {
       try {
-        const response = await getSingleUserAPI(selectedId);
+        const response = await getSingleUserAPI(selectedId );
         if (response.success) {
           const data = response?.data?.data;
           setUserData({
@@ -171,7 +164,6 @@ function UsersTable() {
         errPopper(errData);
       }
     },
-    // enabled: Boolean(id),
   });
 
   const deleteUser = async () => {
@@ -258,20 +250,7 @@ function UsersTable() {
     setUserType(value);
   };
 
-  // const handleDrawerOpen = (user = null) => {
-  //   setUserData({
-  //     id: userData?.id || null,
-  //     fname: userData?.fname || "",
-  //     lname: userData?.lname || "",
-  //     email: userData?.email || "",
-  //     password: userData?.password||"",
-  //   });
-  //   setUserType("")
-  //   setIsEditing(!!user);
-  //   setSelectedId(user.id)
-  //   setIsOpen(true);
-  // };
-  const handleDrawerOpen = (user = null) => {
+  const handleDrawerOpen = (user ?:any) => {
     if (user) {
       setUserData({
         id: userData.id || null,
@@ -282,7 +261,7 @@ function UsersTable() {
       });
       setUserType(userType.user_type || "");
       setIsEditing(true);
-      // setSelectedId(user.id);
+       setSelectedId(user);
     } else {
       setUserData({
         id: null,
@@ -380,6 +359,10 @@ function UsersTable() {
     setOpen(false);
   };
 
+  const handleUpdate = (id: number) => {
+    handleDrawerOpen(id ) ;
+    mutate()
+  }
   const userActions = [
     {
       accessorFn: (row: any) => row.actions,
@@ -415,7 +398,7 @@ function UsersTable() {
             </Button>
             <Button
               title="edit"
-              onClick={() => handleDrawerOpen(info.row.original.id)}
+              onClick={() => handleUpdate(info.row.original.id)}
               size={"sm"}
               variant={"ghost"}
             >
@@ -431,6 +414,8 @@ function UsersTable() {
       maxWidth: "90px",
     },
   ];
+
+  console.log(userData,"fgf")
 
   return (
     <div className="relative">
@@ -498,7 +483,7 @@ function UsersTable() {
                   placeholder="Enter First Name"
                   value={userData.fname}
                   name="fname"
-                  onChange={handleInputChange}
+                   onChange={handleInputChange}
                 />
                 {errors?.fname && (
                   <p style={{ color: "red" }}>{errors?.fname[0]}</p>
