@@ -83,6 +83,7 @@ function UsersTable() {
     pageSize: pageSizeParam,
     order_by: orderBY,
   });
+  const [adduser, setAddUser] = useState<any>();
   const [userData, setUserData] = useState<any>({
     id: null, // add id to track the current user in edit mode
     fname: "",
@@ -136,6 +137,7 @@ function UsersTable() {
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message || "User Added successfully");
         handleDrawerClose();
+        setDel((prev) => prev + 1);
       } else if (response?.status === 422) {
         const errData = response?.data?.errData;
         setErrors(errData);
@@ -430,6 +432,7 @@ function UsersTable() {
         <SearchFilter
           searchString={searchString}
           setSearchString={setSearchString}
+          title="Search User"
         />
         <Button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

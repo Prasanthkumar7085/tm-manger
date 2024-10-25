@@ -10,8 +10,8 @@ export const userColumns = [
     id: "serial",
     header: () => <span>S.No</span>,
     footer: (props: any) => props.column.id,
-    width: "60px",
-    maxWidth: "60px",
+    width: "30px",
+    maxWidth: "30px",
     minWidth: "60px",
     cell: (props: any) => (
       <div style={{ padding: "16px", textAlign: "left" }}>
@@ -78,18 +78,18 @@ export const userColumns = [
         </div>
       );
     },
-    width: "150px",
-    maxWidth: "150px",
+    width: "100px",
+    maxWidth: "100px",
     minWidth: "150px",
-    header: () => <span>Mobile Number</span>,
+    header: () => <span>Mobile Num</span>,
     footer: (props: any) => props.column.id,
   },
 
   {
     accessorFn: (row: any) => row.user_type,
     id: "user_type",
-    width: "150px",
-    maxWidth: "150px",
+    width: "100px",
+    maxWidth: "100px",
     minWidth: "150px",
     cell: (info: any) => {
       const userType = info.getValue();
@@ -99,7 +99,7 @@ export const userColumns = [
         </div>
       );
     },
-    header: () => <span>Users</span>,
+    header: () => <span>Type</span>,
     footer: (props: any) => props.column.id,
   },
   {
@@ -121,8 +121,8 @@ export const userColumns = [
           const response = await updateUserStatueAPI(userId, body);
           if (response?.status === 200 || response?.status === 201) {
             toast.success(
-              status 
-                ? "User activated successfully" 
+              status
+                ? "User activated successfully"
                 : "User deactivated successfully"
             );
             setIsActive(status);
