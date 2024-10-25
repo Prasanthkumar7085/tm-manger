@@ -14,6 +14,30 @@ export const addMembersAPI = async (projectId: any, payload: any) => {
   }
 };
 
+export const updateMembersAPI = async (projectId: any, payload: any) => {
+  try {
+    return await $fetch.put(`/projects/${projectId}/members`, payload);
+  } catch (err: any) {
+    throw err;
+  }
+};
+
+export const getProjectMembersAPI = async (projectId: any) => {
+  try {
+    return await $fetch.get(`/projects/${projectId}/members`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+
+export const deleteMembersAPI = async (projectId: any, payload: any) => {
+  try {
+    return await $fetch.delete(`/projects/${projectId}/members`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+
 export const getAllMembers = async () => {
   try {
     return await $fetch.get(`/users/all`);
