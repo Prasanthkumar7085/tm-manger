@@ -1,28 +1,34 @@
-import LoadingComponent from "@/components/core/LoadingComponent";
-import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { addProjectAPI, updateProjectAPI } from "@/lib/services/projects";
-import { getAllPaginatedUsersAPI } from "@/lib/services/users";
-import { cn } from "@/lib/utils";
+import React, { useEffect, useState } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@radix-ui/react-popover";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useLocation, useNavigate, useParams } from "@tanstack/react-router";
 import { Check } from "lucide-react";
-import React, { useState } from "react";
+import { cn } from "@/lib/utils";
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandItem,
+  CommandGroup,
+  CommandEmpty,
+} from "@/components/ui/command";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  addProjectAPI,
+  updateProjectAPI,
+  viewProjectAPI,
+} from "@/lib/services/projects";
+import { useNavigate, useParams } from "@tanstack/react-router";
+import LoadingComponent from "@/components/core/LoadingComponent";
+import { getAllPaginatedUsersAPI } from "@/lib/services/users";
+import { errPopper } from "@/lib/helpers/errPopper";
+import { i } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 interface ProjectPayload {
   title: string;
   description: string;
@@ -31,7 +37,6 @@ interface ProjectPayload {
 }
 const AddProject = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { projectId } = useParams({ strict: false });
   const [users, setUsers] = useState<any[]>([]);
   const [projectData, setProjectData] = useState({
@@ -46,47 +51,61 @@ const AddProject = () => {
   const [open, setOpen] = useState(false);
   const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const searchParams = new URLSearchParams(location.search);
-  const pageIndexParam = Number(searchParams.get("current_page")) || 1;
-  const pageSizeParam = Number(searchParams.get("page_size")) || 10;
-  const [pagination, setPagination] = useState({
-    pageIndex: pageIndexParam,
-    pageSize: pageSizeParam,
+  const { isLoading: isUsersLoading } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const response = await getAllPaginatedUsersAPI({
+        pageIndex: 1,
+        pageSize: 10,
+      });
+      setUsers(response.data?.data?.records);
+      return response;
+    },
+  });
+  const { isFetching, isLoading } = useQuery({
+    queryKey: ["getSingleProject", projectId],
+    queryFn: async () => {
+      if (!projectId) return;
+      try {
+        const response = await viewProjectAPI(projectId);
+        if (response.success) {
+          const data = response.data?.data;
+          setProjectData({
+            title: data.title,
+            description: data.description,
+            code: data.code,
+          });
+          setSelectedMembers(data.project_members || []);
+        } else {
+          throw response;
+        }
+      } catch (errData) {
+        console.error(errData);
+        errPopper(errData);
+      }
+    },
+    enabled: Boolean(projectId),
   });
   const { mutate } = useMutation({
     mutationFn: async (payload: ProjectPayload) => {
       setErrorMessages({});
       setLoading(true);
       return projectId
-        ? updateProjectAPI(payload, projectId)
+        ? updateProjectAPI(projectId, payload)
         : addProjectAPI(payload);
     },
     onSuccess: (response: any) => {
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message);
         navigate({ to: "/projects" });
-      } else if (response?.status === 422) {
-        setErrorMessages(response?.data?.errData || {});
-      } else if (response?.status === 409) {
+      } else if (response?.status === 422 || response?.status === 409) {
         setErrorMessages(response?.data?.errData || {});
       }
       setLoading(false);
     },
-    onError: (error: any) => {
-      toast.error("An error occurred. Please try again.");
-      console.error(error);
+    onError: (response: any) => {
+      toast.error(response?.message);
       setLoading(false);
-    },
-  });
-  const { isLoading, isError, error, data, isFetching } = useQuery({
-    queryKey: ["users", pagination],
-    queryFn: async () => {
-      const response = await getAllPaginatedUsersAPI({
-        pageIndex: pagination.pageIndex,
-        pageSize: pagination.pageSize,
-      });
-      setUsers(response.data?.data?.records);
-      return response;
     },
   });
   const handleInputChange = (
@@ -105,7 +124,9 @@ const AddProject = () => {
   const confirmSelection = () => {
     const newMembers = tempSelectedMember
       .map((memberValue: string) => {
-        const member = users.find((user) => user.id.toString() === memberValue);
+        const member = users.find(
+          (user: any) => user.id.toString() === memberValue
+        );
         return (
           member &&
           !selectedMembers.some((m) => m.user_id === member.id) && {
@@ -124,6 +145,7 @@ const AddProject = () => {
       selectedMembers.filter((member) => member.user_id !== userId)
     );
   };
+  // Handle form submission
   const handleSubmit = () => {
     const payload: ProjectPayload = {
       title: projectData.title,
@@ -133,22 +155,12 @@ const AddProject = () => {
     };
     mutate(payload);
   };
-  const addNewMember = (newMember: { value: number; label: string }) => {
-    if (
-      !selectedMembers.some((member: any) => member.user_id === newMember.value)
-    ) {
-      setSelectedMembers((prev: any) => [
-        ...prev,
-        { user_id: newMember.value, role: "USER" },
-      ]);
-    }
-  };
-  const getFullName = (user: any) => {
-    return `${user.fname} ${user.lname}`;
-  };
+  const getFullName = (user: any) => `${user.fname} ${user.lname}`;
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
-      <h2 className="text-2xl font-semibold">Add Project</h2>
+      <h2 className="text-2xl font-semibold">
+        {projectId ? "Edit Project" : "Add Project"}
+      </h2>
       <div className="space-y-4">
         <Input
           id="title"
@@ -158,7 +170,7 @@ const AddProject = () => {
           onChange={handleInputChange}
         />
         {errorMessages.title && (
-          <p style={{ color: "red" }}>{errorMessages?.title?.[0]}</p>
+          <p className="text-red-500">{errorMessages.title[0]}</p>
         )}
         <Input
           id="code"
@@ -168,7 +180,7 @@ const AddProject = () => {
           onChange={handleInputChange}
         />
         {errorMessages.code && (
-          <p style={{ color: "red" }}>{errorMessages?.code?.[0]}</p>
+          <p className="text-red-500">{errorMessages.code[0]}</p>
         )}
         <Textarea
           placeholder="Enter project description"
@@ -179,7 +191,7 @@ const AddProject = () => {
         />
       </div>
       <div className="space-y-4">
-        <div className="flex flex-col justify-start gap-4">
+        <div className="flex justify-start gap-4">
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-[200px]">
@@ -233,59 +245,51 @@ const AddProject = () => {
               </Command>
             </PopoverContent>
           </Popover>
-          {selectedMembers.length > 0 ? (
+          {selectedMembers?.length > 0 ? (
             <table className="min-w-full border">
               <thead>
-                <tr className="bg-gray-200">
-                  <th className="border px-4 py-2">S No</th>
-                  <th className="border px-4 py-2">Member Name</th>
-                  <th className="border px-4 py-2">Role</th>
-                  <th className="border px-4 py-2">Actions</th>
+                <tr>
+                  <th className="border p-2">Members</th>
+                  <th className="border p-2">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {selectedMembers.map((member, index) => {
-                  const memberDetails = users.find(
-                    (m) => m.id === member.user_id
-                  );
-                  return (
-                    <tr key={member.user_id} className="border-b">
-                      <td className="border px-4 py-2">{index + 1}</td>
-                      <td className="border px-4 py-2">
-                        {memberDetails ? getFullName(memberDetails) : "N/A"}
-                      </td>
-                      <td className="border px-4 py-2">{member.role}</td>
-                      <td className="border px-4 py-2">
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => removeMember(member.user_id)}
-                        >
-                          Remove
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {selectedMembers.map((member) => (
+                  <tr key={member.user_id}>
+                    <td className="border p-2">
+                      {
+                        users.find((user: any) => user.id === member.user_id)
+                          ?.fname
+                      }
+                    </td>
+                    <td className="border p-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeMember(member.user_id)}
+                      >
+                        Remove
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           ) : (
-            <p>No members selected.</p>
+            ""
           )}
         </div>
-        {errorMessages.project_members && (
-          <p style={{ color: "red" }}>{errorMessages?.project_members?.[0]}</p>
-        )}
       </div>
-      <div className="flex justify-end space-x-4">
-        <Button variant="outline" onClick={() => navigate({ to: "/projects" })}>
+      <div className="space-x-2">
+        <Button variant="ghost" onClick={() => navigate({ to: "/projects" })}>
           Cancel
         </Button>
-        <Button variant="outline" onClick={handleSubmit} disabled={loading}>
+        <Button onClick={handleSubmit}>
           {projectId ? "Update Project" : "Add Project"}
         </Button>
       </div>
-      <LoadingComponent loading={loading} />
+      <LoadingComponent loading={isFetching || isLoading || loading} />
+      {/* {loading && <LoadingComponent />} */}
     </div>
   );
 };

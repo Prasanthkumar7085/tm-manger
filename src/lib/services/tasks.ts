@@ -68,7 +68,7 @@ export const getCommentsAPI = async () => {
 
 export const deleteTaskAPI = async (id: string) => {
   try {
-    return await $fetch.get(`/tasks/${id}`);
+    return await $fetch.delete(`/tasks/${id}`);
   } catch (err: any) {
     throw err;
   }

@@ -44,7 +44,7 @@ export const addProjectAPI = async (payload: any) => {
 };
 export const updateProjectAPI = async (projectId: any, payload: any) => {
   try {
-    return await $fetch.post(`/projects/${projectId}`, payload);
+    return await $fetch.put(`/projects/${projectId}`, payload);
   } catch (err: any) {
     throw err;
   }
@@ -59,7 +59,7 @@ export const getDropDownForProjects = async () => {
 };
 export const viewProjectAPI = async (projectId: any) => {
   try {
-    return await $fetch.post(`/projects/${projectId}`);
+    return await $fetch.get(`/projects/${projectId}`);
   } catch (err: any) {
     throw err;
   }
