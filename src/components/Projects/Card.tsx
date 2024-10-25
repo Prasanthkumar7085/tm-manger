@@ -30,7 +30,7 @@ const ProjectCard = ({ project, del, setDel }: any) => {
       <div className="flex flex-col items-start justify-between">
         <div className="w-8 h-8">
           <img
-            src={"/favicon.png"}
+            src={project.logo || "/favicon.png"}
             alt="Logo"
             className="w-full h-full object-contain"
           />
