@@ -323,7 +323,7 @@ const AddProject = () => {
           {projectId ? "Update Project" : "Add Project"}
         </Button>
       </div>
-      <LoadingComponent loading={loading} />
+      <LoadingComponent loading={loading || isFetching || isLoading} />
     </div>
   );
 };
