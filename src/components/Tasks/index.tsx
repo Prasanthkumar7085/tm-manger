@@ -116,7 +116,7 @@ const Tasks = () => {
             <SearchFilter
               searchString={searchString}
               setSearchString={setSearchString}
-              title="Search By Name"
+              title="Search By Task name"
             />
             <DateRangeFilter
               dateValue={dateValue}

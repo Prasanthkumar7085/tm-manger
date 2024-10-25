@@ -14,15 +14,44 @@ export const addMembersAPI = async (projectId: any, payload: any) => {
   }
 };
 
-export const getAllMembers = async (projectId: any) => {
+export const updateMembersAPI = async (projectId: any, payload: any) => {
   try {
-    // const queryParams = {
-    //   page: pageIndex,
-    //   page_size: pageSize,
-    //   order_by: order_by,
-    // };
+    return await $fetch.put(`/projects/${projectId}/members`, payload);
+  } catch (err: any) {
+    throw err;
+  }
+};
 
-    return await $fetch.get(`projects/${projectId}/members`);
+export const getProjectMembersAPI = async (projectId: any) => {
+  try {
+    return await $fetch.get(`/projects/${projectId}/members`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+
+export const deleteMembersAPI = async (projectId: any, payload: any) => {
+  try {
+    return await $fetch.delete(`/projects/${projectId}/members`, payload);
+  } catch (err: any) {
+    throw err;
+  }
+};
+
+export const getAllMembers = async () => {
+  try {
+    return await $fetch.get(`/users/all`);
+  } catch (err) {
+    throw err;
+  }
+};
+export const getAllPaginatedUsersAPI = async ({ pageIndex, pageSize }: any) => {
+  try {
+    const queryParams = {
+      page: pageIndex,
+      page_size: pageSize,
+    };
+    return await $fetch.get("/users", queryParams);
   } catch (err) {
     throw err;
   }

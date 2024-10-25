@@ -45,20 +45,16 @@ export const updateUserStatueAPI = async (userId: any, payload: any) => {
     throw err;
   }
 };
-export const updatePasswordUsersAPI = async (payload: any) => {
+export const updateUserSelectStatueAPI = async (userId: any, payload: any) => {
   try {
-    return await $fetch.patch(`/users/update-password`, payload);
+    return await $fetch.patch(`/users/${userId}/status`, payload);
   } catch (err) {
     throw err;
   }
 };
-export const getAllPaginatedUsersAPI = async ({ pageIndex, pageSize }: any) => {
+export const resetPasswordUsersAPI = async (id: string, payload: any) => {
   try {
-    const queryParams = {
-      page: pageIndex,
-      page_size: pageSize,
-    };
-    return await $fetch.get("/users", queryParams);
+    return await $fetch.patch(`/users/${id}/reset-password`, payload);
   } catch (err) {
     throw err;
   }
@@ -66,6 +62,16 @@ export const getAllPaginatedUsersAPI = async ({ pageIndex, pageSize }: any) => {
 export const deleteProjectAPI = async (id: number) => {
   try {
     return await $fetch.delete(`/projects/${id}`);
+  } catch (err) {
+    throw err;
+  }
+};
+export const getSingleUserAPI = async (id: string | undefined) => {
+  const queryParams = {
+    metadata: true,
+  };
+  try {
+    return await $fetch.get(`/users/${id}`, queryParams);
   } catch (err) {
     throw err;
   }
