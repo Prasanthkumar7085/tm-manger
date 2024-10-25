@@ -247,7 +247,7 @@ const AddProject = () => {
                         users.map((user: any) => (
                           <CommandItem
                             key={user.id}
-                            value={user.id.toString()}
+                            value={getFullName(user)}
                             onSelect={() => toggleValue(user.id.toString())}
                             disabled={selectedMembers.some(
                               (m: any) => m.user_id === user.id
