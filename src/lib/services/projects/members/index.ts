@@ -14,17 +14,8 @@ export const addMembersAPI = async (projectId: any, payload: any) => {
   }
 };
 
-export const getAllMembers = async ({
-  pageIndex,
-  pageSize,
-  projectId,
-}: any) => {
+export const getAllMembers = async () => {
   try {
-    const queryParams = {
-      page: pageIndex,
-      page_size: pageSize,
-    };
-
     return await $fetch.get(`/users/all`);
   } catch (err) {
     throw err;

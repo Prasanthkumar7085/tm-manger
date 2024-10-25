@@ -28,7 +28,8 @@ import { useNavigate, useParams } from "@tanstack/react-router";
 import LoadingComponent from "@/components/core/LoadingComponent";
 import { getAllMembers } from "@/lib/services/projects/members";
 import { errPopper } from "@/lib/helpers/errPopper";
-import { i } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
+import { roleConstants } from "@/lib/helpers/statusConstants";
+
 interface ProjectPayload {
   title: string;
   description: string;
@@ -51,13 +52,11 @@ const AddProject = () => {
   const [open, setOpen] = useState(false);
   const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
   const { isLoading: isUsersLoading } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const response = await getAllMembers({
-        pageIndex: 1,
-        pageSize: 10,
-      });
+      const response = await getAllMembers();
       if (response?.data?.data && Array.isArray(response.data.data)) {
         setUsers(response.data.data);
       } else {
@@ -66,6 +65,7 @@ const AddProject = () => {
       return response;
     },
   });
+
   const { isFetching, isLoading } = useQuery({
     queryKey: ["getSingleProject", projectId],
     queryFn: async () => {
@@ -285,9 +285,16 @@ const AddProject = () => {
                         onChange={(e) =>
                           changeRole(member.user_id, e.target.value)
                         }
+                        className="border p-1 rounded"
                       >
-                        <option value="ADMIN">Admin</option>
-                        <option value="MANAGER">Manager</option>
+                        {roleConstants.map((memberConstant) => (
+                          <option
+                            key={memberConstant.value}
+                            value={memberConstant.value}
+                          >
+                            {memberConstant.label}
+                          </option>
+                        ))}
                       </select>
                     </td>
                     <td className="border p-2">

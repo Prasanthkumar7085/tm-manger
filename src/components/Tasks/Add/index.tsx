@@ -15,19 +15,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { getDropDownForProjects } from "@/lib/services/projects";
+import { getAllMembers } from "@/lib/services/projects/members";
 import { addTasksAPI } from "@/lib/services/tasks";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import React, { useState } from "react";
+import { DatePicker } from "rsuite";
 import { toast } from "sonner";
-
-const usersList = [
-  { name: "SUNDAR", id: 2 },
-  { name: "Prasad", id: 8 },
-  { name: "John", id: 9 },
-  { name: "Test", id: 12 },
-];
 
 const AddTask = () => {
   const navigate = useNavigate();
@@ -47,6 +42,7 @@ const AddTask = () => {
   const [openUsers, setOpenUsers] = useState(false);
   const [errorMessages, setErrorMessages] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
+  const [users, setUsers] = useState<any[]>([]);
 
   const handleChange = (e: any) => {
     setTask({ ...task, [e.target.name]: e.target.value });
@@ -54,22 +50,30 @@ const AddTask = () => {
 
   const handleTagSubmit = () => {
     if (tagInput.trim() && !task.tags.includes(tagInput.trim())) {
+      setErrorMessages((prev: any) => ({
+        ...prev,
+        tags: [""],
+      }));
       setTask((prev: any) => ({
         ...prev,
         tags: [...prev.tags, tagInput.trim()],
       }));
       setTagInput("");
     }
+    if (task.tags.includes(tagInput.trim())) {
+      setErrorMessages((prev: any) => ({
+        ...prev,
+        tags: ["Tag already exists"],
+      }));
+    }
   };
 
-  const { isLoading, isError, error, data, isFetching } = useQuery({
-    queryKey: ["projects"],
-    queryFn: async () => {
-      const response = await getDropDownForProjects();
-      setProjectsList(response.data?.data);
-      return response;
-    },
-  });
+  const handleTagDelete = (tag: any) => {
+    setTask((prev: any) => ({
+      ...prev,
+      tags: prev.tags.filter((t: any) => t !== tag),
+    }));
+  };
 
   const handleProjectSelect = (project: any) => {
     setTask((prev: any) => ({
@@ -98,6 +102,7 @@ const AddTask = () => {
     mutate(payload);
   };
 
+  //to add the task in the database
   const { mutate } = useMutation({
     mutationFn: async (payload: any) => {
       setErrorMessages({});
@@ -119,6 +124,30 @@ const AddTask = () => {
       toast.error("An error occurred. Please try again.");
       console.error(error);
       setLoading(false);
+    },
+  });
+
+  //to get the projects
+  const { isLoading, isError, error, data, isFetching } = useQuery({
+    queryKey: ["projects"],
+    queryFn: async () => {
+      const response = await getDropDownForProjects();
+      setProjectsList(response.data?.data);
+      return response;
+    },
+  });
+
+  //to get the users
+  const { isLoading: isUsersLoading } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const response = await getAllMembers();
+      if (response?.data?.data && Array.isArray(response.data.data)) {
+        setUsers(response.data.data);
+      } else {
+        setUsers([]);
+      }
+      return response;
     },
   });
 
@@ -190,6 +219,7 @@ const AddTask = () => {
                     {errorMessages?.project_id?.[0]}
                   </p>
                 )}
+
                 <div className="mb-4">
                   <label className="block text-gray-700 font-bold mb-2">
                     Task Title
@@ -224,10 +254,6 @@ const AddTask = () => {
                     </p>
                   )}
                 </div>
-
-                <div className="mb-4">
-                  <UploadFiles />
-                </div>
               </div>
 
               <div>
@@ -235,13 +261,21 @@ const AddTask = () => {
                   <label className="block text-gray-700 font-bold mb-2">
                     Due Date
                   </label>
-                  <input
-                    type="date"
+                  <DatePicker
                     name="due_date"
                     value={task.due_date}
-                    onChange={handleChange}
+                    onChange={(date: any) =>
+                      handleChange({
+                        target: { name: "due_date", value: date },
+                      })
+                    }
+                    placeholder="Select Due Date"
+                    editable={false}
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    disabledDate={(date: any) => date < new Date()}
+                    style={{ width: "100%" }}
                   />
+
                   {errorMessages.due_date && (
                     <p style={{ color: "red" }}>
                       {errorMessages?.due_date?.[0]}
@@ -302,23 +336,18 @@ const AddTask = () => {
                   )}
                   <div className="flex flex-wrap mt-2">
                     {task.tags.map((tag: any, index: number) => (
-                      <span
+                      <div
                         key={index}
-                        className="inline-block mt-2 px-3 py-1 bg-green-100 text-green-800 text-sm rounded mr-2"
+                        className="flex items-center mt-2 px-3 py-1 bg-green-100 text-green-800 text-sm rounded mr-2"
                       >
                         {tag}
-                        <button
-                          className="ml-1 text-red-500"
-                          onClick={() =>
-                            setTask((prev: any) => ({
-                              ...prev,
-                              tags: prev.tags.filter((t: any) => t !== tag),
-                            }))
-                          }
+                        <p
+                          className="ml-1 text-red-500 rotate-[45deg] cursor-pointer"
+                          onClick={() => handleTagDelete(tag)}
                         >
-                          &times;
-                        </button>
-                      </span>
+                          +
+                        </p>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -331,7 +360,9 @@ const AddTask = () => {
                     <PopoverTrigger asChild>
                       <Button variant="outline" className="w-full">
                         {task.users.length > 0
-                          ? task.users.map((user: any) => user.name).join(", ")
+                          ? task.users
+                              .map((user: any) => user.fname + " " + user.lname)
+                              .join(", ")
                           : "Select Users"}
                         <ChevronsUpDown className="ml-2 h-4 w-4" />
                       </Button>
@@ -342,7 +373,7 @@ const AddTask = () => {
                         <CommandList>
                           <CommandEmpty>No Users found.</CommandEmpty>
                           <CommandGroup>
-                            {usersList.map((user) => (
+                            {users.map((user) => (
                               <CommandItem
                                 key={user.id}
                                 onSelect={() => handleUserSelect(user)}
@@ -357,7 +388,7 @@ const AddTask = () => {
                                       : 0.5,
                                   }}
                                 />
-                                {user.name}
+                                {user.fname} {user.lname}
                               </CommandItem>
                             ))}
                           </CommandGroup>
@@ -377,6 +408,7 @@ const AddTask = () => {
               >
                 Cancel
               </Button>
+
               <Button
                 type="submit"
                 className="px-6 py-2 bg-blue-600 text-white rounded-md"
