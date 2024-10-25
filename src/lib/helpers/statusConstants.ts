@@ -10,7 +10,7 @@ export const statusConstants = [
 ];
 export const roleConstants = [
   { value: "ADMIN", label: "Admin" },
-  { value: "SUPER_ADMIN", label: "Super Admin" },
+  // { value: "SUPER_ADMIN", label: "Super Admin" },
   { value: "MANAGER", label: "Manager" },
   { value: "USER", label: "User" },
 
