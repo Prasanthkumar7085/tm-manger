@@ -32,6 +32,7 @@ import { userTypes } from "@/utils/conistance/users";
 import Loading from "../core/Loading";
 import DeleteDialog from "../core/deleteDialog";
 import SheetRover from "../core/SheetRover";
+import { StatusFilter } from "../core/StatusFilter";
 
 interface ReportPayload {
   full_name: string;
@@ -50,6 +51,7 @@ function UsersTable() {
     ? searchParams.get("order_by")
     : "";
   const initialSearch = searchParams.get("search") || "";
+  const initialStatus = searchParams.get("status") || "";
   const [searchString, setSearchString] = useState(initialSearch);
   const [loading, setLoading] = useState(false);
   const [userTypeOpen, setUserTypeOpen] = useState(false);
@@ -63,6 +65,7 @@ function UsersTable() {
   const [del, setDel] = useState(1);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [isPasswordSheetOpen, setIsPasswordSheetOpen] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState(initialStatus);
   const [selectedUserId, setSelectedUserId] = useState<any>(null);
   const [newPassword, setNewPassword] = useState("");
 
@@ -84,13 +87,14 @@ function UsersTable() {
   });
 
   const { isLoading, isError, error, data, isFetching } = useQuery({
-    queryKey: ["users", pagination, debouncedSearch, del],
+    queryKey: ["users", pagination, debouncedSearch, del, selectedStatus],
     queryFn: async () => {
       const response = await getAllPaginatedUsers({
         pageIndex: pagination.pageIndex,
         pageSize: pagination.pageSize,
         order_by: pagination.order_by,
         search: debouncedSearch || undefined,
+        active: selectedStatus,
       });
 
       const queryParams = {
@@ -98,6 +102,7 @@ function UsersTable() {
         page_size: +pagination.pageSize,
         order_by: pagination.order_by ? pagination.order_by : undefined,
         search: debouncedSearch || undefined,
+        active: selectedStatus || undefined,
       };
       router.navigate({
         to: "/users",
@@ -196,7 +201,7 @@ function UsersTable() {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
-      if (searchString) {
+      if (searchString || selectedStatus) {
         getAllUsers({
           pageIndex: 1,
           pageSize: pageSizeParam,
@@ -213,7 +218,7 @@ function UsersTable() {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString]);
+  }, [searchString, selectedStatus]);
 
   const usersData =
     addSerial(
@@ -364,6 +369,7 @@ function UsersTable() {
           setSearchString={setSearchString}
           title={"Search User"}
         />
+        <StatusFilter value={selectedStatus} setValue={setSelectedStatus} />
         <Button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={handleDrawerOpen}

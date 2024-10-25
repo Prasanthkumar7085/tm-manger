@@ -108,7 +108,7 @@ const AddProject = () => {
       } else if (response?.status === 422) {
         setErrorMessages(response?.data?.errData || {});
       } else if (response?.status === 409) {
-        setInvalidErrors(response?.data?.message);
+        setInvalidErrors(response?.data?.errData);
       }
       setLoading(false);
     },
@@ -196,7 +196,9 @@ const AddProject = () => {
         {errorMessages.title && (
           <p className="text-red-500">{errorMessages.title[0]}</p>
         )}
-        {invalidErrors && <p className="text-red-500">{invalidErrors}</p>}
+        {invalidErrors?.title && (
+          <p className="text-red-500">{invalidErrors.title}</p>
+        )}
 
         <Input
           id="code"
@@ -208,7 +210,9 @@ const AddProject = () => {
         {errorMessages.code && (
           <p className="text-red-500">{errorMessages.code[0]}</p>
         )}
-        {invalidErrors && <p className="text-red-500">{invalidErrors}</p>}
+        {invalidErrors?.code && (
+          <p className="text-red-500">{invalidErrors.code}</p>
+        )}
         <Textarea
           placeholder="Enter project description"
           id="description"

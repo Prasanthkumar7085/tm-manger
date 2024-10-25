@@ -4,6 +4,7 @@ interface GetAllPaginatedUsersPropTypes {
   pageSize: number;
   order_by: any;
   search: any;
+  active: any;
 }
 
 export const getAllPaginatedUsers = async ({
@@ -11,6 +12,7 @@ export const getAllPaginatedUsers = async ({
   pageSize,
   order_by,
   search,
+  active,
 }: GetAllPaginatedUsersPropTypes) => {
   try {
     const queryParams = {
@@ -18,6 +20,7 @@ export const getAllPaginatedUsers = async ({
       page_size: pageSize,
       order_by: order_by,
       search_string: search,
+      active: active,
     };
     return await $fetch.get("/users", queryParams);
   } catch (err) {

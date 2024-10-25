@@ -207,7 +207,9 @@ const Projects = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto h-[70vh] mt-3">
         {projectsData.length === 0 && isLoading == false ? (
-          <div className="col-span-full text-center">No Projects Found</div>
+          <div className="col-span-full text-center">
+            <img src="table/nodata.svg" />
+          </div>
         ) : (
           projectsData.map((project: any) => (
             <ProjectCard
