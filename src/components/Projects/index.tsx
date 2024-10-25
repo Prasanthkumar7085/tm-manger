@@ -11,6 +11,8 @@ import Pagination from "../core/Pagination";
 import DateRangeFilter from "../core/DateRangePicker";
 import LoadingComponent from "../core/LoadingComponent";
 import SortDropDown from "../core/CommonComponents/SortDropDown";
+import useUsersHook from "./useUsersHook";
+import Select from "react-select";
 
 const Projects = () => {
   const navigate = useNavigate();
@@ -37,6 +39,9 @@ const Projects = () => {
   );
   const [selectedSort, setSelectedSort] = useState(orderBY);
   const [del, setDel] = useState<any>();
+  const { users, loading: usersLoading, error: usersError } = useUsersHook();
+
+  // Transform usersData into react-select format
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
@@ -126,6 +131,13 @@ const Projects = () => {
     const end = endDate ? new Date(endDate) : null;
     setDateValue([start, end]);
   };
+  const userOptions = Array.isArray(users)
+    ? users.map((user: any) => ({
+        value: user.id,
+        label: `${user.fname} ${user.lname}`,
+      }))
+    : [];
+  console.log(userOptions, "op");
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -158,9 +170,18 @@ const Projects = () => {
           title="Search By Name"
         />
         <StatusFilter value={selectedStatus} setValue={setSelectedStatus} />
-        <DateRangeFilter
+        {/* <DateRangeFilter
           dateValue={dateValue}
           onChangeData={handleDateChange}
+        /> */}
+        <Select
+          isMulti
+          options={userOptions}
+          placeholder="Select User"
+          isClearable
+          isLoading={usersLoading}
+          onChange={(selectedOption) => {}}
+          className="w-200"
         />
         <SortDropDown
           selectedSort={selectedSort}
