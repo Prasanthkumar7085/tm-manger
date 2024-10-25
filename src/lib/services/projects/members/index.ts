@@ -14,15 +14,29 @@ export const addMembersAPI = async (projectId: any, payload: any) => {
   }
 };
 
-export const getAllMembers = async (projectId: any) => {
+export const getAllMembers = async ({
+  pageIndex,
+  pageSize,
+  projectId,
+}: any) => {
   try {
-    // const queryParams = {
-    //   page: pageIndex,
-    //   page_size: pageSize,
-    //   order_by: order_by,
-    // };
+    const queryParams = {
+      page: pageIndex,
+      page_size: pageSize,
+    };
 
-    return await $fetch.get(`projects/${projectId}/members`);
+    return await $fetch.get(`/users/all`);
+  } catch (err) {
+    throw err;
+  }
+};
+export const getAllPaginatedUsersAPI = async ({ pageIndex, pageSize }: any) => {
+  try {
+    const queryParams = {
+      page: pageIndex,
+      page_size: pageSize,
+    };
+    return await $fetch.get("/users", queryParams);
   } catch (err) {
     throw err;
   }

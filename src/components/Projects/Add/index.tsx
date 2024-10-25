@@ -26,7 +26,7 @@ import {
 } from "@/lib/services/projects";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import LoadingComponent from "@/components/core/LoadingComponent";
-import { getAllPaginatedUsersAPI } from "@/lib/services/users";
+import { getAllMembers } from "@/lib/services/projects/members";
 import { errPopper } from "@/lib/helpers/errPopper";
 import { i } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 interface ProjectPayload {
@@ -54,11 +54,18 @@ const AddProject = () => {
   const { isLoading: isUsersLoading } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const response = await getAllPaginatedUsersAPI({
+      const response = await getAllMembers({
         pageIndex: 1,
         pageSize: 10,
       });
-      setUsers(response.data?.data?.records);
+
+      // Ensure users is correctly set as an array
+      if (response?.data?.data && Array.isArray(response.data.data)) {
+        setUsers(response.data.data);
+      } else {
+        setUsers([]); // Fallback to empty array if not
+      }
+
       return response;
     },
   });
@@ -123,7 +130,7 @@ const AddProject = () => {
   };
   const confirmSelection = () => {
     const newMembers = tempSelectedMember
-      .map((memberValue: string) => {
+      ?.map((memberValue: string) => {
         const member = users.find(
           (user: any) => user.id.toString() === memberValue
         );
@@ -136,6 +143,8 @@ const AddProject = () => {
         );
       })
       .filter(Boolean);
+    console.log(newMembers, "meme");
+
     setSelectedMembers((prev) => [...prev, ...newMembers]);
     setTempSelectedMember([]);
     setOpen(false);
@@ -156,6 +165,10 @@ const AddProject = () => {
     mutate(payload);
   };
   const getFullName = (user: any) => `${user.fname} ${user.lname}`;
+  const handleNavigation = () => {
+    navigate({ to: "/projects" });
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
       <h2 className="text-2xl font-semibold">
@@ -203,26 +216,27 @@ const AddProject = () => {
                 <CommandInput placeholder="Search Members" />
                 <CommandList>
                   <CommandGroup>
-                    {users.map((user: any) => (
-                      <CommandItem
-                        key={user.id}
-                        value={user.id.toString()}
-                        onSelect={() => toggleValue(user.id.toString())}
-                        disabled={selectedMembers.some(
-                          (m: any) => m.user_id === user.id
-                        )}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            tempSelectedMember.includes(user.id.toString())
-                              ? "opacity-100"
-                              : "opacity-0"
+                    {Array.isArray(users) &&
+                      users.map((user: any) => (
+                        <CommandItem
+                          key={user.id}
+                          value={user.id.toString()}
+                          onSelect={() => toggleValue(user.id.toString())}
+                          disabled={selectedMembers.some(
+                            (m: any) => m.user_id === user.id
                           )}
-                        />
-                        {getFullName(user)}
-                      </CommandItem>
-                    ))}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              tempSelectedMember.includes(user.id.toString())
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {getFullName(user)}
+                        </CommandItem>
+                      ))}
                   </CommandGroup>
                   <CommandEmpty>No members found.</CommandEmpty>
                 </CommandList>
@@ -245,7 +259,7 @@ const AddProject = () => {
               </Command>
             </PopoverContent>
           </Popover>
-          {selectedMembers?.length > 0 ? (
+          {selectedMembers.length > 0 && (
             <table className="min-w-full border">
               <thead>
                 <tr>
@@ -275,21 +289,26 @@ const AddProject = () => {
                 ))}
               </tbody>
             </table>
-          ) : (
-            ""
           )}
         </div>
+        <div className="flex">
+          <Button onClick={handleNavigation}>Cancel</Button>
+
+          <Button
+            onClick={handleSubmit}
+            disabled={loading || isFetching}
+            className="w-full"
+          >
+            {loading ? (
+              <LoadingComponent loading />
+            ) : (
+              <span>{projectId ? "Update Project" : "Add Project"}</span>
+            )}
+          </Button>
+        </div>
       </div>
-      <div className="space-x-2">
-        <Button variant="ghost" onClick={() => navigate({ to: "/projects" })}>
-          Cancel
-        </Button>
-        <Button onClick={handleSubmit}>
-          {projectId ? "Update Project" : "Add Project"}
-        </Button>
-      </div>
-      <LoadingComponent loading={isFetching || isLoading || loading} />
-      {/* {loading && <LoadingComponent />} */}
+
+      {isUsersLoading && <LoadingComponent loading />}
     </div>
   );
 };
