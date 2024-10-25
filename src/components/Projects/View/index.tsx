@@ -73,7 +73,7 @@ const ProjectView = () => {
         ""
       )}
 
-      <Loading loading={isLoading || isFetching} />
+      <LoadingComponent loading={isLoading || isFetching} />
     </div>
   );
 };

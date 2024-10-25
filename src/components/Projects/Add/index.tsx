@@ -46,6 +46,8 @@ const AddProject = () => {
     code: "",
   });
   const [errorMessages, setErrorMessages] = useState<any>({});
+  const [invalidErrors, setInvalidErrors] = useState<any>();
+  console.log(invalidErrors, "invalid");
   const [selectedMembers, setSelectedMembers] = useState<
     { user_id: number; role: string }[]
   >([]);
@@ -99,11 +101,14 @@ const AddProject = () => {
         : addProjectAPI(payload);
     },
     onSuccess: (response: any) => {
+      console.log(response, "ikik");
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message);
         navigate({ to: "/projects" });
-      } else if (response?.status === 422 || response?.status === 409) {
+      } else if (response?.status === 422) {
         setErrorMessages(response?.data?.errData || {});
+      } else if (response?.status === 409) {
+        setInvalidErrors(response?.data?.message);
       }
       setLoading(false);
     },
@@ -168,8 +173,11 @@ const AddProject = () => {
     mutate(payload);
   };
 
+  const capitalize = (word: string) =>
+    word.charAt(0).toUpperCase() + word.slice(1);
+
   const getFullName = (user: any) => {
-    return `${user.fname} ${user.lname}`;
+    return `${capitalize(user.fname)} ${capitalize(user.lname)}`;
   };
 
   return (
@@ -188,6 +196,8 @@ const AddProject = () => {
         {errorMessages.title && (
           <p className="text-red-500">{errorMessages.title[0]}</p>
         )}
+        {invalidErrors && <p className="text-red-500">{invalidErrors}</p>}
+
         <Input
           id="code"
           placeholder="Enter Code"
@@ -198,6 +208,7 @@ const AddProject = () => {
         {errorMessages.code && (
           <p className="text-red-500">{errorMessages.code[0]}</p>
         )}
+        {invalidErrors && <p className="text-red-500">{invalidErrors}</p>}
         <Textarea
           placeholder="Enter project description"
           id="description"
@@ -206,115 +217,122 @@ const AddProject = () => {
           onChange={handleInputChange}
         />
       </div>
-      <div className="space-y-4">
-        <div className="flex flex-col justify-start gap-4">
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className="w-[200px]">
-                Select Members
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0 bg-white border">
-              <Command>
-                <CommandInput placeholder="Search Members" />
-                <CommandList>
-                  <CommandGroup>
-                    {Array.isArray(users) &&
-                      users.map((user: any) => (
-                        <CommandItem
-                          key={user.id}
-                          value={user.id.toString()}
-                          onSelect={() => toggleValue(user.id.toString())}
-                          disabled={selectedMembers.some(
-                            (m: any) => m.user_id === user.id
-                          )}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              tempSelectedMember.includes(user.id.toString())
-                                ? "opacity-100"
-                                : "opacity-0"
+      {projectId ? (
+        " "
+      ) : (
+        <div className="space-y-4">
+          <div className="flex flex-col justify-start gap-4">
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-[200px]">
+                  Select Members
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[200px] p-0 bg-white border">
+                <Command>
+                  <CommandInput placeholder="Search Members" />
+                  <CommandList>
+                    <CommandGroup>
+                      {Array.isArray(users) &&
+                        users.map((user: any) => (
+                          <CommandItem
+                            key={user.id}
+                            value={getFullName(user)}
+                            onSelect={() => toggleValue(user.id.toString())}
+                            disabled={selectedMembers.some(
+                              (m: any) => m.user_id === user.id
                             )}
-                          />
-                          {getFullName(user)}
-                        </CommandItem>
-                      ))}
-                  </CommandGroup>
-                  <CommandEmpty>No members found.</CommandEmpty>
-                </CommandList>
-                <div className="flex justify-end space-x-2 p-2 border-t">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setTempSelectedMember([])}
-                  >
-                    Clear
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={confirmSelection}
-                  >
-                    Confirm
-                  </Button>
-                </div>
-              </Command>
-            </PopoverContent>
-          </Popover>
-          {selectedMembers.length > 0 && (
-            <table className="min-w-full border">
-              <thead>
-                <tr>
-                  <th className="border p-2">Members</th>
-                  <th className="border p-2">Role</th>
-                  <th className="border p-2">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedMembers.map((member) => (
-                  <tr key={member.user_id}>
-                    <td className="border p-2">
-                      {getFullName(
-                        users.find((user: any) => user.id === member.user_id)
-                      )}
-                    </td>
-                    <td className="border p-2">
-                      <select
-                        value={member.role}
-                        onChange={(e) =>
-                          changeRole(member.user_id, e.target.value)
-                        }
-                        className="border p-1 rounded"
-                      >
-                        {roleConstants.map((memberConstant) => (
-                          <option
-                            key={memberConstant.value}
-                            value={memberConstant.value}
                           >
-                            {memberConstant.label}
-                          </option>
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                tempSelectedMember.includes(user.id.toString())
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                            {getFullName(user)}
+                          </CommandItem>
                         ))}
-                      </select>
-                    </td>
-                    <td className="border p-2">
-                      <button
-                        type="button"
-                        onClick={() => removeMember(member.user_id)}
-                      >
-                        <X className="w-4 h-4 text-red-500" />
-                      </button>
-                    </td>
+                    </CommandGroup>
+                    <CommandEmpty>No members found.</CommandEmpty>
+                  </CommandList>
+                  <div className="flex justify-end space-x-2 p-2 border-t">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setTempSelectedMember([])}
+                    >
+                      Clear
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={confirmSelection}
+                    >
+                      Confirm
+                    </Button>
+                  </div>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            {selectedMembers.length > 0 && (
+              <table className="min-w-full border">
+                <thead>
+                  <tr>
+                    <th className="border p-2">Members</th>
+                    <th className="border p-2">Role</th>
+                    <th className="border p-2">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {selectedMembers.map((member) => (
+                    <tr key={member.user_id}>
+                      <td className="border p-2">
+                        {getFullName(
+                          users.find((user: any) => user.id === member.user_id)
+                        )}
+                      </td>
+                      <td className="border p-2">
+                        <select
+                          value={member.role}
+                          onChange={(e) =>
+                            changeRole(member.user_id, e.target.value)
+                          }
+                          className="border p-1 rounded"
+                        >
+                          {roleConstants.map((memberConstant) => (
+                            <option
+                              key={memberConstant.value}
+                              value={memberConstant.value}
+                            >
+                              {memberConstant.label}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="border p-2">
+                        <button
+                          type="button"
+                          onClick={() => removeMember(member.user_id)}
+                        >
+                          <span title="remove">
+                            <X className="w-4 h-4 text-red-500" />
+                          </span>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+          {errorMessages.project_members && (
+            <p className="text-red-500">{errorMessages.project_members[0]}</p>
           )}
         </div>
-        {errorMessages.project_members && (
-          <p className="text-red-500">{errorMessages.project_members[0]}</p>
-        )}
-      </div>
+      )}
+
       <div className="flex justify-end space-x-4">
         <Button variant="outline" onClick={() => navigate({ to: "/projects" })}>
           Cancel

@@ -26,6 +26,7 @@ import {
   CommandGroup,
   CommandEmpty,
 } from "@/components/ui/command";
+import LoadingComponent from "@/components/core/LoadingComponent";
 
 const ProjectMembersManagment = () => {
   const { projectId } = useParams({ strict: false });
@@ -203,27 +204,25 @@ const ProjectMembersManagment = () => {
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                role="combobox"
-                aria-expanded={open}
                 className="w-[200px]"
-                onCanPlay={() => setTempSelectedMember([])}
+                onClick={() => setTempSelectedMember([])}
               >
-                Select Active Members
+                Select Members
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0 bg-white border">
               <Command>
                 <CommandInput placeholder="Search Members" />
-                <CommandList className="h-[200px]">
+                <CommandList className="max-h-[200px]">
                   <CommandGroup>
                     {Array.isArray(users) &&
                       users.map((user: any) => (
                         <CommandItem
                           key={user.id}
-                          value={user.id.toString()}
+                          value={getFullName(user)}
                           onSelect={() => toggleValue(user.id.toString())}
                           disabled={selectedMembers.some(
-                            (m: any) => m.id == user.id
+                            (m: any) => m.user_id === user.id
                           )}
                         >
                           <Check
@@ -305,6 +304,7 @@ const ProjectMembersManagment = () => {
           "No members found"
         )}
       </div>
+      <LoadingComponent loading={loading || isLoading || isFetching} />
     </div>
   );
 };
