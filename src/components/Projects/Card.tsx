@@ -43,7 +43,7 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
             className="cursor-pointer"
             onClick={() => {
               navigate({
-                to: "/projects/view",
+                to: `/projects/view/${project.id}`,
               });
             }}
           />

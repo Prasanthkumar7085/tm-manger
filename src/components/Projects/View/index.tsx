@@ -1,99 +1,62 @@
-import completedTasksIcon from "@/assets/completed-tasks-icon.svg";
-import inprogressTasksIcon from "@/assets/inprogress-tasks-icon.svg";
-import overDueTasksIcon from "@/assets/overdue-tasks-icon.svg";
-import todoTasksIcon from "@/assets/todo-tasks-icon.svg";
-import totalTasksicon from "@/assets/total-tasks-icon.svg";
-import { Card, CardContent } from "@/components/ui/card";
-import CountUp from "react-countup";
+import { useQuery } from "@tanstack/react-query";
+import ProjectTasksCounts from "./ProjectTasksCounts";
+import { useParams } from "@tanstack/react-router";
+import { viewProjectAPI } from "@/lib/services/projects";
+import { useState } from "react";
+import dayjs from "dayjs";
+import LoadingComponent from "@/components/core/LoadingComponent";
 
 const ProjectView = () => {
+  const { projectId } = useParams({ strict: false });
+
+  const [projectDetails, setProjectDetails] = useState<any>({});
+
+  const { isFetching, isLoading } = useQuery({
+    queryKey: ["getSingleProject", projectId],
+    queryFn: async () => {
+      if (!projectId) return;
+      try {
+        const response = await viewProjectAPI(projectId);
+        if (response.success) {
+          const data = response.data?.data;
+          setProjectDetails(data);
+        } else {
+          throw response;
+        }
+      } catch (errData) {
+        console.error(errData);
+      }
+    },
+    enabled: Boolean(projectId),
+  });
+
   return (
-    <div className="flex flex-col justify-between  space-x-4 py-4 w-full">
-      <div className="flex justify-between items-center gap-4 py-4 bg-gradient-to-rrounded-lg  px-6">
-        {/* Total Tasks */}
-        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
-          <div className="flex flex-col">
-            <h3 className="text-gray-700 text-sm font-semibold">Total Tasks</h3>
-            <CardContent className="text-2xl font-bold text-gray-800">
-              <CountUp end={1000} duration={2.5} />
-            </CardContent>
-          </div>
-          <img
-            src={totalTasksicon}
-            alt="Total Tasks"
-            className="w-12 h-12 ml-auto"
-          />
-        </Card>
-
-        {/* To Do */}
-        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
-          <div className="flex flex-col">
-            <h3 className="text-gray-700 text-sm font-semibold">To Do</h3>
-            <CardContent className="text-2xl font-bold text-purple-600">
-              <CountUp end={100} duration={2.5} />
-            </CardContent>
-          </div>
-          <img
-            src={todoTasksIcon}
-            alt="To Do Tasks"
-            className="w-12 h-12 ml-auto"
-          />
-        </Card>
-
-        {/* In Progress */}
-        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
-          <div className="flex flex-col">
-            <h3 className="text-gray-700 text-sm font-semibold">In Progress</h3>
-            <CardContent className="text-2xl font-bold text-blue-500">
-              <CountUp end={700} duration={2.5} />
-            </CardContent>
-          </div>
-          <img
-            src={inprogressTasksIcon}
-            alt="In Progress Tasks"
-            className="w-12 h-12 ml-auto"
-          />
-        </Card>
-
-        {/* Overdue */}
-        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
-          <div className="flex flex-col">
-            <h3 className="text-gray-700 text-sm font-semibold">Overdue</h3>
-            <CardContent className="text-2xl font-bold text-red-600">
-              <CountUp end={100} duration={2.5} />
-            </CardContent>
-          </div>
-          <img
-            src={overDueTasksIcon}
-            alt="Overdue Tasks"
-            className="w-12 h-12 ml-auto"
-          />
-        </Card>
-
-        {/* Completed */}
-        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
-          <div className="flex flex-col">
-            <h3 className="text-gray-700 text-sm font-semibold">Completed</h3>
-            <CardContent className="text-2xl font-bold text-green-600">
-              <CountUp end={100} duration={2.5} />
-            </CardContent>
-          </div>
-          <img
-            src={completedTasksIcon}
-            alt="Completed Tasks"
-            className="w-12 h-12 ml-auto"
-          />
-        </Card>
+    <div className="flex flex-col justify-between py-4 w-full">
+      <div>
+        <ProjectTasksCounts />
       </div>
 
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-2 w-full justify-between">
         <div>
-          <h2 className="text-xl font-semibold">DLW Gowtham</h2>
-          <p className="text-sm text-gray-500">
-            Add all Sales Repo Monthly Targets for UTI
-          </p>
+          <h2 className="text-xl font-semibold">{projectDetails?.title}</h2>
+          <p className="text-sm text-gray-500">{projectDetails?.description}</p>
+        </div>
+        <div className="flex flex-row items-center gap-4">
+          <div>
+            <h2 className="text-sm font-semibold">Created at</h2>
+            <p className="text-sm text-gray-500">
+              {dayjs(projectDetails?.created_at).format("MM-DD-YYYY")}
+            </p>
+          </div>
+          <div>
+            <h2 className="text-sm font-semibold">Created by</h2>
+            <p className="text-sm text-gray-500">
+              {projectDetails?.created_by}
+            </p>
+          </div>
         </div>
       </div>
+      <LoadingComponent loading={isLoading || isFetching} />
     </div>
   );
 };
