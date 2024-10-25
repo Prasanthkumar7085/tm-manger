@@ -54,10 +54,10 @@ export const taskColumns = () => {
       minWidth: "60px",
     },
     {
-      accessorFn: (row: any) => row.project,
-      id: "project",
+      accessorFn: (row: any) => row.project_title,
+      id: "project_title",
       cell: (info: any) => {
-        return <span>{"Labsquire Core"}</span>;
+        return <span>{info.getValue()}</span>;
       },
       width: "150px",
       maxWidth: "150px",

@@ -116,7 +116,7 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
 
         {/* Action buttons */}
         <div className="flex gap-3">
-          <span title="view">
+          <span title="view" className="cursor-pointer">
             <Eye
               height={16}
               width={16}
