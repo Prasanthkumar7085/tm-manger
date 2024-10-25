@@ -32,7 +32,7 @@ export const getProjectMembersAPI = async (projectId: any) => {
 
 export const deleteMembersAPI = async (projectId: any, payload: any) => {
   try {
-    return await $fetch.delete(`/projects/${projectId}/members`);
+    return await $fetch.delete(`/projects/${projectId}/members`, payload);
   } catch (err: any) {
     throw err;
   }

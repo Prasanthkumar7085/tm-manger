@@ -37,7 +37,9 @@ const ProjectMembersManagment = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [users, setUsers] = useState<any[]>([]);
   const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
-
+  const [updatedOrNot, setUpdatedOrNot] = useState<boolean>(false);
+  const [updating, setUpdating] = useState<any>(0);
+  console.log(updating, "upfdsa");
   const getFullName = (user: any) => {
     return `${user?.fname || ""} ${user?.lname || ""}`;
   };
@@ -63,10 +65,11 @@ const ProjectMembersManagment = () => {
     setSelectedMembers((prev: any) => [...prev, ...newMembers]);
     setTempSelectedMember([]);
     setOpen(false);
-    let allMembers = [...selectedMembers, ...newMembers];
+    let allMembers = [...newMembers];
     let payload = allMembers.map((member: any) => {
       return { user_id: member.id, role: member.role };
     });
+    setUpdatedOrNot(false);
     mutate({
       project_members: payload,
     });
@@ -87,6 +90,8 @@ const ProjectMembersManagment = () => {
     let payload = allMembers.map((member: any) => {
       return { user_id: member.id, role: member.role };
     });
+    setUpdatedOrNot(true);
+
     mutate({
       project_members: payload,
     });
@@ -96,7 +101,7 @@ const ProjectMembersManagment = () => {
     setSelectedMembers(
       selectedMembers.filter((member: any) => member.id !== memberDetails?.id)
     );
-    removeMembers({ user_id: memberDetails?.id, role: memberDetails?.role });
+    removeMembers({ user_id: memberDetails?.id });
   };
 
   const toggleValue = (currentValue: string) => {
@@ -128,7 +133,7 @@ const ProjectMembersManagment = () => {
   });
 
   const { isFetching, isLoading } = useQuery({
-    queryKey: ["getSingleProjectMembers", projectId],
+    queryKey: ["getSingleProjectMembers", projectId, updating],
     queryFn: async () => {
       if (!projectId) return;
       try {
@@ -151,23 +156,27 @@ const ProjectMembersManagment = () => {
     mutationFn: async (payload: any) => {
       setErrorMessages({});
       setLoading(true);
-      return selectedMembers?.length > 0
+      return updatedOrNot
         ? await updateMembersAPI(projectId, payload)
         : await addMembersAPI(projectId, payload);
     },
     onSuccess: (response: any) => {
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message);
+        setUpdating((prev: any) => prev + 1);
       } else if (response?.status === 422 || response?.status === 409) {
         setErrorMessages(response?.data?.errData || {});
+        setUpdating((prev: any) => prev + 1);
       } else {
         toast.error(response?.data?.message);
+        setUpdating((prev: any) => prev + 1);
       }
       setLoading(false);
     },
     onError: (response: any) => {
       toast.error(response?.message);
       setLoading(false);
+      setUpdating((prev: any) => prev + 1);
     },
   });
 
@@ -181,16 +190,20 @@ const ProjectMembersManagment = () => {
     onSuccess: (response: any) => {
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message);
+        setUpdating((prev: any) => prev + 1);
       } else if (response?.status === 422 || response?.status === 409) {
         setErrorMessages(response?.data?.errData || {});
+        setUpdating((prev: any) => prev + 1);
       } else {
         toast.error(response?.data?.message);
+        setUpdating((prev: any) => prev + 1);
       }
       setLoading(false);
     },
     onError: (response: any) => {
       toast.error(response?.message);
       setLoading(false);
+      setUpdating((prev: any) => prev + 1);
     },
   });
 
@@ -222,7 +235,7 @@ const ProjectMembersManagment = () => {
                           value={getFullName(user)}
                           onSelect={() => toggleValue(user.id.toString())}
                           disabled={selectedMembers.some(
-                            (m: any) => m.user_id === user.id
+                            (m: any) => m.id == user.id
                           )}
                         >
                           <Check
@@ -261,45 +274,50 @@ const ProjectMembersManagment = () => {
         </div>
 
         {selectedMembers.length > 0 ? (
-          <table className="min-w-full border">
-            <thead>
-              <tr>
-                <th className="border p-2">Members</th>
-                <th className="border p-2">Phone Number</th>
-                <th className="border p-2">Role</th>
-                <th className="border p-2">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {selectedMembers.map((member: any) => (
-                <tr key={member.id}>
-                  <td className="border p-2">{getFullName(member)}</td>
-                  <td className="border p-2">{member?.phone || "---"}</td>
-                  <td className="border p-2">
-                    <select
-                      value={member.role}
-                      onChange={(e) => changeRole(member.id, e.target.value)}
-                      className="border p-1 rounded"
-                    >
-                      {roleConstants.map((memberConstant) => (
-                        <option
-                          key={memberConstant.value}
-                          value={memberConstant.value}
-                        >
-                          {memberConstant.label}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="border p-2">
-                    <button type="button" onClick={() => removeMember(member)}>
-                      <X className="w-4 h-4 text-red-500" />
-                    </button>
-                  </td>
+          <div className="h-[300px] overflow-y-auto">
+            <table className="min-w-full border ">
+              <thead className="sticky top-0 bg-red-300">
+                <tr>
+                  <th className="border p-2">Members</th>
+                  <th className="border p-2">Phone Number</th>
+                  <th className="border p-2">Role</th>
+                  <th className="border p-2">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {selectedMembers.map((member: any) => (
+                  <tr key={member.id}>
+                    <td className="border p-2">{getFullName(member)}</td>
+                    <td className="border p-2">{member?.phone || "---"}</td>
+                    <td className="border p-2">
+                      <select
+                        value={member.role}
+                        onChange={(e) => changeRole(member.id, e.target.value)}
+                        className="border p-1 rounded"
+                      >
+                        {roleConstants.map((memberConstant) => (
+                          <option
+                            key={memberConstant.value}
+                            value={memberConstant.value}
+                          >
+                            {memberConstant.label}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="border p-2">
+                      <button
+                        type="button"
+                        onClick={() => removeMember(member)}
+                      >
+                        <X className="w-4 h-4 text-red-500" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           "No members found"
         )}
