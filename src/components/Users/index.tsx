@@ -5,10 +5,16 @@ import {
   getAllPaginatedUsers,
   getSingleUserAPI,
   resetPasswordUsersAPI,
+  updateUsersAPI,
   updateUserSelectStatueAPI,
 } from "@/lib/services/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useLocation, useNavigate, useParams, useRouter } from "@tanstack/react-router";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useRouter,
+} from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import TanStackTable from "../core/TanstackTable";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -62,7 +68,7 @@ function UsersTable() {
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [userType, setUserType] = useState<any>("");
   const [isOpen, setIsOpen] = useState(false);
-  const [isClose,setIsClose] = useState(false);
+  const [isClose, setIsClose] = useState(false);
   const [open, setOpen] = useState(false);
   const [deleteuserId, setDeleteUserId] = useState<any>();
   const [isEditing, setIsEditing] = useState(false);
@@ -129,7 +135,7 @@ function UsersTable() {
       const response = await addUsersAPI(payload);
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message || "User Added successfully");
-        handleDrawerClose()
+        handleDrawerClose();
       } else if (response?.status === 422) {
         const errData = response?.data?.errData;
         setErrors(errData);
@@ -142,18 +148,17 @@ function UsersTable() {
     }
   };
 
- 
-  const {mutate,data: singledata} = useMutation({
+  const { mutate, data: singledata } = useMutation({
     mutationFn: async () => {
       try {
-        const response = await getSingleUserAPI(selectedId );
+        const response = await getSingleUserAPI(selectedId);
         if (response.success) {
           const data = response?.data?.data;
           setUserData({
             fname: data?.fname,
             lname: data?.lname,
             email: data?.email,
-            password: data?.password,  
+            password: data?.password,
           });
           setUserType(data?.user_type);
         } else {
@@ -241,7 +246,30 @@ function UsersTable() {
 
   const handleFormSubmit = async () => {
     if (isEditing) {
-      // await updateUser();
+      try {
+        setLoading(true);
+        const response = await updateUsersAPI(selectedId, {
+          fname: userData.fname,
+          lname: userData.lname,
+          email: userData.email,
+          password: userData.password,
+          user_type: userType,
+        });
+        if (response?.status === 200 || response?.status === 201) {
+          toast.success("User updated successfully");
+          handleDrawerClose();
+          setDel((prev) => prev + 1);
+        } else if (response?.status === 422) {
+          const errData = response?.data?.errData;
+          setErrors(errData);
+          throw response;
+        }
+      } catch (err: any) {
+        console.error(err);
+        toast.error(err?.message || "Update failed");
+      } finally {
+        setLoading(false);
+      }
     } else {
       await addUser();
     }
@@ -250,7 +278,7 @@ function UsersTable() {
     setUserType(value);
   };
 
-  const handleDrawerOpen = (user ?:any) => {
+  const handleDrawerOpen = (user?: any) => {
     if (user) {
       setUserData({
         id: userData.id || null,
@@ -261,7 +289,7 @@ function UsersTable() {
       });
       setUserType(userType.user_type || "");
       setIsEditing(true);
-       setSelectedId(user);
+      setSelectedId(user);
     } else {
       setUserData({
         id: null,
@@ -283,14 +311,13 @@ function UsersTable() {
       lname: "",
       email: "",
       password: "",
-      
     });
-    setUserType("")
+    setUserType("");
     setIsEditing(false);
-    setErrors("")
+    setErrors("");
     setIsOpen(false);
   };
-  
+
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
@@ -360,9 +387,9 @@ function UsersTable() {
   };
 
   const handleUpdate = (id: number) => {
-    handleDrawerOpen(id ) ;
-    mutate()
-  }
+    handleDrawerOpen(id);
+    mutate();
+  };
   const userActions = [
     {
       accessorFn: (row: any) => row.actions,
@@ -414,8 +441,6 @@ function UsersTable() {
       maxWidth: "90px",
     },
   ];
-
-  console.log(userData,"fgf")
 
   return (
     <div className="relative">
@@ -483,7 +508,7 @@ function UsersTable() {
                   placeholder="Enter First Name"
                   value={userData.fname}
                   name="fname"
-                   onChange={handleInputChange}
+                  onChange={handleInputChange}
                 />
                 {errors?.fname && (
                   <p style={{ color: "red" }}>{errors?.fname[0]}</p>
@@ -527,26 +552,27 @@ function UsersTable() {
                   <p style={{ color: "red" }}>{errors?.email[0]}</p>
                 )}
               </div>
-
-              <div className="flex flex-col space-y-1">
-                <Label
-                  className="font-normal capitalize text-lg"
-                  htmlFor="password"
-                >
-                  Password
-                </Label>
-                <Input
-                  className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
-                  id="password"
-                  placeholder="Enter Password"
-                  value={userData.password}
-                  name="password"
-                  onChange={handleChangePassword}
-                />
-                {errors?.password && (
-                  <p style={{ color: "red" }}>{errors?.password[0]}</p>
-                )}
-              </div>
+              {!isEditing && (
+                <div className="flex flex-col space-y-1">
+                  <Label
+                    className="font-normal capitalize text-lg"
+                    htmlFor="password"
+                  >
+                    Password
+                  </Label>
+                  <Input
+                    className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
+                    id="password"
+                    placeholder="Enter Password"
+                    value={userData.password}
+                    name="password"
+                    onChange={handleChangePassword}
+                  />
+                  {errors?.password && (
+                    <p style={{ color: "red" }}>{errors?.password[0]}</p>
+                  )}
+                </div>
+              )}
               <div>
                 <label
                   htmlFor="panNumber"

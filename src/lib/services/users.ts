@@ -69,3 +69,10 @@ export const getSingleUserAPI = async (id: string | undefined,) => {
      throw err;
    }
  };
+ export const updateUsersAPI = async (id:any, payload:any) => {
+  try {
+    return await $fetch.patch(`/users/${id}`, payload);
+  } catch (err) {
+    throw err;
+  }
+};

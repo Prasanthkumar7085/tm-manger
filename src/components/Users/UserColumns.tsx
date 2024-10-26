@@ -121,8 +121,8 @@ export const userColumns = [
           const response = await updateUserStatueAPI(userId, body);
           if (response?.status === 200 || response?.status === 201) {
             toast.success(
-              status 
-                ? "User activated successfully" 
+              status
+                ? "User activated successfully"
                 : "User deactivated successfully"
             );
             setIsActive(status);
