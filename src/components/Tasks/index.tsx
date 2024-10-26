@@ -28,6 +28,7 @@ const Tasks = () => {
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedDate, setSelectedDate] = useState<any>(new Date());
   const [dateValue, setDateValue] = useState<any>(null);
+  const [del, setDel] = useState<any>(1);
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
@@ -35,8 +36,10 @@ const Tasks = () => {
     order_by: orderBY,
   });
 
+  const isDashboard = location.pathname === "/dashboard";
+
   const { isLoading, isError, data, error, isFetching } = useQuery({
-    queryKey: ["tasks", pagination, debouncedSearch, selectedDate],
+    queryKey: ["tasks", pagination, debouncedSearch, selectedDate, del],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
         pageIndex: pagination.pageIndex,
@@ -54,10 +57,15 @@ const Tasks = () => {
         from_date: selectedDate?.length ? selectedDate[0] : undefined,
         to_date: selectedDate?.length ? selectedDate[1] : undefined,
       };
-      router.navigate({
-        to: "/tasks",
-        search: queryParams,
-      });
+
+      {
+        location.pathname == "/dashboard"
+          ? ""
+          : router.navigate({
+              to: "/tasks",
+              search: queryParams,
+            });
+      }
 
       return response;
     },
@@ -103,8 +111,6 @@ const Tasks = () => {
     }
   };
 
-  const isDashboard = location.pathname === "/dashboard";
-
   return (
     <section id="tasks" className="relative">
       <div>{!isDashboard && <TotalCounts />}</div>
@@ -148,10 +154,14 @@ const Tasks = () => {
             <div>
               <TanStackTable
                 data={taksDataAfterSerial}
-                columns={taskColumns()}
+                columns={taskColumns({ setDel })}
                 paginationDetails={data?.data?.data?.pagination_info}
                 getData={getAllTasks}
-                removeSortingForColumnIds={["serial", "actions"]}
+                removeSortingForColumnIds={[
+                  "serial",
+                  "actions",
+                  "project_title",
+                ]}
               />
             </div>
           )}

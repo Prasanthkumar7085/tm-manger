@@ -144,7 +144,6 @@ const Projects = () => {
         label: `${user.fname} ${user.lname}`,
       }))
     : [];
-  console.log(userOptions, "op");
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -209,7 +208,7 @@ const Projects = () => {
       <div className="mt-5 overflow-auto h-[70vh]">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto  mt-3">
           {projectsData.length === 0 && isLoading == false ? (
-            <div className="col-span-full text-center">No Projects Found</div>
+            <div className="col-span-full text-center">No Project found</div>
           ) : (
             projectsData.map((project: any) => (
               <ProjectCard

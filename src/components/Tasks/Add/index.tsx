@@ -43,7 +43,7 @@ const AddTask = () => {
   const [errorMessages, setErrorMessages] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [users, setUsers] = useState<any[]>([]);
-
+  const [selectedUsers, setSelectedUsers] = useState(new Set());
   const handleChange = (e: any) => {
     setTask({ ...task, [e.target.name]: e.target.value });
   };
@@ -82,17 +82,6 @@ const AddTask = () => {
     }));
     setOpenProjects(false);
   };
-
-  const handleUserSelect = (user: any) => {
-    setTask((prev: any) => {
-      const isSelected = prev.users.some((u: any) => u.id === user.id);
-      const users = isSelected
-        ? prev.users.filter((u: any) => u.id !== user.id)
-        : [...prev.users, user];
-      return { ...prev, users };
-    });
-  };
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const payload = {
@@ -151,10 +140,37 @@ const AddTask = () => {
     },
   });
 
+  const handleUserSelect = (user: any) => {
+    const updatedSelectedUsers = new Set(selectedUsers);
+    if (updatedSelectedUsers.has(user.id)) {
+      updatedSelectedUsers.delete(user.id);
+    } else {
+      updatedSelectedUsers.add(user.id);
+    }
+    setSelectedUsers(updatedSelectedUsers);
+  };
+
+  const handleConfirmSelection = () => {
+    const usersToAssign = users.filter((user) => selectedUsers.has(user.id));
+    setTask((prevTask: any) => ({
+      ...prevTask,
+      users: [...prevTask.users, ...usersToAssign],
+    }));
+    setOpenUsers(false);
+    setSelectedUsers(new Set());
+  };
+
+  const handleUserRemove = (userId: any) => {
+    setTask((prevTask: any) => ({
+      ...prevTask,
+      users: prevTask.users.filter((user: any) => user.id !== userId),
+    }));
+  };
+
   return (
-    <div className="min-h-screen flex bg-gray-100 relative">
+    <div className="min-h-screen flex bg-gray-100 relative overflow-auto h-[90vh]">
       <main className="flex-1 p-8">
-        <div className="bg-white shadow rounded-lg p-8">
+        <div className="bg-white shadow rounded-lg p-8 overflow-auto h-[80vh]">
           <h2 className="text-2xl font-bold mb-6">Add Task</h2>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-6">
@@ -254,6 +270,104 @@ const AddTask = () => {
                     </p>
                   )}
                 </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Assign To
+                  </label>
+                  <Popover open={openUsers} onOpenChange={setOpenUsers}>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full">
+                        Select Users
+                        <ChevronsUpDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0 bg-white">
+                      <Command>
+                        <CommandInput placeholder="Search Users" />
+                        <CommandList>
+                          <CommandEmpty>No Users found.</CommandEmpty>
+                          <CommandGroup>
+                            {users.map((user) => (
+                              <CommandItem
+                                key={user.id}
+                                onSelect={() => handleUserSelect(user)}
+                              >
+                                <Check
+                                  className="mr-2 h-4 w-4"
+                                  style={{
+                                    opacity: selectedUsers.has(user.id)
+                                      ? 1
+                                      : 0.5,
+                                  }}
+                                />
+                                <p className="capitalize">
+                                  {user.fname} {user.lname}
+                                </p>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                      <div className="flex justify-end p-2">
+                        <Button onClick={handleConfirmSelection}>
+                          Confirm
+                        </Button>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  {task.users?.length > 0 ? (
+                    <div>
+                      <label className="block text-gray-700 font-bold mb-2 mt-4">
+                        Assigned Users
+                      </label>
+
+                      <div className="overflow-auto max-h-40">
+                        <table className="min-w-full bg-white border border-gray-300">
+                          <thead className="bg-gray-200 sticky top-0">
+                            <tr>
+                              <th className="border px-4 py-2">S.No.</th>
+                              <th className="border px-4 py-2">Name</th>
+                              <th className="border px-4 py-2">User Type</th>
+                              <th className="border px-4 py-2">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {task.users.map((user: any, index: number) => (
+                              <tr key={user.id} className="hover:bg-gray-100">
+                                <td className="border px-4 py-2">
+                                  {index + 1}
+                                </td>
+                                <td className="border px-4 py-2 capitalize">
+                                  {user.fname} {user.lname}
+                                </td>
+                                <td className="border px-4 py-2 capitalize">
+                                  {user.user_type}
+                                </td>
+                                <td className="border px-4 py-2">
+                                  <button
+                                    className="text-red-500 hover:underline"
+                                    onClick={() => handleUserRemove(user.id)}
+                                  >
+                                    Remove
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                            {task.users.length === 0 && (
+                              <tr>
+                                <td className="text-center border px-4 py-2">
+                                  No Users Assigned
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
               </div>
 
               <div>
@@ -351,70 +465,23 @@ const AddTask = () => {
                     ))}
                   </div>
                 </div>
+                <div className="flex justify-end">
+                  <Button
+                    type="button"
+                    className="px-6 py-2 bg-red-500 text-white rounded-md mr-2"
+                    onClick={() => navigate({ to: "/tasks" })}
+                  >
+                    Cancel
+                  </Button>
 
-                <div className="mb-4">
-                  <label className="block text-gray-700 font-bold mb-2">
-                    Assign To
-                  </label>
-                  <Popover open={openUsers} onOpenChange={setOpenUsers}>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" className="w-full">
-                        {task.users.length > 0
-                          ? task.users
-                              .map((user: any) => user.fname + " " + user.lname)
-                              .join(", ")
-                          : "Select Users"}
-                        <ChevronsUpDown className="ml-2 h-4 w-4" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[200px] p-0 bg-white">
-                      <Command>
-                        <CommandInput placeholder="Search Users" />
-                        <CommandList>
-                          <CommandEmpty>No Users found.</CommandEmpty>
-                          <CommandGroup>
-                            {users.map((user) => (
-                              <CommandItem
-                                key={user.id}
-                                onSelect={() => handleUserSelect(user)}
-                              >
-                                <Check
-                                  className="mr-2 h-4 w-4"
-                                  style={{
-                                    opacity: task.users.some(
-                                      (u: any) => u.id === user.id
-                                    )
-                                      ? 1
-                                      : 0.5,
-                                  }}
-                                />
-                                {user.fname} {user.lname}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
+                  <Button
+                    type="submit"
+                    className="px-6 py-2 bg-blue-600 text-white rounded-md"
+                  >
+                    Submit
+                  </Button>
                 </div>
               </div>
-            </div>
-
-            <div className="mt-8 flex justify-end">
-              <Button
-                type="button"
-                className="px-6 py-2 bg-red-500 text-white rounded-md mr-2"
-                onClick={() => navigate({ to: "/tasks" })}
-              >
-                Cancel
-              </Button>
-
-              <Button
-                type="submit"
-                className="px-6 py-2 bg-blue-600 text-white rounded-md"
-              >
-                Submit
-              </Button>
             </div>
           </form>
         </div>
