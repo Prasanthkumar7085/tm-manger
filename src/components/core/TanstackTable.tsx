@@ -112,7 +112,7 @@ const TanStackTable: FC<pageProps> = ({
   return (
     <div className="overflow-x-auto w-full">
       <div
-        className={`overflow-y-auto  w-full overflow-auto relative  bg-white rounded-[12px] ${location.pathname.includes("tasks") ? "h-[calc(100vh-370px)]" : "h-[calc(100vh-200px)]"}`}
+        className={`overflow-y-auto  w-full overflow-auto relative  bg-white rounded-[12px] ${location.pathname.includes("tasks") ? "h-[calc(100vh-370px)]" : "h-[calc(100vh-280px)]"}`}
       >
         <Table>
           <TableHeader className="sticky top-[0px] ">

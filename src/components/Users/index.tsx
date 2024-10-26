@@ -449,52 +449,68 @@ function UsersTable() {
   ];
 
   return (
-    <div className="relative">
-      <div className="flex justify-end mb-4 gap-3">
-        <SelectStatusFilter />
+    <section id="users">
+      <div className="card-container shadow-md border p-5 rounded-lg mt-3">
+        <div className="tasks-navbar">
+          <div className="flex justify-between items-center">
+            <div className="heading">
+              <h2 className="text-lg">All (120)</h2>
+            </div>
+            <div className="filters">
+              <ul className="flex justify-end space-x-4">
+                <li>
+                  <SelectStatusFilter />
 
-        <SearchFilter
-          searchString={searchString}
-          setSearchString={setSearchString}
-          title="Search User"
+                </li>
+                <li>
+                  <SearchFilter
+                    searchString={searchString}
+                    setSearchString={setSearchString}
+                    title="Search User"
+                  />
+                </li>
+                <li>
+                  <Button
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={() => handleDrawerOpen()}
+                  >
+                    +Add Users
+                  </Button>
+                </li>
+                <li>
+                  <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    import
+                  </Button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div className="mt-5">
+          <TanStackTable
+            data={usersData}
+            columns={[...userColumns, ...userActions]}
+            paginationDetails={data?.data?.data?.pagination_info}
+            getData={getAllUsers}
+            removeSortingForColumnIds={["serial", "actions"]}
+          />
+        </div>
+        <DeleteDialog
+          openOrNot={open}
+          label="Are you sure you want to Delete this user?"
+          onCancelClick={onClickClose}
+          onOKClick={deleteUser}
+          deleteLoading={deleteLoading}
         />
-        <Button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => handleDrawerOpen()}
-        >
-          +Add Users
-        </Button>
-
-        <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          import
-        </Button>
-      </div>
-      <div>
-        <TanStackTable
-          data={usersData}
-          columns={[...userColumns, ...userActions]}
-          paginationDetails={data?.data?.data?.pagination_info}
-          getData={getAllUsers}
-          removeSortingForColumnIds={["serial", "actions"]}
+        <SheetRover
+          isOpen={isPasswordSheetOpen}
+          handleCancel={handlePasswordUpdateCancel}
+          userPasswordData={userPasswordData}
+          handleUpdateChangePassword={handleUpdateChangePassword}
+          resetUserPassword={resetUserPassword}
+          errors={errors}
+          loading={loading}
         />
-      </div>
-      <DeleteDialog
-        openOrNot={open}
-        label="Are you sure you want to Delete this user?"
-        onCancelClick={onClickClose}
-        onOKClick={deleteUser}
-        deleteLoading={deleteLoading}
-      />
-      <SheetRover
-        isOpen={isPasswordSheetOpen}
-        handleCancel={handlePasswordUpdateCancel}
-        userPasswordData={userPasswordData}
-        handleUpdateChangePassword={handleUpdateChangePassword}
-        resetUserPassword={resetUserPassword}
-        errors={errors}
-        loading={loading}
-      />
-      <div>
         <Sheet open={isOpen}>
           <SheetContent className="bg-gray-100">
             <SheetHeader>
@@ -597,7 +613,7 @@ function UsersTable() {
                     >
                       {userType
                         ? userTypes.find((type) => type.value === userType)
-                            ?.label
+                          ?.label
                         : "Select Status"}
                       <div className="flex">
                         {userType && (
@@ -668,7 +684,8 @@ function UsersTable() {
         </Sheet>
       </div>
       <LoadingComponent loading={isLoading || isFetching || loading} />
-    </div>
+    </section>
+
   );
 }
 export default UsersTable;

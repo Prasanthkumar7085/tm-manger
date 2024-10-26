@@ -106,9 +106,9 @@ const Tasks = () => {
   const isDashboard = location.pathname === "/dashboard";
 
   return (
-    <section id="task-container">
+    <section id="tasks">
       <div>{!isDashboard && <TotalCounts />}</div>
-      <div className="table-container shadow-md border p-5 rounded-lg mt-3">
+      <div className="card-container shadow-md border p-5 rounded-lg mt-3">
         <div className="tasks-navbar">
           <div className="flex justify-between items-center">
             <div className="heading">
