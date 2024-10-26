@@ -35,11 +35,11 @@ const ProjectView = () => {
   });
 
   return (
-    <div className="flex flex-col justify-between h-full w-full overflow-auto">
+    <div className="flex flex-col justify-between h-full w-full overflow-auto ">
       <div>
         <ProjectTasksCounts />
       </div>
-      <div className="flex items-center mt-4 space-x-2 w-full justify-between">
+      <div className="flex items-center mt-4 space-x-2 w-full justify-between relative">
         <div>
           <h2 className="text-xl font-semibold capitalize flex-1">
             {projectDetails?.title}
@@ -66,6 +66,7 @@ const ProjectView = () => {
             <p className="text-sm text-gray-500">{"Member"}</p>
           </div>
         </div>
+        {/* <LoadingComponent loading={isLoading || isFetching} /> */}
       </div>
       {openMembers ? (
         <div className="mt-2">
@@ -74,8 +75,6 @@ const ProjectView = () => {
       ) : (
         ""
       )}
-
-      <LoadingComponent loading={isLoading || isFetching} />
     </div>
   );
 };

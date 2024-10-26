@@ -169,7 +169,7 @@ const Projects = () => {
   }, [searchString, selectedSort, selectedStatus, dateValue]);
 
   return (
-    <section id="projects-container">
+    <section id="projects-container" className="relative">
       <div className="tasks-navbar">
         <div className="flex justify-between items-center">
           <div className="heading"></div>

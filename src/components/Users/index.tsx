@@ -449,18 +449,15 @@ function UsersTable() {
   ];
 
   return (
-    <section id="users">
-      <div className="card-container shadow-md border p-5 rounded-lg mt-3">
+    <section id="users" className="relative">
+      <div className="card-container shadow-md border p-5 rounded-lg mt-3 ">
         <div className="tasks-navbar">
           <div className="flex justify-between items-center">
-            <div className="heading">
-              <h2 className="text-lg">All (120)</h2>
-            </div>
+            <div className="heading"></div>
             <div className="filters">
               <ul className="flex justify-end space-x-4">
                 <li>
                   <SelectStatusFilter />
-
                 </li>
                 <li>
                   <SearchFilter
@@ -512,8 +509,8 @@ function UsersTable() {
           loading={loading}
         />
         <Sheet open={isOpen}>
-          <SheetContent className="bg-gray-100">
-            <SheetHeader>
+          <SheetContent className="bg-gray-100 overflow-auto">
+            <SheetHeader className="sticky top-0 bg-white">
               <SheetTitle>{isEditing ? "Edit User" : "Add User"}</SheetTitle>
               <SheetDescription></SheetDescription>
             </SheetHeader>
@@ -613,7 +610,7 @@ function UsersTable() {
                     >
                       {userType
                         ? userTypes.find((type) => type.value === userType)
-                          ?.label
+                            ?.label
                         : "Select Status"}
                       <div className="flex">
                         {userType && (
@@ -685,7 +682,6 @@ function UsersTable() {
       </div>
       <LoadingComponent loading={isLoading || isFetching || loading} />
     </section>
-
   );
 }
 export default UsersTable;

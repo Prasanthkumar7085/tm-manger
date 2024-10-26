@@ -106,7 +106,7 @@ const Tasks = () => {
   const isDashboard = location.pathname === "/dashboard";
 
   return (
-    <section id="tasks">
+    <section id="tasks" className="relative">
       <div>{!isDashboard && <TotalCounts />}</div>
       <div className="card-container shadow-md border p-5 rounded-lg mt-3">
         <div className="tasks-navbar">
@@ -155,10 +155,9 @@ const Tasks = () => {
               />
             </div>
           )}
-
-          <LoadingComponent loading={isLoading || isFetching} />
         </div>
       </div>
+      <LoadingComponent loading={isLoading || isFetching} />
     </section>
   );
 };

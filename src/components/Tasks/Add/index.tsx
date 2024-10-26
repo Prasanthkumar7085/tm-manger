@@ -152,7 +152,7 @@ const AddTask = () => {
   });
 
   return (
-    <div className="min-h-screen flex bg-gray-100">
+    <div className="min-h-screen flex bg-gray-100 relative">
       <main className="flex-1 p-8">
         <div className="bg-white shadow rounded-lg p-8">
           <h2 className="text-2xl font-bold mb-6">Add Task</h2>
