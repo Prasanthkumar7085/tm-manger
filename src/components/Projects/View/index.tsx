@@ -13,7 +13,7 @@ const ProjectView = () => {
   const { projectId } = useParams({ strict: false });
 
   const [projectDetails, setProjectDetails] = useState<any>({});
-  const [openMembers, setOpenMembers] = useState<boolean>(false);
+  const [openMembers, setOpenMembers] = useState<boolean>(true);
 
   const { isFetching, isLoading } = useQuery({
     queryKey: ["getSingleProject", projectId],
@@ -41,15 +41,19 @@ const ProjectView = () => {
       </div>
       <div className="flex items-center mt-4 space-x-2 w-full justify-between">
         <div>
-          <h2 className="text-xl font-semibold">{projectDetails?.title}</h2>
-          <p className="text-sm text-gray-500">{projectDetails?.description}</p>
+          <h2 className="text-xl font-semibold capitalize flex-1">
+            {projectDetails?.title}
+          </h2>
+          <p className="text-sm text-gray-500 capitalize flex-1">
+            {projectDetails?.description}
+          </p>
         </div>
         <div className="flex flex-row items-center gap-4">
           <Button
             onClick={() => setOpenMembers(!openMembers)}
             className="bg-[#f3d1d7]"
           >
-            Members
+            {openMembers ? "Close Members" : "View Members"}
           </Button>
           <div>
             <h2 className="text-sm font-semibold">Created at</h2>
@@ -59,9 +63,7 @@ const ProjectView = () => {
           </div>
           <div>
             <h2 className="text-sm font-semibold">Created by</h2>
-            <p className="text-sm text-gray-500">
-              {projectDetails?.created_by}
-            </p>
+            <p className="text-sm text-gray-500">{"Member"}</p>
           </div>
         </div>
       </div>

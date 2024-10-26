@@ -1,27 +1,62 @@
 import { statusConstants } from "@/lib/helpers/statusConstants";
 import { useNavigate } from "@tanstack/react-router";
 import { Eye } from "lucide-react";
-import DeleteProjects from "./DeleteProject";
-import dayjs from "dayjs";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import DeleteProjects from "./DeleteProject";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
+import { updateProjectAPI } from "@/lib/services/projects";
 
 const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isActive, setIsActive] = useState(project.active);
+  const popoverRef = useRef<HTMLDivElement>(null);
 
-  // Function to capitalize each word
   const capitalizeWords = (string: string) => {
     return string
       .split(" ")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(" ");
   };
+  const togglePopover = (e: any) => {
+    e.stopPropagation();
+    setIsOpen(!isOpen);
+  };
 
-  // Determine label and color for the status
+  const updateUserStatus = async (status: boolean) => {
+    try {
+      const body = {
+        active: status,
+        title: project.title,
+        description: project.description,
+        code: project.code,
+      };
+
+      const response = await updateProjectAPI(project.id, body);
+      if (response?.status === 200 || response?.status === 201) {
+        toast.success(response?.data?.message);
+        setIsActive(status);
+        await getAllProjects({
+          pageIndex: 1,
+          pageSize: 10,
+        });
+      } else {
+        toast.error("Failed to change status");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Something went wrong");
+      console.error(err);
+    } finally {
+      setIsOpen(false);
+    }
+  };
+
   const getStatusLabel = (isActive: boolean) => {
     return isActive
       ? statusConstants.find((status) => status.value === "true")?.label
@@ -30,7 +65,6 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
 
   const statusColor = project.active ? "text-green-500" : "text-red-500";
 
-  // Project title and description with truncation and tooltips
   const title = project.description;
   const shouldShowDescriptionTooltip = title && title.length > 30;
   const truncatedDescription = shouldShowDescriptionTooltip
@@ -43,20 +77,111 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
     ? `${capitalizedTitle.substring(0, 20)}...`
     : capitalizedTitle;
 
+  const handleCardClick = () => {
+    navigate({
+      to: `/projects/view/${project.id}`,
+    });
+  };
+
+  const handleActionClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
-    <div className="shadow-md border rounded-xl p-3">
+    <div
+      className="shadow-md border rounded-xl p-3 cursor-pointer"
+      onClick={handleCardClick}
+    >
       <div className="top_header mb-3 flex justify-between">
         <div className="company-icon">
           <img
-            src={project.logo || "/favicon.png"}
+            src={"/favicon.png"}
             alt="company logo"
             className="object-contain w-6 h-6"
           />
         </div>
         <div className="status">
-          <p className={`text-sm font-semibold ${statusColor}`}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              position: "relative",
+            }}
+          >
+            <div
+              style={{
+                color: project.active || isActive ? "green" : "red",
+                borderColor: project.active || isActive ? "green" : "red",
+                borderStyle: "solid",
+                borderWidth: "1px",
+                padding: "2px 6px",
+                display: "flex",
+                alignItems: "center",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+              onClick={togglePopover}
+            >
+              <span
+                style={{
+                  height: "10px",
+                  width: "10px",
+                  borderRadius: "50%",
+                  backgroundColor: project.active || isActive ? "green" : "red",
+                  marginRight: "8px",
+                }}
+              ></span>
+              {isActive ? "Active" : "Inactive"}
+            </div>
+            {isOpen && (
+              <div
+                ref={popoverRef}
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: "0",
+                  marginTop: "5px",
+                  padding: "5px",
+                  backgroundColor: "white",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+                  zIndex: 100,
+                }}
+              >
+                <div
+                  style={{
+                    padding: "5px 10px",
+                    cursor: "pointer",
+                    color: "green",
+                  }}
+                  onClick={(e: any) => {
+                    e.stopPropagation();
+                    updateUserStatus(true);
+                  }}
+                >
+                  Active
+                </div>
+                <div
+                  style={{
+                    padding: "5px 10px",
+                    cursor: "pointer",
+                    color: "red",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updateUserStatus(false);
+                  }}
+                >
+                  Inactive
+                </div>
+              </div>
+            )}
+          </div>
+          {/* <p className={`text-sm font-semibold ${statusColor}`}>
+
             {getStatusLabel(project.active)}
-          </p>
+          </p> */}
         </div>
       </div>
 
@@ -120,10 +245,11 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
 
         <div className="action-button mt-10">
           <ul className="flex justify-end space-x-5">
-            <li>
+            <li className="cursor-pointer" onClick={handleActionClick}>
               <Eye
                 height={16}
                 width={16}
+                name="view"
                 onClick={() => {
                   navigate({
                     to: `/projects/view/${project.id}`,
@@ -131,7 +257,7 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
                 }}
               />
             </li>
-            <li>
+            <li onClick={handleActionClick}>
               <img
                 src={"/table/edit.svg"}
                 title="edit"
@@ -146,7 +272,7 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
                 }}
               />
             </li>
-            <li>
+            <li onClick={handleActionClick}>
               <DeleteProjects
                 setDel={setDel}
                 del={del}

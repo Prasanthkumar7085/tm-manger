@@ -50,7 +50,7 @@ const SelectStatusFilter = ({ userId }: any) => {
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-[200px] p-0 bg-white">
         <div className="max-h-[300px] overflow-y-auto">
           {statuses.map((status) => (
             <div

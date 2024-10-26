@@ -33,7 +33,7 @@ import { roleConstants } from "@/lib/helpers/statusConstants";
 interface ProjectPayload {
   title: string;
   description: string;
-  project_members: { user_id: number; role: string }[];
+  project_members?: { user_id: number; role: string }[];
   code: string;
 }
 const AddProject = () => {
@@ -164,12 +164,14 @@ const AddProject = () => {
   };
 
   const handleSubmit = () => {
-    const payload: ProjectPayload = {
+    let payload: ProjectPayload = {
       title: projectData.title,
       code: projectData.code,
       description: projectData.description,
-      project_members: selectedMembers,
     };
+    if (!projectId) {
+      payload["project_members"] = selectedMembers;
+    }
     mutate(payload);
   };
 
@@ -181,7 +183,7 @@ const AddProject = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-6">
+    <div className="max-w-4xl mx-auto p-4 space-y-6 overflow-auto h-[calc(100vh-4rem)]">
       <h2 className="text-2xl font-semibold">
         {projectId ? "Edit Project" : "Add Project"}
       </h2>
@@ -333,7 +335,7 @@ const AddProject = () => {
         </div>
       )}
 
-      <div className="flex justify-end space-x-4">
+      <div className="flex justify-end mb-4 gap-5">
         <Button variant="outline" onClick={() => navigate({ to: "/projects" })}>
           Cancel
         </Button>

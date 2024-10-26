@@ -140,9 +140,9 @@ const Projects = () => {
   };
   const userOptions = Array.isArray(users)
     ? users.map((user: any) => ({
-      value: user.id,
-      label: `${user.fname} ${user.lname}`,
-    }))
+        value: user.id,
+        label: `${user.fname} ${user.lname}`,
+      }))
     : [];
   console.log(userOptions, "op");
 
@@ -172,9 +172,7 @@ const Projects = () => {
     <section id="projects-container">
       <div className="tasks-navbar">
         <div className="flex justify-between items-center">
-          <div className="heading">
-            <h2 className="text-lg">ALl (124)</h2>
-          </div>
+          <div className="heading"></div>
           <div className="filters">
             <ul className="flex justify-end space-x-4">
               <li>
@@ -185,7 +183,10 @@ const Projects = () => {
                 />
               </li>
               <li>
-                <StatusFilter value={selectedStatus} setValue={setSelectedStatus} />
+                <StatusFilter
+                  value={selectedStatus}
+                  setValue={setSelectedStatus}
+                />
               </li>
               <li>
                 <SortDropDown
@@ -205,7 +206,7 @@ const Projects = () => {
           </div>
         </div>
       </div>
-      <div className="mt-5">
+      <div className="mt-5 overflow-auto h-[70vh]">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto  mt-3">
           {projectsData.length === 0 && isLoading == false ? (
             <div className="col-span-full text-center">No Projects Found</div>
@@ -222,7 +223,7 @@ const Projects = () => {
           )}
         </div>
       </div>
-      <div className="pagination mt-10">
+      <div className="pagination">
         <Pagination
           paginationDetails={data?.data?.data?.pagination_info}
           capturePageNum={capturePageNum}

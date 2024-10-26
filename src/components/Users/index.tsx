@@ -337,7 +337,7 @@ function UsersTable() {
   ) => {
     const { name, value } = e.target;
     const updatedValue = value
-      .replace(/[^a-zA-Z\s]/g, "")
+      .replace(/[^\w\s]/g, "")
       .replace(/^\s+/g, "")
       .replace(/\s{2,}/g, " ");
     setUsePasswordData((prevData: any) => ({
@@ -358,7 +358,7 @@ function UsersTable() {
   const handleInputChange = (e: any) => {
     let { name, value } = e.target;
     const updatedValue = value
-      .replace(/[^a-zA-Z\s]/g, "")
+      .replace(/[^\w\s]/g, "")
       .replace(/^\s+/g, "")
       .replace(/\s{2,}/g, " ");
     setUserData({
