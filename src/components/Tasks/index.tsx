@@ -106,32 +106,42 @@ const Tasks = () => {
   const isDashboard = location.pathname === "/dashboard";
 
   return (
-    <>
+    <section id="task-container">
       <div>{!isDashboard && <TotalCounts />}</div>
-
-      <div className="relative mt-3">
-        <div className="flex justify-between mb-4 gap-3">
-          <h2>Tasks</h2>
-          <div className="flex flex-row gap-2">
-            <SearchFilter
-              searchString={searchString}
-              setSearchString={setSearchString}
-              title="Search By Task name"
-            />
-            <DateRangeFilter
-              dateValue={dateValue}
-              onChangeData={handleDateChange}
-            />
-            <Button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={handleNavigation}
-            >
-              Add Task
-            </Button>
+      <div className="table-container shadow-md border p-5 rounded-lg mt-3">
+        <div className="tasks-navbar">
+          <div className="flex justify-between items-center">
+            <div className="heading">
+              <h2 className="text-lg">Tasks List</h2>
+            </div>
+            <div className="filters">
+              <ul className="flex justify-end space-x-4">
+                <li>
+                  <SearchFilter
+                    searchString={searchString}
+                    setSearchString={setSearchString}
+                    title="Search By Task name"
+                  />
+                </li>
+                <li>
+                  <DateRangeFilter
+                    dateValue={dateValue}
+                    onChangeData={handleDateChange}
+                  />
+                </li>
+                <li>
+                  <Button
+                    className="bg-red-700 text-white h-[35px] px-6"
+                    onClick={handleNavigation}
+                  >
+                    Add Task
+                  </Button>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-
-        <div>
+        <div className="mt-5">
           {isError ? (
             <div>Error: {error.message}</div>
           ) : (
@@ -149,7 +159,7 @@ const Tasks = () => {
           <LoadingComponent loading={isLoading || isFetching} />
         </div>
       </div>
-    </>
+    </section>
   );
 };
 
