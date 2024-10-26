@@ -26,7 +26,7 @@ export const userColumns = [
       let title = info.getValue();
       return (
         <div style={{ padding: "16px", textAlign: "left" }}>
-          <span>{title ? title : "-"}</span>
+          <span className="capitalize">{title ? title : "-"}</span>
         </div>
       );
     },
@@ -43,7 +43,7 @@ export const userColumns = [
       let title = info.getValue();
       return (
         <div style={{ padding: "16px", textAlign: "left" }}>
-          <span>{title ? title : "-"}</span>
+          <span className="capitalize">{title ? title : "-"}</span>
         </div>
       );
     },
@@ -88,9 +88,9 @@ export const userColumns = [
   {
     accessorFn: (row: any) => row.user_type,
     id: "user_type",
-    width: "100px",
+    width: "80px",
     maxWidth: "100px",
-    minWidth: "150px",
+    minWidth: "100px",
     cell: (info: any) => {
       const userType = info.getValue();
       return (
@@ -211,8 +211,8 @@ export const userColumns = [
         </div>
       );
     },
-    width: "150px",
-    maxWidth: "150px",
+    width: "80px",
+    maxWidth: "100px",
     minWidth: "150px",
     header: () => <span>Status</span>,
     footer: (props: any) => props.column.id,
