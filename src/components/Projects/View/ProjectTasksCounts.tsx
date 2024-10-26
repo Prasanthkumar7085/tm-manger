@@ -7,82 +7,98 @@ import { Card, CardContent } from "@/components/ui/card";
 import CountUp from "react-countup";
 const ProjectTasksCounts = () => {
   return (
-    <div className="flex justify-between items-center gap-4  bg-gradient-to-rrounded-lg  px-6">
-      {/* Total Tasks */}
-      <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
-        <div className="flex flex-col">
-          <h3 className="text-gray-700 text-sm font-semibold">Total Tasks</h3>
-          <CardContent className="text-2xl font-bold text-gray-800">
-            <CountUp end={1000} duration={2.5} />
-          </CardContent>
-        </div>
-        <img
-          src={totalTasksicon}
-          alt="Total Tasks"
-          className="w-12 h-12 ml-auto"
-        />
-      </Card>
+    <section id="tasks-counts">
+      <div className="flex justify-between items-center gap-4 py-4 bg-gradient-to-rrounded-lg  px-6">
+        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
+          <div className="flex justify-between w-full">
+            <div className="content">
+              <h3 className="leading-5">Total Tasks</h3>
+              <CardContent className="p-0 text-2xl">
+                <CountUp end={1000} duration={2.5} />
+              </CardContent>
+            </div>
+            <div className="image">
+              <img
+                src={totalTasksicon}
+                alt="Total Tasks"
+                className="w-12 h-12 ml-auto"
+              />
+            </div>
+          </div>
+        </Card>
+        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
+          <div className="flex justify-between w-full">
+            <div className="content">
+              <h3 className="leading-5">To Do</h3>
+              <CardContent className="p-0 text-2xl">
+                <CountUp end={100} duration={2.5} />
+              </CardContent>
+            </div>
+            <div className="image">
+              <img
+                src={todoTasksIcon}
+                alt="Total Tasks"
+                className="w-12 h-12 ml-auto"
+              />
+            </div>
+          </div>
+        </Card>
+        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
+          <div className="flex justify-between w-full">
+            <div className="content">
+              <h3 className="leading-5">In Progress</h3>
+              <CardContent className="p-0 text-2xl">
+                <CountUp end={700} duration={2.5} />
+              </CardContent>
+            </div>
+            <div className="image">
+              <img
+                src={inprogressTasksIcon}
+                alt="Total Tasks"
+                className="w-12 h-12 ml-auto"
+              />
+            </div>
+          </div>
+        </Card>
 
-      {/* To Do */}
-      <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
-        <div className="flex flex-col">
-          <h3 className="text-gray-700 text-sm font-semibold">To Do</h3>
-          <CardContent className="text-2xl font-bold text-purple-600">
-            <CountUp end={100} duration={2.5} />
-          </CardContent>
-        </div>
-        <img
-          src={todoTasksIcon}
-          alt="To Do Tasks"
-          className="w-12 h-12 ml-auto"
-        />
-      </Card>
+        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
+          <div className="flex justify-between w-full">
+            <div className="content">
+              <h3 className="leading-5">Overdue</h3>
+              <CardContent className="p-0 text-2xl">
+                <CountUp end={100} duration={2.5} />
+              </CardContent>
+            </div>
+            <div className="image">
+              <img
+                src={overDueTasksIcon}
+                alt="Total Tasks"
+                className="w-12 h-12 ml-auto"
+              />
+            </div>
+          </div>
+        </Card>
 
-      {/* In Progress */}
-      <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
-        <div className="flex flex-col">
-          <h3 className="text-gray-700 text-sm font-semibold">In Progress</h3>
-          <CardContent className="text-2xl font-bold text-blue-500">
-            <CountUp end={700} duration={2.5} />
-          </CardContent>
-        </div>
-        <img
-          src={inprogressTasksIcon}
-          alt="In Progress Tasks"
-          className="w-12 h-12 ml-auto"
-        />
-      </Card>
 
-      {/* Overdue */}
-      <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
-        <div className="flex flex-col">
-          <h3 className="text-gray-700 text-sm font-semibold">Overdue</h3>
-          <CardContent className="text-2xl font-bold text-red-600">
-            <CountUp end={100} duration={2.5} />
-          </CardContent>
-        </div>
-        <img
-          src={overDueTasksIcon}
-          alt="Overdue Tasks"
-          className="w-12 h-12 ml-auto"
-        />
-      </Card>
-
-      {/* Completed */}
-      <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
-        <div className="flex flex-col">
-          <h3 className="text-gray-700 text-sm font-semibold">Completed</h3>
-          <CardContent className="text-2xl font-bold text-green-600">
-            <CountUp end={100} duration={2.5} />
-          </CardContent>
-        </div>
-        <img
-          src={completedTasksIcon}
-          alt="Completed Tasks"
-          className="w-12 h-12 ml-auto"
-        />
-      </Card>
-    </div>
+        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
+          <div className="flex justify-between w-full">
+            <div className="content">
+              <h3 className="leading-5">Completed</h3>
+              <CardContent className="p-0 text-2xl">
+                <CountUp end={100} duration={2.5} />
+              </CardContent>
+            </div>
+            <div className="image">
+              <img
+                src={completedTasksIcon}
+                alt="Total Tasks"
+                className="w-12 h-12 ml-auto"
+              />
+            </div>
+          </div>
+        </Card>
+      </div>
+    </section>
   );
 };
 
