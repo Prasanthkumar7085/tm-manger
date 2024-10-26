@@ -5,6 +5,7 @@ import {
   getAllPaginatedUsers,
   getSingleUserAPI,
   resetPasswordUsersAPI,
+  updateUsersAPI,
   updateUserSelectStatueAPI,
 } from "@/lib/services/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -251,7 +252,30 @@ function UsersTable() {
 
   const handleFormSubmit = async () => {
     if (isEditing) {
-      // await updateUser();
+      try {
+        setLoading(true);
+        const response = await updateUsersAPI(selectedId, {
+          fname: userData.fname,
+          lname: userData.lname,
+          email: userData.email,
+          password: userData.password,
+          user_type: userType,
+        });
+        if (response?.status === 200 || response?.status === 201) {
+          toast.success("User updated successfully");
+          handleDrawerClose();
+          setDel((prev) => prev + 1);
+        } else if (response?.status === 422) {
+          const errData = response?.data?.errData;
+          setErrors(errData);
+          throw response;
+        }
+      } catch (err: any) {
+        console.error(err);
+        toast.error(err?.message || "Update failed");
+      } finally {
+        setLoading(false);
+      }
     } else {
       await addUser();
     }
@@ -535,26 +559,27 @@ function UsersTable() {
                   <p style={{ color: "red" }}>{errors?.email[0]}</p>
                 )}
               </div>
-
-              <div className="flex flex-col space-y-1">
-                <Label
-                  className="font-normal capitalize text-lg"
-                  htmlFor="password"
-                >
-                  Password
-                </Label>
-                <Input
-                  className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
-                  id="password"
-                  placeholder="Enter Password"
-                  value={userData.password}
-                  name="password"
-                  onChange={handleChangePassword}
-                />
-                {errors?.password && (
-                  <p style={{ color: "red" }}>{errors?.password[0]}</p>
-                )}
-              </div>
+              {!isEditing && (
+                <div className="flex flex-col space-y-1">
+                  <Label
+                    className="font-normal capitalize text-lg"
+                    htmlFor="password"
+                  >
+                    Password
+                  </Label>
+                  <Input
+                    className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
+                    id="password"
+                    placeholder="Enter Password"
+                    value={userData.password}
+                    name="password"
+                    onChange={handleChangePassword}
+                  />
+                  {errors?.password && (
+                    <p style={{ color: "red" }}>{errors?.password[0]}</p>
+                  )}
+                </div>
+              )}
               <div>
                 <label
                   htmlFor="panNumber"
