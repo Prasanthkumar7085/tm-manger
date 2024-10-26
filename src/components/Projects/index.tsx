@@ -140,9 +140,9 @@ const Projects = () => {
   };
   const userOptions = Array.isArray(users)
     ? users.map((user: any) => ({
-        value: user.id,
-        label: `${user.fname} ${user.lname}`,
-      }))
+      value: user.id,
+      label: `${user.fname} ${user.lname}`,
+    }))
     : [];
   console.log(userOptions, "op");
 
@@ -169,67 +169,69 @@ const Projects = () => {
   }, [searchString, selectedSort, selectedStatus, dateValue]);
 
   return (
-    <div className="p-4">
-      <div className="flex w-full gap-4 justify-end">
-        <SearchFilter
-          searchString={searchString}
-          setSearchString={setSearchString}
-          title="Search By title"
-        />
-        <StatusFilter value={selectedStatus} setValue={setSelectedStatus} />
-        {/* <DateRangeFilter
-          dateValue={dateValue}
-          onChangeData={handleDateChange}
-        /> */}
-        {/* <Select
-          isMulti
-          options={userOptions}
-          placeholder="Select User"
-          isClearable
-          isLoading={usersLoading}
-          onChange={(selectedOption) => {}}
-          className="w-200"
-        /> */}
-        <SortDropDown
-          selectedSort={selectedSort}
-          setSelectedSort={setSelectedSort}
-        />
-
-        <div className="flex">
-          <Button
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-            onClick={handleNavigation}
-          >
-            Add Project
-          </Button>
+    <section id="projects-container">
+      <div className="tasks-navbar">
+        <div className="flex justify-between items-center">
+          <div className="heading">
+            <h2 className="text-lg">ALl (124)</h2>
+          </div>
+          <div className="filters">
+            <ul className="flex justify-end space-x-4">
+              <li>
+                <SearchFilter
+                  searchString={searchString}
+                  setSearchString={setSearchString}
+                  title="Search By title"
+                />
+              </li>
+              <li>
+                <StatusFilter value={selectedStatus} setValue={setSelectedStatus} />
+              </li>
+              <li>
+                <SortDropDown
+                  selectedSort={selectedSort}
+                  setSelectedSort={setSelectedSort}
+                />
+              </li>
+              <li>
+                <Button
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                  onClick={handleNavigation}
+                >
+                  Add Project
+                </Button>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto h-[70vh] mt-3">
-        {projectsData.length === 0 && isLoading == false ? (
-          <div className="col-span-full text-center">No Projects Found</div>
-        ) : (
-          projectsData.map((project: any) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              del={del}
-              setDel={setDel}
-              getAllProjects={getAllProjects}
-            />
-          ))
-        )}
+      <div className="mt-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto  mt-3">
+          {projectsData.length === 0 && isLoading == false ? (
+            <div className="col-span-full text-center">No Projects Found</div>
+          ) : (
+            projectsData.map((project: any) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                del={del}
+                setDel={setDel}
+                getAllProjects={getAllProjects}
+              />
+            ))
+          )}
+        </div>
       </div>
-
-      <div className="mb-0 bg-white">
+      <div className="pagination mt-10">
         <Pagination
           paginationDetails={data?.data?.data?.pagination_info}
           capturePageNum={capturePageNum}
           captureRowPerItems={captureRowPerItems}
         />
       </div>
+
       <LoadingComponent loading={isLoading || isFetching} />
-    </div>
+    </section>
   );
 };
 

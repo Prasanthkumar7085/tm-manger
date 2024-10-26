@@ -44,110 +44,117 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
     : capitalizedTitle;
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 flex flex-col justify-between h-40 w-full max-w-sm relative">
-      <div className="flex flex-col items-start justify-between">
-        <div className="w-8 h-8">
+    <div className="shadow-md border rounded-xl p-3">
+      <div className="top_header mb-3 flex justify-between">
+        <div className="company-icon">
           <img
             src={project.logo || "/favicon.png"}
-            alt="Logo"
-            className="w-full h-full object-contain"
+            alt="company logo"
+            className="object-contain w-6 h-6"
           />
         </div>
+        <div className="status">
+          <p className={`text-sm font-semibold ${statusColor}`}>
+            {getStatusLabel(project.active)}
+          </p>
+        </div>
+      </div>
 
-        {/* Tooltip for the project title */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="text-lg font-semibold cursor-pointer">
-                {truncatedTitle}
-              </span>
-            </TooltipTrigger>
-            {shouldShowTitleTooltip && (
-              <TooltipContent
-                style={{
-                  backgroundColor: "white",
-                  border: "1px solid #e0e0e0",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  borderRadius: "4px",
-                  padding: "8px",
-                  maxWidth: "300px",
-                  fontSize: "14px",
-                  whiteSpace: "normal",
-                  wordWrap: "break-word",
+      <div className="project-details mt-5">
+        <div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="text-md text-slate-600 font-semibold cursor-pointer">
+                  {truncatedTitle}
+                </span>
+              </TooltipTrigger>
+              {shouldShowTitleTooltip && (
+                <TooltipContent
+                  style={{
+                    backgroundColor: "white",
+                    border: "1px solid #e0e0e0",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "4px",
+                    padding: "8px",
+                    maxWidth: "300px",
+                    fontSize: "14px",
+                    whiteSpace: "normal",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  <div className="tooltipContent">{capitalizedTitle}</div>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+        <div className="m-h-[20px]">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="text-sm text-gray-500 cursor-pointer ">
+                  {truncatedDescription}
+                </span>
+              </TooltipTrigger>
+              {shouldShowDescriptionTooltip && (
+                <TooltipContent
+                  style={{
+                    backgroundColor: "white",
+                    border: "1px solid #e0e0e0",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "4px",
+                    padding: "8px",
+                    maxWidth: "300px",
+                    fontSize: "14px",
+                    whiteSpace: "normal",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  <div className="tooltipContent">{title}</div>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+
+        <div className="action-button mt-10">
+          <ul className="flex justify-end space-x-5">
+            <li>
+              <Eye
+                height={16}
+                width={16}
+                onClick={() => {
+                  navigate({
+                    to: `/projects/view/${project.id}`,
+                  });
                 }}
-              >
-                <div className="tooltipContent">{capitalizedTitle}</div>
-              </TooltipContent>
-            )}
-          </Tooltip>
-        </TooltipProvider>
-
-        {/* Tooltip for the project description */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="text-sm text-gray-500 cursor-pointer">
-                {truncatedDescription}
-              </span>
-            </TooltipTrigger>
-            {shouldShowDescriptionTooltip && (
-              <TooltipContent
-                style={{
-                  backgroundColor: "white",
-                  border: "1px solid #e0e0e0",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  borderRadius: "4px",
-                  padding: "8px",
-                  maxWidth: "300px",
-                  fontSize: "14px",
-                  whiteSpace: "normal",
-                  wordWrap: "break-word",
+              />
+            </li>
+            <li>
+              <img
+                src={"/table/edit.svg"}
+                title="edit"
+                alt="edit"
+                height={16}
+                width={16}
+                className="cursor-pointer"
+                onClick={() => {
+                  navigate({
+                    to: `/projects/${project.id}`,
+                  });
                 }}
-              >
-                <div className="tooltipContent">{title}</div>
-              </TooltipContent>
-            )}
-          </Tooltip>
-        </TooltipProvider>
-
-        <p className={`text-sm font-semibold ${statusColor}`}>
-          {getStatusLabel(project.active)}
-        </p>
-
-        {/* Action buttons */}
-        <div className="flex gap-3">
-          <span title="view" className="cursor-pointer">
-            <Eye
-              height={16}
-              width={16}
-              onClick={() => {
-                navigate({
-                  to: `/projects/view/${project.id}`,
-                });
-              }}
-            />
-          </span>
-
-          <img
-            src={"/table/edit.svg"}
-            title="edit"
-            alt="edit"
-            height={16}
-            width={16}
-            className="cursor-pointer"
-            onClick={() => {
-              navigate({
-                to: `/projects/${project.id}`,
-              });
-            }}
-          />
-
-          <DeleteProjects
-            setDel={setDel}
-            del={del}
-            project={project}
-            getAllProjects={getAllProjects}
-          />
+              />
+            </li>
+            <li>
+              <DeleteProjects
+                setDel={setDel}
+                del={del}
+                project={project}
+                getAllProjects={getAllProjects}
+              />
+            </li>
+          </ul>
         </div>
       </div>
     </div>
