@@ -482,11 +482,11 @@ function UsersTable() {
                     +Add Users
                   </Button>
                 </li>
-                <li>
+                {/* <li>
                   <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     import
                   </Button>
-                </li>
+                </li> */}
               </ul>
             </div>
           </div>
@@ -619,7 +619,7 @@ function UsersTable() {
                       {userType
                         ? userTypes.find((type) => type.value === userType)
                             ?.label
-                        : "Select Status"}
+                        : "Select User Type"}
                       <div className="flex">
                         {userType && (
                           <X

@@ -285,19 +285,19 @@ const ProjectMembersManagment = () => {
             <table className="min-w-full border ">
               <thead className="sticky top-0 bg-red-300">
                 <tr>
+                  <th className="border p-2">Sl.no</th>
                   <th className="border p-2">Members</th>
-                  <th className="border p-2">Phone Number</th>
                   <th className="border p-2">Role</th>
                   <th className="border p-2">Action</th>
                 </tr>
               </thead>
               <tbody className="text-center">
-                {selectedMembers.map((member: any) => (
+                {selectedMembers.map((member: any, index: number) => (
                   <tr key={member.id}>
+                    <td className="border p-2 capitalize">{index + 1}</td>
                     <td className="border p-2 capitalize">
                       {getFullName(member)}
                     </td>
-                    <td className="border p-2">{member?.phone || "---"}</td>
                     <td className="border p-2">
                       <select
                         value={member.role}
