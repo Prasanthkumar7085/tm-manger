@@ -67,23 +67,23 @@ export const userColumns = [
     footer: (props: any) => props.column.id,
   },
 
-  {
-    accessorFn: (row: any) => row.phone_number,
-    id: "phone_number",
-    cell: (info: any) => {
-      let title = info.getValue();
-      return (
-        <div style={{ padding: "16px", textAlign: "left" }}>
-          <span>{title ? title : "-"}</span>
-        </div>
-      );
-    },
-    width: "100px",
-    maxWidth: "100px",
-    minWidth: "150px",
-    header: () => <span>Mobile Num</span>,
-    footer: (props: any) => props.column.id,
-  },
+  // {
+  //   accessorFn: (row: any) => row.phone_number,
+  //   id: "phone_number",
+  //   cell: (info: any) => {
+  //     let title = info.getValue();
+  //     return (
+  //       <div style={{ padding: "16px", textAlign: "left" }}>
+  //         <span>{title ? title : "-"}</span>
+  //       </div>
+  //     );
+  //   },
+  //   width: "100px",
+  //   maxWidth: "100px",
+  //   minWidth: "150px",
+  //   header: () => <span>Mobile Num</span>,
+  //   footer: (props: any) => props.column.id,
+  // },
 
   {
     accessorFn: (row: any) => row.user_type,
