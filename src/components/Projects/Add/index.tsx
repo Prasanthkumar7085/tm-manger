@@ -33,7 +33,7 @@ import { roleConstants } from "@/lib/helpers/statusConstants";
 interface ProjectPayload {
   title: string;
   description: string;
-  project_members: { user_id: number; role: string }[];
+  project_members?: { user_id: number; role: string }[];
   code: string;
 }
 const AddProject = () => {
@@ -47,7 +47,6 @@ const AddProject = () => {
   });
   const [errorMessages, setErrorMessages] = useState<any>({});
   const [invalidErrors, setInvalidErrors] = useState<any>();
-  console.log(invalidErrors, "invalid");
   const [selectedMembers, setSelectedMembers] = useState<
     { user_id: number; role: string }[]
   >([]);
@@ -101,14 +100,13 @@ const AddProject = () => {
         : addProjectAPI(payload);
     },
     onSuccess: (response: any) => {
-      console.log(response, "ikik");
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message);
         navigate({ to: "/projects" });
       } else if (response?.status === 422) {
         setErrorMessages(response?.data?.errData || {});
       } else if (response?.status === 409) {
-        setInvalidErrors(response?.data?.message);
+        setInvalidErrors(response?.data?.errData);
       }
       setLoading(false);
     },
@@ -164,12 +162,14 @@ const AddProject = () => {
   };
 
   const handleSubmit = () => {
-    const payload: ProjectPayload = {
+    let payload: ProjectPayload = {
       title: projectData.title,
       code: projectData.code,
       description: projectData.description,
-      project_members: selectedMembers,
     };
+    if (!projectId) {
+      payload["project_members"] = selectedMembers;
+    }
     mutate(payload);
   };
 
@@ -181,7 +181,7 @@ const AddProject = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-6">
+    <div className="max-w-4xl mx-auto p-4 space-y-6 overflow-auto h-[calc(100vh-4rem)] relative">
       <h2 className="text-2xl font-semibold">
         {projectId ? "Edit Project" : "Add Project"}
       </h2>
@@ -196,7 +196,9 @@ const AddProject = () => {
         {errorMessages.title && (
           <p className="text-red-500">{errorMessages.title[0]}</p>
         )}
-        {invalidErrors && <p className="text-red-500">{invalidErrors}</p>}
+        {invalidErrors?.title && (
+          <p className="text-red-500">{invalidErrors.title}</p>
+        )}
 
         <Input
           id="code"
@@ -208,7 +210,9 @@ const AddProject = () => {
         {errorMessages.code && (
           <p className="text-red-500">{errorMessages.code[0]}</p>
         )}
-        {invalidErrors && <p className="text-red-500">{invalidErrors}</p>}
+        {invalidErrors?.code && (
+          <p className="text-red-500">{invalidErrors.code}</p>
+        )}
         <Textarea
           placeholder="Enter project description"
           id="description"
@@ -333,7 +337,7 @@ const AddProject = () => {
         </div>
       )}
 
-      <div className="flex justify-end space-x-4">
+      <div className="flex justify-end mb-4 gap-5">
         <Button variant="outline" onClick={() => navigate({ to: "/projects" })}>
           Cancel
         </Button>

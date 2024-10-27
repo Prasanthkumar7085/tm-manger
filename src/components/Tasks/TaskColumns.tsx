@@ -7,7 +7,7 @@ import DeleteDialog from "../core/deleteDialog";
 import { toast } from "sonner";
 import { deleteTaskAPI } from "@/lib/services/tasks";
 
-export const taskColumns = () => {
+export const taskColumns = ({ setDel }: any) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState("");
@@ -20,6 +20,7 @@ export const taskColumns = () => {
       if (response?.status === 200 || response?.status === 201) {
         onClickClose();
         toast.success(response?.data?.message || "User Task Successfully");
+        setDel((prev: any) => prev + 1);
       }
     } catch (err: any) {
       toast.error(err?.message || "Something went wrong");
@@ -57,7 +58,7 @@ export const taskColumns = () => {
       accessorFn: (row: any) => row.project_title,
       id: "project_title",
       cell: (info: any) => {
-        return <span>{info.getValue()}</span>;
+        return <span className="capitalize">{info.getValue()}</span>;
       },
       width: "150px",
       maxWidth: "150px",
@@ -70,7 +71,7 @@ export const taskColumns = () => {
       id: "title",
       cell: (info: any) => {
         let title = info.getValue();
-        return <span>{title ? title : "-"}</span>;
+        return <span className="capitalize">{title ? title : "-"}</span>;
       },
       width: "150px",
       maxWidth: "150px",
@@ -83,7 +84,7 @@ export const taskColumns = () => {
       id: "description",
       cell: (info: any) => {
         let title = info.getValue();
-        return <span>{title ? title : "-"}</span>;
+        return <span className="capitalize">{title ? title : "-"}</span>;
       },
       width: "150px",
       maxWidth: "150px",

@@ -5,6 +5,7 @@ import {
   getAllPaginatedUsers,
   getSingleUserAPI,
   resetPasswordUsersAPI,
+  updateUsersAPI,
   updateUserSelectStatueAPI,
 } from "@/lib/services/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -42,6 +43,7 @@ import SheetRover from "../core/SheetRover";
 import SelectStatusFilter from "../core/CommonComponents/SelectStatusFilter";
 import { errPopper } from "@/lib/helpers/errPopper";
 import LoadingComponent from "../core/LoadingComponent";
+import { StatusFilter } from "../core/StatusFilter";
 
 interface ReportPayload {
   full_name: string;
@@ -60,6 +62,7 @@ function UsersTable() {
     ? searchParams.get("order_by")
     : "";
   const initialSearch = searchParams.get("search") || "";
+  const initialStatus = searchParams.get("status") || "";
   const [searchString, setSearchString] = useState(initialSearch);
   const [loading, setLoading] = useState(false);
   const [userTypeOpen, setUserTypeOpen] = useState(false);
@@ -75,7 +78,8 @@ function UsersTable() {
   const [del, setDel] = useState(1);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [isPasswordSheetOpen, setIsPasswordSheetOpen] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState<any>();
+  const [selectedStatus, setSelectedStatus] = useState(initialStatus);
+  const [selectedUserId, setSelectedUserId] = useState<any>(null);
   const [newPassword, setNewPassword] = useState("");
   const [selectedId, setSelectedId] = useState<any>();
   const [pagination, setPagination] = useState({
@@ -96,13 +100,14 @@ function UsersTable() {
   });
 
   const { isLoading, isError, error, data, isFetching } = useQuery({
-    queryKey: ["users", pagination, debouncedSearch, del],
+    queryKey: ["users", pagination, debouncedSearch, del, selectedStatus],
     queryFn: async () => {
       const response = await getAllPaginatedUsers({
         pageIndex: pagination.pageIndex,
         pageSize: pagination.pageSize,
         order_by: pagination.order_by,
         search: debouncedSearch || undefined,
+        active: selectedStatus,
       });
 
       const queryParams = {
@@ -110,6 +115,7 @@ function UsersTable() {
         page_size: +pagination.pageSize,
         order_by: pagination.order_by ? pagination.order_by : undefined,
         search: debouncedSearch || undefined,
+        active: selectedStatus || undefined,
       };
       router.navigate({
         to: "/users",
@@ -223,7 +229,7 @@ function UsersTable() {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
-      if (searchString) {
+      if (searchString || selectedStatus) {
         getAllUsers({
           pageIndex: 1,
           pageSize: pageSizeParam,
@@ -240,7 +246,7 @@ function UsersTable() {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString]);
+  }, [searchString, selectedStatus]);
 
   const usersData =
     addSerial(
@@ -251,7 +257,30 @@ function UsersTable() {
 
   const handleFormSubmit = async () => {
     if (isEditing) {
-      // await updateUser();
+      try {
+        setLoading(true);
+        const response = await updateUsersAPI(selectedId, {
+          fname: userData.fname,
+          lname: userData.lname,
+          email: userData.email,
+          password: userData.password,
+          user_type: userType,
+        });
+        if (response?.status === 200 || response?.status === 201) {
+          toast.success("User updated successfully");
+          handleDrawerClose();
+          setDel((prev) => prev + 1);
+        } else if (response?.status === 422) {
+          const errData = response?.data?.errData;
+          setErrors(errData);
+          throw response;
+        }
+      } catch (err: any) {
+        console.error(err);
+        toast.error(err?.message || "Update failed");
+      } finally {
+        setLoading(false);
+      }
     } else {
       await addUser();
     }
@@ -313,7 +342,7 @@ function UsersTable() {
   ) => {
     const { name, value } = e.target;
     const updatedValue = value
-      .replace(/[^a-zA-Z\s]/g, "")
+      .replace(/[^\w\s]/g, "")
       .replace(/^\s+/g, "")
       .replace(/\s{2,}/g, " ");
     setUsePasswordData((prevData: any) => ({
@@ -334,7 +363,7 @@ function UsersTable() {
   const handleInputChange = (e: any) => {
     let { name, value } = e.target;
     const updatedValue = value
-      .replace(/[^a-zA-Z\s]/g, "")
+      .replace(/[^\w\s]/g, "")
       .replace(/^\s+/g, "")
       .replace(/\s{2,}/g, " ");
     setUserData({
@@ -425,55 +454,71 @@ function UsersTable() {
   ];
 
   return (
-    <div className="relative">
-      <div className="flex justify-end mb-4 gap-3">
-        <SelectStatusFilter />
-
-        <SearchFilter
-          searchString={searchString}
-          setSearchString={setSearchString}
-          title="Search User"
+    <section id="users" className="relative">
+      <div className="card-container shadow-md border p-5 rounded-lg mt-3 ">
+        <div className="tasks-navbar">
+          <div className="flex justify-between items-center">
+            <div className="heading"></div>
+            <div className="filters">
+              <ul className="flex justify-end space-x-4">
+                <li>
+                  <StatusFilter
+                    value={selectedStatus}
+                    setValue={setSelectedStatus}
+                  />
+                </li>
+                <li>
+                  <SearchFilter
+                    searchString={searchString}
+                    setSearchString={setSearchString}
+                    title="Search User"
+                  />
+                </li>
+                <li>
+                  <Button
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={() => handleDrawerOpen()}
+                  >
+                    +Add Users
+                  </Button>
+                </li>
+                <li>
+                  <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    import
+                  </Button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div className="mt-5">
+          <TanStackTable
+            data={usersData}
+            columns={[...userColumns, ...userActions]}
+            paginationDetails={data?.data?.data?.pagination_info}
+            getData={getAllUsers}
+            removeSortingForColumnIds={["serial", "actions"]}
+          />
+        </div>
+        <DeleteDialog
+          openOrNot={open}
+          label="Are you sure you want to Delete this user?"
+          onCancelClick={onClickClose}
+          onOKClick={deleteUser}
+          deleteLoading={deleteLoading}
         />
-        <Button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => handleDrawerOpen()}
-        >
-          +Add Users
-        </Button>
-
-        <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          import
-        </Button>
-      </div>
-      <div>
-        <TanStackTable
-          data={usersData}
-          columns={[...userColumns, ...userActions]}
-          paginationDetails={data?.data?.data?.pagination_info}
-          getData={getAllUsers}
-          removeSortingForColumnIds={["serial", "actions"]}
+        <SheetRover
+          isOpen={isPasswordSheetOpen}
+          handleCancel={handlePasswordUpdateCancel}
+          userPasswordData={userPasswordData}
+          handleUpdateChangePassword={handleUpdateChangePassword}
+          resetUserPassword={resetUserPassword}
+          errors={errors}
+          loading={loading}
         />
-      </div>
-      <DeleteDialog
-        openOrNot={open}
-        label="Are you sure you want to Delete this user?"
-        onCancelClick={onClickClose}
-        onOKClick={deleteUser}
-        deleteLoading={deleteLoading}
-      />
-      <SheetRover
-        isOpen={isPasswordSheetOpen}
-        handleCancel={handlePasswordUpdateCancel}
-        userPasswordData={userPasswordData}
-        handleUpdateChangePassword={handleUpdateChangePassword}
-        resetUserPassword={resetUserPassword}
-        errors={errors}
-        loading={loading}
-      />
-      <div>
         <Sheet open={isOpen}>
-          <SheetContent className="bg-gray-100">
-            <SheetHeader>
+          <SheetContent className="bg-gray-100 overflow-auto">
+            <SheetHeader className="sticky top-0 bg-white">
               <SheetTitle>{isEditing ? "Edit User" : "Add User"}</SheetTitle>
               <SheetDescription></SheetDescription>
             </SheetHeader>
@@ -535,26 +580,27 @@ function UsersTable() {
                   <p style={{ color: "red" }}>{errors?.email[0]}</p>
                 )}
               </div>
-
-              <div className="flex flex-col space-y-1">
-                <Label
-                  className="font-normal capitalize text-lg"
-                  htmlFor="password"
-                >
-                  Password
-                </Label>
-                <Input
-                  className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
-                  id="password"
-                  placeholder="Enter Password"
-                  value={userData.password}
-                  name="password"
-                  onChange={handleChangePassword}
-                />
-                {errors?.password && (
-                  <p style={{ color: "red" }}>{errors?.password[0]}</p>
-                )}
-              </div>
+              {!isEditing && (
+                <div className="flex flex-col space-y-1">
+                  <Label
+                    className="font-normal capitalize text-lg"
+                    htmlFor="password"
+                  >
+                    Password
+                  </Label>
+                  <Input
+                    className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
+                    id="password"
+                    placeholder="Enter Password"
+                    value={userData.password}
+                    name="password"
+                    onChange={handleChangePassword}
+                  />
+                  {errors?.password && (
+                    <p style={{ color: "red" }}>{errors?.password[0]}</p>
+                  )}
+                </div>
+              )}
               <div>
                 <label
                   htmlFor="panNumber"
@@ -643,7 +689,7 @@ function UsersTable() {
         </Sheet>
       </div>
       <LoadingComponent loading={isLoading || isFetching || loading} />
-    </div>
+    </section>
   );
 }
 export default UsersTable;

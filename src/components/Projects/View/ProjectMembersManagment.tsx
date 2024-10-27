@@ -27,6 +27,7 @@ import {
   CommandEmpty,
 } from "@/components/ui/command";
 import LoadingComponent from "@/components/core/LoadingComponent";
+import DeleteDialog from "@/components/core/deleteDialog";
 
 const ProjectMembersManagment = () => {
   const { projectId } = useParams({ strict: false });
@@ -39,7 +40,8 @@ const ProjectMembersManagment = () => {
   const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
   const [updatedOrNot, setUpdatedOrNot] = useState<boolean>(false);
   const [updating, setUpdating] = useState<any>(0);
-  console.log(updating, "upfdsa");
+  const [removedUser, setRemovedUser] = useState<any>({});
+  const [removeUserDialog, serRemoveUserDialog] = useState<boolean>(false);
   const getFullName = (user: any) => {
     return `${user?.fname || ""} ${user?.lname || ""}`;
   };
@@ -98,10 +100,8 @@ const ProjectMembersManagment = () => {
   };
 
   const removeMember = (memberDetails: any) => {
-    setSelectedMembers(
-      selectedMembers.filter((member: any) => member.id !== memberDetails?.id)
-    );
-    removeMembers({ project_member_id: memberDetails?.id });
+    setRemovedUser({ project_member_id: memberDetails?.id });
+    serRemoveUserDialog(true);
   };
 
   const toggleValue = (currentValue: string) => {
@@ -190,7 +190,11 @@ const ProjectMembersManagment = () => {
     onSuccess: (response: any) => {
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message);
+        setSelectedMembers(
+          selectedMembers.filter((member: any) => member.id !== projectId)
+        );
         setUpdating((prev: any) => prev + 1);
+        serRemoveUserDialog(false);
       } else if (response?.status === 422 || response?.status === 409) {
         setErrorMessages(response?.data?.errData || {});
         setUpdating((prev: any) => prev + 1);
@@ -207,6 +211,9 @@ const ProjectMembersManagment = () => {
     },
   });
 
+  const handleDeleteUser = () => {
+    removeMembers(removedUser);
+  };
   return (
     <div>
       <div className="flex flex-col justify-start gap-4">
@@ -246,7 +253,7 @@ const ProjectMembersManagment = () => {
                                 : "opacity-0"
                             )}
                           />
-                          {getFullName(user)}
+                          <p className="capitalize">{getFullName(user)}</p>
                         </CommandItem>
                       ))}
                   </CommandGroup>
@@ -284,7 +291,7 @@ const ProjectMembersManagment = () => {
                   <th className="border p-2">Action</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="text-center">
                 {selectedMembers.map((member: any) => (
                   <tr key={member.id}>
                     <td className="border p-2 capitalize">
@@ -310,10 +317,10 @@ const ProjectMembersManagment = () => {
                     <td className="border p-2">
                       <button
                         type="button"
-                        title="Remove"
+                        className="text-red-500"
                         onClick={() => removeMember(member)}
                       >
-                        <X className="w-4 h-4 text-red-500" />
+                        Remove
                       </button>
                     </td>
                   </tr>
@@ -322,10 +329,21 @@ const ProjectMembersManagment = () => {
             </table>
           </div>
         ) : (
-          "No members found"
+          <div
+            className={`text-center w-full ${loading || isLoading || isFetching ? "hidden" : "block"}`}
+          >
+            No members found
+          </div>
         )}
       </div>
       <LoadingComponent loading={loading || isLoading || isFetching} />
+      <DeleteDialog
+        openOrNot={removeUserDialog}
+        onCancelClick={() => serRemoveUserDialog(false)}
+        label="Are you sure you want to remove this member?"
+        onOKClick={handleDeleteUser}
+        deleteLoading={loading || isLoading || isFetching}
+      />
     </div>
   );
 };

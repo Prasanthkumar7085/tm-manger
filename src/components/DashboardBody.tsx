@@ -115,7 +115,7 @@ const DashBoard = () => {
           <StatsAndGraph />
         </Card>
       </div>
-      <Card className="p-6 py-4 mt-6 bg-white shadow-lg rounded-lg">
+      <Card className="mt-6 bg-white shadow-lg rounded-lg">
         <Tasks />
       </Card>
     </div>

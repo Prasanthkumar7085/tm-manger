@@ -17,7 +17,6 @@ const SelectStatusFilter = ({ userId }: any) => {
     { label: "Inactive", value: false },
   ];
 
-  
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
@@ -36,10 +35,10 @@ const SelectStatusFilter = ({ userId }: any) => {
           <div className="flex">
             {selectedStatus && (
               <X
-              className="mr-2 h-4 w-4 shrink-0 opacity-50"
-              onClick={(e: any) => {
-                e.stopPropagation()
-                setSelectedStatus(null);
+                className="mr-2 h-4 w-4 shrink-0 opacity-50"
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  setSelectedStatus(null);
                 }}
               />
             )}
@@ -51,12 +50,12 @@ const SelectStatusFilter = ({ userId }: any) => {
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-[200px] p-0 bg-white">
         <div className="max-h-[300px] overflow-y-auto">
           {statuses.map((status) => (
             <div
               key={status.label}
-              onClick={() => (status.value)}
+              onClick={() => status.value}
               className="cursor-pointer p-2 hover:bg-gray-100"
             >
               {status.label}
