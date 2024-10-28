@@ -241,6 +241,7 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
               )}
             </Tooltip>
           </TooltipProvider>
+          <div>{project?.code}</div>
         </div>
 
         <div className="action-button mt-10">

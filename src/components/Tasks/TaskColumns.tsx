@@ -30,15 +30,16 @@ export const taskColumns = ({ setDel }: any) => {
     }
   };
 
-  const handleView = () => {
+  const handleView = (taskId: any) => {
     navigate({
-      to: "/tasks/view",
+      to: `/tasks/${taskId}`,
     });
   };
 
   const onClickClose = () => {
     setOpen(false);
   };
+
   const onClickOpen = (id: any) => {
     setOpen(true);
     setDeleteTaskId(id);
@@ -57,9 +58,9 @@ export const taskColumns = ({ setDel }: any) => {
     {
       accessorFn: (row: any) => row.project_title,
       id: "project_title",
-      cell: (info: any) => {
-        return <span className="capitalize">{info.getValue()}</span>;
-      },
+      cell: (info: any) => (
+        <span className="capitalize">{info.getValue()}</span>
+      ),
       width: "150px",
       maxWidth: "150px",
       minWidth: "150px",
@@ -69,10 +70,9 @@ export const taskColumns = ({ setDel }: any) => {
     {
       accessorFn: (row: any) => row.title,
       id: "title",
-      cell: (info: any) => {
-        let title = info.getValue();
-        return <span className="capitalize">{title ? title : "-"}</span>;
-      },
+      cell: (info: any) => (
+        <span className="capitalize">{info.getValue() || "-"}</span>
+      ),
       width: "150px",
       maxWidth: "150px",
       minWidth: "150px",
@@ -82,10 +82,9 @@ export const taskColumns = ({ setDel }: any) => {
     {
       accessorFn: (row: any) => row.description,
       id: "description",
-      cell: (info: any) => {
-        let title = info.getValue();
-        return <span className="capitalize">{title ? title : "-"}</span>;
-      },
+      cell: (info: any) => (
+        <span className="capitalize">{info.getValue() || "-"}</span>
+      ),
       width: "150px",
       maxWidth: "150px",
       minWidth: "150px",
@@ -95,14 +94,13 @@ export const taskColumns = ({ setDel }: any) => {
     {
       accessorFn: (row: any) => row.priority,
       id: "priority",
-      cell: (info: any) => {
-        let title = info.getValue();
-        return <span className="capitalize">{title ? title : "-"}</span>;
-      },
+      cell: (info: any) => (
+        <span className="capitalize">{info.getValue() || "-"}</span>
+      ),
       width: "100px",
       maxWidth: "100px",
       minWidth: "100px",
-      header: () => <span>Priortity</span>,
+      header: () => <span>Priority</span>,
       footer: (props: any) => props.column.id,
     },
     {
@@ -118,44 +116,41 @@ export const taskColumns = ({ setDel }: any) => {
       header: () => <span>Due Date</span>,
       footer: (props: any) => props.column.id,
     },
-
     {
       accessorFn: (row: any) => row.actions,
       id: "actions",
-      cell: (info: any) => {
-        return (
-          <div>
-            <Button
-              title="View"
-              size={"sm"}
-              variant={"ghost"}
-              onClick={handleView}
-            >
-              <img src={viewButtonIcon} alt="view" height={16} width={16} />
-            </Button>
-            <Button
-              title="delete"
-              onClick={() => onClickOpen(info.row.original.id)}
-              size={"sm"}
-              variant={"ghost"}
-            >
-              <img
-                src={"/table/delete.svg"}
-                alt="view"
-                height={16}
-                width={16}
-              />
-            </Button>
-            <DeleteDialog
-              openOrNot={open}
-              label="Are you sure you want to Delete this task?"
-              onCancelClick={onClickClose}
-              onOKClick={deleteTask}
-              deleteLoading={deleteLoading}
+      cell: (info: any) => (
+        <div>
+          <Button
+            title="View"
+            size={"sm"}
+            variant={"ghost"}
+            onClick={() => handleView(info.row.original.id)} // Pass the task ID
+          >
+            <img src={viewButtonIcon} alt="view" height={16} width={16} />
+          </Button>
+          <Button
+            title="Delete"
+            onClick={() => onClickOpen(info.row.original.id)}
+            size={"sm"}
+            variant={"ghost"}
+          >
+            <img
+              src={"/table/delete.svg"}
+              alt="delete"
+              height={16}
+              width={16}
             />
-          </div>
-        );
-      },
+          </Button>
+          <DeleteDialog
+            openOrNot={open}
+            label="Are you sure you want to Delete this task?"
+            onCancelClick={onClickClose}
+            onOKClick={deleteTask}
+            deleteLoading={deleteLoading}
+          />
+        </div>
+      ),
       header: () => <span>Actions</span>,
       footer: (props: any) => props.column.id,
       width: "80px",

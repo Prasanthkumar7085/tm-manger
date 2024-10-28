@@ -64,3 +64,10 @@ export const viewProjectAPI = async (projectId: any) => {
     throw err;
   }
 };
+export const uploadLogoAPI = async (projectId: any) => {
+  try {
+    return await $fetch.post(`/projects/${projectId}/logo `);
+  } catch (err: any) {
+    throw err;
+  }
+};

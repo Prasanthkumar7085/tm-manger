@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar } from "@/components/ui/avatar";
@@ -6,210 +6,165 @@ import { Badge } from "@/components/ui/badge";
 import { UploadIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { addPostCommentsAPI, getCommentsAPI } from "@/lib/services/tasks";
-import { useQuery } from "@tanstack/react-query";
+import {
+  addPostCommentsAPI,
+  getCommentsAPI,
+  getSingleTaskAPI,
+} from "@/lib/services/tasks";
 
 const TaskView = () => {
   const navigate = useNavigate();
   const { taskId } = useParams({ strict: false });
   const [commentsData, setCommentsData] = useState<any>([]);
+  const [singleTask, setSingleTask] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string>("");
-  const [commentedby, setCommentBy] = useState<string>("");
+  const [commentedBy, setCommentBy] = useState<string>("");
 
-  const getAllComments = async () => {
+  // Function to fetch a single task
+  const getSingleTask = async (taskId: string) => {
     try {
-      const response = await getCommentsAPI();
-      if (response.success) {
-        const data = response?.data?.data;
-        setCommentsData(data);
-      } else {
-        throw response;
-      }
-    } catch (errData) {
-      console.error(errData);
-      // Optionally display error message
-      // errPopper(errData);
-    }
-  };
-
-  const addComment = async () => {
-    setLoading(true);
-    try {
-      const payload = {
-        task_id: taskId,
-        message: message,
-        commented_by: commentedby,
-        created_at: "",
-        updated_at: "",
-      };
-      const response = await addPostCommentsAPI(taskId, payload);
+      const response: any = await getSingleTaskAPI(taskId);
       if (response?.status === 200 || response?.status === 201) {
-        toast.success(response?.data?.message || "Comment Added successfully");
-        navigate({
-          to: "/tasks",
-        });
-      } else if (response?.status === 422 || response?.status === 409) {
-        // setErrorMessages(response?.data?.errors);
+        setSingleTask(response?.data?.data);
       } else {
-        throw response;
+        throw new Error("Failed to fetch task");
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      toast.error(err?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
+      toast.error("Failed to fetch task");
     }
   };
 
-  const { isFetching } = useQuery({
-    queryKey: ["getAllComments"],
-    queryFn: getAllComments,
-    refetchOnWindowFocus: false,
-    //  enabled:taskId,
-  });
-
-  const task = {
-    title: " Millinium Medication Care",
-    project: "DLW Sales",
-    assignedUsers: [
-      {
-        id: 1,
-        name: "Pavan",
-        role: "Manager",
-        imageUrl: "https://i.pravatar.cc/150?img=1",
-      },
-      {
-        id: 2,
-        name: "Gowtham",
-        role: "Member",
-        imageUrl: "https://i.pravatar.cc/150?img=2",
-      },
-      {
-        id: 3,
-        name: "Sudhakar",
-        role: "Member",
-        imageUrl: "https://i.pravatar.cc/150?img=3",
-      },
-    ],
-    createdBy: { name: "Mark", createdAt: "04-01-2023, 04:33 PM" },
-    dueDate: "05-01-2023, 10:00 AM",
-    status: "In Progress",
-    tags: ["Profitable", "AI", "Marketing", "Social", "Contents"],
-    attachments: [
-      {
-        id: 1,
-        name: "DLW Report-01.pdf",
-        size: "604KB",
-        timestamp: "2m ago",
-      },
-      {
-        id: 2,
-        name: "user-journey-01.pdf",
-        size: "604KB",
-        timestamp: "2m ago",
-      },
-    ],
-    comments: [
-      {
-        id: 1,
-        author: "Pavan",
-        timestamp: "1 month ago",
-        content: "This is the test comment 1 for task1",
-      },
-      {
-        id: 2,
-        author: "Gowtham",
-        timestamp: "1 week ago",
-        content: "This is the test comment 2",
-        replyTo: "@Pavan",
-      },
-    ],
-    comment: commentsData,
-  };
-
-  //   //  const firstHalf = task.comments.slice(0, Math.ceil(task.comments.length / 2));
-  //   //  const secondHalf = task.comments.slice(Math.ceil(task.comments.length / 2));
-  // const handleClick = () => {
-  //   toast.success("Comment Added Successfully");
-  //   navigate({
-  //     to: "/tasks",
-  //   });
+  // Function to fetch all comments
+  // const getAllComments = async () => {
+  //   try {
+  //     const response = await getCommentsAPI();
+  //     if (response.success) {
+  //       setCommentsData(response?.data?.data);
+  //     } else {
+  //       throw new Error("Failed to fetch comments");
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //     toast.error("Failed to fetch comments");
+  //   }
   // };
+
+  // Function to add a comment
+  // const addComment = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const payload = {
+  //       task_id: taskId,
+  //       message,
+  //       commented_by: commentedBy,
+  //       created_at: new Date().toISOString(),
+  //       updated_at: new Date().toISOString(),
+  //     };
+  //     const response = await addPostCommentsAPI(taskId, payload);
+  //     if (response?.status === 200 || response?.status === 201) {
+  //       toast.success(response?.data?.message || "Comment added successfully");
+  //       // Optionally, you can refresh comments here after adding
+  //       await getAllComments();
+  //       setMessage(""); // Clear the message input after adding a comment
+  //     } else {
+  //       throw new Error("Failed to add comment");
+  //     }
+  //   } catch (err: any) {
+  //     console.error(err);
+  //     toast.error(err?.message || "Something went wrong");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  useEffect(() => {
+    if (taskId) {
+      getSingleTask(taskId);
+    }
+  }, [taskId]);
+
   return (
     <div className="grid grid-cols-[60%_40%] gap-4">
       <div>
-        <div className="flex justify-between items-center border p-6">
-          <div>
-            <p className="text-gray-500">Project: {task.project}</p>
-            <p className="text- font-semibold">{task.title}</p>
-          </div>
+        {singleTask ? (
+          <>
+            <div className="flex justify-between items-center border p-6">
+              <div>
+                <p className="text-gray-500">Project: {singleTask.project}</p>
+                <p className="font-semibold">{singleTask.title}</p>
+              </div>
 
-          <div className="space-y-2">
-            <h4 className="font-semibold">Tags</h4>
+              <div className="space-y-2">
+                <h4 className="font-semibold">Tags</h4>
 
-            <div className="flex space-x-2">
-              {task.tags.map((tag, idx) => (
-                <Badge key={idx} variant="outline">
-                  {tag}
-                </Badge>
-              ))}
+                <div className="flex space-x-2">
+                  {singleTask.tags?.map((tag: any, idx: any) => (
+                    <Badge key={idx} variant="outline">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div className="space-y-2">
-          <h4 className="font-semibold">Assigned To</h4>
-          <div className="border rounded p-4">
-            {task.assignedUsers.map((user, index) => (
-              <div
-                key={user.id}
-                className="flex items-center justify-between py-2"
-              >
-                <div className="flex items-center space-x-3">
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <Avatar className="w-8 h-8 rounded-full">
-                    <img src={user.imageUrl} alt={user.name} />
-                  </Avatar>
-                  <span>{user.name}</span>
-                </div>
-                <span className="text-green-600">{user.role}</span>
+            <div className="space-y-2">
+              <h4 className="font-semibold">Assigned To</h4>
+              <div className="border rounded p-4">
+                {singleTask.assignedUsers?.map((user: any, index: any) => (
+                  <div
+                    key={user.id}
+                    className="flex items-center justify-between py-2"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      <Avatar className="w-8 h-8 rounded-full">
+                        <img src={user.imageUrl} alt={user.name} />
+                      </Avatar>
+                      <span>{user.name}</span>
+                    </div>
+                    <span className="text-green-600">{user.role}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
 
-        <div className="space-y-2">
-          <h4 className="font-semibold">Attachments</h4>
-          <div className="space-y-2">
-            {task.attachments.map((attachment) => (
-              <div
-                key={attachment.id}
-                className="flex justify-between items-center border p-2 rounded"
-              >
-                <div className="flex items-center space-x-2">
-                  <span className="text-xl">📄</span>
-                  <p>{attachment.name}</p>
-                </div>
-                <div className="text-gray-500">
-                  <p>{attachment.size}</p>
-                  <p>{attachment.timestamp}</p>
-                </div>
+            <div className="space-y-2">
+              <h4 className="font-semibold">Attachments</h4>
+              <div className="space-y-2">
+                {singleTask.attachments?.map((attachment: any) => (
+                  <div
+                    key={attachment.id}
+                    className="flex justify-between items-center border p-2 rounded"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xl">📄</span>
+                      <p>{attachment.name}</p>
+                    </div>
+                    <div className="text-gray-500">
+                      <p>{attachment.size}</p>
+                      <p>{attachment.timestamp}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <Button className="bg-red-500 flex items-center space-x-2">
-            <UploadIcon className="w-4 h-4" />
-            <span>Upload</span>
-          </Button>
-        </div>
+              <Button className="bg-red-500 flex items-center space-x-2">
+                <UploadIcon className="w-4 h-4" />
+                <span>Upload</span>
+              </Button>
+            </div>
+          </>
+        ) : (
+          <p>Loading task details...</p>
+        )}
       </div>
 
       <div className="space-y-2 border p-6">
         <div className="space-y-4">
           <h4 className="font-semibold">Comments</h4>
           <div className="space-y-4">
-            {task.comments.map((comment, index) => (
+            {commentsData.map((comment: any, index: any) => (
               <div key={comment.id} className="space-y-2">
                 {/* Comment Bubble */}
                 <div className="flex items-start space-x-3">
@@ -217,8 +172,9 @@ const TaskView = () => {
                   <Avatar className="w-8 h-8 rounded-full">
                     <img
                       src={
-                        task.assignedUsers[index % task.assignedUsers.length]
-                          .imageUrl
+                        singleTask?.assignedUsers[
+                          index % singleTask.assignedUsers.length
+                        ]?.imageUrl || "https://i.pravatar.cc/150?img=4"
                       }
                       alt={comment.author}
                     />
@@ -245,9 +201,9 @@ const TaskView = () => {
                     <Avatar className="w-8 h-8 rounded-full">
                       <img
                         src={
-                          task.assignedUsers[
-                            (index + 1) % task.assignedUsers.length
-                          ].imageUrl
+                          singleTask?.assignedUsers[
+                            (index + 1) % singleTask.assignedUsers.length
+                          ]?.imageUrl || "https://i.pravatar.cc/150?img=4"
                         }
                         alt={comment.replyTo}
                       />
@@ -274,36 +230,26 @@ const TaskView = () => {
             <div className="flex items-center space-x-3 mt-4">
               {/* Avatar */}
               <Avatar className="w-8 h-8 rounded-full">
-                <img src="https://i.pravatar.cc/150?img=4" alt="current user" />
+                <img src="https://i.pravatar.cc/150?img=4" alt="User" />
               </Avatar>
-
-              {/* Comment Input */}
-              <div className="flex items-center bg-gray-100 rounded-full p-3 w-full">
-                <Input
-                  placeholder="Add a comment..."
-                  className="flex-grow bg-transparent border-none"
-                  // value={message} // Bind the state to the input field
-                  // onChange={(e) => setMessage(e.target.value)} // Update the state on input change
-                />
-                <Button
-                  className="text-white bg-blue-600 rounded-full px-4 py-2 ml-2"
-                  onClick={addComment}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                </Button>
-              </div>
+              <Input
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Add a comment..."
+                className="flex-grow"
+                onKeyPress={(e) => {
+                  // if (e.key === "Enter") {
+                  //   addComment();
+                  // }
+                }}
+              />
+              <Button
+                // onClick={addComment}
+                disabled={loading}
+                className="bg-blue-500"
+              >
+                {loading ? "Adding..." : "Add"}
+              </Button>
             </div>
           </div>
         </div>
