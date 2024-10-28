@@ -115,7 +115,7 @@ const TanStackTable: FC<pageProps> = ({
         className={`overflow-y-auto  w-full overflow-auto relative  bg-white rounded-[12px] ${location.pathname.includes("tasks") ? "h-[calc(100vh-370px)]" : "h-[calc(100vh-280px)]"}`}
       >
         <Table>
-          <TableHeader className="sticky top-[0px] ">
+          <TableHeader className="sticky top-[0px] z-10">
             {table?.getHeaderGroups().map((headerGroup) => {
               return (
                 <TableRow key={headerGroup.id}>
