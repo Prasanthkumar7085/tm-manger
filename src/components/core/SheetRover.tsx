@@ -30,7 +30,7 @@ const SheetRover = ({
   resetUserPassword: () => void;
 }) => {
   return (
-    <Sheet open={isOpen}>
+    <Sheet open={isOpen} onOpenChange={handleCancel}>
       <SheetContent className="bg-gray-100">
         <SheetHeader>
           <SheetTitle>Reset Password</SheetTitle>
