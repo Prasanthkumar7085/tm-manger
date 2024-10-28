@@ -3,16 +3,18 @@ import { useEffect, useState } from "react";
 
 import { addSerial } from "@/lib/helpers/addSerial";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
-import { getAllPaginatedTasks } from "@/lib/services/tasks";
+import { getAllPaginatedTasks} from "@/lib/services/tasks";
 import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
 import DateRangeFilter from "../core/DateRangePicker";
-import Loading from "../core/Loading";
 import TanStackTable from "../core/TanstackTable";
 import { Button } from "../ui/button";
 import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
 import LoadingComponent from "../core/LoadingComponent";
+import { TasksSelectStatusFilter } from "../core/CommonComponents/TasksSelectStatusFilter";
+import { TasksSelectPriority } from "../core/CommonComponents/TasksSelectPriority";
+import { SelectTaskProjects } from "../core/CommonComponents/SelectTaskProjects";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -22,13 +24,30 @@ const Tasks = () => {
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 10;
-  const orderBY = searchParams.get("order_by") || "";
+  const orderBY = searchParams.get("order_by")
+    ? searchParams.get("order_by")
+    : "";
   const initialSearch = searchParams.get("search") || "";
+  const initialStatus = searchParams.get("status") || "";
+  const initialPrioritys = searchParams.get("priority") || "";
   const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedDate, setSelectedDate] = useState<any>(new Date());
+  const [selectedStatus, setSelectedStatus] = useState(initialStatus);
+  const [selectedProjects, setSelectedProjects] = useState(initialStatus);
+  const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
   const [dateValue, setDateValue] = useState<any>(null);
   const [del, setDel] = useState<any>(1);
+  const [task, setTask] = useState<any>({
+    title: "",
+    ref_id: "",
+    description: "",
+    priority: "",
+    status: "",
+    due_date: "",
+    tags: [],
+    users: [],
+  });
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
@@ -39,13 +58,23 @@ const Tasks = () => {
   const isDashboard = location.pathname === "/dashboard";
 
   const { isLoading, isError, data, error, isFetching } = useQuery({
-    queryKey: ["tasks", pagination, debouncedSearch, selectedDate, del],
+    queryKey: [
+      "tasks",
+      pagination,
+      debouncedSearch,
+      selectedDate,
+      del,
+      selectedStatus,
+      selectedpriority,
+    ],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
         pageIndex: pagination.pageIndex,
         pageSize: pagination.pageSize,
         order_by: pagination.order_by,
         search_string: debouncedSearch,
+        status: selectedStatus,
+        priority: selectedpriority,
         from_date: selectedDate?.length ? selectedDate[0] : null,
         to_date: selectedDate?.length ? selectedDate[1] : null,
       });
@@ -56,6 +85,8 @@ const Tasks = () => {
         search_string: debouncedSearch || undefined,
         from_date: selectedDate?.length ? selectedDate[0] : undefined,
         to_date: selectedDate?.length ? selectedDate[1] : undefined,
+        status: selectedStatus || undefined,
+        priority: selectedpriority || undefined,
       };
 
       {
@@ -85,12 +116,24 @@ const Tasks = () => {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
+      if (searchString || selectedStatus || selectedpriority) {
+        getAllTasks({
+          pageIndex: 1,
+          pageSize: pageSizeParam,
+          order_by: orderBY,
+        });
+      } else {
+        getAllTasks({
+          pageIndex: pageIndexParam,
+          pageSize: pageSizeParam,
+          order_by: orderBY,
+        });
+      }
     }, 500);
-
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString]);
+  }, [searchString, selectedStatus, selectedpriority]);
 
   const handleNavigation = () => {
     navigate({
@@ -122,6 +165,26 @@ const Tasks = () => {
             </div>
             <div className="filters">
               <ul className="flex justify-end space-x-4">
+              <li>
+                  <SelectTaskProjects
+                  selectedProjects={selectedProjects}
+                  setSelectedProjects={setSelectedProjects}
+                  />  
+                </li>
+
+              
+                <li>
+                  <TasksSelectPriority
+                    value={selectedpriority}
+                    setValue={setSelectedpriority}
+                  />
+                </li>
+                <li>
+                  <TasksSelectStatusFilter
+                    value={selectedStatus}
+                    setValue={setSelectedStatus}
+                  />
+                </li>
                 <li>
                   <SearchFilter
                     searchString={searchString}

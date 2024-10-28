@@ -56,7 +56,7 @@ const AddSheetRover = ({
   handleInputChange: any;
 }) => {
   return (
-    <Sheet open={isOpen} onOpenChange={handleDrawerClose}>
+    <Sheet open={isOpen}>
       <SheetContent className="bg-gray-100 overflow-auto">
         <SheetHeader className="sticky top-0 bg-white">
           <SheetTitle>{isEditing ? "Edit User" : "Add User"}</SheetTitle>
@@ -109,12 +109,18 @@ const AddSheetRover = ({
               Mobile Number
             </Label>
             <Input
+              type="tel"
               className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
               id="phone_number"
               placeholder="Enter Phone Number"
               value={userData.phone_number}
               name="phone_number"
-              onChange={handleInputChange}
+              onChange={(e) => {
+                const numericValue = e.target.value.replace(/\D/g, "");
+                handleInputChange({
+                  target: { name: "phone_number", value: numericValue },
+                });
+              }}
             />
             {errors?.phone_number && (
               <p style={{ color: "red" }}>{errors?.phone_number[0]}</p>

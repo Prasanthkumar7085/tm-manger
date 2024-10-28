@@ -17,30 +17,13 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import TanStackTable from "../core/TanstackTable";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { userColumns } from "./UserColumns";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Label } from "@/components/ui/label";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
-import { Check, ChevronDown, ChevronUp, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import { userTypes } from "@/utils/conistance/users";
-import Loading from "../core/Loading";
 import DeleteDialog from "../core/deleteDialog";
 import SheetRover from "../core/SheetRover";
-import SelectStatusFilter from "../core/CommonComponents/SelectStatusFilter";
 import { errPopper } from "@/lib/helpers/errPopper";
 import LoadingComponent from "../core/LoadingComponent";
 import { StatusFilter } from "../core/StatusFilter";
@@ -63,7 +46,7 @@ function UsersTable() {
     ? searchParams.get("order_by")
     : "";
   const initialSearch = searchParams.get("search") || "";
-  const initialStatus = searchParams.get("status") || "";
+  const initialStatus = searchParams.get("active") || "";
   const [searchString, setSearchString] = useState(initialSearch);
   const [loading, setLoading] = useState(false);
   const [userTypeOpen, setUserTypeOpen] = useState(false);
@@ -125,7 +108,7 @@ function UsersTable() {
     },
   });
   const getAllUsers = async ({ pageIndex, pageSize, order_by }: any) => {
-    setPagination({ pageIndex, pageSize, order_by });
+    setPagination({ pageIndex, pageSize, order_by,});
   };
 
   const addUser = async () => {

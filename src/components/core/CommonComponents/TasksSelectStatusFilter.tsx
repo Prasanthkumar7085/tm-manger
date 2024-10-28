@@ -18,14 +18,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { statusConstants } from "@/lib/helpers/statusConstants";
+import { statusConstants, taskStatusConstants } from "@/lib/helpers/statusConstants";
 
 interface StatusFilterProps {
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const StatusFilter: React.FC<StatusFilterProps> = ({
+export const TasksSelectStatusFilter: React.FC<StatusFilterProps> = ({
   value,
   setValue,
 }) => {
@@ -41,7 +41,7 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
           className="w-[200px] justify-between"
         >
           {value
-            ? statusConstants.find((item) => item.value === value)?.label
+            ? taskStatusConstants.find((item) => item.value === value)?.label
             : "Select Status"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           {value && (
@@ -61,7 +61,7 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
           <CommandList>
             <CommandEmpty>No Status found.</CommandEmpty>
             <CommandGroup>
-              {statusConstants.map((status) => (
+              {taskStatusConstants.map((status) => (
                 <CommandItem
                   key={status.value}
                   value={status.value}
