@@ -19,11 +19,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { statusConstants } from "@/lib/helpers/statusConstants";
-
-interface StatusFilterProps {
-  value: string;
-  setValue: React.Dispatch<React.SetStateAction<string>>;
-}
+import { StatusFilterProps } from "@/lib/interfaces";
 
 export const StatusFilter: React.FC<StatusFilterProps> = ({
   value,

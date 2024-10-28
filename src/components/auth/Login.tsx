@@ -13,11 +13,7 @@ import { toast } from "sonner";
 import loginBackground from "@/assets/login-bg-image.png";
 import { setUserDetails } from "@/redux/Modules/userlogin";
 import { errPopper } from "@/lib/helpers/errPopper";
-
-interface loginProps {
-  email: string;
-  password: string;
-}
+import { loginProps } from "@/lib/interfaces";
 
 const LoginComponent = () => {
   const [loginDetails, setLoginDetails] = useState({ email: "", password: "" });
@@ -166,8 +162,7 @@ const LoginComponent = () => {
         {/* <p className="font-light self-center md:text-xl lg:text-3xl xl:text-base">Don't have an account? <span className="text-yellow-500 cursor-pointer">Register</span></p> */}
       </div>
       {/* <Loading loading={loading} /> */}
-   </div>
-   
+    </div>
   );
 };
 export default LoginComponent;

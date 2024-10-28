@@ -16,17 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DynamicPaginationProps } from "@/lib/interfaces";
 import React, { useEffect, useState } from "react";
-
-interface DynamicPaginationProps {
-  paginationDetails: any;
-
-  totalItems?: number;
-  capturePageNum: (value: number) => void;
-  captureRowPerItems: (value: number) => void;
-  initialPage?: number;
-  limitOptionsFromProps?: { title: string; value: number }[];
-}
 
 const Pagination = ({
   capturePageNum,
