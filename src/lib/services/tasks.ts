@@ -8,6 +8,7 @@ interface GetAllPaginatedUsersPropTypes {
   to_date: string;
   status:string;
   priority: string;
+  project_id:any;
 }
 
 export const getAllPaginatedTasks = async ({
@@ -19,6 +20,7 @@ export const getAllPaginatedTasks = async ({
   to_date,
   status,
   priority,
+  project_id,
 }: GetAllPaginatedUsersPropTypes) => {
   try {
     const queryParams = {
@@ -30,6 +32,7 @@ export const getAllPaginatedTasks = async ({
       to_date: to_date,
       status: status,
       priority: priority,
+      project_id: project_id,
     };
     return await $fetch.get("/tasks", queryParams);
   } catch (err) {

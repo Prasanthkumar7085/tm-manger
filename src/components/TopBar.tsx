@@ -41,6 +41,7 @@ function TopBar() {
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Update Password</DropdownMenuItem>
+            <DropdownMenuItem>Update Profile</DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => {

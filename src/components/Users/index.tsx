@@ -1,5 +1,6 @@
 import { addSerial } from "@/lib/helpers/addSerial";
 import {
+  addAdminUserAPI,
   addUsersAPI,
   deleteUsersAPI,
   getAllPaginatedUsers,
@@ -210,6 +211,35 @@ function UsersTable() {
     }
   };
 
+  const addAdminUser = async () => {
+    try {
+      setLoading(true);
+      const payload = {
+        fname: userData?.fname,
+        lname: userData?.lname,
+        email: userData?.email,
+        password: userData?.password,
+        phone_number: userData?.phone_number,
+        user_type: userType,
+
+      };
+      const response = await addAdminUserAPI(payload);
+      if (response?.status === 200 || response?.status === 201) {
+        toast.success(response?.data?.message || "Admin User Added successfully");
+        handleDrawerClose();
+        setDel((prev) => prev + 1);
+      } else if (response?.status === 422) {
+        const errData = response?.data?.errData;
+        setErrors(errData);
+        throw response;
+      }
+    } catch (err: any) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
@@ -255,6 +285,9 @@ function UsersTable() {
           toast.success("User updated successfully");
           handleDrawerClose();
           setDel((prev) => prev + 1);
+          if (userType === "admin") {
+            await addAdminUser();
+          }
         } else if (response?.status === 422) {
           const errData = response?.data?.errData;
           setErrors(errData);
@@ -267,7 +300,8 @@ function UsersTable() {
         setLoading(false);
       }
     } else {
-      await addUser();
+      {userType === "admin" ? await addAdminUser() :
+      await addUser() }
     }
   };
   const onChangeStatus = (value: string) => {

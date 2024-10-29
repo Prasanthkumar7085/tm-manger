@@ -19,19 +19,19 @@ import {
 } from "@/components/ui/popover";
 import { getDropDownForProjectsTasksAPI } from "@/lib/services/tasks";
 
+
 interface StatusFilterProps {
-  selectedProjects: string;
-  setSelectedProjects: React.Dispatch<React.SetStateAction<string>>;
+  selectedProject: any;
+  setSelectedProject: React.Dispatch<React.SetStateAction<any>>;
 }
 
 export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
-  selectedProjects,
-  setSelectedProjects,
+  selectedProject,
+  setSelectedProject,
 }) => {
   const [open, setOpen] = React.useState(false);
-  const [projectsId,setProjectsId]= React.useState()
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["projects"],
+    queryKey: ["projects",],
     queryFn: async () => {
       const response = await getDropDownForProjectsTasksAPI();      
       return response.data?.data;
@@ -39,7 +39,7 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
   });
 
   const handleSelect = (value: string) => {
-    setSelectedProjects(value === selectedProjects ? "" : value);
+    setSelectedProject(value === selectedProject ? "" : value);
     setOpen(false);
   };
 
@@ -52,16 +52,16 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
           aria-expanded={open}
           className="w-[230px] justify-between"
         >
-          {selectedProjects
-            ? data?.find((item:any) => item.title === selectedProjects)?.title
+          {selectedProject?.id
+            ? data?.find((item:any) => item.id === selectedProject?.id)?.title
             : "Select Projects"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          {selectedProjects && (
+          {selectedProject?.id && (
             <X
               className="ml-2 h-4 w-4 cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation();
-                setSelectedProjects("");
+                setSelectedProject("");
               }}
             />
           )}
@@ -80,12 +80,12 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
                 {data.map((project:any) => (
                   <CommandItem
                     key={project.id}
-                    onSelect={() => handleSelect(project.title)}
+                    onSelect={() => handleSelect(project)}
                   >
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        selectedProjects === project.title
+                        selectedProject?.id === project.id
                           ? "opacity-100"
                           : "opacity-0"
                       )}
