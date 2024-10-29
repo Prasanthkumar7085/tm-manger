@@ -109,7 +109,7 @@ function UsersTable() {
     },
   });
   const getAllUsers = async ({ pageIndex, pageSize, order_by }: any) => {
-    setPagination({ pageIndex, pageSize, order_by,});
+    setPagination({ pageIndex, pageSize, order_by });
   };
 
   const addUser = async () => {
@@ -221,11 +221,12 @@ function UsersTable() {
         password: userData?.password,
         phone_number: userData?.phone_number,
         user_type: userType,
-
       };
       const response = await addAdminUserAPI(payload);
       if (response?.status === 200 || response?.status === 201) {
-        toast.success(response?.data?.message || "Admin User Added successfully");
+        toast.success(
+          response?.data?.message || "Admin User Added successfully"
+        );
         handleDrawerClose();
         setDel((prev) => prev + 1);
       } else if (response?.status === 422) {
@@ -300,8 +301,9 @@ function UsersTable() {
         setLoading(false);
       }
     } else {
-      {userType === "admin" ? await addAdminUser() :
-      await addUser() }
+      {
+        userType === "admin" ? await addAdminUser() : await addUser();
+      }
     }
   };
   const onChangeStatus = (value: string) => {
