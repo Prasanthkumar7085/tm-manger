@@ -45,12 +45,6 @@ import { errPopper } from "@/lib/helpers/errPopper";
 import LoadingComponent from "../core/LoadingComponent";
 import { StatusFilter } from "../core/StatusFilter";
 
-interface ReportPayload {
-  full_name: string;
-  email: string;
-  phone_number: string;
-}
-
 function UsersTable() {
   const navigate = useNavigate();
   const location = useLocation();

@@ -30,7 +30,7 @@ export const getAllPaginatedTasks = async ({
     throw err;
   }
 };
-export const getSingleTaskAPI = async (taskId: string) => {
+export const getSingleTaskAPI = async (taskId: any) => {
   try {
     return await $fetch.get(`/tasks/${taskId}`);
   } catch (err) {

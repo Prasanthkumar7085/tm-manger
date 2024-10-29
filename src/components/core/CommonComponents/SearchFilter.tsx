@@ -1,12 +1,7 @@
 import { Input } from "@/components/ui/input";
+import { IReportsFilters } from "@/lib/interfaces";
 
 import { Search } from "lucide-react";
-
-export interface IReportsFilters {
-  searchString: string;
-  setSearchString: any;
-  title?: string;
-}
 
 const SearchFilter: React.FC<IReportsFilters> = ({
   searchString,

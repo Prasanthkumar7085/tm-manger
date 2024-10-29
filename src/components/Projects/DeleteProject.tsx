@@ -4,13 +4,7 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import { deleteProjectAPI } from "@/lib/services/users";
 import DeleteDialog from "../core/deleteDialog";
 import { useLocation } from "@tanstack/react-router";
-
-interface deleteProps {
-  setDel: Dispatch<SetStateAction<number>>;
-  del: any;
-  project: any;
-  getAllProjects: any;
-}
+import { deleteProps } from "@/lib/interfaces";
 
 const DeleteProjects = ({
   del,

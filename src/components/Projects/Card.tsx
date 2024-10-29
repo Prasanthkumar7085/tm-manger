@@ -95,7 +95,8 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
       <div className="top_header mb-3 flex justify-between">
         <div className="company-icon">
           <img
-            src={"/favicon.png"}
+            // " user/favicon.png"
+            src={project?.logo}
             alt="company logo"
             className="object-contain w-6 h-6"
           />
@@ -241,6 +242,7 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
               )}
             </Tooltip>
           </TooltipProvider>
+          <div>{project?.code}</div>
         </div>
 
         <div className="action-button mt-10">

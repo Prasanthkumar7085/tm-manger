@@ -19,16 +19,7 @@ import {
 import Pagination from "./Pagination";
 import { getRouteApi, useLocation } from "@tanstack/react-router";
 import path from "node:path/win32";
-
-interface pageProps {
-  columns: any[];
-  data: any[];
-  loading?: boolean;
-
-  getData?: any;
-  paginationDetails: any;
-  removeSortingForColumnIds?: string[];
-}
+import { pageProps } from "@/lib/interfaces";
 
 const TanStackTable: FC<pageProps> = ({
   columns,

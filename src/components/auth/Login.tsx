@@ -13,11 +13,7 @@ import { toast } from "sonner";
 import loginBackground from "@/assets/login-bg-image.png";
 import { setUserDetails } from "@/redux/Modules/userlogin";
 import { errPopper } from "@/lib/helpers/errPopper";
-
-interface loginProps {
-  email: string;
-  password: string;
-}
+import { loginProps } from "@/lib/interfaces";
 
 const LoginComponent = () => {
   const [loginDetails, setLoginDetails] = useState({ email: "", password: "" });
@@ -71,33 +67,27 @@ const LoginComponent = () => {
   };
 
   return (
-    <section id="authentication" className="login-page relative h-screen flex items-center">
+    <section
+      id="authentication"
+      className="login-page relative h-screen flex items-center"
+    >
       <div className="company-logo absolute top-7 left-7">
-        <img
-          src={LogoPath}
-          alt="logo"
-          className="w-[200px] mx-auto"
-        />
+        <img src={LogoPath} alt="logo" className="w-[200px] mx-auto" />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 items-center">
         <div className="left-part">
-          <img
-            src={loginBackground}
-            alt="logo"
-            className="w-[75%] mx-auto"
-          />
+          <img src={loginBackground} alt="logo" className="w-[75%] mx-auto" />
         </div>
         <div className="right-part m-auto">
           <div className="login-card w-[420px] shadow-2xl border p-6 rounded-xl">
             <div className="top mb-7">
               <h1 className="text-xl font-semibold mb-2">Login</h1>
-              <p className="leading-tight text-md">Your account awaits. Enter your details to get <br /> started!</p>
+              <p className="leading-tight text-md">
+                Your account awaits. Enter your details to get <br /> started!
+              </p>
             </div>
 
-            <form
-              action=""
-              onSubmit={handleLogin}
-            >
+            <form action="" onSubmit={handleLogin}>
               <div className="mb-3">
                 <div className="relative">
                   <Mail className="absolute left-3 mt-[1px] top-1/2 transform -translate-y-1/2 text-slate-800 w-4" />
@@ -106,12 +96,17 @@ const LoginComponent = () => {
                     id="email"
                     placeholder="Email"
                     onChange={(e) =>
-                      setLoginDetails({ ...loginDetails, email: e.target.value })
+                      setLoginDetails({
+                        ...loginDetails,
+                        email: e.target.value,
+                      })
                     }
                   />
                 </div>
                 {errors?.email && (
-                  <p className="text-xs pt-1 text-red-600">{errors?.email[0]}</p>
+                  <p className="text-xs pt-1 text-red-600">
+                    {errors?.email[0]}
+                  </p>
                 )}
               </div>
               <div>
@@ -123,7 +118,10 @@ const LoginComponent = () => {
                     placeholder="Password"
                     type={passwordVisible ? "text" : "password"}
                     onChange={(e) =>
-                      setLoginDetails({ ...loginDetails, password: e.target.value })
+                      setLoginDetails({
+                        ...loginDetails,
+                        password: e.target.value,
+                      })
                     }
                   />
                   <button
@@ -135,7 +133,9 @@ const LoginComponent = () => {
                   </button>
                 </div>
                 {errors?.password && (
-                  <p className="text-xs pt-1 text-red-600">{errors?.password[0]}</p>
+                  <p className="text-xs pt-1 text-red-600">
+                    {errors?.password[0]}
+                  </p>
                 )}
               </div>
               <div className="flex justify-end">
@@ -158,7 +158,9 @@ const LoginComponent = () => {
               </div>
 
               <Button
-                type="submit" className="mt-10 text-center bg-custom-gradient text-white w-full font-semibold text-md">
+                type="submit"
+                className="mt-10 text-center bg-custom-gradient text-white w-full font-semibold text-md"
+              >
                 {loading ? (
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 ) : (
