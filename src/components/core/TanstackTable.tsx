@@ -16,10 +16,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Pagination from "./Pagination";
-import { getRouteApi, useLocation } from "@tanstack/react-router";
-import path from "node:path/win32";
 import { pageProps } from "@/lib/interfaces";
+import { useLocation } from "@tanstack/react-router";
+import Pagination from "./Pagination";
 
 const TanStackTable: FC<pageProps> = ({
   columns,
@@ -175,10 +174,10 @@ const TanStackTable: FC<pageProps> = ({
                 <TableCell colSpan={6} className="p-5 text-center">
                   <div className="flex justify-center items-center">
                     <img
-                      src="/table/no-data.svg"
+                      src="/No data.svg"
                       alt="No Data"
-                      height={150}
-                      width={250}
+                      height={500}
+                      width={500}
                     />
                   </div>
                 </TableCell>

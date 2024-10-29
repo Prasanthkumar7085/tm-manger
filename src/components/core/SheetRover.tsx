@@ -35,14 +35,21 @@ const SheetRover = ({
         <SheetHeader>
           <div className="custom-header flex items-center justify-between">
             <SheetTitle>Reset Password</SheetTitle>
-            <Button variant="outline" onClick={handleCancel} className="text-center font-semibold  text-lg  text-slate-500 border-none">
+            <Button
+              variant="outline"
+              onClick={handleCancel}
+              className="text-center font-semibold  text-lg  text-slate-500 border-none"
+            >
               <X></X>
             </Button>
           </div>
           <SheetDescription></SheetDescription>
         </SheetHeader>
         <div className="relative flex flex-col space-y-1">
-          <Label className="text-md text-slate-600 font-semibold" htmlFor="password">
+          <Label
+            className="text-md text-slate-600 font-semibold"
+            htmlFor="password"
+          >
             New Password
           </Label>
           <div className="relative">
@@ -61,11 +68,19 @@ const SheetRover = ({
           </div>
         </div>
         <SheetFooter className="mt-10">
-          <Button variant="outline" onClick={handleCancel} className="text-center font-semibold  text-sm  px-7 h-[30px] text-[#BF1B39] border-none">
+          <Button
+            variant="outline"
+            onClick={handleCancel}
+            className="text-center font-semibold  text-sm  px-7 h-[30px] text-[#BF1B39] border-none"
+          >
             Cancel
           </Button>
           <SheetClose asChild>
-            <Button type="submit" onClick={resetUserPassword} className="text-center font-semibold m-auto flex justify-center text-sm text-white px-10 h-[30px]  bg-[#BF1B39]">
+            <Button
+              type="submit"
+              onClick={resetUserPassword}
+              className="text-center font-semibold m-auto flex justify-center text-sm text-white px-10 h-[30px]  bg-[#BF1B39]"
+            >
               {loading ? (
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
               ) : (

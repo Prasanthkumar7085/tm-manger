@@ -17,33 +17,17 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import TanStackTable from "../core/TanstackTable";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { userColumns } from "./UserColumns";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Label } from "@/components/ui/label";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
-import { Check, ChevronDown, ChevronUp, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import { userTypes } from "@/utils/conistance/users";
-import Loading from "../core/Loading";
 import DeleteDialog from "../core/deleteDialog";
 import SheetRover from "../core/SheetRover";
-import SelectStatusFilter from "../core/CommonComponents/SelectStatusFilter";
 import { errPopper } from "@/lib/helpers/errPopper";
 import LoadingComponent from "../core/LoadingComponent";
 import { StatusFilter } from "../core/StatusFilter";
+import AddSheetRover from "../core/AddSheetRovar";
 
 function UsersTable() {
   const navigate = useNavigate();
@@ -56,7 +40,7 @@ function UsersTable() {
     ? searchParams.get("order_by")
     : "";
   const initialSearch = searchParams.get("search") || "";
-  const initialStatus = searchParams.get("status") || "";
+  const initialStatus = searchParams.get("active") || "";
   const [searchString, setSearchString] = useState(initialSearch);
   const [loading, setLoading] = useState(false);
   const [userTypeOpen, setUserTypeOpen] = useState(false);
@@ -65,7 +49,6 @@ function UsersTable() {
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [userType, setUserType] = useState<any>("");
   const [isOpen, setIsOpen] = useState(false);
-  const [isClose, setIsClose] = useState(false);
   const [open, setOpen] = useState(false);
   const [deleteuserId, setDeleteUserId] = useState<any>();
   const [isEditing, setIsEditing] = useState(false);
@@ -74,20 +57,19 @@ function UsersTable() {
   const [isPasswordSheetOpen, setIsPasswordSheetOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(initialStatus);
   const [selectedUserId, setSelectedUserId] = useState<any>(null);
-  const [newPassword, setNewPassword] = useState("");
   const [selectedId, setSelectedId] = useState<any>();
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
     order_by: orderBY,
   });
-  const [adduser, setAddUser] = useState<any>();
   const [userData, setUserData] = useState<any>({
-    id: null, // add id to track the current user in edit mode
+    id: null,
     fname: "",
     lname: "",
     email: "",
     password: "",
+    phone_number: "",
   });
   const [userPasswordData, setUsePasswordData] = useState<any>({
     new_password: "",
@@ -132,6 +114,7 @@ function UsersTable() {
         email: userData?.email,
         password: userData?.password,
         user_type: userType,
+        phone_number: userData?.phone_number,
       };
       const response = await addUsersAPI(payload);
       if (response?.status === 200 || response?.status === 201) {
@@ -162,6 +145,7 @@ function UsersTable() {
             lname: data?.lname,
             email: data?.email,
             password: data?.password,
+            phone_number: data?.phone_number,
           });
           setUserType(data?.user_type);
         } else {
@@ -258,6 +242,7 @@ function UsersTable() {
           lname: userData.lname,
           email: userData.email,
           password: userData.password,
+          phone_number: userData.phone_number,
           user_type: userType,
         });
         if (response?.status === 200 || response?.status === 201) {
@@ -291,6 +276,7 @@ function UsersTable() {
         lname: userData.lname || "",
         email: userData.email || "",
         password: userData.password || "",
+        phone_number: userData.phone_number || "",
       });
       setUserType(userType.user_type || "");
       setIsEditing(true);
@@ -302,6 +288,7 @@ function UsersTable() {
         lname: "",
         email: "",
         password: "",
+        phone_number: "",
       });
       setUserType("");
       setIsEditing(false);
@@ -316,6 +303,7 @@ function UsersTable() {
       lname: "",
       email: "",
       password: "",
+      phone_number: "",
     });
     setUserType("");
     setIsEditing(false);
@@ -510,179 +498,24 @@ function UsersTable() {
           errors={errors}
           loading={loading}
         />
-        <Sheet open={isOpen}>
-          <SheetContent className="bg-white overflow-auto">
-            <SheetHeader className="sticky top-0">
-              <div className="custom-header flex items-center justify-between">
-                <SheetTitle>{isEditing ? "Edit User" : "Add User"}</SheetTitle>
-                <Button variant="outline" onClick={handleDrawerClose} className="text-center font-semibold  text-lg  text-slate-500 border-none">
-                  <X></X>
-                </Button>
-              </div>
-              <SheetDescription></SheetDescription>
-            </SheetHeader>
-            <div className="grid gap-4 py-4">
-              <div className="flex flex-col space-y-1">
-                <Label
-                  className="text-md text-slate-600 font-semibold"
-                  htmlFor="firstname"
-                >
-                  First Name
-                </Label>
-                <Input
-                  className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
-                  id="fname"
-                  placeholder="Enter First Name"
-                  value={userData.fname}
-                  name="fname"
-                  onChange={handleInputChange}
-                />
-                {errors?.fname && (
-                  <p style={{ color: "red" }}>{errors?.fname[0]}</p>
-                )}
-              </div>
-              <div className="flex flex-col space-y-1">
-                <Label
-                  className="text-md text-slate-600 font-semibold"
-                  htmlFor="lastname"
-                >
-                  Last Name
-                </Label>
-                <Input
-                  className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
-                  id="lname"
-                  placeholder="Enter Last Name"
-                  value={userData.lname}
-                  name="lname"
-                  onChange={handleInputChange}
-                />
-                {errors?.lname && (
-                  <p style={{ color: "red" }}>{errors?.lname[0]}</p>
-                )}
-              </div>
-              <div className="flex flex-col space-y-1">
-                <Label
-                  className="text-md text-slate-600 font-semibold"
-                  htmlFor="email"
-                >
-                  Email
-                </Label>
-                <Input
-                  className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
-                  id="email"
-                  placeholder="Enter Email"
-                  name="email"
-                  value={userData.email}
-                  onChange={handleChangeEmail}
-                />
-                {errors?.email && (
-                  <p style={{ color: "red" }}>{errors?.email[0]}</p>
-                )}
-              </div>
-              {!isEditing && (
-                <div className="flex flex-col space-y-1">
-                  <Label
-                    className="text-md text-slate-600 font-semibold"
-                    htmlFor="password"
-                  >
-                    Password
-                  </Label>
-                  <Input
-                    className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
-                    id="password"
-                    placeholder="Enter Password"
-                    value={userData.password}
-                    name="password"
-                    onChange={handleChangePassword}
-                  />
-                  {errors?.password && (
-                    <p style={{ color: "red" }}>{errors?.password[0]}</p>
-                  )}
-                </div>
-              )}
-              <div>
-                <label
-                  htmlFor="panNumber"
-                  className="text-md text-slate-600 font-semibold block text-left"
-                >
-                  User Type<span className="text-red-500">*</span>
-                </label>
-                <Popover open={userTypeOpen} onOpenChange={setUserTypeOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={userTypeOpen}
-                      className="w-full text-left flex justify-between bg-[#F5F6FA]"
-                    >
-                      {userType
-                        ? userTypes.find((type) => type.value === userType)?.label
-                        : "Select User Type"}
-                      <div className="flex">
-                        {userType && (
-                          <X
-                            className="mr-2 h-4 w-4 shrink-0 opacity-50"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onChangeStatus("");
-                              setUserTypeOpen(false);
-                            }}
-                          />
-                        )}
-                        {userTypeOpen ? (
-                          <ChevronUp className="h-4 w-4 shrink-0 opacity-50" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
-                        )}
-                      </div>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-full left-0 p-0 right-0">
-                    <div className="max-h-[300px] overflow-y-auto">
-                      {userTypes?.map((type) => (
-                        <div
-                          key={type.value}
-                          onClick={() => {
-                            onChangeStatus(type.value);
-                            setUserTypeOpen(false);
-                          }}
-                          className="w-full px-4 py-2 text-left cursor-pointer font-normal text-violet-600 capitalize border-b last:border-b-0 border-white hover:bg-violet-600 hover:text-white"
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4 inline-block",
-                              userType === type.value ? "opacity-100" : "opacity-0"
-                            )}
-                          />
-                          {type.label}
-                        </div>
-                      ))}
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                {errors?.user_type && (
-                  <p style={{ color: "red" }}>{errors.user_type[0]}</p>
-                )}
-              </div>
-            </div>
-            <SheetFooter className="mt-16">
-              <Button variant="outline" onClick={handleDrawerClose} className="text-center font-semibold  text-sm  px-7 h-[30px] text-[#BF1B39] border-none">
-                Cancel
-              </Button>
-              <SheetClose asChild>
-                <Button type="submit" onClick={handleFormSubmit} className="text-center font-semibold m-auto flex justify-center text-sm text-white px-10 h-[30px]  bg-[#BF1B39]">
-                  {loading ? (
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  ) : isEditing ? (
-                    "Update"
-                  ) : (
-                    "Add"
-                  )}
-                </Button>
-              </SheetClose>
-            </SheetFooter>
-          </SheetContent>
-        </Sheet>
+
+        <AddSheetRover
+          isOpen={isOpen}
+          isEditing={isEditing}
+          userData={userData}
+          userTypeOpen={userTypeOpen}
+          userType={userType}
+          userTypes={userTypes}
+          errors={errors}
+          loading={loading}
+          handleInputChange={handleInputChange}
+          handleChangeEmail={handleChangeEmail}
+          handleChangePassword={handleChangePassword}
+          setUserTypeOpen={setUserTypeOpen}
+          onChangeStatus={onChangeStatus}
+          handleDrawerClose={handleDrawerClose}
+          handleFormSubmit={handleFormSubmit}
+        />
       </div>
       <LoadingComponent loading={isLoading || isFetching || loading} />
     </section>
