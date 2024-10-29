@@ -209,7 +209,7 @@ const Projects = () => {
           {projectsData.length === 0 && isLoading == false ? (
             <div className="col-span-full text-center">No Project found</div>
           ) : (
-            projectsData.map((project: any) => (
+            projectsData?.map((project: any) => (
               <ProjectCard
                 key={project.id}
                 project={project}

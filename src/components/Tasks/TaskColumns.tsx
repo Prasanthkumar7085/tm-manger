@@ -32,6 +32,11 @@ export const taskColumns = ({ setDel }: any) => {
 
   const handleView = (taskId: any) => {
     navigate({
+      to: `/tasks/view/${taskId}`,
+    });
+  };
+  const handleEdit = (taskId: any) => {
+    navigate({
       to: `/tasks/${taskId}`,
     });
   };
@@ -141,6 +146,14 @@ export const taskColumns = ({ setDel }: any) => {
             onClick={() => handleView(info.row.original.id)} // Pass the task ID
           >
             <img src={viewButtonIcon} alt="view" height={16} width={16} />
+          </Button>
+          <Button
+            title="Edit"
+            size={"sm"}
+            variant={"ghost"}
+            onClick={() => handleEdit(info.row.original.id)}
+          >
+            <img src={"table/edit.svg"} alt="view" height={16} width={16} />
           </Button>
           <Button
             title="Delete"

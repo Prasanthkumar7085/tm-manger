@@ -120,7 +120,7 @@ const ProjectMembersManagment = () => {
         let ActiveUsers = response.data.data.filter(
           (user: any) => user?.active === true
         );
-        let addTitles = response.data.data.map((user: any) => ({
+        let addTitles = response?.data?.data?.map((user: any) => ({
           ...user,
           title: getFullName(user),
         }));

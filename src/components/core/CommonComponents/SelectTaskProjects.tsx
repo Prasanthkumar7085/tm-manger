@@ -29,11 +29,11 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
   setSelectedProjects,
 }) => {
   const [open, setOpen] = React.useState(false);
-  const [projectsId,setProjectsId]= React.useState()
+  const [projectsId, setProjectsId] = React.useState();
   const { data, isLoading, isError } = useQuery({
     queryKey: ["projects"],
     queryFn: async () => {
-      const response = await getDropDownForProjectsTasksAPI();      
+      const response = await getDropDownForProjectsTasksAPI();
       return response.data?.data;
     },
   });
@@ -53,7 +53,7 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
           className="w-[230px] justify-between"
         >
           {selectedProjects
-            ? data?.find((item:any) => item.title === selectedProjects)?.title
+            ? data?.find((item: any) => item.title === selectedProjects)?.title
             : "Select Projects"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           {selectedProjects && (
@@ -77,7 +77,7 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
               <CommandEmpty>No projects found.</CommandEmpty>
             ) : (
               <CommandGroup>
-                {data.map((project:any) => (
+                {data?.map((project: any) => (
                   <CommandItem
                     key={project.id}
                     onSelect={() => handleSelect(project.title)}

@@ -29,6 +29,9 @@ const TaskView = () => {
   const [message, setMessage] = useState<string>("");
   const [viewData, setViewData] = useState<any>();
   const [tagsData, setTagsData] = useState<any>();
+  const [tagsInput, setTagsInput] = useState("");
+  console.log(tagsInput, "input");
+  const [errorMessages, setErrorMessages] = useState({ tags: [] });
   console.log(tagsData, "task");
 
   const { isLoading, isError, error, data } = useQuery({
@@ -99,35 +102,96 @@ const TaskView = () => {
     ? `${title.substring(0, 30)}...`
     : title;
 
+  const handleTagSubmit = () => {
+    // Ensure input is not empty
+    const trimmedTag = tagsInput.trim();
+    console.log(trimmedTag, "trimmed");
+    if (!trimmedTag) {
+      setErrorMessages((prev: any) => ({
+        ...prev,
+        tags: ["Tag cannot be empty"],
+      }));
+      return;
+    }
+
+    // Check for duplicates
+    const isTagAlreadyExists = tagsData?.some(
+      (tag: any) => tag.title.toLowerCase() === trimmedTag.toLowerCase()
+    );
+    if (isTagAlreadyExists) {
+      setErrorMessages((prev: any) => ({
+        ...prev,
+        tags: ["Tag already exists"],
+      }));
+      return;
+    }
+  };
+
   return (
     <div className=" flex flex-col space-y-6 md:space-y-0 md:flex-row md:space-x-6 overflow-auto">
       <div className="md:w-2/3 w-full bg-white rounded-lg shadow-md  space-y-4">
-        <div className="flex justify-between items-center border-b pb-4">
-          <div className="">
+        <div className="flex justify-between items-start border-b pb-4">
+          <div className="flex flex-col space-y-2">
             <h1 className="text-2xl font-semibold">
-              {capitalizeWords(viewData?.title)}
+              {viewData?.title ? capitalizeWords(viewData?.title) : "--"}
             </h1>
-            <p className="text-gray-500">Project</p>
-            <p className="font-semibold text-gray-800">
-              {viewData?.project_title}
-            </p>
-            <p className="font-sm text-gray-800">
-              {capitalizeWords(viewData?.project_description)}
-            </p>
+
+            <div className="text-gray-500 font-medium">
+              Project:{" "}
+              <span className="font-semibold text-gray-800">
+                {viewData?.project_title
+                  ? capitalizeWords(viewData?.project_title)
+                  : "--"}
+              </span>
+            </div>
+
+            <div className="font-medium">
+              Description:{" "}
+              <span className="text-gray-800">
+                {viewData?.project_description
+                  ? capitalizeWords(viewData?.project_description)
+                  : "--"}
+              </span>
+            </div>
+            <div className="flex flex-col items-start">
+              <div className="text-blue-500 bg-gray-100 px-3 py-1 rounded-md mb-2">
+                Tags
+              </div>
+              <Input
+                type="text"
+                value={tagsInput}
+                onChange={(e) => setTagsInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleTagSubmit();
+                    e.preventDefault();
+                  }
+                }}
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                placeholder="Enter tag"
+              />
+
+              <div className="flex flex-wrap space-x-2">
+                {tagsData && tagsData.length > 0 ? (
+                  tagsData?.map((tag: any, idx: any) => (
+                    <Badge key={idx} className="bg-pink-400" variant="outline">
+                      {tag.title}
+                    </Badge>
+                  ))
+                ) : (
+                  <p className="text-gray-500">--</p>
+                )}
+              </div>
+            </div>
           </div>
-          <div className="text-blue-500 bg-gray-100 px-3 py-1 rounded-md">
-            Tags
-          </div>
-          <div className="flex space-x-2">
-            {tagsData && tagsData.length > 0 ? (
-              tagsData.map((tag: any, idx: any) => (
-                <Badge key={idx} className="bg-pink-400" variant="outline">
-                  {tag.title}
-                </Badge>
-              ))
-            ) : (
-              <p>--</p>
-            )}
+          <div>
+            <Button
+              type="button"
+              className="flex bg-blue-500"
+              onClick={handleTagSubmit}
+            >
+              Add Tag
+            </Button>
           </div>
         </div>
 
