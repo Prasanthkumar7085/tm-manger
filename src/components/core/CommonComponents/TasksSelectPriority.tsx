@@ -18,10 +18,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { statusConstants } from "@/lib/helpers/statusConstants";
-import { StatusFilterProps } from "@/lib/interfaces";
+import { statusConstants, taskPriorityConstants, taskStatusConstants } from "@/lib/helpers/statusConstants";
 
-export const StatusFilter: React.FC<StatusFilterProps> = ({
+interface StatusFilterProps {
+  value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const TasksSelectPriority: React.FC<StatusFilterProps> = ({
   value,
   setValue,
 }) => {
@@ -34,12 +38,12 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between  bg-slate-50 h-[35px] w-[220px] relative"
+          className="w-[200px] justify-between"
         >
           {value
-            ? statusConstants.find((item) => item.value === value)?.label
-            : "Select Status"}
-          <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
+            ? taskPriorityConstants.find((item) => item.value === value)?.label
+            : "Select Priortity"}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           {value && (
             <X
               className="ml-2 h-4 w-4 cursor-pointer"
@@ -57,7 +61,7 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
           <CommandList>
             <CommandEmpty>No Status found.</CommandEmpty>
             <CommandGroup>
-              {statusConstants.map((status) => (
+              {taskPriorityConstants.map((status) => (
                 <CommandItem
                   key={status.value}
                   value={status.value}

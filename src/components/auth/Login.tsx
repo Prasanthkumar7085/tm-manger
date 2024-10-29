@@ -67,102 +67,111 @@ const LoginComponent = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen  mx-auto p-20 bg-white">
-      <div className="w-[60%] h-full py-10">
-        <img
-          src={loginBackground}
-          alt="logo"
-          className="w-[90%] mx-auto mt-2"
-        />
+    <section
+      id="authentication"
+      className="login-page relative h-screen flex items-center"
+    >
+      <div className="company-logo absolute top-7 left-7">
+        <img src={LogoPath} alt="logo" className="w-[200px] mx-auto" />
       </div>
-      <div className="w-[40%] h-full border flex flex-col justify-center items-center space-y-8 relative ml-[-20px] bg-white shadow-xl p-8">
-        <div>
-          <img
-            src={LogoPath}
-            alt="logo"
-            className="w-[200px] mx-auto animate-in zoom-in-0 duration-1000"
-          />
+      <div className="grid grid-cols-1 lg:grid-cols-2 items-center">
+        <div className="left-part">
+          <img src={loginBackground} alt="logo" className="w-[75%] mx-auto" />
         </div>
-        <h1 className="text-3xl font-light">Login</h1>
-        <form
-          action=""
-          className="flex flex-col w-full px-5 space-y-8"
-          onSubmit={handleLogin}
-        >
-          <div className="flex flex-col space-y-1">
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-              <Input
-                className="appearance-none block py-1 h-12 text-lg pl-10 rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
-                id="email"
-                placeholder="Email"
-                onChange={(e) =>
-                  setLoginDetails({ ...loginDetails, email: e.target.value })
-                }
-              />
+        <div className="right-part m-auto">
+          <div className="login-card w-[420px] shadow-2xl border p-6 rounded-xl">
+            <div className="top mb-7">
+              <h1 className="text-xl font-semibold mb-2">Login</h1>
+              <p className="leading-tight text-md">
+                Your account awaits. Enter your details to get <br /> started!
+              </p>
             </div>
-            {errors?.email && (
-              <p style={{ color: "red" }}>{errors?.email[0]}</p>
-            )}
-          </div>
-          <div className="flex flex-col space-y-1">
-            <div className="relative">
-              <LockKeyhole className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-              <Input
-                className="appearance-none block py-1 h-12 text-lg pl-10 rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
-                id="password"
-                placeholder="Password"
-                type={passwordVisible ? "text" : "password"}
-                onChange={(e) =>
-                  setLoginDetails({ ...loginDetails, password: e.target.value })
-                }
-              />
-              <button
-                type="button"
-                onClick={togglePasswordVisibility}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-              >
-                {passwordVisible ? <Eye /> : <EyeOff />}
-              </button>
-            </div>
-            {errors?.password && (
-              <p style={{ color: "red" }}>{errors?.password[0]}</p>
-            )}
-          </div>
-          <div className="flex justify-end">
-            <Link
-              to="/forgot-password"
-              activeProps={{
-                className: "bg-blue-900 text-white",
-              }}
-              activeOptions={{ exact: true }}
-            >
-              <div className="flex flex-col">
-                <span
-                  className="text-blue-500 hover:text-blue-700"
-                  style={{ fontSize: "1.2rem" }}
-                >
-                  <sub>Forgot Password?</sub>
-                </span>
-              </div>
-            </Link>
-          </div>
 
-          <Button
-            type="submit"
-            className="w-full flex justify-center items-center bg-blue-500 text-white hover:bg-blue-600"
-          >
-            {loading ? (
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-            ) : (
-              "Log In"
-            )}
-          </Button>
-        </form>
-        {/* <p className="font-light self-center md:text-xl lg:text-3xl xl:text-base">Don't have an account? <span className="text-yellow-500 cursor-pointer">Register</span></p> */}
+            <form action="" onSubmit={handleLogin}>
+              <div className="mb-3">
+                <div className="relative">
+                  <Mail className="absolute left-3 mt-[1px] top-1/2 transform -translate-y-1/2 text-slate-800 w-4" />
+                  <Input
+                    className="bg-[#E7E7E7] appearance-none block py-1 h-12 text-lg pl-9 focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
+                    id="email"
+                    placeholder="Email"
+                    onChange={(e) =>
+                      setLoginDetails({
+                        ...loginDetails,
+                        email: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                {errors?.email && (
+                  <p className="text-xs pt-1 text-red-600">
+                    {errors?.email[0]}
+                  </p>
+                )}
+              </div>
+              <div>
+                <div className="relative">
+                  <LockKeyhole className="absolute left-3 mt-[1px] top-1/2 transform -translate-y-1/2 text-slate-800 w-4" />
+                  <Input
+                    className="bg-[#E7E7E7] appearance-none block py-1 h-12 text-lg pl-9 focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
+                    id="password"
+                    placeholder="Password"
+                    type={passwordVisible ? "text" : "password"}
+                    onChange={(e) =>
+                      setLoginDetails({
+                        ...loginDetails,
+                        password: e.target.value,
+                      })
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-800"
+                  >
+                    {passwordVisible ? <Eye /> : <EyeOff />}
+                  </button>
+                </div>
+                {errors?.password && (
+                  <p className="text-xs pt-1 text-red-600">
+                    {errors?.password[0]}
+                  </p>
+                )}
+              </div>
+              <div className="flex justify-end">
+                <Link
+                  to="/forgot-password"
+                  activeProps={{
+                    className: "bg-blue-900 text-white",
+                  }}
+                  activeOptions={{ exact: true }}
+                >
+                  <div className="flex flex-col">
+                    <span
+                      className="text-slate-700 font-medium"
+                      style={{ fontSize: "1.2rem" }}
+                    >
+                      <sub>Forgot Password?</sub>
+                    </span>
+                  </div>
+                </Link>
+              </div>
+
+              <Button
+                type="submit"
+                className="mt-10 text-center bg-custom-gradient text-white w-full font-semibold text-md"
+              >
+                {loading ? (
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                ) : (
+                  "Log In"
+                )}
+              </Button>
+            </form>
+          </div>
+        </div>
       </div>
-      {/* <Loading loading={loading} /> */}
-    </div>
+    </section>
   );
 };
 export default LoginComponent;

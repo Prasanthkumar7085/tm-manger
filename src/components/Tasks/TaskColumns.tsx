@@ -92,6 +92,19 @@ export const taskColumns = ({ setDel }: any) => {
       footer: (props: any) => props.column.id,
     },
     {
+      accessorFn: (row: any) => row.status,
+      id: "status",
+      cell: (info: any) => {
+        let title = info.getValue();
+        return <span className="capitalize">{title ? title : "-"}</span>;
+      },
+      width: "150px",
+      maxWidth: "150px",
+      minWidth: "150px",
+      header: () => <span>Status</span>,
+      footer: (props: any) => props.column.id,
+    },
+    {
       accessorFn: (row: any) => row.priority,
       id: "priority",
       cell: (info: any) => (

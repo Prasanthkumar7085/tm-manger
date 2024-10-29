@@ -12,7 +12,6 @@ import DateRangeFilter from "../core/DateRangePicker";
 import LoadingComponent from "../core/LoadingComponent";
 import SortDropDown from "../core/CommonComponents/SortDropDown";
 import useUsersHook from "./useUsersHook";
-import Select from "react-select";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 import ProjectView from "./View";
 

@@ -6,6 +6,8 @@ interface GetAllPaginatedUsersPropTypes {
   search_string: any;
   from_date: string;
   to_date: string;
+  status:string;
+  priority: string;
 }
 
 export const getAllPaginatedTasks = async ({
@@ -15,6 +17,8 @@ export const getAllPaginatedTasks = async ({
   search_string,
   from_date,
   to_date,
+  status,
+  priority,
 }: GetAllPaginatedUsersPropTypes) => {
   try {
     const queryParams = {
@@ -24,6 +28,8 @@ export const getAllPaginatedTasks = async ({
       search_string: search_string,
       from_date: from_date,
       to_date: to_date,
+      status: status,
+      priority: priority,
     };
     return await $fetch.get("/tasks", queryParams);
   } catch (err) {
@@ -68,6 +74,14 @@ export const addPostCommentsAPI = async (task_id: any, payload: any) => {
 export const getCommentsAPI = async () => {
   try {
     return await $fetch.get(`/tasks/2/comments`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+
+export const getDropDownForProjectsTasksAPI = async () => {
+  try {
+    return await $fetch.get(`/projects/projects-all`);
   } catch (err: any) {
     throw err;
   }
