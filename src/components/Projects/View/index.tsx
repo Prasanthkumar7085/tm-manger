@@ -14,7 +14,7 @@ import ProjectTasksCounts from "./ProjectTasksCounts";
 import ProjectMembersManagment from "./ProjectMembersManagment";
 import LoadingComponent from "@/components/core/LoadingComponent";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { X, ZoomIn } from "lucide-react";
 
 const ProjectView = ({
   getAllProjects,
@@ -150,7 +150,7 @@ const ProjectView = ({
 
   return (
     <div className="flex flex-col justify-between h-full w-full overflow-auto">
-      <div className="mt-4">
+      {/* <div className="mt-4">
         {previewUrl ? (
           <div className="flex items-center">
             <img
@@ -172,6 +172,41 @@ const ProjectView = ({
             onChange={handleFileChange}
             className="border border-gray-300 p-2 rounded"
           />
+        )}
+        {uploadingStatus.startUploading && <p>Uploading...</p>}
+      </div> */}
+      <div className="mt-4">
+        {previewUrl ? (
+          <div className="flex items-center">
+            <img
+              src={previewUrl}
+              alt="Preview"
+              className="w-32 h-32 object-cover rounded-full border-2 border-gray-300"
+            />
+            <button
+              onClick={handleRemoveFile}
+              className="bg-red-500 p-2 rounded-full ml-2 cursor-pointer"
+            >
+              <X className="text-white w-4 h-4" />
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="file-upload"
+              className="flex items-center gap-1 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-full"
+            >
+              <ZoomIn className="w-4 h-4" />
+              <span>Select File</span>
+            </label>
+            <input
+              id="file-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          </div>
         )}
         {uploadingStatus.startUploading && <p>Uploading...</p>}
       </div>
