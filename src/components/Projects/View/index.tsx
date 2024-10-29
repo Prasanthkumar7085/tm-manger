@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import dayjs from "dayjs";
@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import {
   fileUploadAPI,
   uploadLogoAPI,
+  uploadToS3API,
   viewProjectAPI,
 } from "@/lib/services/projects";
 import ProjectTasksCounts from "./ProjectTasksCounts";
@@ -15,8 +16,17 @@ import LoadingComponent from "@/components/core/LoadingComponent";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
-const ProjectView = () => {
+const ProjectView = ({
+  getAllProjects,
+  setRefreshCount,
+  refreshCount,
+}: {
+  getAllProjects: (options: { pageIndex: number; pageSize: number }) => void;
+  setRefreshCount: (count: any) => void;
+  refreshCount: number;
+}) => {
   const { projectId } = useParams({ strict: false });
+  const queryClient = useQueryClient();
 
   const [projectDetails, setProjectDetails] = useState<any>({});
   const [uploadingStatus, setUploadingStatus] = useState({
@@ -46,55 +56,90 @@ const ProjectView = () => {
     enabled: Boolean(projectId),
   });
 
-  const uploadFile = async (file: File) => {
-    setUploadingStatus((prev) => ({
-      ...prev,
-      startUploading: true,
-      loading: true,
-    }));
-
-    try {
+  const fileUploadMutation = useMutation({
+    mutationFn: async (file: File) => {
+      setUploadingStatus({
+        startUploading: true,
+        loading: true,
+        uploadSuccess: false,
+      });
       const { data } = await fileUploadAPI({
         file_name: file.name,
         file_type: file.type,
       });
-      console.log(data, "fjdsjdfkdjs");
-      await uploadLogo({ logo: data?.data?.file_key });
-    } catch (error) {
+      const { target_url, file_key } = data?.data;
+
+      await uploadToS3(target_url, file);
+
+      return file_key;
+    },
+
+    onSuccess: async (file_key) => {
+      uploadLogoMutation.mutate({ logo: file_key });
+    },
+    onError: (error) => {
       console.error(error);
       toast.error("Failed to upload file.");
-    } finally {
-      setUploadingStatus((prev) => ({
-        ...prev,
+      setUploadingStatus({
         startUploading: false,
         loading: false,
-      }));
-    }
-  };
+        uploadSuccess: false,
+      });
+    },
+    onSettled: () => {
+      setUploadingStatus({
+        startUploading: false,
+        loading: false,
+        uploadSuccess: true,
+      });
+    },
+  });
 
-  const uploadLogo = async (payload: { logo: string }) => {
-    console.log(payload, "payload");
+  const uploadToS3 = async (url: string, file: File) => {
     try {
-      const response = await uploadLogoAPI(projectId, payload);
-      if (response.success) {
-        toast.success("Logo uploaded successfully!");
+      const response = await uploadToS3API(url, file);
+      if (response.status === 200 || response.status === 201) {
+        toast.success("File Uploaded Successfully");
       } else {
-        throw new Error("Failed to upload logo");
+        throw response;
       }
     } catch (error) {
       console.error(error);
-      toast.error("Error uploading logo");
     }
   };
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
+  const uploadLogoMutation = useMutation({
+    mutationFn: async (payload: { logo: string }) => {
+      try {
+        const response = await uploadLogoAPI(projectId, payload);
+        if (response.data.status === 200 || response.data.status === 201) {
+          toast.success("Logo uploaded successfully!");
+          if (setRefreshCount) {
+            setRefreshCount((prev: any) => prev + 1);
+          }
+          if (getAllProjects) {
+            getAllProjects({ pageIndex: 1, pageSize: 10 });
+          }
+          window.history.back();
+          return response;
+        } else {
+          throw new Error("Failed to upload logo");
+        }
+      } catch (err) {
+        toast.error("Failed to upload logo.");
+      }
+    },
+  });
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
     if (file) {
       setSelectedFile(file);
       setPreviewUrl(URL.createObjectURL(file));
-      await uploadFile(file);
+      fileUploadMutation.mutate(file);
+    } else {
+      setSelectedFile(null);
+      setPreviewUrl(null);
     }
   };
 
@@ -106,31 +151,29 @@ const ProjectView = () => {
   return (
     <div className="flex flex-col justify-between h-full w-full overflow-auto">
       <div className="mt-4">
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="border border-gray-300 p-2 rounded"
-        />
-        {uploadingStatus.startUploading && <p>Uploading...</p>}
-        {selectedFile && (
-          <button
-            onClick={handleRemoveFile}
-            className="bg-none border-none cursor-pointer ml-2"
-          >
-            <X className="text-red-500 w-4 h-4" />
-          </button>
-        )}
-
-        {previewUrl && (
-          <div className="mt-2">
+        {previewUrl ? (
+          <div className="flex items-center">
             <img
               src={previewUrl}
               alt="Preview"
               className="w-32 h-32 object-cover rounded-full border-2 border-gray-300"
             />
+            <button
+              onClick={handleRemoveFile}
+              className="bg-none border-none cursor-pointer ml-2"
+            >
+              <X className="text-red-500 w-4 h-4" />
+            </button>
           </div>
+        ) : (
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="border border-gray-300 p-2 rounded"
+          />
         )}
+        {uploadingStatus.startUploading && <p>Uploading...</p>}
       </div>
 
       <ProjectTasksCounts />
