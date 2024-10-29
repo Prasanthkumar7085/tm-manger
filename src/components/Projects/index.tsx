@@ -42,8 +42,6 @@ const Projects = () => {
   const [del, setDel] = useState<any>();
   const { users, loading: usersLoading, error: usersError } = useUsersHook();
 
-  // Transform usersData into react-select format
-
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,

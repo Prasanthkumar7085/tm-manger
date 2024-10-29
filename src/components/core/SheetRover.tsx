@@ -11,7 +11,7 @@ import {
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { Loader2, LockKeyhole } from "lucide-react";
+import { Loader2, LockKeyhole, X } from "lucide-react";
 const SheetRover = ({
   isOpen,
   userPasswordData,
@@ -30,37 +30,57 @@ const SheetRover = ({
   resetUserPassword: () => void;
 }) => {
   return (
-    <Sheet open={isOpen} onOpenChange={handleCancel}>
-      <SheetContent className="bg-gray-100">
+    <Sheet open={isOpen}>
+      <SheetContent className="bg-white">
         <SheetHeader>
-          <SheetTitle>Reset Password</SheetTitle>
+          <div className="custom-header flex items-center justify-between">
+            <SheetTitle>Reset Password</SheetTitle>
+            <Button
+              variant="outline"
+              onClick={handleCancel}
+              className="text-center font-semibold  text-lg  text-slate-500 border-none"
+            >
+              <X></X>
+            </Button>
+          </div>
           <SheetDescription></SheetDescription>
         </SheetHeader>
         <div className="relative flex flex-col space-y-1">
-          <Label className="font-normal capitalize text-lg" htmlFor="password">
+          <Label
+            className="text-md text-slate-600 font-semibold"
+            htmlFor="password"
+          >
             New Password
           </Label>
           <div className="relative">
-            <LockKeyhole className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+            <LockKeyhole className="absolute left-3 mt-[1px] top-1/2 transform -translate-y-1/2 text-slate-800 w-4" />
             <Input
-              className="appearance-none block py-1 h-12 text-lg rounded-none pl-10 focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
+              className="bg-[#E7E7E7] appearance-none block py-1 h-12 text-lg pl-9 focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
               id="password"
               placeholder="Enter New Password"
               value={userPasswordData.new_password}
               name="new_password"
               onChange={handleUpdateChangePassword}
             />
-             {errors?.new_password && (
-            <p style={{ color: "red" }}>{errors?.new_password[0]}</p>
-          )}
+            {errors?.new_password && (
+              <p style={{ color: "red" }}>{errors?.new_password[0]}</p>
+            )}
           </div>
         </div>
-        <SheetFooter>
-          <Button variant="outline" onClick={handleCancel}>
+        <SheetFooter className="mt-10">
+          <Button
+            variant="outline"
+            onClick={handleCancel}
+            className="text-center font-semibold  text-sm  px-7 h-[30px] text-[#BF1B39] border-none"
+          >
             Cancel
           </Button>
           <SheetClose asChild>
-            <Button type="submit" onClick={resetUserPassword}>
+            <Button
+              type="submit"
+              onClick={resetUserPassword}
+              className="text-center font-semibold m-auto flex justify-center text-sm text-white px-10 h-[30px]  bg-[#BF1B39]"
+            >
               {loading ? (
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
               ) : (

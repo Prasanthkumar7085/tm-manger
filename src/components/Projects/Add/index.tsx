@@ -29,13 +29,8 @@ import LoadingComponent from "@/components/core/LoadingComponent";
 import { getAllMembers } from "@/lib/services/projects/members";
 import { errPopper } from "@/lib/helpers/errPopper";
 import { roleConstants } from "@/lib/helpers/statusConstants";
+import { ProjectPayload } from "@/lib/interfaces";
 
-interface ProjectPayload {
-  title: string;
-  description: string;
-  project_members?: { user_id: number; role: string }[];
-  code: string;
-}
 const AddProject = () => {
   const navigate = useNavigate();
   const { projectId } = useParams({ strict: false });

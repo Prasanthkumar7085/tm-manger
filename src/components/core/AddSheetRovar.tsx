@@ -57,21 +57,30 @@ const AddSheetRover = ({
 }) => {
   return (
     <Sheet open={isOpen}>
-      <SheetContent className="bg-gray-100 overflow-auto">
-        <SheetHeader className="sticky top-0 bg-white">
-          <SheetTitle>{isEditing ? "Edit User" : "Add User"}</SheetTitle>
+      <SheetContent className="bg-white overflow-auto">
+        <SheetHeader className="sticky top-0">
+          <div className="custom-header flex items-center justify-between">
+            <SheetTitle>{isEditing ? "Edit User" : "Add User"}</SheetTitle>
+            <Button
+              variant="outline"
+              onClick={handleDrawerClose}
+              className="text-center font-semibold  text-lg  text-slate-500 border-none"
+            >
+              <X></X>
+            </Button>
+          </div>
           <SheetDescription></SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
           <div className="flex flex-col space-y-1">
             <Label
-              className="font-normal capitalize text-lg"
+              className="text-md text-slate-600 font-semibold"
               htmlFor="firstname"
             >
               First Name
             </Label>
             <Input
-              className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
+              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
               id="fname"
               placeholder="Enter First Name"
               value={userData.fname}
@@ -84,13 +93,13 @@ const AddSheetRover = ({
           </div>
           <div className="flex flex-col space-y-1">
             <Label
-              className="font-normal capitalize text-lg"
+              className="text-md text-slate-600 font-semibold"
               htmlFor="lastname"
             >
               Last Name
             </Label>
             <Input
-              className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
+              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
               id="lname"
               placeholder="Enter Last Name"
               value={userData.lname}
@@ -103,14 +112,14 @@ const AddSheetRover = ({
           </div>
           <div className="flex flex-col space-y-1">
             <Label
-              className="font-normal capitalize text-lg"
+              className="text-md text-slate-600 font-semibold"
               htmlFor="phonenumber"
             >
               Mobile Number
             </Label>
             <Input
               type="tel"
-              className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
+              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
               id="phone_number"
               placeholder="Enter Phone Number"
               value={userData.phone_number}
@@ -127,11 +136,14 @@ const AddSheetRover = ({
             )}
           </div>
           <div className="flex flex-col space-y-1">
-            <Label className="font-normal capitalize text-lg" htmlFor="email">
+            <Label
+              className="text-md text-slate-600 font-semibold"
+              htmlFor="email"
+            >
               Email
             </Label>
             <Input
-              className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
+              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
               id="email"
               placeholder="Enter Email"
               name="email"
@@ -145,13 +157,13 @@ const AddSheetRover = ({
           {!isEditing && (
             <div className="flex flex-col space-y-1">
               <Label
-                className="font-normal capitalize text-lg"
+                className="text-md text-slate-600 font-semibold"
                 htmlFor="password"
               >
                 Password
               </Label>
               <Input
-                className="appearance-none block py-1 h-12 text-lg rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
+                className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
                 id="password"
                 placeholder="Enter Password"
                 value={userData.password}
@@ -164,7 +176,10 @@ const AddSheetRover = ({
             </div>
           )}
           <div>
-            <label htmlFor="panNumber" className="block text-sm font-medium">
+            <label
+              htmlFor="panNumber"
+              className="text-md text-slate-600 font-semibold block text-left"
+            >
               User Type<span className="text-red-500">*</span>
             </label>
             <Popover open={userTypeOpen} onOpenChange={setUserTypeOpen}>
@@ -173,7 +188,7 @@ const AddSheetRover = ({
                   variant="outline"
                   role="combobox"
                   aria-expanded={userTypeOpen}
-                  className="w-[200px] justify-between bg-white-700"
+                  className="w-full text-left flex justify-between bg-[#F5F6FA]"
                 >
                   {userType
                     ? userTypes.find((type: any) => type.value === userType)
@@ -198,7 +213,7 @@ const AddSheetRover = ({
                   </div>
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-[200px] p-0">
+              <PopoverContent className="w-full left-0 p-0 right-0">
                 <div className="max-h-[300px] overflow-y-auto">
                   {userTypes?.map((type: any) => (
                     <Button
@@ -207,11 +222,11 @@ const AddSheetRover = ({
                         onChangeStatus(type.value);
                         setUserTypeOpen(false);
                       }}
-                      className="w-full justify-start font-normal bg-white text-violet-600 border border-indigo-600 capitalize mb-2 hover:bg-violet-600  hover:text-white "
+                      className="w-full px-4 py-2 text-left cursor-pointer font-normal text-violet-600 capitalize border-b last:border-b-0 border-white hover:bg-violet-600 hover:text-white"
                     >
                       <Check
                         className={cn(
-                          "mr-2 h-4 w-4",
+                          "mr-2 h-4 w-4 inline-block",
                           userType === type.value ? "opacity-100" : "opacity-0"
                         )}
                       />
@@ -226,12 +241,20 @@ const AddSheetRover = ({
             )}
           </div>
         </div>
-        <SheetFooter>
-          <Button variant="outline" onClick={handleDrawerClose}>
+        <SheetFooter className="mt-16">
+          <Button
+            variant="outline"
+            onClick={handleDrawerClose}
+            className="text-center font-semibold  text-sm  px-7 h-[30px] text-[#BF1B39] border-none"
+          >
             Cancel
           </Button>
           <SheetClose asChild>
-            <Button type="submit" onClick={handleFormSubmit}>
+            <Button
+              type="submit"
+              onClick={handleFormSubmit}
+              className="text-center font-semibold m-auto flex justify-center text-sm text-white px-10 h-[30px]  bg-[#BF1B39]"
+            >
               {loading ? (
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
               ) : isEditing ? (

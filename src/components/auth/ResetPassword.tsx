@@ -10,12 +10,7 @@ import { toast } from "sonner";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import loginBackground from "@/assets/login-bg-image.png";
-
-interface loginProps {
-  new_password: string;
-  confirm_new_password: string;
-  reset_password_token: string;
-}
+import { resetProps } from "@/lib/interfaces";
 
 function ResetPassword() {
   const [resetDetails, setResetDetails] = useState({
@@ -33,7 +28,7 @@ function ResetPassword() {
   const searchParams = new URLSearchParams(location.search);
   const code = searchParams.get("code");
   const { mutate, isError, error } = useMutation({
-    mutationFn: async (resetDetails: loginProps) => {
+    mutationFn: async (resetDetails: resetProps) => {
       setLoading(true);
       try {
         const payload = {
