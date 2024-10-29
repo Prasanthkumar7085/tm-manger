@@ -11,6 +11,7 @@ import DeleteProjects from "./DeleteProject";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { updateProjectAPI } from "@/lib/services/projects";
+import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
 
 const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
   const navigate = useNavigate();
@@ -19,12 +20,6 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
   const popoverRef = useRef<HTMLDivElement>(null);
   console.log(project?.logo, "project");
 
-  const capitalizeWords = (string: string) => {
-    return string
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(" ");
-  };
   const togglePopover = (e: any) => {
     e.stopPropagation();
     setIsOpen(!isOpen);
