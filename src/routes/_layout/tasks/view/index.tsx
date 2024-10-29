@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_layout/tasks/view/")({
   component: () => (
-    <div>
+    <div className="overflow-auto">
       <TaskView />
     </div>
   ),
