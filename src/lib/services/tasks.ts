@@ -130,3 +130,24 @@ export const deleteAttachmentsAPI = async (taskId: any, id: string) => {
     throw err;
   }
 };
+export const getAssignesAPI = async (taskId: any) => {
+  try {
+    return await $fetch.get(`/tasks/${taskId}/assignees`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const addAssignesAPI = async (taskId: any, payload: any) => {
+  try {
+    return await $fetch.post(`/tasks/${taskId}/assignees`, payload);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const deleteAssignesAPI = async (taskId: any, payload: any) => {
+  try {
+    return await $fetch.delete(`/tasks/${taskId}/assignees`, payload);
+  } catch (err: any) {
+    throw err;
+  }
+};
