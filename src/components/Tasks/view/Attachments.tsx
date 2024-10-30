@@ -25,7 +25,7 @@ const UploadAttachments = () => {
   });
 
   // Fetch attachments for the task
-  const { isFetching, error } = useQuery({
+  const { isLoading, isFetching, error } = useQuery({
     queryKey: ["getAttachments", taskId, refreshCount],
     queryFn: async () => {
       const response = await getAttachmentsAPI(taskId);
@@ -170,7 +170,7 @@ const UploadAttachments = () => {
   };
 
   return (
-    <div>
+    <div className="relative px-2">
       <h2 className="font-semibold">Attachments</h2>
       <div className="mt-2 space-y-2">
         {attachmentsData.length > 0 ? (
@@ -200,6 +200,18 @@ const UploadAttachments = () => {
           <input {...getInputProps()} />
         </div>
 
+        {selectedFiles.length > 0 && (
+          <div className="mt-4">
+            {selectedFiles.map((file, index) => (
+              <div key={index} className="flex justify-between items-center">
+                <span className="font-medium">{file.name}</span>
+                <button onClick={handleRemoveFile}>
+                  <X className="text-red-500 w-6 h-6" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
         <Button
           onClick={open}
           className="bg-red-500 text-white flex items-center"
@@ -216,21 +228,8 @@ const UploadAttachments = () => {
         {rejectionMessage && (
           <p className="text-red-600 mt-2">{rejectionMessage}</p>
         )}
-
-        {selectedFiles.length > 0 && (
-          <div className="mt-4">
-            {selectedFiles.map((file, index) => (
-              <div key={index} className="flex justify-between items-center">
-                <span className="font-medium">{file.name}</span>
-                <button onClick={handleRemoveFile}>
-                  <X className="text-red-500 w-6 h-6" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
-      {/* <LoadingComponent loading /> */}
+      <LoadingComponent loading={isLoading || loading} />
     </div>
   );
 };
