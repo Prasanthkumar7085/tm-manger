@@ -6,8 +6,9 @@ interface GetAllPaginatedUsersPropTypes {
   search_string: any;
   from_date: string;
   to_date: string;
-  status:string;
+  status: string;
   priority: string;
+  project_id:any;
 }
 
 export const getAllPaginatedTasks = async ({
@@ -19,6 +20,7 @@ export const getAllPaginatedTasks = async ({
   to_date,
   status,
   priority,
+  project_id,
 }: GetAllPaginatedUsersPropTypes) => {
   try {
     const queryParams = {
@@ -30,6 +32,7 @@ export const getAllPaginatedTasks = async ({
       to_date: to_date,
       status: status,
       priority: priority,
+      project_id: project_id,
     };
     return await $fetch.get("/tasks", queryParams);
   } catch (err) {
@@ -39,6 +42,14 @@ export const getAllPaginatedTasks = async ({
 export const getSingleTaskAPI = async (taskId: any) => {
   try {
     return await $fetch.get(`/tasks/${taskId}`);
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getTasksBasedTagsAPI = async (taskId: any) => {
+  try {
+    return await $fetch.get(`/tasks/${taskId}/tags`);
   } catch (err) {
     throw err;
   }
@@ -90,6 +101,55 @@ export const getDropDownForProjectsTasksAPI = async () => {
 export const deleteTaskAPI = async (id: string) => {
   try {
     return await $fetch.delete(`/tasks/${id}`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const addAttachmentsAPI = async (payload: any) => {
+  try {
+    return await $fetch.post(`/tasks/attachments`, payload);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const getAttachmentsAPI = async (taskId: any) => {
+  try {
+    return await $fetch.get(`/tasks/${taskId}/attachments`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const uploadAttachmentAPI = async (payload: any) => {
+  try {
+    return await $fetch.post(`/tasks/attachments `, payload);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const deleteAttachmentsAPI = async (taskId: any, id: string) => {
+  try {
+    return await $fetch.delete(`/tasks/${taskId}/attachments/${id}`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const getAssignesAPI = async (taskId: any) => {
+  try {
+    return await $fetch.get(`/tasks/${taskId}/assignees`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const addAssignesAPI = async (taskId: any, payload: any) => {
+  try {
+    return await $fetch.post(`/tasks/${taskId}/assignees`, payload);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const deleteAssignesAPI = async (taskId: any, payload: any) => {
+  try {
+    return await $fetch.delete(`/tasks/${taskId}/assignees`, payload);
   } catch (err: any) {
     throw err;
   }

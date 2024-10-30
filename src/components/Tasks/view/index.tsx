@@ -1,28 +1,22 @@
-import React, { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Avatar } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { UploadIcon } from "lucide-react";
-import { toast } from "sonner";
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
 import {
   addPostCommentsAPI,
-  getCommentsAPI,
   getSingleTaskAPI,
   getTagsAPI,
 } from "@/lib/services/tasks";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
+import { useNavigate, useParams, useRouter } from "@tanstack/react-router";
+import { useState } from "react";
+import { toast } from "sonner";
+import AssignedUsers from "../AssigneTasks";
+import UploadAttachments from "./Attachments";
 
 const TaskView = () => {
   const navigate = useNavigate();
+  const router = useRouter();
   const { taskId } = useParams({ strict: false });
   const [commentsData, setCommentsData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
@@ -30,9 +24,7 @@ const TaskView = () => {
   const [viewData, setViewData] = useState<any>();
   const [tagsData, setTagsData] = useState<any>();
   const [tagsInput, setTagsInput] = useState("");
-  console.log(tagsInput, "input");
   const [errorMessages, setErrorMessages] = useState({ tags: [] });
-  console.log(tagsData, "task");
 
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["getSingleTask", taskId],
@@ -83,9 +75,8 @@ const TaskView = () => {
       const response = await addPostCommentsAPI(taskId, payload);
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message || "Comment added successfully");
-        // Optionally, refresh comments here after adding
-        // await getAllComments();
-        setMessage(""); // Clear the message input after adding a comment
+
+        setMessage("");
       } else {
         throw new Error("Failed to add comment");
       }
@@ -128,7 +119,7 @@ const TaskView = () => {
   };
 
   return (
-    <div className=" flex flex-col space-y-6 md:space-y-0 md:flex-row md:space-x-6 overflow-auto">
+    <div className=" flex flex-col space-y-6 md:space-y-0 md:flex-row md:space-x-6 px-3">
       <div className="md:w-2/3 w-full bg-white rounded-lg shadow-md  space-y-4">
         <div className="flex justify-between items-start border-b pb-4">
           <div className="flex flex-col space-y-2">
@@ -153,24 +144,10 @@ const TaskView = () => {
                   : "--"}
               </span>
             </div>
-            <div className="flex flex-col items-start">
+            <div className="flex flex-col items-start ">
               <div className="text-blue-500 bg-gray-100 px-3 py-1 rounded-md mb-2">
                 Tags
               </div>
-              <Input
-                type="text"
-                value={tagsInput}
-                onChange={(e) => setTagsInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleTagSubmit();
-                    e.preventDefault();
-                  }
-                }}
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                placeholder="Enter tag"
-              />
-
               <div className="flex flex-wrap space-x-2">
                 {tagsData && tagsData.length > 0 ? (
                   tagsData?.map((tag: any, idx: any) => (
@@ -179,7 +156,7 @@ const TaskView = () => {
                     </Badge>
                   ))
                 ) : (
-                  <p className="text-gray-500">--</p>
+                  <p className="text-gray-500">No Tags</p>
                 )}
               </div>
             </div>
@@ -188,79 +165,85 @@ const TaskView = () => {
             <Button
               type="button"
               className="flex bg-blue-500"
-              onClick={handleTagSubmit}
+              onClick={() => {
+                router.navigate({
+                  to: `/tasks/${taskId}`,
+                });
+              }}
             >
-              Add Tag
+              Edit Task
             </Button>
-          </div>
+          </div>{" "}
         </div>
 
         {/* Assigned To Section */}
         <div>
           <h2 className="font-semibold">Assigned To</h2>
           <div className="mt-2">
-            <table className="w-full text-left">
-              <thead>
+            <AssignedUsers />
+            {/* <table className="w-full text-left"> */}
+            {/* <thead>
                 <tr className="border-b">
                   <th className="py-2 px-3">S No</th>
                   <th className="py-2 px-3">Name</th>
                   <th className="py-2 px-3">Actions</th>
                 </tr>
-              </thead>
-              <tbody>
+              </thead> */}
+            {/* <tbody>
                 {/* Loop through each member */}
-                {[
-                  { name: "Pavan", role: "Manager" },
-                  { name: "Gowtham", role: "Member" },
-                  { name: "Sudhakar", role: "Member" },
-                ].map((person, idx) => (
-                  <tr key={idx} className="border-b">
-                    <td className="py-2 px-3">{`0${idx + 1}`}</td>
-                    <td className="py-2 px-3 flex items-center space-x-2">
-                      <img
-                        className="w-8 h-8 rounded-full"
-                        src="https://i.pravatar.cc/150?img=4"
-                        alt="Avatar"
-                      />
-                      <span>{person.name}</span>
-                      <span className="text-green-600 ml-2">{person.role}</span>
-                    </td>
-                    <td className="py-2 px-3">
-                      <button className="text-red-500">🗑️</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            {/* {[
+              { name: "Pavan", role: "Manager" },
+              { name: "Gowtham", role: "Member" },
+              { name: "Sudhakar", role: "Member" },
+            ].map((person, idx) => (
+              <tr key={idx} className="border-b">
+                <td className="py-2 px-3">{`0${idx + 1}`}</td>
+                <td className="py-2 px-3 flex items-center space-x-2">
+                  <img
+                    className="w-8 h-8 rounded-full"
+                    src="https://i.pravatar.cc/150?img=4"
+                    alt="Avatar"
+                  />
+                  <span>{person.name}</span>
+                  <span className="text-green-600 ml-2">{person.role}</span>
+                </td>
+                <td className="py-2 px-3">
+                  <button className="text-red-500">🗑️</button>
+                </td>
+              </tr>
+            ))} */}
+            {/* </tbody>  */}
+            {/* </table> */}
           </div>
         </div>
 
         {/* Attachments Section */}
         <div>
-          <h2 className="font-semibold">Attachments</h2>
-          <div className="mt-2 space-y-2">
+          {/* <h2 className="font-semibold">Attachments</h2> */}
+          {/* <div className="mt-2 space-y-2">
             {/* Loop through each attachment */}
-            {Array(6)
-              .fill("user-journey-01.pdf")
-              .map((file, idx) => (
-                <div
-                  key={idx}
-                  className="flex justify-between items-center border rounded-md p-2"
-                >
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xl">📄</span>
-                    <p>{file}</p>
-                  </div>
-                  <div className="text-gray-500 flex items-center space-x-2">
-                    <span>604KB</span>
-                    <button className="text-gray-500">⋮</button>
-                  </div>
+          {/* {Array(6)
+            .fill("user-journey-01.pdf")
+            .map((file, idx) => (
+              <div
+                key={idx}
+                className="flex justify-between items-center border rounded-md p-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <span className="text-xl">📄</span>
+                  <p>{file}</p>
                 </div>
-              ))}
-          </div>
-          <button className="bg-red-500 text-white flex items-center space-x-2 mt-4 px-4 py-2 rounded-md">
+                <div className="text-gray-500 flex items-center space-x-2">
+                  <span>604KB</span>
+                  <button className="text-gray-500">⋮</button>
+                </div>
+              </div>
+            ))} */}
+          {/* </div>  */}
+          {/* <button className="bg-red-500 text-white flex items-center space-x-2 mt-4 px-4 py-2 rounded-md">
             <span>Upload</span>
-          </button>
+          </button> */}
+          <UploadAttachments />
         </div>
       </div>
 

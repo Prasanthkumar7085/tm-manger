@@ -10,24 +10,27 @@ import {
   uploadToS3API,
   viewProjectAPI,
 } from "@/lib/services/projects";
-import ProjectTasksCounts from "./ProjectTasksCounts";
-import ProjectMembersManagment from "./ProjectMembersManagment";
+
 import LoadingComponent from "@/components/core/LoadingComponent";
 import { Button } from "@/components/ui/button";
 import { CameraIcon, X, ZoomIn } from "lucide-react";
-import KanbanBoard from "../KanBanView";
+import { getAssignesAPI } from "@/lib/services/tasks";
+import AssigneeManagment from "./AssignesManagements";
 
-const ProjectView = ({
-  setRefreshCount,
-  refreshCount,
-}: {
-  setRefreshCount: (count: any) => void;
-  refreshCount: number;
-}) => {
-  const { projectId } = useParams({ strict: false });
+const AssignedUsers = (
+  {
+    //   setRefreshCount,
+    //   refreshCount,
+  }: {
+    //   setRefreshCount: (count: any) => void;
+    //   refreshCount: number;
+  }
+) => {
+  const { taskId } = useParams({ strict: false });
   const queryClient = useQueryClient();
 
-  const [projectDetails, setProjectDetails] = useState<any>({});
+  const [AssigneDetails, setAssigneDetails] = useState<any>({});
+  console.log(AssigneDetails, "DETAILS");
   const [uploadingStatus, setUploadingStatus] = useState({
     startUploading: false,
     uploadSuccess: false,
@@ -38,12 +41,12 @@ const ProjectView = ({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const { isFetching, isLoading } = useQuery({
-    queryKey: ["getSingleProject", projectId],
+    queryKey: ["getAssignes", taskId],
     queryFn: async () => {
       try {
-        const response = await viewProjectAPI(projectId);
+        const response = await getAssignesAPI(taskId);
         if (response.success) {
-          setProjectDetails(response.data?.data);
+          setAssigneDetails(response.data?.data);
           setPreviewUrl(response.data?.data?.logo);
         } else {
           throw new Error("Failed to fetch project details");
@@ -53,7 +56,7 @@ const ProjectView = ({
         toast.error("Failed to load project details.");
       }
     },
-    enabled: Boolean(projectId),
+    enabled: Boolean(taskId),
   });
 
   const fileUploadMutation = useMutation({
@@ -111,12 +114,12 @@ const ProjectView = ({
   const uploadLogoMutation = useMutation({
     mutationFn: async (payload: { logo: string }) => {
       try {
-        const response = await uploadLogoAPI(projectId, payload);
+        const response = await uploadLogoAPI(taskId, payload);
         if (response.data.status === 200 || response.data.status === 201) {
           toast.success("Logo uploaded successfully!");
-          if (setRefreshCount) {
-            setRefreshCount((prev: any) => prev + 1);
-          }
+          //   if (setRefreshCount) {
+          //     setRefreshCount((prev: any) => prev + 1);
+          //   }
           return response;
         } else {
           throw new Error("Failed to upload logo");
@@ -147,68 +150,9 @@ const ProjectView = ({
   return (
     <div className="flex flex-col justify-between h-full w-full overflow-auto">
       <div className="w-full flex  items-center ">
-        <div className="mt-4 flex flex-col w-[10%] ">
-          {previewUrl ? (
-            <div className="relative w-20 h-20 rounded-full border-2 shadow-md">
-              <img
-                src={previewUrl}
-                alt="Profile Preview"
-                className="w-20 h-20 object-cover rounded-full border  bg-black"
-                onError={(e: any) => {
-                  e.target.onerror = null;
-                  e.target.src =
-                    "https://via.placeholder.com/150?text=No preview";
-                }}
-              />
-              <button
-                onClick={handleRemoveFile}
-                className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border"
-              >
-                <X className="text-white w-2 h-2" />
-              </button>
-            </div>
-          ) : (
-            <div className="relative w-20 h-20 rounded-full border-2 shadow-md">
-              <img
-                src="https://via.placeholder.com/150?text=No+Image"
-                alt="company logo"
-                className="w-20 h-20 object-cover rounded-full border  bg-black"
-                onError={(e: any) => {
-                  e.target.onerror = null;
-                  e.target.src =
-                    "https://via.placeholder.com/150?text=No preview";
-                }}
-              />
-              <label
-                htmlFor="file-upload"
-                className="absolute bottom-1 left-1/2 transform -translate-x-1/2 cursor-pointer"
-              >
-                <CameraIcon className="w-8 h-8 text-blue-500" />{" "}
-              </label>
-              <input
-                id="file-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-            </div>
-          )}
-          {uploadingStatus.startUploading && <p>Uploading...</p>}
-        </div>
-        <div className="w-[90%]">
-          <ProjectTasksCounts />
-        </div>
+        <div className="w-[90%]"></div>
       </div>
       <div className="flex items-center mt-4 space-x-2 w-full justify-between relative">
-        <div>
-          <h2 className="text-xl font-semibold capitalize flex-1">
-            {projectDetails?.title}
-          </h2>
-          <p className="text-sm text-gray-500 capitalize flex-1">
-            {projectDetails?.description}
-          </p>
-        </div>
         <div className="flex flex-row items-center gap-4">
           <Button
             onClick={() => setOpenMembers(!openMembers)}
@@ -219,7 +163,7 @@ const ProjectView = ({
           <div>
             <h2 className="text-sm font-semibold">Created at</h2>
             <p className="text-sm text-gray-500">
-              {dayjs(projectDetails?.created_at).format("MM-DD-YYYY")}
+              {dayjs(AssigneDetails?.created_at).format("MM-DD-YYYY")}
             </p>
           </div>
           <div>
@@ -232,14 +176,11 @@ const ProjectView = ({
 
       {openMembers && (
         <div className="mt-2">
-          <ProjectMembersManagment />
+          <AssigneeManagment />
         </div>
       )}
-      <div className="mt-4">
-        <KanbanBoard />
-      </div>
     </div>
   );
 };
 
-export default ProjectView;
+export default AssignedUsers;

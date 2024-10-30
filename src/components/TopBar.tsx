@@ -45,6 +45,16 @@ function TopBar() {
               className="cursor-pointer"
               onClick={() => {
                 navigate({
+                  to: `/view-profile`,
+                });
+              }}
+            >
+              View Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => {
+                navigate({
                   to: `/`,
                 });
               }}

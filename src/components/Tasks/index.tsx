@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-
 import { addSerial } from "@/lib/helpers/addSerial";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
-import { getAllPaginatedTasks} from "@/lib/services/tasks";
+import { getAllPaginatedTasks } from "@/lib/services/tasks";
 import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
 import DateRangeFilter from "../core/DateRangePicker";
@@ -30,11 +29,12 @@ const Tasks = () => {
   const initialSearch = searchParams.get("search") || "";
   const initialStatus = searchParams.get("status") || "";
   const initialPrioritys = searchParams.get("priority") || "";
+  const intialProject = searchParams.get("project_id") || "";
   const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedDate, setSelectedDate] = useState<any>(new Date());
   const [selectedStatus, setSelectedStatus] = useState(initialStatus);
-  const [selectedProjects, setSelectedProjects] = useState(initialStatus);
+  const [selectedProject, setSelectedProject] = useState<any>(intialProject);
   const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
   const [dateValue, setDateValue] = useState<any>(null);
   const [del, setDel] = useState<any>(1);
@@ -66,6 +66,7 @@ const Tasks = () => {
       del,
       selectedStatus,
       selectedpriority,
+      selectedProject,
     ],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
@@ -75,6 +76,7 @@ const Tasks = () => {
         search_string: debouncedSearch,
         status: selectedStatus,
         priority: selectedpriority,
+        project_id: selectedProject?.id,
         from_date: selectedDate?.length ? selectedDate[0] : null,
         to_date: selectedDate?.length ? selectedDate[1] : null,
       });
@@ -86,6 +88,7 @@ const Tasks = () => {
         from_date: selectedDate?.length ? selectedDate[0] : undefined,
         to_date: selectedDate?.length ? selectedDate[1] : undefined,
         status: selectedStatus || undefined,
+        project_id: selectedProject?.id || undefined,
         priority: selectedpriority || undefined,
       };
 
@@ -116,7 +119,12 @@ const Tasks = () => {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
-      if (searchString || selectedStatus || selectedpriority) {
+      if (
+        searchString ||
+        selectedStatus ||
+        selectedpriority ||
+        selectedProject?.id
+      ) {
         getAllTasks({
           pageIndex: 1,
           pageSize: pageSizeParam,
@@ -133,7 +141,7 @@ const Tasks = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString, selectedStatus, selectedpriority]);
+  }, [searchString, selectedStatus, selectedpriority, selectedProject?.id]);
 
   const handleNavigation = () => {
     navigate({
@@ -153,7 +161,6 @@ const Tasks = () => {
       setSelectedDate([]);
     }
   };
-
   return (
     <section id="tasks" className="relative">
       <div>{!isDashboard && <TotalCounts />}</div>
@@ -165,14 +172,13 @@ const Tasks = () => {
             </div>
             <div className="filters">
               <ul className="flex justify-end space-x-4">
-              <li>
+                <li>
                   <SelectTaskProjects
-                  selectedProjects={selectedProjects}
-                  setSelectedProjects={setSelectedProjects}
-                  />  
+                    selectedProject={selectedProject}
+                    setSelectedProject={setSelectedProject}
+                  />
                 </li>
 
-              
                 <li>
                   <TasksSelectPriority
                     value={selectedpriority}
