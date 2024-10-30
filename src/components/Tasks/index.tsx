@@ -15,7 +15,6 @@ import LoadingComponent from "../core/LoadingComponent";
 import { TasksSelectStatusFilter } from "../core/CommonComponents/TasksSelectStatusFilter";
 import { TasksSelectPriority } from "../core/CommonComponents/TasksSelectPriority";
 import { SelectTaskProjects } from "../core/CommonComponents/SelectTaskProjects";
-import UploadAttachments from "./view/Attachments";
 
 const Tasks = () => {
   const navigate = useNavigate();

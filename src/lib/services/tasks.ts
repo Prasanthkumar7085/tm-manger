@@ -94,6 +94,13 @@ export const deleteTaskAPI = async (id: string) => {
     throw err;
   }
 };
+export const addAttachmentsAPI = async (payload: any) => {
+  try {
+    return await $fetch.post(`/tasks/attachments`, payload);
+  } catch (err: any) {
+    throw err;
+  }
+};
 export const getAttachmentsAPI = async (taskId: any) => {
   try {
     return await $fetch.get(`/tasks/${taskId}/attachments`);
@@ -101,9 +108,16 @@ export const getAttachmentsAPI = async (taskId: any) => {
     throw err;
   }
 };
-export const deleteAttachmentsAPI = async (id: string) => {
+export const uploadAttachmentAPI = async (payload: any) => {
   try {
-    return await $fetch.delete(`/tasks/attachments/${id}`);
+    return await $fetch.post(`/tasks/attachments `, payload);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const deleteAttachmentsAPI = async (taskId: any, id: string) => {
+  try {
+    return await $fetch.delete(`/tasks/${taskId}/attachments/${id}`);
   } catch (err: any) {
     throw err;
   }
