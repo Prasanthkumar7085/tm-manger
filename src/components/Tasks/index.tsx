@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { addSerial } from "@/lib/helpers/addSerial";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
-import { getAllPaginatedTasks} from "@/lib/services/tasks";
+import { getAllPaginatedTasks } from "@/lib/services/tasks";
 import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
 import DateRangeFilter from "../core/DateRangePicker";
@@ -165,14 +165,13 @@ const Tasks = () => {
             </div>
             <div className="filters">
               <ul className="flex justify-end space-x-4">
-              <li>
+                <li>
                   <SelectTaskProjects
-                  selectedProjects={selectedProjects}
-                  setSelectedProjects={setSelectedProjects}
-                  />  
+                    selectedProjects={selectedProjects}
+                    setSelectedProjects={setSelectedProjects}
+                  />
                 </li>
 
-              
                 <li>
                   <TasksSelectPriority
                     value={selectedpriority}
