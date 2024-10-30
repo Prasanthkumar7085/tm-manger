@@ -22,6 +22,7 @@ import {
   updateTasksAPI,
 } from "@/lib/services/tasks";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useLocation } from "@tanstack/react-router";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import React, { useState } from "react";
@@ -30,16 +31,21 @@ import { toast } from "sonner";
 
 const AddTask = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const { taskId } = useParams({ strict: false });
+  const searchParams = new URLSearchParams(location.search);
+
   const [task, setTask] = useState<any>({
     title: "",
     ref_id: "",
     description: "",
     priority: "",
-    status: "",
+    status: searchParams.get("status") || "",
     due_date: "",
     tags: [],
     users: [],
+    project_id: Number(searchParams.get("project_id")) || "",
   });
   const [openProjects, setOpenProjects] = useState(false);
   const [tagInput, setTagInput] = useState<any>("");
@@ -111,7 +117,7 @@ const AddTask = () => {
     onSuccess: (response: any) => {
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message);
-        navigate({ to: "/tasks" });
+        window.history.back();
       } else if (response?.status === 422) {
         setErrorMessages(response?.data?.errData || {});
       } else if (response?.status === 409) {
@@ -216,7 +222,7 @@ const AddTask = () => {
           </h2>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-6">
-              <div>
+              <div className="w-full">
                 <Popover open={openProjects} onOpenChange={setOpenProjects}>
                   <PopoverTrigger asChild>
                     <Button
@@ -255,6 +261,7 @@ const AddTask = () => {
                             <CommandItem
                               key={project.id}
                               onSelect={() => handleProjectSelect(project)}
+                              className="text-ellipsis overflow-hidden"
                             >
                               <Check
                                 className="mr-2 h-4 w-4"
@@ -334,13 +341,16 @@ const AddTask = () => {
                                 <CommandItem
                                   key={user.id}
                                   onSelect={() => handleUserSelect(user)}
+                                  disabled={task.users?.some(
+                                    (u: any) => u.id === user.id
+                                  )}
                                 >
                                   <Check
                                     className="mr-2 h-4 w-4"
                                     style={{
                                       opacity: selectedUsers.has(user.id)
                                         ? 1
-                                        : 0.5,
+                                        : 0,
                                     }}
                                   />
                                   <p className="capitalize">
@@ -465,6 +475,27 @@ const AddTask = () => {
 
                 <div className="mb-4">
                   <label className="block text-gray-700 font-bold mb-2">
+                    Task Status
+                  </label>
+                  <select
+                    name="status"
+                    value={task.status}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  >
+                    <option value="">Select Status</option>
+                    <option value="TODO">Todo</option>
+                    <option value="IN_PROGRESS">In Progress</option>
+                    <option value="OVER_DUE">Overdue</option>
+                    <option value="COMPLETED">Completed</option>
+                  </select>
+                  {errorMessages.status && (
+                    <p style={{ color: "red" }}>{errorMessages?.status?.[0]}</p>
+                  )}
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700 font-bold mb-2">
                     Tags
                   </label>
                   <div className="flex">
@@ -513,7 +544,7 @@ const AddTask = () => {
                   <Button
                     type="button"
                     className="px-6 py-2 bg-red-500 text-white rounded-md mr-2"
-                    onClick={() => navigate({ to: "/tasks" })}
+                    onClick={() => window.history.back()}
                   >
                     Cancel
                   </Button>

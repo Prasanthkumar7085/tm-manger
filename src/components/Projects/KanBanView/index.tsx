@@ -1,7 +1,8 @@
 // src/components/KanbanBoard.tsx
+import { Button } from "@/components/ui/button";
 import { getTasksBasedOnProjectAPI } from "@/lib/services/projects";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useNavigate, useParams, useRouter } from "@tanstack/react-router";
 import React, { useState } from "react";
 import {
   DragDropContext,
@@ -29,11 +30,13 @@ type TaskColumn = {
 
 const KanbanBoard: React.FC = () => {
   const { projectId } = useParams({ strict: false });
+  const navigate = useNavigate();
+  const router = useRouter();
 
   const [tasks, setTasks] = useState<TaskColumn>({
     TODO: [],
     IN_PROGRESS: [],
-    OVERDUE: [],
+    OVER_DUE: [],
     COMPLETED: [],
   });
 
@@ -92,15 +95,35 @@ const KanbanBoard: React.FC = () => {
                   ref={provided.innerRef}
                   {...provided.draggableProps}
                   {...provided.dragHandleProps}
-                  className="bg-white border p-2 my-2 rounded shadow"
+                  className="bg-white border p-2 my-2 rounded shadow w-[250px]"
                 >
-                  <p>{task.title}</p>
-                  <p> {task.description}</p>
+                  <p
+                    className="text-ellipsis overflow-hidden"
+                    title={task.task_title}
+                  >
+                    {task.task_title || "--"}
+                  </p>
+                  <p
+                    className="text-gray-500 text-ellipsis overflow-hidden"
+                    title={task.task_description}
+                  >
+                    {task.task_description || "--"}
+                  </p>
                 </div>
               )}
             </Draggable>
           ))}
           {provided.placeholder}
+          <Button
+            onClick={() => {
+              router.navigate({
+                to: "/tasks/add",
+                search: { project_id: projectId, status: columnName },
+              });
+            }}
+          >
+            Add Task
+          </Button>
         </div>
       )}
     </Droppable>
@@ -116,7 +139,7 @@ const KanbanBoard: React.FC = () => {
           let categorizedTasks: TaskColumn = {
             TODO: [],
             IN_PROGRESS: [],
-            OVERDUE: [],
+            OVER_DUE: [],
             COMPLETED: [],
           };
           data.forEach((task: Task) => {
@@ -139,7 +162,7 @@ const KanbanBoard: React.FC = () => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="flex space-x-4">
-        {["TODO", "IN_PROGRESS", "OVERDUE", "COMPLETED"].map((column) => (
+        {["TODO", "IN_PROGRESS", "OVER_DUE", "COMPLETED"].map((column) => (
           <div key={column} className="flex-1">
             {renderColumn(column)}
           </div>
