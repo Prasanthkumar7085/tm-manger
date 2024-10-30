@@ -80,15 +80,17 @@ const ProjectMembersManagment = () => {
   const changeRole = (userId: number, role: string) => {
     setSelectedMembers((prev: any) =>
       prev.map((member: any) =>
-        member.id === userId ? { ...member, role } : member
+        member.user_id === userId ? { ...member, role } : member
       )
     );
+    console.log(selectedMembers, "selectedMembers");
     let allMembers = [
       ...selectedMembers,
       ...selectedMembers.map((member: any) =>
-        member.id === userId ? { ...member, role } : member
+        member.user_id === userId ? { ...member, role } : member
       ),
     ];
+    console.log(allMembers, "allMembers");
     let payload = allMembers.map((member: any) => {
       return { user_id: member.user_id, role: member.role };
     });
@@ -120,7 +122,7 @@ const ProjectMembersManagment = () => {
         let ActiveUsers = response.data.data.filter(
           (user: any) => user?.active === true
         );
-        let addTitles = response.data.data.map((user: any) => ({
+        let addTitles = response?.data?.data?.map((user: any) => ({
           ...user,
           title: getFullName(user),
         }));
@@ -301,7 +303,9 @@ const ProjectMembersManagment = () => {
                     <td className="border p-2">
                       <select
                         value={member.role}
-                        onChange={(e) => changeRole(member.id, e.target.value)}
+                        onChange={(e) =>
+                          changeRole(member.user_id, e.target.value)
+                        }
                         className="border p-1 rounded"
                       >
                         {roleConstants.map((memberConstant) => (

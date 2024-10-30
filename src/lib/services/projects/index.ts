@@ -64,3 +64,29 @@ export const viewProjectAPI = async (projectId: any) => {
     throw err;
   }
 };
+export const uploadLogoAPI = async (projectId: any, payload: any) => {
+  try {
+    return await $fetch.patch(`/projects/${projectId}/logo `, payload);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const fileUploadAPI = async (payload: any) => {
+  try {
+    return await $fetch.post(`/files/upload`, payload);
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const uploadToS3API = async (url: string, file: File) => {
+  try {
+    const options = {
+      method: "PUT",
+      body: file,
+    };
+    return await fetch(url, options);
+  } catch (err) {
+    throw err;
+  }
+};

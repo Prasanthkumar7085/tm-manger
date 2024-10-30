@@ -1,25 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import ProjectCard from "./Card";
-import { Button } from "../ui/button";
-import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
 import { addSerial } from "@/lib/helpers/addSerial";
-import { getAllPaginatedProjectss } from "@/lib/services/projects";
-import SearchFilter from "../core/CommonComponents/SearchFilter";
-import { StatusFilter } from "../core/StatusFilter";
-import Pagination from "../core/Pagination";
-import DateRangeFilter from "../core/DateRangePicker";
-import LoadingComponent from "../core/LoadingComponent";
-import SortDropDown from "../core/CommonComponents/SortDropDown";
-import useUsersHook from "./useUsersHook";
-import Select from "react-select";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
+import { getAllPaginatedProjectss } from "@/lib/services/projects";
+import { useQuery } from "@tanstack/react-query";
+import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import SearchFilter from "../core/CommonComponents/SearchFilter";
+import SortDropDown from "../core/CommonComponents/SortDropDown";
+import LoadingComponent from "../core/LoadingComponent";
+import Pagination from "../core/Pagination";
+import { StatusFilter } from "../core/StatusFilter";
+import { Button } from "../ui/button";
+import ProjectCard from "./Card";
+import useUsersHook from "./useUsersHook";
 
 const Projects = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
   const searchParams = new URLSearchParams(location.search);
+  const [refreshCount, setRefreshCount] = useState(0);
 
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 10;
@@ -42,8 +41,6 @@ const Projects = () => {
   const [selectedSort, setSelectedSort] = useState(orderBY);
   const [del, setDel] = useState<any>();
   const { users, loading: usersLoading, error: usersError } = useUsersHook();
-
-  // Transform usersData into react-select format
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
@@ -210,7 +207,7 @@ const Projects = () => {
           {projectsData.length === 0 && isLoading == false ? (
             <div className="col-span-full text-center">No Project found</div>
           ) : (
-            projectsData.map((project: any) => (
+            projectsData?.map((project: any) => (
               <ProjectCard
                 key={project.id}
                 project={project}

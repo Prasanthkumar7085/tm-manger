@@ -10,16 +10,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { SheetDemoProps } from "@/lib/interfaces";
 import { useState } from "react";
-
-type SheetDemoProps = {
-  label: string;
-  sheetTitle: string;
-  onOKClick: () => void;
-  extraField: string;
-  memberData: { user_id: number; role: string };
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
 
 export const SheetDemo = ({
   sheetTitle,

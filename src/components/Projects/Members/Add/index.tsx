@@ -1,18 +1,11 @@
 import { SheetDemo } from "@/components/core/CommonComponents/Sheet";
+import { AddMemberProps, MemberPayload } from "@/lib/interfaces";
 import { addMembersAPI } from "@/lib/services/projects/members";
 import { useMutation } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 
-interface MemberPayload {
-  user_id: number; // Ensure user_id is a number
-  role: string;
-}
-
-interface AddMemberProps {
-  addNewMember: (newMember: { value: number; label: string }) => any; // Change type to match
-}
 const AddMember = ({ addNewMember }: AddMemberProps) => {
   const { projectId } = useParams({ strict: false });
   const [memberData, setMemberData] = useState<MemberPayload>({

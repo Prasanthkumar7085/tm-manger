@@ -16,19 +16,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { pageProps } from "@/lib/interfaces";
+import { useLocation } from "@tanstack/react-router";
 import Pagination from "./Pagination";
-import { getRouteApi, useLocation } from "@tanstack/react-router";
-import path from "node:path/win32";
-
-interface pageProps {
-  columns: any[];
-  data: any[];
-  loading?: boolean;
-
-  getData?: any;
-  paginationDetails: any;
-  removeSortingForColumnIds?: string[];
-}
 
 const TanStackTable: FC<pageProps> = ({
   columns,
@@ -115,7 +105,7 @@ const TanStackTable: FC<pageProps> = ({
         className={`overflow-y-auto  w-full overflow-auto relative  bg-white rounded-[12px] ${location.pathname.includes("tasks") ? "h-[calc(100vh-370px)]" : "h-[calc(100vh-280px)]"}`}
       >
         <Table>
-          <TableHeader className="sticky top-[0px] ">
+          <TableHeader className="sticky top-[0px] z-10">
             {table?.getHeaderGroups().map((headerGroup) => {
               return (
                 <TableRow key={headerGroup.id}>
@@ -184,10 +174,10 @@ const TanStackTable: FC<pageProps> = ({
                 <TableCell colSpan={6} className="p-5 text-center">
                   <div className="flex justify-center items-center">
                     <img
-                      src="/table/no-data.svg"
+                      src="/No data.svg"
                       alt="No Data"
-                      height={150}
-                      width={250}
+                      height={500}
+                      width={500}
                     />
                   </div>
                 </TableCell>
