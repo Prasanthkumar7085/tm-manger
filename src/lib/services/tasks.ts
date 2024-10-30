@@ -46,6 +46,13 @@ export const getSingleTaskAPI = async (taskId: any) => {
     throw err;
   }
 };
+export const getTagsAPI = async (taskId: any) => {
+  try {
+    return await $fetch.get(`/tasks/${taskId}/tags`);
+  } catch (err) {
+    throw err;
+  }
+};
 export const addTasksAPI = async (payload: any) => {
   try {
     return await $fetch.post(`/tasks`, payload);

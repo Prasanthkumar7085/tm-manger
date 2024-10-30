@@ -13,12 +13,14 @@ import LoadingComponent from "../core/LoadingComponent";
 import SortDropDown from "../core/CommonComponents/SortDropDown";
 import useUsersHook from "./useUsersHook";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
+import ProjectView from "./View";
 
 const Projects = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
   const searchParams = new URLSearchParams(location.search);
+  const [refreshCount, setRefreshCount] = useState(0);
 
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 10;
@@ -207,7 +209,7 @@ const Projects = () => {
           {projectsData.length === 0 && isLoading == false ? (
             <div className="col-span-full text-center">No Project found</div>
           ) : (
-            projectsData.map((project: any) => (
+            projectsData?.map((project: any) => (
               <ProjectCard
                 key={project.id}
                 project={project}
@@ -226,6 +228,13 @@ const Projects = () => {
           captureRowPerItems={captureRowPerItems}
         />
       </div>
+      {/* <div>
+        <ProjectView
+          getAllProjects={getAllProjects}
+          setRefreshCount={setRefreshCount}
+          refreshCount={refreshCount}
+        />
+      </div> */}
 
       <LoadingComponent loading={isLoading || isFetching} />
     </section>

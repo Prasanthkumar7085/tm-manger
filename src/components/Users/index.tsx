@@ -7,15 +7,9 @@ import {
   getSingleUserAPI,
   resetPasswordUsersAPI,
   updateUsersAPI,
-  updateUserSelectStatueAPI,
 } from "@/lib/services/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useRouter,
-} from "@tanstack/react-router";
+import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import TanStackTable from "../core/TanstackTable";
 import { userColumns } from "./UserColumns";
@@ -69,6 +63,7 @@ function UsersTable() {
     fname: "",
     lname: "",
     email: "",
+    designation: "",
     password: "",
     phone_number: "",
   });
@@ -113,6 +108,7 @@ function UsersTable() {
         fname: userData?.fname,
         lname: userData?.lname,
         email: userData?.email,
+        designation: userData?.designation,
         password: userData?.password,
         user_type: userType,
         phone_number: userData?.phone_number,
@@ -145,6 +141,7 @@ function UsersTable() {
             fname: data?.fname,
             lname: data?.lname,
             email: data?.email,
+            designation: data?.designation,
             password: data?.password,
             phone_number: data?.phone_number,
           });
@@ -212,7 +209,8 @@ function UsersTable() {
         fname: userData?.fname,
         lname: userData?.lname,
         email: userData?.email,
-        password: userData?.password, 
+        designation: userData?.designation,
+        password: userData?.password,
         phone_number: userData?.phone_number,
         user_type: userType,
       };
@@ -272,6 +270,7 @@ function UsersTable() {
           fname: userData.fname,
           lname: userData.lname,
           email: userData.email,
+          designation: userData.designation,
           password: userData.password,
           phone_number: userData.phone_number,
           user_type: userType,
@@ -280,9 +279,6 @@ function UsersTable() {
           toast.success("User updated successfully");
           handleDrawerClose();
           setDel((prev) => prev + 1);
-          if (userType === "admin") {
-            await addAdminUser();
-          }
         } else if (response?.status === 422) {
           const errData = response?.data?.errData;
           setErrors(errData);
@@ -311,6 +307,7 @@ function UsersTable() {
         fname: userData.fname || "",
         lname: userData.lname || "",
         email: userData.email || "",
+        designation: userData.designation || "",
         password: userData.password || "",
         phone_number: userData.phone_number || "",
       });
@@ -323,6 +320,7 @@ function UsersTable() {
         fname: "",
         lname: "",
         email: "",
+        designation:"",
         password: "",
         phone_number: "",
       });
@@ -338,6 +336,7 @@ function UsersTable() {
       fname: "",
       lname: "",
       email: "",
+      designation: "",
       password: "",
       phone_number: "",
     });
@@ -427,19 +426,6 @@ function UsersTable() {
         return (
           <div className="flex ">
             <Button
-              title="delete"
-              onClick={() => onClickOpen(info.row.original.id)}
-              size={"sm"}
-              variant={"ghost"}
-            >
-              <img
-                src={"/table/delete.svg"}
-                alt="view"
-                height={16}
-                width={16}
-              />
-            </Button>
-            <Button
               title="reset password"
               onClick={() => handlePasswordUpdateOpen(info.row.original.id)}
               size={"sm"}
@@ -459,6 +445,19 @@ function UsersTable() {
               variant={"ghost"}
             >
               <img src={"/table/edit.svg"} alt="view" height={16} width={16} />
+            </Button>
+            <Button
+              title="delete"
+              onClick={() => onClickOpen(info.row.original.id)}
+              size={"sm"}
+              variant={"ghost"}
+            >
+              <img
+                src={"/table/delete.svg"}
+                alt="view"
+                height={16}
+                width={16}
+              />
             </Button>
           </div>
         );

@@ -19,10 +19,9 @@ import {
 } from "@/components/ui/popover";
 import { getDropDownForProjectsTasksAPI } from "@/lib/services/tasks";
 
-
 interface StatusFilterProps {
   selectedProject: any;
-  setSelectedProject: React.Dispatch<React.SetStateAction<any>>;
+  setSelectedProject: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
@@ -31,9 +30,9 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
 }) => {
   const [open, setOpen] = React.useState(false);
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["projects",],
+    queryKey: ["projects"],
     queryFn: async () => {
-      const response = await getDropDownForProjectsTasksAPI();      
+      const response = await getDropDownForProjectsTasksAPI();
       return response.data?.data;
     },
   });
@@ -52,7 +51,7 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
           aria-expanded={open}
           className="w-[230px] justify-between"
         >
-          {selectedProject?.id
+         {selectedProject?.id
             ? data?.find((item:any) => item.id === selectedProject?.id)?.title
             : "Select Projects"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -77,7 +76,7 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
               <CommandEmpty>No projects found.</CommandEmpty>
             ) : (
               <CommandGroup>
-                {data.map((project:any) => (
+                {data?.map((project: any) => (
                   <CommandItem
                     key={project.id}
                     onSelect={() => handleSelect(project)}
@@ -101,3 +100,15 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
     </Popover>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+

@@ -77,7 +77,7 @@ const AddSheetRover = ({
               className="text-md text-slate-600 font-semibold"
               htmlFor="firstname"
             >
-              First Name
+              First Name <span className="text-red-500">*</span>
             </Label>
             <Input
               className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
@@ -96,7 +96,7 @@ const AddSheetRover = ({
               className="text-md text-slate-600 font-semibold"
               htmlFor="lastname"
             >
-              Last Name
+              Last Name <span className="text-red-500">*</span>
             </Label>
             <Input
               className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
@@ -119,13 +119,15 @@ const AddSheetRover = ({
             </Label>
             <Input
               type="tel"
-              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
+              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
               id="phone_number"
               placeholder="Enter Phone Number"
               value={userData.phone_number}
               name="phone_number"
               onChange={(e) => {
-                const numericValue = e.target.value.replace(/\D/g, "");
+                const numericValue = e.target.value
+                  .replace(/\D/g, "")
+                  .slice(0, 10);
                 handleInputChange({
                   target: { name: "phone_number", value: numericValue },
                 });
@@ -140,7 +142,7 @@ const AddSheetRover = ({
               className="text-md text-slate-600 font-semibold"
               htmlFor="email"
             >
-              Email
+              Email <span className="text-red-500">*</span>
             </Label>
             <Input
               className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
@@ -160,7 +162,7 @@ const AddSheetRover = ({
                 className="text-md text-slate-600 font-semibold"
                 htmlFor="password"
               >
-                Password
+                Password<span className="text-red-500">*</span>
               </Label>
               <Input
                 className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
@@ -175,6 +177,25 @@ const AddSheetRover = ({
               )}
             </div>
           )}
+          <div className="flex flex-col space-y-1">
+            <Label
+              className="text-md text-slate-600 font-semibold"
+              htmlFor="designation"
+            >
+              Designation <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
+              id="designation"
+              placeholder="Enter Designation"
+              name="designation"
+              value={userData.designation}
+              onChange={handleInputChange}
+            />
+            {errors?.designation && (
+              <p style={{ color: "red" }}>{errors?.designation[0]}</p>
+            )}
+          </div>
           <div>
             <label
               htmlFor="panNumber"
@@ -259,7 +280,7 @@ const AddSheetRover = ({
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
               ) : isEditing ? (
                 "Update"
-              ) : ( 
+              ) : (
                 "Add"
               )}
             </Button>
