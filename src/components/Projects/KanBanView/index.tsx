@@ -1,8 +1,13 @@
 // src/components/KanbanBoard.tsx
+import LoadingComponent from "@/components/core/LoadingComponent";
 import { Button } from "@/components/ui/button";
-import { getTasksBasedOnProjectAPI } from "@/lib/services/projects";
+import {
+  getTasksBasedOnProjectAPI,
+  updateProjectTaskStatusAPI,
+} from "@/lib/services/projects";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams, useRouter } from "@tanstack/react-router";
+import { set } from "date-fns";
 import React, { useState } from "react";
 import {
   DragDropContext,
@@ -39,6 +44,8 @@ const KanbanBoard: React.FC = () => {
     OVER_DUE: [],
     COMPLETED: [],
   });
+  const [loading, setLoading] = useState(false);
+  const [callProjectTasks, setCallProjectTasks] = useState(0);
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -72,6 +79,7 @@ const KanbanBoard: React.FC = () => {
         [sourceColumn]: sourceTasks,
         [destColumn]: destTasks,
       }));
+      updateTaskStatus(destColumn, movedTask);
     }
   };
 
@@ -135,7 +143,7 @@ const KanbanBoard: React.FC = () => {
   );
 
   const { isFetching, isLoading } = useQuery({
-    queryKey: ["getSingleProjectTasks", projectId],
+    queryKey: ["getSingleProjectTasks", projectId, callProjectTasks],
     queryFn: async () => {
       try {
         const response = await getTasksBasedOnProjectAPI(projectId);
@@ -164,15 +172,37 @@ const KanbanBoard: React.FC = () => {
     enabled: Boolean(projectId),
   });
 
+  const updateTaskStatus = async (status: string, task: Task) => {
+    setLoading(true);
+    try {
+      const body = {
+        status: status,
+      };
+      const response = await updateProjectTaskStatusAPI(task.task_id, body);
+      if (response?.status === 200 || response?.status === 201) {
+        toast.success(response?.data?.message);
+        setCallProjectTasks((prev) => prev + 1);
+      } else {
+        toast.error("Failed to change status");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Something went wrong");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="flex space-x-4">
+      <div className="flex space-x-4 relative">
         {["TODO", "IN_PROGRESS", "OVER_DUE", "COMPLETED"].map((column) => (
           <div key={column} className="flex-1">
             {renderColumn(column)}
           </div>
         ))}
       </div>
+      <LoadingComponent loading={isFetching || isLoading || loading} />
     </DragDropContext>
   );
 };
