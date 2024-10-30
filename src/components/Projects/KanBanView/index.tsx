@@ -86,8 +86,8 @@ const KanbanBoard: React.FC = () => {
           <h2 className="text-lg font-bold">{columnName}</h2>
           {tasks[columnName].map((task, index) => (
             <Draggable
-              key={task.id}
-              draggableId={String(task.id)}
+              key={task.task_id}
+              draggableId={String(task.task_id)}
               index={index}
             >
               {(provided) => (
@@ -96,6 +96,11 @@ const KanbanBoard: React.FC = () => {
                   {...provided.draggableProps}
                   {...provided.dragHandleProps}
                   className="bg-white border p-2 my-2 rounded shadow w-[250px]"
+                  onClick={() => {
+                    router.navigate({
+                      to: `/tasks/view/${task.task_id}`,
+                    });
+                  }}
                 >
                   <p
                     className="text-ellipsis overflow-hidden"
