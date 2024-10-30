@@ -15,6 +15,7 @@ import ProjectMembersManagment from "./ProjectMembersManagment";
 import LoadingComponent from "@/components/core/LoadingComponent";
 import { Button } from "@/components/ui/button";
 import { CameraIcon, X, ZoomIn } from "lucide-react";
+import KanbanBoard from "../KanBanView";
 
 const ProjectView = ({
   setRefreshCount,
@@ -234,6 +235,7 @@ const ProjectView = ({
           <ProjectMembersManagment />
         </div>
       )}
+      <KanbanBoard />
     </div>
   );
 };
