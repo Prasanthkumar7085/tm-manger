@@ -43,6 +43,7 @@ const AddTask = () => {
   });
   const [projectsList, setProjectsList] = useState<any>([]);
   const [users, setUsers] = useState<any[]>([]);
+  console.log(users, "users");
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
 
   const [state, setState] = useState({
@@ -409,7 +410,9 @@ const AddTask = () => {
                                   opacity: selectedUsers.has(user.id) ? 1 : 0.5,
                                 }}
                               />
-                              {user.name}
+                              <p className="capitalize">
+                                {user.fname} {user.lname}
+                              </p>
                             </CommandItem>
                           ))}
                         </CommandGroup>

@@ -20,6 +20,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
+import UploadAttachments from "./Attachments";
 
 const TaskView = () => {
   const navigate = useNavigate();
@@ -324,6 +325,7 @@ const TaskView = () => {
           <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
             Send
           </button>
+          <UploadAttachments />
         </div>
       </div>
     </div>

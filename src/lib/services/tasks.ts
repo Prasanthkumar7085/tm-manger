@@ -6,7 +6,7 @@ interface GetAllPaginatedUsersPropTypes {
   search_string: any;
   from_date: string;
   to_date: string;
-  status:string;
+  status: string;
   priority: string;
 }
 
@@ -90,6 +90,20 @@ export const getDropDownForProjectsTasksAPI = async () => {
 export const deleteTaskAPI = async (id: string) => {
   try {
     return await $fetch.delete(`/tasks/${id}`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const getAttachmentsAPI = async (taskId: any) => {
+  try {
+    return await $fetch.get(`/tasks/${taskId}/attachments`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const deleteAttachmentsAPI = async (id: string) => {
+  try {
+    return await $fetch.delete(`/tasks/attachments/${id}`);
   } catch (err: any) {
     throw err;
   }
