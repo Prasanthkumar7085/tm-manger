@@ -85,3 +85,10 @@ export const deleteProjectAPI = async (id: number) => {
     throw err;
   }
 };
+export const addAdminUserAPI = async (payload: any) => {
+  try {
+    return await $fetch.post(`/onboard/admin-user`, payload);
+  } catch (err) {
+    throw err;
+  }
+};

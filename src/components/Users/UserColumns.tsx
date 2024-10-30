@@ -64,7 +64,23 @@ export const userColumns = [
     header: () => <span>Email</span>,
     footer: (props: any) => props.column.id,
   },
-
+  {
+    accessorFn: (row: any) => row.designation,
+    id: "designation",
+    cell: (info: any) => {
+      let title = info.getValue();
+      return (
+        <div style={{ padding: "16px", textAlign: "left" }}>
+          <span className="capitalize">{title ? title : "-"}</span>
+        </div>
+      );
+    },
+    width: "150px",
+    maxWidth: "150px",
+    minWidth: "150px",
+    header: () => <span>Designation</span>,
+    footer: (props: any) => props.column.id,
+  },
   {
     accessorFn: (row: any) => row.phone_number,
     id: "phone_number",
