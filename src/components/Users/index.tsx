@@ -212,7 +212,7 @@ function UsersTable() {
         fname: userData?.fname,
         lname: userData?.lname,
         email: userData?.email,
-        password: userData?.password,
+        password: userData?.password, 
         phone_number: userData?.phone_number,
         user_type: userType,
       };

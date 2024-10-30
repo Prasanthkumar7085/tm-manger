@@ -1,5 +1,4 @@
 import LoadingComponent from "@/components/core/LoadingComponent";
-import UploadFiles from "@/components/core/UploadDocuments";
 import { Button } from "@/components/ui/button";
 import {
   Command,
