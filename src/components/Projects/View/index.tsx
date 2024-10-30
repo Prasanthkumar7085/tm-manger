@@ -14,14 +14,12 @@ import ProjectTasksCounts from "./ProjectTasksCounts";
 import ProjectMembersManagment from "./ProjectMembersManagment";
 import LoadingComponent from "@/components/core/LoadingComponent";
 import { Button } from "@/components/ui/button";
-import { X, ZoomIn } from "lucide-react";
+import { CameraIcon, X, ZoomIn } from "lucide-react";
 
 const ProjectView = ({
-  getAllProjects,
   setRefreshCount,
   refreshCount,
 }: {
-  getAllProjects: (options: { pageIndex: number; pageSize: number }) => void;
   setRefreshCount: (count: any) => void;
   refreshCount: number;
 }) => {
@@ -45,6 +43,7 @@ const ProjectView = ({
         const response = await viewProjectAPI(projectId);
         if (response.success) {
           setProjectDetails(response.data?.data);
+          setPreviewUrl(response.data?.data?.logo);
         } else {
           throw new Error("Failed to fetch project details");
         }
@@ -117,10 +116,6 @@ const ProjectView = ({
           if (setRefreshCount) {
             setRefreshCount((prev: any) => prev + 1);
           }
-          if (getAllProjects) {
-            getAllProjects({ pageIndex: 1, pageSize: 10 });
-          }
-          window.history.back();
           return response;
         } else {
           throw new Error("Failed to upload logo");
@@ -150,68 +145,50 @@ const ProjectView = ({
 
   return (
     <div className="flex flex-col justify-between h-full w-full overflow-auto">
-      {/* <div className="mt-4">
-        {previewUrl ? (
-          <div className="flex items-center">
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className="w-32 h-32 object-cover rounded-full border-2 border-gray-300"
-            />
-            <button
-              onClick={handleRemoveFile}
-              className="bg-none border-none cursor-pointer ml-2"
-            >
-              <X className="text-red-500 w-4 h-4" />
-            </button>
-          </div>
-        ) : (
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="border border-gray-300 p-2 rounded"
-          />
-        )}
-        {uploadingStatus.startUploading && <p>Uploading...</p>}
-      </div> */}
-      <div className="mt-4">
-        {previewUrl ? (
-          <div className="flex items-center">
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className="w-32 h-32 object-cover rounded-full border-2 border-gray-300"
-            />
-            <button
-              onClick={handleRemoveFile}
-              className="bg-red-500 p-2 rounded-full ml-2 cursor-pointer"
-            >
-              <X className="text-white w-4 h-4" />
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <label
-              htmlFor="file-upload"
-              className="flex items-center gap-1 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-full"
-            >
-              <ZoomIn className="w-4 h-4" />
-              <span>Select File</span>
-            </label>
-            <input
-              id="file-upload"
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-          </div>
-        )}
-        {uploadingStatus.startUploading && <p>Uploading...</p>}
+      <div className="w-full flex  items-center ">
+        <div className="mt-4 flex flex-col w-[10%] ">
+          {previewUrl ? (
+            <div className="relative ">
+              <img
+                src={previewUrl}
+                alt="Profile Preview"
+                className="w-20 h-20 object-cover rounded-full border"
+              />
+              <button
+                onClick={handleRemoveFile}
+                className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border"
+              >
+                <X className="text-white w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <div className="relative border">
+              <img
+                src="path/to/default-image.png"
+                alt="Default Profile"
+                className="w-20 h-20 object-cover rounded-full border"
+              />
+              <label
+                htmlFor="file-upload"
+                className="absolute bottom-1 left-1/2 transform -translate-x-1/2 cursor-pointer"
+              >
+                <CameraIcon className="w-8 h-8 text-blue-500" />{" "}
+              </label>
+              <input
+                id="file-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </div>
+          )}
+          {uploadingStatus.startUploading && <p>Uploading...</p>}
+        </div>
+        <div className="w-[90%]">
+          <ProjectTasksCounts />
+        </div>
       </div>
-
-      <ProjectTasksCounts />
       <div className="flex items-center mt-4 space-x-2 w-full justify-between relative">
         <div>
           <h2 className="text-xl font-semibold capitalize flex-1">
@@ -239,7 +216,7 @@ const ProjectView = ({
             <p className="text-sm text-gray-500">{"Member"}</p>
           </div>
         </div>
-        <LoadingComponent loading={isLoading || isFetching} />
+        {/* <LoadingComponent loading={isLoading || isFetching} /> */}
       </div>
 
       {openMembers && (

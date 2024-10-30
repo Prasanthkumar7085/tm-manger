@@ -228,13 +228,13 @@ const Projects = () => {
           captureRowPerItems={captureRowPerItems}
         />
       </div>
-      <div>
+      {/* <div>
         <ProjectView
           getAllProjects={getAllProjects}
           setRefreshCount={setRefreshCount}
           refreshCount={refreshCount}
         />
-      </div>
+      </div> */}
 
       <LoadingComponent loading={isLoading || isFetching} />
     </section>
