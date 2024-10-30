@@ -6,7 +6,7 @@ interface GetAllPaginatedUsersPropTypes {
   search_string: any;
   from_date: string;
   to_date: string;
-  status:string;
+  status: string;
   priority: string;
 }
 
@@ -39,6 +39,14 @@ export const getAllPaginatedTasks = async ({
 export const getSingleTaskAPI = async (taskId: any) => {
   try {
     return await $fetch.get(`/tasks/${taskId}`);
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getTasksBasedTagsAPI = async (taskId: any) => {
+  try {
+    return await $fetch.get(`/tasks/${taskId}/tags`);
   } catch (err) {
     throw err;
   }
