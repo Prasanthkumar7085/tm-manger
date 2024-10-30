@@ -148,25 +148,35 @@ const ProjectView = ({
       <div className="w-full flex  items-center ">
         <div className="mt-4 flex flex-col w-[10%] ">
           {previewUrl ? (
-            <div className="relative ">
+            <div className="relative w-20 h-20 rounded-full border-2 shadow-md">
               <img
                 src={previewUrl}
                 alt="Profile Preview"
-                className="w-20 h-20 object-cover rounded-full border"
+                className="w-20 h-20 object-cover rounded-full border  bg-black"
+                onError={(e: any) => {
+                  e.target.onerror = null;
+                  e.target.src =
+                    "https://via.placeholder.com/150?text=No preview";
+                }}
               />
               <button
                 onClick={handleRemoveFile}
                 className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border"
               >
-                <X className="text-white w-4 h-4" />
+                <X className="text-white w-2 h-2" />
               </button>
             </div>
           ) : (
-            <div className="relative border">
+            <div className="relative w-20 h-20 rounded-full border-2 shadow-md">
               <img
-                src="path/to/default-image.png"
-                alt="Default Profile"
-                className="w-20 h-20 object-cover rounded-full border"
+                src="https://via.placeholder.com/150?text=No+Image"
+                alt="company logo"
+                className="w-20 h-20 object-cover rounded-full border  bg-black"
+                onError={(e: any) => {
+                  e.target.onerror = null;
+                  e.target.src =
+                    "https://via.placeholder.com/150?text=No preview";
+                }}
               />
               <label
                 htmlFor="file-upload"

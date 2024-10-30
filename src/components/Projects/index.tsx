@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import ProjectCard from "./Card";
-import { Button } from "../ui/button";
-import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
 import { addSerial } from "@/lib/helpers/addSerial";
-import { getAllPaginatedProjectss } from "@/lib/services/projects";
-import SearchFilter from "../core/CommonComponents/SearchFilter";
-import { StatusFilter } from "../core/StatusFilter";
-import Pagination from "../core/Pagination";
-import DateRangeFilter from "../core/DateRangePicker";
-import LoadingComponent from "../core/LoadingComponent";
-import SortDropDown from "../core/CommonComponents/SortDropDown";
-import useUsersHook from "./useUsersHook";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
-import ProjectView from "./View";
+import { getAllPaginatedProjectss } from "@/lib/services/projects";
+import { useQuery } from "@tanstack/react-query";
+import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import SearchFilter from "../core/CommonComponents/SearchFilter";
+import SortDropDown from "../core/CommonComponents/SortDropDown";
+import LoadingComponent from "../core/LoadingComponent";
+import Pagination from "../core/Pagination";
+import { StatusFilter } from "../core/StatusFilter";
+import { Button } from "../ui/button";
+import ProjectCard from "./Card";
+import useUsersHook from "./useUsersHook";
 
 const Projects = () => {
   const navigate = useNavigate();
@@ -228,13 +226,6 @@ const Projects = () => {
           captureRowPerItems={captureRowPerItems}
         />
       </div>
-      {/* <div>
-        <ProjectView
-          getAllProjects={getAllProjects}
-          setRefreshCount={setRefreshCount}
-          refreshCount={refreshCount}
-        />
-      </div> */}
 
       <LoadingComponent loading={isLoading || isFetching} />
     </section>

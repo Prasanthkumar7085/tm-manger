@@ -53,14 +53,6 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
     }
   };
 
-  const getStatusLabel = (isActive: boolean) => {
-    return isActive
-      ? statusConstants.find((status) => status.value === "true")?.label
-      : statusConstants.find((status) => status.value === "false")?.label;
-  };
-
-  const statusColor = project.active ? "text-green-500" : "text-red-500";
-
   const title = project.description;
   const shouldShowDescriptionTooltip = title && title.length > 30;
   const truncatedDescription = shouldShowDescriptionTooltip
@@ -91,10 +83,15 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
       <div className="top_header mb-3 flex justify-between">
         <div className="company-icon">
           <img
-            // " user/favicon.png"
-            src={project?.logo}
+            src={
+              project?.logo || "https://via.placeholder.com/150?text=No+Image"
+            }
             alt="company logo"
             className="object-contain w-6 h-6"
+            onError={(e: any) => {
+              e.target.onerror = null;
+              e.target.src = "https://via.placeholder.com/150?text=No preview";
+            }}
           />
         </div>
         <div className="status">

@@ -477,6 +477,7 @@ function UsersTable() {
           <TanStackTable
             data={usersData}
             columns={[...userColumns, ...userActions]}
+            loading={isLoading || isFetching || loading}
             paginationDetails={data?.data?.data?.pagination_info}
             getData={getAllUsers}
             removeSortingForColumnIds={["serial", "actions"]}
