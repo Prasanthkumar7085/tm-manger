@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/tooltip";
 import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
 import UploadAttachments from "./Attachments";
+import AssignedUsers from "../AssigneTasks";
 
 const TaskView = () => {
   const navigate = useNavigate();
@@ -200,6 +201,7 @@ const TaskView = () => {
         <div>
           <h2 className="font-semibold">Assigned To</h2>
           <div className="mt-2">
+            <AssignedUsers />
             {/* <table className="w-full text-left"> */}
             {/* <thead>
                 <tr className="border-b">
