@@ -26,9 +26,9 @@ function TopBar() {
   const navigate = useNavigate({ from: "/" });
 
   return (
-    <div className="p-3 flex justify-between items-center bg-white border-b-2">
+    <div className="py-3 px-5 flex justify-between items-center bg-white border-b">
       <span className="ml-2 text-lg font-semibold">{title}</span>
-      <div className="flex items-center gap-2 bg-white">
+      <div className="flex items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex gap-2 items-center hover:cursor-pointer">
             <Avatar>

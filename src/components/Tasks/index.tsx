@@ -96,9 +96,9 @@ const Tasks = () => {
         location.pathname == "/dashboard"
           ? ""
           : router.navigate({
-              to: "/tasks",
-              search: queryParams,
-            });
+            to: "/tasks",
+            search: queryParams,
+          });
       }
 
       return response;
@@ -164,7 +164,7 @@ const Tasks = () => {
   return (
     <section id="tasks" className="relative">
       <div>{!isDashboard && <TotalCounts />}</div>
-      <div className="card-container shadow-md border p-5 rounded-lg mt-3">
+      <div className="card-container shadow-md border p-5 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
           <div className="flex justify-between items-center">
             <div className="filters">
