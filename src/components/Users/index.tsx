@@ -108,10 +108,10 @@ function UsersTable() {
         fname: userData?.fname,
         lname: userData?.lname,
         email: userData?.email,
-        designation: userData?.designation,
+        designation: userData?.designation || null,
         password: userData?.password,
         user_type: userType,
-        phone_number: userData?.phone_number,
+        phone_number: userData?.phone_number || null,
       };
       const response = await addUsersAPI(payload);
       if (response?.status === 200 || response?.status === 201) {
@@ -320,7 +320,7 @@ function UsersTable() {
         fname: "",
         lname: "",
         email: "",
-        designation:"",
+        designation: "",
         password: "",
         phone_number: "",
       });

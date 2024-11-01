@@ -1,5 +1,6 @@
 // src/components/KanbanBoard.tsx
 import LoadingComponent from "@/components/core/LoadingComponent";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   getTasksBasedOnProjectAPI,
@@ -7,7 +8,6 @@ import {
 } from "@/lib/services/projects";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams, useRouter } from "@tanstack/react-router";
-import { set } from "date-fns";
 import React, { useState } from "react";
 import {
   DragDropContext,
@@ -103,7 +103,7 @@ const KanbanBoard: React.FC = () => {
                   ref={provided.innerRef}
                   {...provided.draggableProps}
                   {...provided.dragHandleProps}
-                  className="bg-white border p-2 my-2 rounded shadow w-[250px]"
+                  className="bg-[#eef5ff] border p-4 my-2 rounded-lg shadow-md  cursor-pointer hover:shadow-lg transition-shadow"
                   onClick={() => {
                     router.navigate({
                       to: `/tasks/view/${task.task_id}`,
@@ -122,6 +122,34 @@ const KanbanBoard: React.FC = () => {
                   >
                     {task.task_description || "--"}
                   </p>
+                  <div className="flex justify-start mt-3 -space-x-3">
+                    {task?.assignees?.slice(0, 5).map((assignee) => (
+                      <Avatar
+                        key={assignee.user_id}
+                        className="w-8 h-8 border-2 border-white"
+                      >
+                        <AvatarImage
+                          src={assignee.user_profile_pic}
+                          alt={assignee.name}
+                          title={
+                            assignee.user_first_name +
+                            " " +
+                            assignee.user_last_name
+                          }
+                        />
+                        <AvatarFallback>
+                          {assignee.user_first_name[0] +
+                            assignee.user_last_name[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                    ))}
+
+                    {task?.assignees?.length > 5 && (
+                      <div className="flex items-center justify-center w-8 h-8 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold">
+                        +{task.assignees.length - 5}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </Draggable>
@@ -202,7 +230,7 @@ const KanbanBoard: React.FC = () => {
           </div>
         ))}
       </div>
-      <LoadingComponent loading={isFetching || isLoading || loading} />
+      {/* <LoadingComponent loading={isFetching || isLoading || loading} /> */}
     </DragDropContext>
   );
 };

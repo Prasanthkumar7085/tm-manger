@@ -96,7 +96,6 @@ const TaskView = () => {
   const handleTagSubmit = () => {
     // Ensure input is not empty
     const trimmedTag = tagsInput.trim();
-    console.log(trimmedTag, "trimmed");
     if (!trimmedTag) {
       setErrorMessages((prev: any) => ({
         ...prev,
@@ -173,7 +172,7 @@ const TaskView = () => {
             >
               Edit Task
             </Button>
-          </div>{" "}
+          </div>
         </div>
 
         {/* Assigned To Section */}

@@ -182,7 +182,7 @@ const AddSheetRover = ({
               className="text-md text-slate-600 font-semibold"
               htmlFor="designation"
             >
-              Designation <span className="text-red-500">*</span>
+              Designation
             </Label>
             <Input
               className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
