@@ -167,9 +167,6 @@ const Tasks = () => {
       <div className="card-container shadow-md border p-5 rounded-lg mt-3">
         <div className="tasks-navbar">
           <div className="flex justify-between items-center">
-            <div className="heading">
-              <h2 className="text-lg">Tasks List</h2>
-            </div>
             <div className="filters">
               <ul className="flex justify-end space-x-4">
                 <li>

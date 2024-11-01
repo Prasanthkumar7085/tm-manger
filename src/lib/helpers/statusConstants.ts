@@ -9,37 +9,37 @@ export const statusConstants = [
   },
 ];
 
-export const taskStatusConstants = [
+export const taskStatusConstants: any = [
   {
     value: "TODO",
-    label: "TODO",
+    label: "Todo",
   },
   {
     value: "IN_PROGRESS",
-    label: "IN_PROGRESS",
+    label: "In Progress",
   },
   {
     value: "COMPLETED",
-    label: "COMPLETED",
+    label: "Completed",
   },
   {
     value: "OVER_DUE",
-    label: "OVER_DUE",
+    label: "Over Due",
   },
 ];
 
 export const taskPriorityConstants = [
   {
     value: "HIGH",
-    label: "HIGH",
+    label: "High",
   },
   {
     value: "LOW",
-    label: "LOW",
+    label: "Low",
   },
   {
     value: "MEDIUM",
-    label: "MEDIUM",
+    label: "Medium",
   },
 ];
 export const roleConstants = [

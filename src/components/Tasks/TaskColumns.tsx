@@ -6,6 +6,10 @@ import { useState } from "react";
 import DeleteDialog from "../core/deleteDialog";
 import { toast } from "sonner";
 import { deleteTaskAPI } from "@/lib/services/tasks";
+import {
+  taskPriorityConstants,
+  taskStatusConstants,
+} from "@/lib/helpers/statusConstants";
 
 export const taskColumns = ({ setDel }: any) => {
   const navigate = useNavigate();
@@ -101,7 +105,15 @@ export const taskColumns = ({ setDel }: any) => {
       id: "status",
       cell: (info: any) => {
         let title = info.getValue();
-        return <span className="capitalize">{title ? title : "-"}</span>;
+        return (
+          <span className="capitalize">
+            {title
+              ? taskStatusConstants.find(
+                  (item: any) => item.value === info.getValue()
+                )?.label
+              : "-"}
+          </span>
+        );
       },
       width: "150px",
       maxWidth: "150px",
@@ -113,7 +125,11 @@ export const taskColumns = ({ setDel }: any) => {
       accessorFn: (row: any) => row.priority,
       id: "priority",
       cell: (info: any) => (
-        <span className="capitalize">{info.getValue() || "-"}</span>
+        <span className="capitalize">
+          {taskPriorityConstants.find(
+            (item: any) => item.value === info.getValue()
+          )?.label || "-"}
+        </span>
       ),
       width: "100px",
       maxWidth: "100px",
