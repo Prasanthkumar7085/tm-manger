@@ -7,7 +7,7 @@ import { getAllMembers } from "@/lib/services/projects/members";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -22,6 +22,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { roleConstants } from "@/lib/helpers/statusConstants";
+import { c } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 
 const AssignedUsers = () => {
   const { taskId } = useParams({ strict: false });
@@ -34,9 +35,11 @@ const AssignedUsers = () => {
   const [errorMessages, setErrorMessages] = useState({});
   const [updating, setUpdating] = useState<any>(0);
   const [selectedMembers, setSelectedMembers] = useState<
-    { user_id: number; role: string }[]
+    { user_id: number; user_type: string; role: string }[]
   >([]);
+  const [updatedOrNot, setUpdatedOrNot] = useState<boolean>(false);
 
+  console.log(selectedMembers, "selectedMembers");
   const getFullName = (user: any) =>
     `${user?.fname || ""} ${user?.mname || ""} ${user?.lname || ""}`.trim();
 
@@ -46,13 +49,8 @@ const AssignedUsers = () => {
       try {
         const response = await getAssignesAPI(taskId);
         if (response.status === 200 || response?.status === 201) {
-          const assignes = response?.data?.data;
-          const assignesWithLabels = assignes.map((user: any) => ({
-            ...user,
-            label: getFullName(user),
-            value: user.task_assignee_id.toString(),
-          }));
-          setAssignData(assignesWithLabels);
+          const data = response.data?.data;
+          setSelectedMembers(data);
         } else {
           throw new Error("Failed to fetch assignee details");
         }
@@ -95,15 +93,14 @@ const AssignedUsers = () => {
     queryFn: async () => {
       const response = await getAllMembers();
       if (response?.data?.data && Array.isArray(response.data.data)) {
-        const activeUsers = response.data.data.filter(
+        let ActiveUsers = response.data.data.filter(
           (user: any) => user?.active === true
         );
-        const userOptions = activeUsers.map((user: any) => ({
+        let addTitles = response?.data?.data?.map((user: any) => ({
           ...user,
-          label: getFullName(user),
-          value: user.user_id.toString(),
+          title: getFullName(user),
         }));
-        setUsers(userOptions);
+        setUsers(ActiveUsers);
       } else {
         setUsers([]);
       }
@@ -125,40 +122,43 @@ const AssignedUsers = () => {
     );
   };
 
+  const toggleValue = (currentValue: string) => {
+    setTempSelectedMember((prev) =>
+      prev.includes(currentValue)
+        ? prev.filter((value) => value !== currentValue)
+        : [...prev, currentValue]
+    );
+  };
   const confirmSelection = () => {
     const newMembers = tempSelectedMember
-      .map((memberValue: string) => {
-        const member = assignData.find(
-          (user: any) => user.task_assignee_id.toString() === memberValue
+      ?.map((memberValue: string) => {
+        const member = users.find(
+          (user: any) => user.id.toString() === memberValue
         );
         return (
           member &&
-          !selectedMembers.some(
-            (m) => m.user_id === member.task_assignee_id
-          ) && {
-            user_id: member.task_assignee_id,
-            role: "USER",
+          !selectedMembers.some((m: any) => m.id === member.id) && {
+            id: member.id,
+            fname: member?.fname || "",
+            lname: member?.lname || "",
+            email: member?.email || "--",
+            phone_number: member?.phone_number || "--",
+            user_type: member?.user_type || "--",
           }
         );
       })
       .filter(Boolean);
-
-    const payload = {
-      user_ids: [...selectedMembers, ...newMembers].map((member) => ({
-        user_id: member.user_id,
-        role: member.role,
-      })),
-    };
-
-    if (Array.isArray(payload.user_ids) && payload.user_ids.length > 0) {
-      mutate(payload);
-    } else {
-      toast.error("No members selected to assign.");
-    }
-
-    setSelectedMembers((prev) => [...prev, ...newMembers]);
+    setSelectedMembers((prev: any) => [...prev, ...newMembers]);
     setTempSelectedMember([]);
     setOpen(false);
+    let allMembers = [...newMembers];
+    let payload = allMembers.map((member: any) => {
+      return { user_id: member.id };
+    });
+    setUpdatedOrNot(false);
+    mutate({
+      user_ids: payload,
+    });
   };
 
   return (
@@ -168,44 +168,40 @@ const AssignedUsers = () => {
           <PopoverTrigger asChild>
             <Button
               variant="outline"
-              role="combobox"
-              aria-expanded={open}
-              className="w-[200px] justify-between"
+              className="w-[200px]"
+              onClick={() => setTempSelectedMember([])}
             >
-              Select Assignees
-              <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              Select Members
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0">
+          <PopoverContent className="w-[200px] p-0 bg-white border z-[99999]">
             <Command>
-              <CommandInput placeholder="Search members..." className="h-9" />
-              <CommandList>
-                <CommandEmpty>No members found.</CommandEmpty>
+              <CommandInput placeholder="Search Members" />
+              <CommandList className="max-h-[200px] z-[99999]">
                 <CommandGroup>
-                  {assignData.map((item: any) => (
-                    <CommandItem
-                      key={item.task_assignee_id}
-                      value={item.value}
-                      onSelect={() => {
-                        setTempSelectedMember((prev) =>
-                          prev.includes(item.value)
-                            ? prev.filter((val) => val !== item.value)
-                            : [...prev, item.value]
-                        );
-                      }}
-                    >
-                      {item.label}
-                      <CheckIcon
-                        className={cn(
-                          "ml-auto h-4 w-4",
-                          tempSelectedMember.includes(item.value)
-                            ? "opacity-100"
-                            : "opacity-0"
+                  {Array.isArray(users) &&
+                    users.map((user: any) => (
+                      <CommandItem
+                        key={user.id}
+                        value={getFullName(user)}
+                        onSelect={() => toggleValue(user.id.toString())}
+                        disabled={selectedMembers.some(
+                          (m: any) => m.user_id == user.id
                         )}
-                      />
-                    </CommandItem>
-                  ))}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            tempSelectedMember.includes(user.id.toString())
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                        <p className="capitalize">{getFullName(user)}</p>
+                      </CommandItem>
+                    ))}
                 </CommandGroup>
+                <CommandEmpty>No members found.</CommandEmpty>
               </CommandList>
               <div className="flex justify-end space-x-2 p-2 border-t">
                 <Button
@@ -227,38 +223,15 @@ const AssignedUsers = () => {
             <thead>
               <tr>
                 <th className="border p-2">Members</th>
-                <th className="border p-2">Role</th>
+                <th className="border p-2">User Type</th>
                 <th className="border p-2">Action</th>
               </tr>
             </thead>
             <tbody>
               {selectedMembers.map((member) => (
                 <tr key={member.user_id}>
-                  <td className="border p-2">
-                    {getFullName(
-                      assignData.find(
-                        (user: any) => user.task_assignee_id === member.user_id
-                      )
-                    )}
-                  </td>
-                  <td className="border p-2">
-                    <select
-                      value={member.role}
-                      onChange={(e) =>
-                        changeRole(member.user_id, e.target.value)
-                      }
-                      className="border p-1 rounded"
-                    >
-                      {roleConstants.map((memberConstant) => (
-                        <option
-                          key={memberConstant.value}
-                          value={memberConstant.value}
-                        >
-                          {memberConstant.label}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
+                  <td className="border p-2">{getFullName(member)}</td>
+                  <td className="border p-2">{member.user_type}</td>
                   <td className="border p-2">
                     <button
                       type="button"
