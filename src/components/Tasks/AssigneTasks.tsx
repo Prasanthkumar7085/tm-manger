@@ -22,6 +22,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { roleConstants } from "@/lib/helpers/statusConstants";
+import DeleteAssignes from "./view/DeleteAssigneeTask";
 
 const AssignedUsers = () => {
   const { taskId } = useParams({ strict: false });
@@ -46,7 +47,7 @@ const AssignedUsers = () => {
       try {
         const response = await getAssignesAPI(taskId);
         if (response.status === 200 || response?.status === 201) {
-          const assignes = response?.data?.data;
+          const assignes = response?.data?.data || [];
           const assignesWithLabels = assignes.map((user: any) => ({
             ...user,
             label: getFullName(user),
@@ -232,49 +233,80 @@ const AssignedUsers = () => {
               </tr>
             </thead>
             <tbody>
-              {selectedMembers.map((member) => (
-                <tr key={member.user_id}>
-                  <td className="border p-2">
-                    {getFullName(
-                      assignData.find(
-                        (user: any) => user.task_assignee_id === member.user_id
-                      )
-                    )}
-                  </td>
-                  <td className="border p-2">
-                    <select
-                      value={member.role}
-                      onChange={(e) =>
-                        changeRole(member.user_id, e.target.value)
-                      }
-                      className="border p-1 rounded"
-                    >
-                      {roleConstants.map((memberConstant) => (
-                        <option
-                          key={memberConstant.value}
-                          value={memberConstant.value}
+              {selectedMembers.map((member) => {
+                const userData = assignData.find(
+                  (user: any) => user.task_assignee_id === member.user_id
+                );
+
+                if (!userData) {
+                  console.warn(
+                    `User with ID ${member.user_id} not found in assignData.`
+                  );
+                  return (
+                    <tr key={member.user_id}>
+                      <td className="border p-2">User not found</td>
+                      <td className="border p-2">N/A</td>
+                      <td className="border p-2">
+                        <button
+                          type="button"
+                          onClick={() => removeMember(member.user_id)}
                         >
-                          {memberConstant.label}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="border p-2">
-                    <button
-                      type="button"
-                      onClick={() => removeMember(member.user_id)}
-                    >
-                      <span title="remove">
-                        <X className="w-4 h-4 text-red-500" />
-                      </span>
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                          <span title="remove">
+                            <X className="w-4 h-4 text-red-500" />
+                          </span>
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                }
+
+                return (
+                  <tr key={member.user_id}>
+                    <td className="border p-2">{getFullName(userData)}</td>
+                    <td className="border p-2">
+                      <select
+                        value={member.role}
+                        onChange={(e) =>
+                          changeRole(member.user_id, e.target.value)
+                        }
+                        className="border p-1 rounded"
+                      >
+                        {roleConstants.map((memberConstant) => (
+                          <option
+                            key={memberConstant.value}
+                            value={memberConstant.value}
+                          >
+                            {memberConstant.label}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="border p-2">
+                      <button
+                        type="button"
+                        onClick={() => removeMember(member.user_id)}
+                      >
+                        <span title="remove">
+                          <X className="w-4 h-4 text-red-500" />
+                        </span>
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
       </div>
+      {selectedMembers.length > 0 &&
+        selectedMembers.map((member) => (
+          <DeleteAssignes
+            key={member.user_id}
+            assigneeId={member.user_id}
+            onSuccess={() => setUpdating((prev: any) => prev + 1)}
+            taskId={taskId}
+          />
+        ))}
     </div>
   );
 };
