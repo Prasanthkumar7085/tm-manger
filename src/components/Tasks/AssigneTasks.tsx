@@ -21,8 +21,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { roleConstants } from "@/lib/helpers/statusConstants";
-import { c } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
+import DeleteAssignes from "./view/DeleteAssigneeTask";
 
 const AssignedUsers = () => {
   const { taskId } = useParams({ strict: false });
@@ -35,13 +34,20 @@ const AssignedUsers = () => {
   const [errorMessages, setErrorMessages] = useState({});
   const [updating, setUpdating] = useState<any>(0);
   const [selectedMembers, setSelectedMembers] = useState<
-    { user_id: number; user_type: string; role: string }[]
+    {
+      user_id: number;
+      user_type: string;
+      role: string;
+      task_assignee_id: any;
+    }[]
   >([]);
   const [updatedOrNot, setUpdatedOrNot] = useState<boolean>(false);
 
-  console.log(selectedMembers, "selectedMembers");
   const getFullName = (user: any) =>
     `${user?.fname || ""} ${user?.mname || ""} ${user?.lname || ""}`.trim();
+
+  const capitalize = (str: string) =>
+    str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 
   const { isFetching, isLoading } = useQuery({
     queryKey: ["getAssignes", taskId],
@@ -51,8 +57,6 @@ const AssignedUsers = () => {
         if (response.status === 200 || response?.status === 201) {
           const data = response.data?.data;
           setSelectedMembers(data);
-        } else {
-          throw new Error("Failed to fetch assignee details");
         }
       } catch (error: any) {
         console.error(error);
@@ -82,7 +86,7 @@ const AssignedUsers = () => {
       setLoading(false);
     },
     onError: (response: any) => {
-      toast.error(response?.message || "Failed to assign users");
+      toast.error(response?.message);
       setLoading(false);
       setUpdating((prev: any) => prev + 1);
     },
@@ -96,10 +100,6 @@ const AssignedUsers = () => {
         let ActiveUsers = response.data.data.filter(
           (user: any) => user?.active === true
         );
-        let addTitles = response?.data?.data?.map((user: any) => ({
-          ...user,
-          title: getFullName(user),
-        }));
         setUsers(ActiveUsers);
       } else {
         setUsers([]);
@@ -129,6 +129,7 @@ const AssignedUsers = () => {
         : [...prev, currentValue]
     );
   };
+
   const confirmSelection = () => {
     const newMembers = tempSelectedMember
       ?.map((memberValue: string) => {
@@ -230,23 +231,29 @@ const AssignedUsers = () => {
             <tbody>
               {selectedMembers.map((member) => (
                 <tr key={member.user_id}>
-                  <td className="border p-2">{getFullName(member)}</td>
-                  <td className="border p-2">{member.user_type}</td>
+                  <td className="border p-2 capitalize">
+                    {capitalize(getFullName(member))}
+                  </td>
+                  <td className="border p-2">{capitalize(member.user_type)}</td>
                   <td className="border p-2">
-                    <button
-                      type="button"
-                      onClick={() => removeMember(member.user_id)}
-                    >
-                      <span title="remove">
-                        <X className="w-4 h-4 text-red-500" />
-                      </span>
-                    </button>
+                    <DeleteAssignes
+                      assigneeId={member.task_assignee_id}
+                      onSuccess={() => {
+                        setUpdating((prev: any) => prev + 1);
+                        removeMember(member.user_id);
+                      }}
+                      taskId={taskId}
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
+
+        {/* {errorMessages.user_ids[0] && (
+          <p className="text-red-500">{errorMessages.user_ids[0]}</p>
+        )} */}
       </div>
     </div>
   );
