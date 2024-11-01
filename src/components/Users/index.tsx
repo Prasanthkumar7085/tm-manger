@@ -1,20 +1,15 @@
 import { addSerial } from "@/lib/helpers/addSerial";
 import {
+  addAdminUserAPI,
   addUsersAPI,
   deleteUsersAPI,
   getAllPaginatedUsers,
   getSingleUserAPI,
   resetPasswordUsersAPI,
   updateUsersAPI,
-  updateUserSelectStatueAPI,
 } from "@/lib/services/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useRouter,
-} from "@tanstack/react-router";
+import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import TanStackTable from "../core/TanstackTable";
 import { userColumns } from "./UserColumns";
@@ -68,6 +63,7 @@ function UsersTable() {
     fname: "",
     lname: "",
     email: "",
+    designation: "",
     password: "",
     phone_number: "",
   });
@@ -112,9 +108,10 @@ function UsersTable() {
         fname: userData?.fname,
         lname: userData?.lname,
         email: userData?.email,
+        designation: userData?.designation || null,
         password: userData?.password,
         user_type: userType,
-        phone_number: userData?.phone_number,
+        phone_number: userData?.phone_number || null,
       };
       const response = await addUsersAPI(payload);
       if (response?.status === 200 || response?.status === 201) {
@@ -144,6 +141,7 @@ function UsersTable() {
             fname: data?.fname,
             lname: data?.lname,
             email: data?.email,
+            designation: data?.designation,
             password: data?.password,
             phone_number: data?.phone_number,
           });
@@ -204,6 +202,37 @@ function UsersTable() {
     }
   };
 
+  const addAdminUser = async () => {
+    try {
+      setLoading(true);
+      const payload = {
+        fname: userData?.fname,
+        lname: userData?.lname,
+        email: userData?.email,
+        designation: userData?.designation,
+        password: userData?.password,
+        phone_number: userData?.phone_number,
+        user_type: userType,
+      };
+      const response = await addAdminUserAPI(payload);
+      if (response?.status === 200 || response?.status === 201) {
+        toast.success(
+          response?.data?.message || "Admin User Added successfully"
+        );
+        handleDrawerClose();
+        setDel((prev) => prev + 1);
+      } else if (response?.status === 422) {
+        const errData = response?.data?.errData;
+        setErrors(errData);
+        throw response;
+      }
+    } catch (err: any) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
@@ -241,6 +270,7 @@ function UsersTable() {
           fname: userData.fname,
           lname: userData.lname,
           email: userData.email,
+          designation: userData.designation,
           password: userData.password,
           phone_number: userData.phone_number,
           user_type: userType,
@@ -261,7 +291,9 @@ function UsersTable() {
         setLoading(false);
       }
     } else {
-      await addUser();
+      {
+        userType === "admin" ? await addAdminUser() : await addUser();
+      }
     }
   };
   const onChangeStatus = (value: string) => {
@@ -275,6 +307,7 @@ function UsersTable() {
         fname: userData.fname || "",
         lname: userData.lname || "",
         email: userData.email || "",
+        designation: userData.designation || "",
         password: userData.password || "",
         phone_number: userData.phone_number || "",
       });
@@ -287,6 +320,7 @@ function UsersTable() {
         fname: "",
         lname: "",
         email: "",
+        designation: "",
         password: "",
         phone_number: "",
       });
@@ -302,6 +336,7 @@ function UsersTable() {
       fname: "",
       lname: "",
       email: "",
+      designation: "",
       password: "",
       phone_number: "",
     });
@@ -391,19 +426,6 @@ function UsersTable() {
         return (
           <div className="flex ">
             <Button
-              title="delete"
-              onClick={() => onClickOpen(info.row.original.id)}
-              size={"sm"}
-              variant={"ghost"}
-            >
-              <img
-                src={"/table/delete.svg"}
-                alt="view"
-                height={16}
-                width={16}
-              />
-            </Button>
-            <Button
               title="reset password"
               onClick={() => handlePasswordUpdateOpen(info.row.original.id)}
               size={"sm"}
@@ -423,6 +445,19 @@ function UsersTable() {
               variant={"ghost"}
             >
               <img src={"/table/edit.svg"} alt="view" height={16} width={16} />
+            </Button>
+            <Button
+              title="delete"
+              onClick={() => onClickOpen(info.row.original.id)}
+              size={"sm"}
+              variant={"ghost"}
+            >
+              <img
+                src={"/table/delete.svg"}
+                alt="view"
+                height={16}
+                width={16}
+              />
             </Button>
           </div>
         );

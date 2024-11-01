@@ -1,7 +1,13 @@
 // src/components/KanbanBoard.tsx
-import { getTasksBasedOnProjectAPI } from "@/lib/services/projects";
+import LoadingComponent from "@/components/core/LoadingComponent";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  getTasksBasedOnProjectAPI,
+  updateProjectTaskStatusAPI,
+} from "@/lib/services/projects";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useNavigate, useParams, useRouter } from "@tanstack/react-router";
 import React, { useState } from "react";
 import {
   DragDropContext,
@@ -29,13 +35,17 @@ type TaskColumn = {
 
 const KanbanBoard: React.FC = () => {
   const { projectId } = useParams({ strict: false });
+  const navigate = useNavigate();
+  const router = useRouter();
 
   const [tasks, setTasks] = useState<TaskColumn>({
     TODO: [],
     IN_PROGRESS: [],
-    OVERDUE: [],
+    OVER_DUE: [],
     COMPLETED: [],
   });
+  const [loading, setLoading] = useState(false);
+  const [callProjectTasks, setCallProjectTasks] = useState(0);
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -69,6 +79,7 @@ const KanbanBoard: React.FC = () => {
         [sourceColumn]: sourceTasks,
         [destColumn]: destTasks,
       }));
+      updateTaskStatus(destColumn, movedTask);
     }
   };
 
@@ -83,8 +94,8 @@ const KanbanBoard: React.FC = () => {
           <h2 className="text-lg font-bold">{columnName}</h2>
           {tasks[columnName].map((task, index) => (
             <Draggable
-              key={task.id}
-              draggableId={String(task.id)}
+              key={task.task_id}
+              draggableId={String(task.task_id)}
               index={index}
             >
               {(provided) => (
@@ -92,22 +103,75 @@ const KanbanBoard: React.FC = () => {
                   ref={provided.innerRef}
                   {...provided.draggableProps}
                   {...provided.dragHandleProps}
-                  className="bg-white border p-2 my-2 rounded shadow"
+                  className="bg-[#eef5ff] border p-4 my-2 rounded-lg shadow-md  cursor-pointer hover:shadow-lg transition-shadow"
+                  onClick={() => {
+                    router.navigate({
+                      to: `/tasks/view/${task.task_id}`,
+                    });
+                  }}
                 >
-                  <p>{task.title}</p>
-                  <p> {task.description}</p>
+                  <p
+                    className="text-ellipsis overflow-hidden"
+                    title={task.task_title}
+                  >
+                    {task.task_title || "--"}
+                  </p>
+                  <p
+                    className="text-gray-500 text-ellipsis overflow-hidden"
+                    title={task.task_description}
+                  >
+                    {task.task_description || "--"}
+                  </p>
+                  <div className="flex justify-start mt-3 -space-x-3">
+                    {task?.assignees?.slice(0, 5).map((assignee) => (
+                      <Avatar
+                        key={assignee.user_id}
+                        className="w-8 h-8 border-2 border-white"
+                      >
+                        <AvatarImage
+                          src={assignee.user_profile_pic}
+                          alt={assignee.name}
+                          title={
+                            assignee.user_first_name +
+                            " " +
+                            assignee.user_last_name
+                          }
+                        />
+                        <AvatarFallback>
+                          {assignee.user_first_name[0] +
+                            assignee.user_last_name[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                    ))}
+
+                    {task?.assignees?.length > 5 && (
+                      <div className="flex items-center justify-center w-8 h-8 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold">
+                        +{task.assignees.length - 5}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </Draggable>
           ))}
           {provided.placeholder}
+          <Button
+            onClick={() => {
+              router.navigate({
+                to: "/tasks/add",
+                search: { project_id: projectId, status: columnName },
+              });
+            }}
+          >
+            Add Task
+          </Button>
         </div>
       )}
     </Droppable>
   );
 
   const { isFetching, isLoading } = useQuery({
-    queryKey: ["getSingleProjectTasks", projectId],
+    queryKey: ["getSingleProjectTasks", projectId, callProjectTasks],
     queryFn: async () => {
       try {
         const response = await getTasksBasedOnProjectAPI(projectId);
@@ -116,7 +180,7 @@ const KanbanBoard: React.FC = () => {
           let categorizedTasks: TaskColumn = {
             TODO: [],
             IN_PROGRESS: [],
-            OVERDUE: [],
+            OVER_DUE: [],
             COMPLETED: [],
           };
           data.forEach((task: Task) => {
@@ -136,15 +200,37 @@ const KanbanBoard: React.FC = () => {
     enabled: Boolean(projectId),
   });
 
+  const updateTaskStatus = async (status: string, task: Task) => {
+    setLoading(true);
+    try {
+      const body = {
+        status: status,
+      };
+      const response = await updateProjectTaskStatusAPI(task.task_id, body);
+      if (response?.status === 200 || response?.status === 201) {
+        toast.success(response?.data?.message);
+        setCallProjectTasks((prev) => prev + 1);
+      } else {
+        toast.error("Failed to change status");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Something went wrong");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="flex space-x-4">
-        {["TODO", "IN_PROGRESS", "OVERDUE", "COMPLETED"].map((column) => (
+      <div className="flex space-x-4 relative">
+        {["TODO", "IN_PROGRESS", "OVER_DUE", "COMPLETED"].map((column) => (
           <div key={column} className="flex-1">
             {renderColumn(column)}
           </div>
         ))}
       </div>
+      {/* <LoadingComponent loading={isFetching || isLoading || loading} /> */}
     </DragDropContext>
   );
 };

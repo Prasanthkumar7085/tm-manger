@@ -22,7 +22,6 @@ const DeleteDialog = ({
   onOKClick: () => void;
   deleteLoading: boolean;
 }) => {
-  console.log(deleteLoading, "loading");
   return (
     <AlertDialog open={openOrNot}>
       <AlertDialogContent className="bg-white">

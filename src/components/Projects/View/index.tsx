@@ -235,7 +235,9 @@ const ProjectView = ({
           <ProjectMembersManagment />
         </div>
       )}
-      <KanbanBoard />
+      <div className="mt-4">
+        <KanbanBoard />
+      </div>
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import React, { useState } from "react";
 import DeleteDialog from "@/components/core/deleteDialog";
-import { deleteAssignesAPI } from "@/lib/services/tasks"; // Ensure this function is defined
+import { deleteAssignesAPI } from "@/lib/services/tasks";
 import { useParams } from "@tanstack/react-router";
 
 const DeleteAssignes = ({
@@ -20,7 +20,9 @@ const DeleteAssignes = ({
     mutationFn: async () => {
       const response: any = await deleteAssignesAPI(taskId, assigneeId);
       if (response.status === 200 || response.status === 201) {
-        toast.success(response?.message);
+        toast.success(
+          response?.message || "Task assignee details removed successfully"
+        );
         setDeleteDialogOpen(false);
         onSuccess();
       } else {
@@ -55,7 +57,7 @@ const DeleteAssignes = ({
       <DeleteDialog
         openOrNot={deleteDialogOpen}
         onCancelClick={() => setDeleteDialogOpen(false)}
-        label="Are you sure you want to delete this assignee?"
+        label="Are you sure you want to delete this Task Assignee?"
         onOKClick={handleDeleteClick}
         deleteLoading={isPending}
       />
