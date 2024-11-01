@@ -29,9 +29,9 @@ export const getTotalActiveStats = async () => {
     throw err;
   }
 };
-export const getTaskTrendsAPI = async () => {
+export const getTaskTrendsAPI = async (queryparams: any) => {
   try {
-    return await $fetch.get(`/stats/tasks-trend`);
+    return await $fetch.get(`/stats/tasks-trend`, queryparams);
   } catch (err: any) {
     throw err;
   }
