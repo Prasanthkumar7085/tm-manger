@@ -114,7 +114,6 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
   };
 
   const handleTagDelete = (tag: any) => {
-    console.log(tag, "tag");
     setTask((prev: any) => ({
       ...prev,
       tags: prev.tags.filter((t: any) => t !== tag),
@@ -125,7 +124,6 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
     });
   };
 
-  console.log(task.tags, "fsd0i32");
   return (
     <div className="mb-4">
       <label className="block text-gray-700 font-bold mb-2">Tags</label>
