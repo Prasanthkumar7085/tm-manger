@@ -168,7 +168,7 @@ const Tasks = () => {
         <div className="tasks-navbar">
           <div className="flex justify-between items-center">
             <div className="filters">
-              <ul className="flex justify-end space-x-4">
+              <ul className="flex justify-end space-x-3">
                 <li>
                   <SelectTaskProjects
                     selectedProject={selectedProject}

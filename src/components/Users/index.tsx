@@ -477,7 +477,7 @@ function UsersTable() {
           <div className="flex justify-between items-center">
             <div className="heading"></div>
             <div className="filters">
-              <ul className="flex justify-end space-x-4">
+              <ul className="flex justify-end space-x-3">
                 <li>
                   <StatusFilter
                     value={selectedStatus}

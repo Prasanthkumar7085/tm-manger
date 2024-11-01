@@ -223,12 +223,12 @@ const SortItems = ({
     <div style={{ display: "flex", alignItems: "center" }}>
       {sortBy === header.id ? (
         sortDirection === "asc" ? (
-          <img src="/table/sort-asc.svg" height={20} width={20} alt="Asc" />
+          <img src="/table/sort-asc.svg" height={15} width={15} alt="Asc" />
         ) : (
-          <img src="/table/sort-desc.svg" height={20} width={20} alt="Desc" />
+          <img src="/table/sort-desc.svg" height={15} width={15} alt="Desc" />
         )
       ) : (
-        <img src="/table/sort-norm.svg" height={20} width={20} alt="No Sort" />
+        <img src="/table/sort-norm.svg" height={15} width={15} alt="No Sort" />
       )}
     </div>
   );

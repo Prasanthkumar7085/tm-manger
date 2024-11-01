@@ -38,15 +38,15 @@ export const TasksSelectPriority: React.FC<StatusFilterProps> = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="justify-between  bg-slate-50 h-[35px] w-[220px] relative"
         >
           {value
             ? taskPriorityConstants.find((item) => item.value === value)?.label
             : "Select Priortity"}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
           {value && (
             <X
-              className="ml-2 h-4 w-4 cursor-pointer"
+              className="mr-4 h-4 w-4 cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation();
                 setValue("");

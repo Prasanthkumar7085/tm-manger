@@ -137,9 +137,9 @@ const Projects = () => {
   };
   const userOptions = Array.isArray(users)
     ? users.map((user: any) => ({
-        value: user.id,
-        label: `${user.fname} ${user.lname}`,
-      }))
+      value: user.id,
+      label: `${user.fname} ${user.lname}`,
+    }))
     : [];
 
   useEffect(() => {
@@ -170,7 +170,7 @@ const Projects = () => {
         <div className="flex justify-between items-center">
           <div className="heading"></div>
           <div className="filters">
-            <ul className="flex justify-end space-x-4">
+            <ul className="flex justify-end space-x-3">
               <li>
                 <SearchFilter
                   searchString={searchString}

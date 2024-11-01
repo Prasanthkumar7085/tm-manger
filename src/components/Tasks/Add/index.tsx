@@ -201,13 +201,13 @@ const AddTask = () => {
                     >
                       {task.project_id
                         ? projectsList.find(
-                            (p: any) => p.id === task.project_id
-                          )?.title
+                          (p: any) => p.id === task.project_id
+                        )?.title
                         : "Select Project"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       {task.project_id && (
                         <X
-                          className="ml-2 h-4 w-4 cursor-pointer"
+                          className="mr-4 h-4 w-4 cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             setTask((prev: any) => ({

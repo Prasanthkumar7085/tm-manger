@@ -60,9 +60,9 @@ export const taskColumns = ({ setDel }: any) => {
       id: "serial",
       header: () => <span>S.No</span>,
       footer: (props: any) => props.column.id,
-      width: "60px",
-      maxWidth: "60px",
-      minWidth: "60px",
+      width: "30px",
+      maxWidth: "30px",
+      minWidth: "30px",
     },
     {
       accessorFn: (row: any) => row.project_title,
@@ -115,9 +115,9 @@ export const taskColumns = ({ setDel }: any) => {
           </span>
         );
       },
-      width: "150px",
-      maxWidth: "150px",
-      minWidth: "150px",
+      width: "90px",
+      maxWidth: "90px",
+      minWidth: "90px",
       header: () => <span>Status</span>,
       footer: (props: any) => props.column.id,
     },
@@ -131,9 +131,9 @@ export const taskColumns = ({ setDel }: any) => {
           )?.label || "-"}
         </span>
       ),
-      width: "100px",
-      maxWidth: "100px",
-      minWidth: "100px",
+      width: "70px",
+      maxWidth: "70px",
+      minWidth: "70px",
       header: () => <span>Priority</span>,
       footer: (props: any) => props.column.id,
     },
@@ -144,9 +144,9 @@ export const taskColumns = ({ setDel }: any) => {
         const date: string = info.getValue();
         return <span>{date ? dayjs(date).format("MM-DD-YYYY") : "-"}</span>;
       },
-      width: "150px",
-      maxWidth: "150px",
-      minWidth: "150px",
+      width: "90px",
+      maxWidth: "90px",
+      minWidth: "90px",
       header: () => <span>Due Date</span>,
       footer: (props: any) => props.column.id,
     },
