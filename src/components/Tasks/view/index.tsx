@@ -46,6 +46,7 @@ const TaskView = () => {
     },
     enabled: Boolean(taskId),
   });
+
   const { isFetching } = useQuery({
     queryKey: ["gettags", taskId],
     queryFn: async () => {

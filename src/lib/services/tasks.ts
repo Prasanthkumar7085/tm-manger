@@ -61,6 +61,22 @@ export const getTagsAPI = async (taskId: any) => {
     throw err;
   }
 };
+export const addTagAPI = async (taskId: any, payload: any) => {
+  try {
+    return await $fetch.post(`/tasks/${taskId}/tags`, payload);
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const removeTagAPI = async (tagId: string) => {
+  try {
+    return await $fetch.delete(`/tasks/${tagId}/tags`);
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const addTasksAPI = async (payload: any) => {
   try {
     return await $fetch.post(`/tasks`, payload);

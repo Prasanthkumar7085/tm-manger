@@ -115,16 +115,10 @@ const AddTask = () => {
     queryKey: ["getSingleTask", taskId],
     queryFn: async () => {
       const response = await getSingleTaskAPI(taskId);
-      const tagsResponse = await getTasksBasedTagsAPI(taskId);
       const taskData = response?.data?.data;
-      const tagsData = tagsResponse?.data?.data.map((tag: any) => tag.title);
       try {
         if (response?.status === 200 || response?.status === 201) {
           setTask(taskData);
-          setTask((prev: any) => ({
-            ...prev,
-            tags: tagsData || [],
-          }));
         } else {
           throw new Error("Failed to fetch task");
         }
