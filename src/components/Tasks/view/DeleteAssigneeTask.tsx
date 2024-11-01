@@ -8,17 +8,15 @@ import { useParams } from "@tanstack/react-router";
 const DeleteAssignes = ({
   assigneeId,
   onSuccess,
-  taskId,
 }: {
   assigneeId: any;
   onSuccess: () => void;
-  taskId: any;
 }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
-      const response: any = await deleteAssignesAPI(taskId, assigneeId);
+      const response: any = await deleteAssignesAPI(assigneeId);
       if (response.status === 200 || response.status === 201) {
         toast.success(
           response?.message || "Task assignee details removed successfully"

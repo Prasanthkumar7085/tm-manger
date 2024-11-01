@@ -163,9 +163,9 @@ export const addAssignesAPI = async (taskId: any, payload: any) => {
     throw err;
   }
 };
-export const deleteAssignesAPI = async (taskId: any, payload: any) => {
+export const deleteAssignesAPI = async (assigneId: any) => {
   try {
-    return await $fetch.delete(`/tasks/${taskId}/assignees`, payload);
+    return await $fetch.delete(`/tasks/${assigneId}/assignees`);
   } catch (err: any) {
     throw err;
   }

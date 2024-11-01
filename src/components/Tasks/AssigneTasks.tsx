@@ -50,7 +50,7 @@ const AssignedUsers = () => {
     str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 
   const { isFetching, isLoading } = useQuery({
-    queryKey: ["getAssignes", taskId],
+    queryKey: ["getAssignes", taskId, updating],
     queryFn: async () => {
       try {
         const response = await getAssignesAPI(taskId);
@@ -120,6 +120,7 @@ const AssignedUsers = () => {
     setSelectedMembers(
       selectedMembers.filter((member) => member.user_id !== userId)
     );
+    setUpdating((prev: any) => prev + 1);
   };
 
   const toggleValue = (currentValue: string) => {
@@ -239,10 +240,8 @@ const AssignedUsers = () => {
                     <DeleteAssignes
                       assigneeId={member.task_assignee_id}
                       onSuccess={() => {
-                        setUpdating((prev: any) => prev + 1);
                         removeMember(member.user_id);
                       }}
-                      taskId={taskId}
                     />
                   </td>
                 </tr>
