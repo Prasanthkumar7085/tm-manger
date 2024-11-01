@@ -1,5 +1,8 @@
 import { errPopper } from "@/lib/helpers/errPopper";
-import { getSingleViewUserAPI, uploadProfileAPI } from "@/lib/services/viewprofile";
+import {
+  getSingleViewUserAPI,
+  uploadProfileAPI,
+} from "@/lib/services/viewprofile";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import {
@@ -13,6 +16,7 @@ import {
 import { useSelector } from "react-redux";
 import { fileUploadAPI, uploadToS3API } from "@/lib/services/projects";
 import { toast } from "sonner";
+import { Pencil, X } from "lucide-react";
 
 function ViewProfile() {
   const userID = useSelector(
@@ -70,7 +74,9 @@ function ViewProfile() {
     }
   };
 
- 
+  const handleRemoveFile = () => {
+    setPreviewUrl(null);
+  };
 
   const fileUploadMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -84,7 +90,7 @@ function ViewProfile() {
 
       return file_key;
     },
-    onSuccess: (file_key:string) => {
+    onSuccess: (file_key: string) => {
       setUserData((prev: any) => ({
         ...prev,
         profile_pic: file_key,
@@ -127,12 +133,10 @@ function ViewProfile() {
   });
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="flex flex-col md:flex-row items-center p-4">
+      <CardHeader className="flex-none mb-4 md:mb-0 md:mr-4">
         <CardTitle>Profile Information</CardTitle>
         <CardDescription>Details about the user</CardDescription>
-      </CardHeader>
-      <CardContent>
         <input
           id="file-upload"
           type="file"
@@ -141,18 +145,42 @@ function ViewProfile() {
           className="hidden"
         />
         <label htmlFor="file-upload" className="cursor-pointer">
-           {previewUrl ? (
-            <img src={previewUrl} alt="Preview" height={300} width={300} />
+          {previewUrl ? (
+            <div className="relative">
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="w-32 h-32 object-cover"
+              />
+              <button
+                onClick={handleRemoveFile}
+                className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border"
+              >
+                <X className="text-white w-4 h-4" />
+              </button>
+              <span className="absolute bottom-2 middle-3 bg-blue-800 text-white text-xs rounded-full p-2">
+                <Pencil className="w-4 h-4" />
+              </span>
+            </div>
           ) : (
             <img
-              src={"/abstract-user-flat-4.svg"}
+              src={userData.profile_pic}
               alt="User Profile"
               height={300}
               width={300}
             />
           )}
         </label>
-        <div>
+      </CardHeader>
+      <CardContent className="flex flex-row items-center space-x-4">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, auto)",
+            gap: "11px",
+            fontSize: "20px",
+          }}
+        >
           <p>
             <strong>First Name:</strong> {userData.fname}
           </p>
