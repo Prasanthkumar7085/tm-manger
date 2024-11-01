@@ -29,3 +29,10 @@ export const getTotalActiveStats = async () => {
     throw err;
   }
 };
+export const getTaskTrendsAPI = async () => {
+  try {
+    return await $fetch.get(`/stats/tasks-trend`);
+  } catch (err: any) {
+    throw err;
+  }
+};

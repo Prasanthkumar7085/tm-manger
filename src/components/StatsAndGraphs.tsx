@@ -4,11 +4,41 @@ import "tailwindcss/tailwind.css";
 import GlobalDateRangeFilter from "./core/DateRangePicker";
 import { useState } from "react";
 import DatePickerField from "./core/DateRangePicker";
+import { useQuery } from "@tanstack/react-query";
+import { getTaskTrendsAPI } from "@/lib/services/dashboard";
 
 const StatsAndGraph = () => {
+  const [projectDetails, setProjectDetails] = useState([]);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date()
   );
+
+  const { data } = useQuery({
+    queryKey: ["getTaskTrends"],
+    queryFn: async () => {
+      try {
+        const response = await getTaskTrendsAPI();
+        if (response.success) {
+          setProjectDetails(response.data?.data);
+          return response.data?.data;
+        } else {
+          throw new Error("Failed to fetch project details");
+        }
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+    enabled: true,
+  });
+
+  const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const completedData = data?.data
+    ? data.data.map((item: any) => item.completed_count)
+    : Array(7).fill(0);
+  const inProgressData = data?.data
+    ? data.data.map((item: any) => item.inprogress_count)
+    : Array(7).fill(0);
 
   const options = {
     chart: {
@@ -19,7 +49,7 @@ const StatsAndGraph = () => {
       },
     },
     title: {
-      text: "",
+      text: "Tasks",
       align: "left",
       style: {
         fontWeight: "bold",
@@ -28,19 +58,19 @@ const StatsAndGraph = () => {
       },
     },
     xAxis: {
-      categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      categories: daysOfWeek,
       tickColor: "#EAEAEA",
     },
     yAxis: {
       title: {
-        text: "",
+        text: "Count",
       },
       gridLineColor: "#F0F0F0",
     },
     series: [
       {
         name: "Completed",
-        data: [100, 120, 140, 180, 160, 130, 120],
+        data: completedData,
         color: "#8000FF",
         marker: {
           enabled: false,
@@ -48,13 +78,11 @@ const StatsAndGraph = () => {
         lineWidth: 4,
       },
       {
-        name: "Pending",
-        data: [120, 110, 150, 200, 170, 140, 130],
+        name: "In Progress",
+        data: inProgressData,
         color: "#FF4D4F",
         marker: {
-          enabled: true,
-          lineWidth: 2,
-          radius: 4,
+          enabled: false,
         },
         lineWidth: 4,
       },
@@ -67,14 +95,6 @@ const StatsAndGraph = () => {
       itemStyle: {
         color: "#333",
         fontSize: "12px",
-      },
-    },
-    plotOptions: {
-      spline: {
-        marker: {
-          enabled: true,
-          radius: 4,
-        },
       },
     },
     tooltip: {
@@ -96,8 +116,6 @@ const StatsAndGraph = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-gray-800">Tasks</h2>
-
         <DatePickerField value={selectedDate} onChange={handleDateChange} />
       </div>
       <HighchartsReact highcharts={Highcharts} options={options} />

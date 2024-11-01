@@ -26,8 +26,8 @@ const DashBoard = () => {
   const fetchCounts = async () => {
     const results = await Promise.allSettled([
       getTotalProjectsStats(),
-      getTotalUsersStats(),
       getTotalTasksStats(),
+      getTotalUsersStats(),
       getTotalActiveStats(),
     ]);
     return results;
@@ -83,7 +83,7 @@ const DashBoard = () => {
                 />
               </div>
               <h1 className="text-3xl font-semibold text-gray-800">
-                <CountUp end={usersCount} duration={2.5} />
+                <CountUp end={tasksCount} duration={2.5} />
               </h1>
               <p className="text-sm text-gray-600">Tasks</p>
             </div>
@@ -97,7 +97,7 @@ const DashBoard = () => {
                 />
               </div>
               <h1 className="text-3xl font-semibold text-gray-800">
-                <CountUp end={tasksCount} duration={2.5} />
+                <CountUp end={usersCount} duration={2.5} />
               </h1>
               <p className="text-sm text-gray-600">Users</p>
             </div>
