@@ -3,6 +3,10 @@ import LoadingComponent from "@/components/core/LoadingComponent";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
+  taskPriorityConstants,
+  taskStatusConstants,
+} from "@/lib/helpers/statusConstants";
+import {
   getTasksBasedOnProjectAPI,
   updateProjectTaskStatusAPI,
 } from "@/lib/services/projects";
@@ -91,7 +95,12 @@ const KanbanBoard: React.FC = () => {
           ref={provided.innerRef}
           className="flex flex-col p-4 bg-gray-100 rounded-md"
         >
-          <h2 className="text-lg font-bold">{columnName}</h2>
+          <h2 className="text-lg font-bold">
+            {
+              taskStatusConstants.find((item: any) => item.value == columnName)
+                ?.label
+            }
+          </h2>
           {tasks[columnName].map((task, index) => (
             <Draggable
               key={task.task_id}

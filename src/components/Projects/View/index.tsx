@@ -33,7 +33,7 @@ const ProjectView = ({
     uploadSuccess: false,
     loading: false,
   });
-  const [openMembers, setOpenMembers] = useState<boolean>(true);
+  const [openMembers, setOpenMembers] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 

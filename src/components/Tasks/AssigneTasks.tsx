@@ -22,6 +22,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import DeleteAssignes from "./view/DeleteAssigneeTask";
+import LoadingComponent from "../core/LoadingComponent";
 
 const AssignedUsers = () => {
   const { taskId } = useParams({ strict: false });
@@ -254,6 +255,7 @@ const AssignedUsers = () => {
           <p className="text-red-500">{errorMessages.user_ids[0]}</p>
         )} */}
       </div>
+      <LoadingComponent loading={loading || isLoading} />
     </div>
   );
 };

@@ -21,7 +21,7 @@ const Projects = () => {
   const [refreshCount, setRefreshCount] = useState(0);
 
   const pageIndexParam = Number(searchParams.get("page")) || 1;
-  const pageSizeParam = Number(searchParams.get("page_size")) || 10;
+  const pageSizeParam = Number(searchParams.get("page_size")) || 25;
   const orderBY = searchParams.get("order_by") || "";
   const initialSearch = searchParams.get("search") || "";
   const initialStatus = searchParams.get("status") || "";

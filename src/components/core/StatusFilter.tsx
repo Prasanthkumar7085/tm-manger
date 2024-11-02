@@ -39,10 +39,10 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
           {value
             ? statusConstants.find((item) => item.value === value)?.label
             : "Select Status"}
-          <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
+          <ChevronsUpDown className="absolute right-1 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
           {value && (
             <X
-              className="ml-2 h-4 w-4 cursor-pointer"
+              className="mr-2 h-4 w-4 cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation();
                 setValue("");
