@@ -2,7 +2,7 @@ import { Outlet } from "@tanstack/react-router";
 
 function ContentSection() {
   return (
-    <div className=" bg-white p-5 rounded-xl bg-[#8080801f] overflow-y-auto">
+    <div className="px-5 py-3 rounded-xl overflow-y-auto">
       <Outlet />
     </div>
   );

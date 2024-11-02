@@ -49,15 +49,15 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[230px] justify-between"
+          className="justify-between  bg-slate-50 h-[35px] w-[220px] relative"
         >
-         {selectedProject?.id
-            ? data?.find((item:any) => item.id === selectedProject?.id)?.title
+          {selectedProject?.id
+            ? data?.find((item: any) => item.id === selectedProject?.id)?.title
             : "Select Projects"}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
           {selectedProject?.id && (
             <X
-              className="ml-2 h-4 w-4 cursor-pointer"
+              className="mr-4 h-4 w-4 cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation();
                 setSelectedProject("");
@@ -100,15 +100,3 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
     </Popover>
   );
 };
-
-
-
-
-
-
-
-
-
-
-
-

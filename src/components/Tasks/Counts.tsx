@@ -9,7 +9,7 @@ import CountUp from "react-countup";
 const TotalCounts = () => {
   return (
     <section id="tasks-counts">
-      <div className="flex justify-between items-center gap-4 py-4 bg-gradient-to-rrounded-lg  px-6">
+      <div className="flex justify-between items-center gap-4 bg-gradient-to-rrounded-lg  px-6">
         <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
           <div className="flex justify-between w-full">
             <div className="content">

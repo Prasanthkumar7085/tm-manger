@@ -60,9 +60,9 @@ export const taskColumns = ({ setDel }: any) => {
       id: "serial",
       header: () => <span>S.No</span>,
       footer: (props: any) => props.column.id,
-      width: "60px",
-      maxWidth: "60px",
-      minWidth: "60px",
+      width: "30px",
+      maxWidth: "30px",
+      minWidth: "30px",
     },
     {
       accessorFn: (row: any) => row.project_title,
@@ -109,15 +109,15 @@ export const taskColumns = ({ setDel }: any) => {
           <span className="capitalize">
             {title
               ? taskStatusConstants.find(
-                  (item: any) => item.value === info.getValue()
-                )?.label
+                (item: any) => item.value === info.getValue()
+              )?.label
               : "-"}
           </span>
         );
       },
-      width: "150px",
-      maxWidth: "150px",
-      minWidth: "150px",
+      width: "90px",
+      maxWidth: "90px",
+      minWidth: "90px",
       header: () => <span>Status</span>,
       footer: (props: any) => props.column.id,
     },
@@ -131,9 +131,9 @@ export const taskColumns = ({ setDel }: any) => {
           )?.label || "-"}
         </span>
       ),
-      width: "100px",
-      maxWidth: "100px",
-      minWidth: "100px",
+      width: "70px",
+      maxWidth: "70px",
+      minWidth: "70px",
       header: () => <span>Priority</span>,
       footer: (props: any) => props.column.id,
     },
@@ -144,9 +144,9 @@ export const taskColumns = ({ setDel }: any) => {
         const date: string = info.getValue();
         return <span>{date ? dayjs(date).format("MM-DD-YYYY") : "-"}</span>;
       },
-      width: "150px",
-      maxWidth: "150px",
-      minWidth: "150px",
+      width: "90px",
+      maxWidth: "90px",
+      minWidth: "90px",
       header: () => <span>Due Date</span>,
       footer: (props: any) => props.column.id,
     },
@@ -154,36 +154,43 @@ export const taskColumns = ({ setDel }: any) => {
       accessorFn: (row: any) => row.actions,
       id: "actions",
       cell: (info: any) => (
-        <div>
-          <Button
-            title="View"
-            size={"sm"}
-            variant={"ghost"}
-            onClick={() => handleView(info.row.original.id)} // Pass the task ID
-          >
-            <img src={viewButtonIcon} alt="view" height={16} width={16} />
-          </Button>
-          <Button
-            title="Edit"
-            size={"sm"}
-            variant={"ghost"}
-            onClick={() => handleEdit(info.row.original.id)}
-          >
-            <img src={"table/edit.svg"} alt="view" height={16} width={16} />
-          </Button>
-          <Button
-            title="Delete"
-            onClick={() => onClickOpen(info.row.original.id)}
-            size={"sm"}
-            variant={"ghost"}
-          >
-            <img
-              src={"/table/delete.svg"}
-              alt="delete"
-              height={16}
-              width={16}
-            />
-          </Button>
+        <>
+          <ul className="table-action-buttons flex space-x-2 items-center">
+            <li>
+              <Button
+                title="View"
+                variant={"ghost"}
+                className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
+                onClick={() => handleView(info.row.original.id)} // Pass the task ID
+              >
+                <img src={viewButtonIcon} alt="view" height={18} width={18} />
+              </Button>
+            </li>
+            <li>
+              <Button
+                title="Edit"
+                variant={"ghost"}
+                className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
+                onClick={() => handleEdit(info.row.original.id)}
+              >
+                <img src={"table/edit.svg"} alt="view" height={18} width={18} />
+              </Button>
+            </li>
+            <li>
+              <Button
+                title="Delete"
+                onClick={() => onClickOpen(info.row.original.id)}
+                variant={"ghost"}
+                className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
+              >
+                <img
+                  src={"/table/delete.svg"}
+                  alt="delete"
+                  height={18} width={18}
+                />
+              </Button>
+            </li>
+          </ul>
           <DeleteDialog
             openOrNot={open}
             label="Are you sure you want to Delete this task?"
@@ -191,7 +198,8 @@ export const taskColumns = ({ setDel }: any) => {
             onOKClick={deleteTask}
             deleteLoading={deleteLoading}
           />
-        </div>
+        </>
+
       ),
       header: () => <span>Actions</span>,
       footer: (props: any) => props.column.id,
