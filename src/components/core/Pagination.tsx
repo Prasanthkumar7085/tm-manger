@@ -40,13 +40,14 @@ const Pagination = ({
       limitOptionsFromProps?.length
         ? limitOptionsFromProps
         : [
-          { title: "10/page", value: 10 },
-          { title: "25/page", value: 25 },
-          { title: "50/page", value: 50 },
-          { title: "100/page", value: 100 },
-          { title: "250/page", value: 250 },
-          { title: "500/page", value: 500 },
-        ]
+            { title: "10/page", value: 10 },
+            { title: "12/page", value: 12 },
+            { title: "25/page", value: 25 },
+            { title: "50/page", value: 50 },
+            { title: "100/page", value: 100 },
+            { title: "250/page", value: 250 },
+            { title: "500/page", value: 500 },
+          ]
     );
   }, [limitOptionsFromProps]);
 
@@ -116,7 +117,6 @@ const Pagination = ({
         <Select
           value={selectedValue?.toString()}
           onValueChange={handleRowChange}
-
         >
           <SelectTrigger className="w-[120px]">
             <SelectValue placeholder="Items per page" />
@@ -163,10 +163,11 @@ const Pagination = ({
                 handlePageChange(currentPage - 1);
               }}
               aria-disabled={currentPage === 1}
-              className={`${currentPage === 1
-                ? "pointer-events-none cursor-not-allowed opacity-50"
-                : "cursor-pointer opacity-100"
-                }`}
+              className={`${
+                currentPage === 1
+                  ? "pointer-events-none cursor-not-allowed opacity-50"
+                  : "cursor-pointer opacity-100"
+              }`}
             />
           </PaginationItem>
 
@@ -203,10 +204,11 @@ const Pagination = ({
                 handlePageChange(currentPage + 1);
               }}
               aria-disabled={currentPage === totalPages}
-              className={`${currentPage === totalPages
-                ? "pointer-events-none cursor-not-allowed opacity-50"
-                : "cursor-pointer opacity-100"
-                }`}
+              className={`${
+                currentPage === totalPages
+                  ? "pointer-events-none cursor-not-allowed opacity-50"
+                  : "cursor-pointer opacity-100"
+              }`}
             />
           </PaginationItem>
         </PaginationContent>

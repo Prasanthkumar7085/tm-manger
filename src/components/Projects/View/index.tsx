@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useParams, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { toast } from "sonner";
@@ -25,6 +25,7 @@ const ProjectView = ({
   refreshCount: number;
 }) => {
   const { projectId } = useParams({ strict: false });
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const [projectDetails, setProjectDetails] = useState<any>({});
@@ -211,7 +212,11 @@ const ProjectView = ({
         </div>
         <div className="flex flex-row items-center gap-4">
           <Button
-            onClick={() => setOpenMembers(!openMembers)}
+            onClick={() => {
+              router.navigate({
+                to: `/projects/${projectId}/project_members`,
+              });
+            }}
             className="bg-[#f3d1d7]"
           >
             {openMembers ? "Close Members" : "View Members"}
@@ -230,11 +235,11 @@ const ProjectView = ({
         {/* <LoadingComponent loading={isLoading || isFetching} /> */}
       </div>
 
-      {openMembers && (
+      {/* {openMembers && (
         <div className="mt-2">
           <ProjectMembersManagment />
         </div>
-      )}
+      )} */}
       <div className="mt-4">
         <KanbanBoard />
       </div>

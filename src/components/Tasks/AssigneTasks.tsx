@@ -1,9 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useParams, useRouter } from "@tanstack/react-router";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import { addAssignesAPI, getAssignesAPI } from "@/lib/services/tasks";
-import { getAllMembers } from "@/lib/services/projects/members";
+import {
+  getAllMembers,
+  getProjectMembersAPI,
+} from "@/lib/services/projects/members";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -24,8 +27,9 @@ import {
 import DeleteAssignes from "./view/DeleteAssigneeTask";
 import LoadingComponent from "../core/LoadingComponent";
 
-const AssignedUsers = () => {
+const AssignedUsers = ({ viewTaskData }: any) => {
   const { taskId } = useParams({ strict: false });
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [users, setUsers] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
@@ -93,29 +97,41 @@ const AssignedUsers = () => {
     },
   });
 
-  const { isLoading: isUsersLoading } = useQuery({
-    queryKey: ["users", taskId],
-    queryFn: async () => {
-      const response = await getAllMembers();
-      if (response?.data?.data && Array.isArray(response.data.data)) {
-        let ActiveUsers = response.data.data.filter(
-          (user: any) => user?.active === true
-        );
-        setUsers(ActiveUsers);
-      } else {
-        setUsers([]);
-      }
-      return response;
-    },
-  });
+  // const { isLoading: isUsersLoading } = useQuery({
+  //   queryKey: ["users", taskId],
+  //   queryFn: async () => {
+  //     const response = await getAllMembers();
+  //     if (response?.data?.data && Array.isArray(response.data.data)) {
+  //       let ActiveUsers = response.data.data.filter(
+  //         (user: any) => user?.active === true
+  //       );
+  //       setUsers(ActiveUsers);
+  //     } else {
+  //       setUsers([]);
+  //     }
+  //     return response;
+  //   },
+  // });
 
-  const changeRole = (userId: number, role: string) => {
-    setSelectedMembers((prev) =>
-      prev.map((member) =>
-        member.user_id === userId ? { ...member, role } : member
-      )
-    );
-  };
+  const { isFetching: isMembersFetching, isLoading: isMembersLoading } =
+    useQuery({
+      queryKey: ["getSingleProjectMembers", viewTaskData?.project_id, taskId],
+      queryFn: async () => {
+        if (!viewTaskData?.project_id) return;
+        try {
+          const response = await getProjectMembersAPI(viewTaskData?.project_id);
+          if (response.success) {
+            const data = response.data?.data;
+            setUsers(data?.records || []);
+          } else {
+            throw response;
+          }
+        } catch (errData) {
+          console.error(errData);
+        }
+      },
+      enabled: Boolean(viewTaskData?.project_id),
+    });
 
   const removeMember = (userId: number) => {
     setSelectedMembers(
@@ -133,15 +149,19 @@ const AssignedUsers = () => {
   };
 
   const confirmSelection = () => {
+    console.log(tempSelectedMember, "tempSelectedMember");
+    console.log(selectedMembers, "selectedMembers");
+    console.log(users, "users");
     const newMembers = tempSelectedMember
       ?.map((memberValue: string) => {
         const member = users.find(
-          (user: any) => user.id.toString() === memberValue
+          (user: any) => user.user_id.toString() === memberValue
         );
+        console.log(member, "member");
         return (
           member &&
           !selectedMembers.some((m: any) => m.id === member.id) && {
-            id: member.id,
+            id: member.user_id,
             fname: member?.fname || "",
             lname: member?.lname || "",
             email: member?.email || "--",
@@ -155,6 +175,7 @@ const AssignedUsers = () => {
     setTempSelectedMember([]);
     setOpen(false);
     let allMembers = [...newMembers];
+    console.log(allMembers, "allMembers");
     let payload = allMembers.map((member: any) => {
       return { user_id: member.id };
     });
@@ -167,60 +188,78 @@ const AssignedUsers = () => {
   return (
     <div className="flex flex-col justify-between h-full w-full overflow-auto">
       <div>
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className="w-[200px]"
-              onClick={() => setTempSelectedMember([])}
-            >
-              Select Members
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0 bg-white border z-[99999]">
-            <Command>
-              <CommandInput placeholder="Search Members" />
-              <CommandList className="max-h-[200px] z-[99999]">
-                <CommandGroup>
-                  {Array.isArray(users) &&
-                    users.map((user: any) => (
-                      <CommandItem
-                        key={user.id}
-                        value={getFullName(user)}
-                        onSelect={() => toggleValue(user.id.toString())}
-                        disabled={selectedMembers.some(
-                          (m: any) => m.user_id == user.id
-                        )}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            tempSelectedMember.includes(user.id.toString())
-                              ? "opacity-100"
-                              : "opacity-0"
+        <div className="flex items-center justify-end gap-4">
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-[200px]"
+                onClick={() => setTempSelectedMember([])}
+              >
+                Select Members
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[200px] p-0 bg-white border z-[99999]">
+              <Command>
+                <CommandInput placeholder="Search Members" />
+                <CommandList className="max-h-[200px] z-[99999]">
+                  <CommandGroup>
+                    {Array.isArray(users) &&
+                      users.map((user: any) => (
+                        <CommandItem
+                          key={user.id}
+                          value={getFullName(user)}
+                          onSelect={() => toggleValue(user.user_id.toString())}
+                          disabled={selectedMembers.some(
+                            (m: any) => m.user_id == user.user_id
                           )}
-                        />
-                        <p className="capitalize">{getFullName(user)}</p>
-                      </CommandItem>
-                    ))}
-                </CommandGroup>
-                <CommandEmpty>No members found.</CommandEmpty>
-              </CommandList>
-              <div className="flex justify-end space-x-2 p-2 border-t">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setTempSelectedMember([])}
-                >
-                  Clear
-                </Button>
-                <Button size="sm" variant="outline" onClick={confirmSelection}>
-                  Confirm
-                </Button>
-              </div>
-            </Command>
-          </PopoverContent>
-        </Popover>
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              tempSelectedMember.includes(
+                                user.user_id.toString()
+                              )
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          <p className="capitalize">{getFullName(user)}</p>
+                        </CommandItem>
+                      ))}
+                  </CommandGroup>
+                  <CommandEmpty>No members found.</CommandEmpty>
+                </CommandList>
+                <div className="flex justify-end space-x-2 p-2 border-t">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setTempSelectedMember([])}
+                  >
+                    Clear
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={confirmSelection}
+                  >
+                    Confirm
+                  </Button>
+                </div>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          <Button
+            onClick={() => {
+              router.navigate({
+                to: `/projects/${viewTaskData?.project_id}/project_members`,
+              });
+            }}
+            className="bg-[#f3d1d7]"
+          >
+            Add Project members
+          </Button>
+        </div>
         {selectedMembers.length > 0 && (
           <table className="min-w-full border mt-4">
             <thead>

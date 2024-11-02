@@ -180,7 +180,7 @@ const TaskView = () => {
         <div>
           <h2 className="font-semibold">Assigned To</h2>
           <div className="mt-2">
-            <AssignedUsers />
+            <AssignedUsers viewTaskData={viewData} />
           </div>
         </div>
         <div>
