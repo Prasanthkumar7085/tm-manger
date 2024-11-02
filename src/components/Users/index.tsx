@@ -23,6 +23,7 @@ import { errPopper } from "@/lib/helpers/errPopper";
 import LoadingComponent from "../core/LoadingComponent";
 import { StatusFilter } from "../core/StatusFilter";
 import AddSheetRover from "../core/AddSheetRovar";
+import { Pencil } from 'lucide-react';
 
 function UsersTable() {
   const navigate = useNavigate();
