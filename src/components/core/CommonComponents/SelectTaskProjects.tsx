@@ -76,22 +76,24 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
               <CommandEmpty>No projects found.</CommandEmpty>
             ) : (
               <CommandGroup>
-                {data?.map((project: any) => (
-                  <CommandItem
-                    key={project.id}
-                    onSelect={() => handleSelect(project)}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        selectedProject?.id === project.id
-                          ? "opacity-100"
-                          : "opacity-0"
-                      )}
-                    />
-                    {project.title}
-                  </CommandItem>
-                ))}
+                {data?.length > 0
+                  ? data?.map((project: any) => (
+                      <CommandItem
+                        key={project.id}
+                        onSelect={() => handleSelect(project)}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            selectedProject?.id === project.id
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                        {project.title}
+                      </CommandItem>
+                    ))
+                  : ""}
               </CommandGroup>
             )}
           </CommandList>

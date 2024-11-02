@@ -7,7 +7,7 @@ import {
   updateMembersAPI,
 } from "@/lib/services/projects/members";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useParams, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -16,7 +16,7 @@ import {
   PopoverTrigger,
 } from "@radix-ui/react-popover";
 import { Button } from "@/components/ui/button";
-import { Check, X } from "lucide-react";
+import { ArrowBigLeft, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Command,
@@ -31,7 +31,7 @@ import DeleteDialog from "@/components/core/deleteDialog";
 
 const ProjectMembersManagment = () => {
   const { projectId } = useParams({ strict: false });
-
+  const router = useRouter();
   const [selectedMembers, setSelectedMembers] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [errorMessages, setErrorMessages] = useState({});
@@ -220,7 +220,13 @@ const ProjectMembersManagment = () => {
     <div>
       <div className="flex flex-col justify-start gap-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold">Project Members</h1>
+          <div className="flex items-center gap-2">
+            <ArrowBigLeft
+              className="h-10 w-10 cursor-pointer"
+              onClick={() => window.history.back()}
+            />
+            <h1 className="text-xl font-semibold">Project Members</h1>
+          </div>
 
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
