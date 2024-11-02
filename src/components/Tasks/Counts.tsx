@@ -5,8 +5,25 @@ import inprogressTasksIcon from "@/assets/inprogress-tasks-icon.svg";
 import completedTasksIcon from "@/assets/completed-tasks-icon.svg";
 import overDueTasksIcon from "@/assets/overdue-tasks-icon.svg";
 import CountUp from "react-countup";
+import { useQuery } from "@tanstack/react-query";
+import { getTaskStatsCountsAPI } from "@/lib/services/tasks";
 
-const TotalCounts = () => {
+const TotalCounts = ({ taksDataAfterSerial }: any) => {
+  const { data: totalTasks } = useQuery({
+    queryKey: ["totalTasks", taksDataAfterSerial],
+    queryFn: () => getTotalTasksCounts(),
+  });
+
+  const getTotalTasksCounts = async () => {
+    try {
+      const response = await getTaskStatsCountsAPI();
+      return response?.data?.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  console.log(totalTasks, "totalTasks");
   return (
     <section id="tasks-counts">
       <div className="flex justify-between items-center gap-4 bg-gradient-to-rrounded-lg  px-6">
@@ -15,7 +32,10 @@ const TotalCounts = () => {
             <div className="content">
               <h3 className="leading-5">Total Tasks</h3>
               <CardContent className="p-0 text-2xl">
-                <CountUp end={1000} duration={2.5} />
+                <CountUp
+                  end={totalTasks?.total_tasks?.toLocaleString() || 0}
+                  duration={2.5}
+                />
               </CardContent>
             </div>
             <div className="image">
@@ -32,7 +52,10 @@ const TotalCounts = () => {
             <div className="content">
               <h3 className="leading-5">To Do</h3>
               <CardContent className="p-0 text-2xl">
-                <CountUp end={100} duration={2.5} />
+                <CountUp
+                  end={totalTasks?.todo_count?.toLocaleString() || 0}
+                  duration={2.5}
+                />
               </CardContent>
             </div>
             <div className="image">
@@ -49,7 +72,10 @@ const TotalCounts = () => {
             <div className="content">
               <h3 className="leading-5">In Progress</h3>
               <CardContent className="p-0 text-2xl">
-                <CountUp end={700} duration={2.5} />
+                <CountUp
+                  end={totalTasks?.inProgress_count?.toLocaleString() || 0}
+                  duration={2.5}
+                />
               </CardContent>
             </div>
             <div className="image">
@@ -67,7 +93,10 @@ const TotalCounts = () => {
             <div className="content">
               <h3 className="leading-5">Overdue</h3>
               <CardContent className="p-0 text-2xl">
-                <CountUp end={100} duration={2.5} />
+                <CountUp
+                  end={totalTasks?.overDue_count?.toLocaleString() || 0}
+                  duration={2.5}
+                />
               </CardContent>
             </div>
             <div className="image">
@@ -80,13 +109,15 @@ const TotalCounts = () => {
           </div>
         </Card>
 
-
         <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
           <div className="flex justify-between w-full">
             <div className="content">
               <h3 className="leading-5">Completed</h3>
               <CardContent className="p-0 text-2xl">
-                <CountUp end={100} duration={2.5} />
+                <CountUp
+                  end={totalTasks?.completed_count?.toLocaleString() || 0}
+                  duration={2.5}
+                />
               </CardContent>
             </div>
             <div className="image">

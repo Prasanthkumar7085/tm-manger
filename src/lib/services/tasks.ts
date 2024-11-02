@@ -178,3 +178,11 @@ export const downloadAttachmentAPI = async (payload: any) => {
     throw err;
   }
 };
+
+export const getTaskStatsCountsAPI = async () => {
+  try {
+    return await $fetch.get(`/tasks/tasks-stats`);
+  } catch (err: any) {
+    throw err;
+  }
+};

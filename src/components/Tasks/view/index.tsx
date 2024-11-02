@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import AssignedUsers from "../AssigneTasks";
 import UploadAttachments from "./Attachments";
 import LoadingComponent from "@/components/core/LoadingComponent";
+import TagsComponent from "../Add/TagsComponent";
 
 const TaskView = () => {
   const navigate = useNavigate();
@@ -23,9 +24,10 @@ const TaskView = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [viewData, setViewData] = useState<any>();
-  const [tagsData, setTagsData] = useState<any>();
+  const [tagsData, setTagsData] = useState<any>({ tags: [] });
   const [tagsInput, setTagsInput] = useState("");
-  const [errorMessages, setErrorMessages] = useState({ tags: [] });
+  const [errorMessages, setErrorMessages] = useState();
+  const [tagInput, setTagInput] = useState<any>("");
 
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["getSingleTask", taskId],
@@ -55,6 +57,12 @@ const TaskView = () => {
       try {
         if (response?.status === 200 || response?.status === 201) {
           setTagsData(tagsData);
+          const tagsDetails = tagsData.map((tag: any) => tag.title);
+
+          setViewData((prev: any) => ({
+            ...prev,
+            tags: tagsDetails,
+          }));
         } else {
           throw new Error("Failed to fetch task");
         }
@@ -65,30 +73,6 @@ const TaskView = () => {
     },
   });
 
-  const addComment = async () => {
-    setLoading(true);
-    try {
-      const payload = {
-        task_id: taskId,
-        message,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-      const response = await addPostCommentsAPI(taskId, payload);
-      if (response?.status === 200 || response?.status === 201) {
-        toast.success(response?.data?.message || "Comment added successfully");
-
-        setMessage("");
-      } else {
-        throw new Error("Failed to add comment");
-      }
-    } catch (err: any) {
-      console.error(err);
-      toast.error(err?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
   const title = viewData?.project_description;
   const shouldShowDescriptionTooltip = title && title.length > 30;
   const truncatedDescription = shouldShowDescriptionTooltip
@@ -146,20 +130,14 @@ const TaskView = () => {
               </span>
             </div>
             <div className="flex flex-col items-start ">
-              <div className="text-blue-500 bg-gray-100 px-3 py-1 rounded-md mb-2">
-                Tags
-              </div>
-              <div className="flex flex-wrap space-x-2">
-                {tagsData && tagsData.length > 0 ? (
-                  tagsData?.map((tag: any, idx: any) => (
-                    <Badge key={idx} className="bg-pink-400" variant="outline">
-                      {tag.title}
-                    </Badge>
-                  ))
-                ) : (
-                  <p className="text-gray-500">No Tags</p>
-                )}
-              </div>
+              <TagsComponent
+                tagInput={tagInput}
+                setTagInput={setTagInput}
+                task={viewData}
+                setTask={setViewData}
+                errorMessages={errorMessages}
+                setErrorMessages={setErrorMessages}
+              />
             </div>
           </div>
           <div>

@@ -196,13 +196,14 @@ const AddTask = () => {
                     <Button
                       variant="outline"
                       role="combobox"
+                      disabled={taskId ? true : false}
                       aria-expanded={openProjects}
                       className="w-[200px] justify-between"
                     >
                       {task.project_id
                         ? projectsList.find(
-                          (p: any) => p.id === task.project_id
-                        )?.title
+                            (p: any) => p.id === task.project_id
+                          )?.title
                         : "Select Project"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       {task.project_id && (
@@ -408,7 +409,9 @@ const AddTask = () => {
                     placeholder="Select Due Date"
                     editable={false}
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                    disabledDate={(date: any) => date < new Date()}
+                    disabledDate={(date: any) =>
+                      date < new Date().setHours(0, 0, 0, 0)
+                    }
                     style={{ width: "100%" }}
                   />
 
@@ -461,15 +464,18 @@ const AddTask = () => {
                     <p style={{ color: "red" }}>{errorMessages?.status?.[0]}</p>
                   )}
                 </div>
-
-                <TagsComponent
-                  tagInput={tagInput}
-                  setTagInput={setTagInput}
-                  task={task}
-                  setTask={setTask}
-                  errorMessages={errorMessages}
-                  setErrorMessages={setErrorMessages}
-                />
+                {taskId ? (
+                  ""
+                ) : (
+                  <TagsComponent
+                    tagInput={tagInput}
+                    setTagInput={setTagInput}
+                    task={task}
+                    setTask={setTask}
+                    errorMessages={errorMessages}
+                    setErrorMessages={setErrorMessages}
+                  />
+                )}
 
                 <div className="flex justify-end">
                   <Button
