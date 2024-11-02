@@ -16,27 +16,54 @@ import {
 } from "@/lib/services/dashboard";
 import { useQuery } from "@tanstack/react-query";
 import LoadingComponent from "./core/LoadingComponent";
+import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
+
+const formatDate = (date: Date) => {
+  return date.toISOString().split("T")[0];
+};
 
 const DashBoard = () => {
-  const [totalDetails, setTotalDetails] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    new Date()
-  );
-  const fetchCounts = async () => {
+  const [selectedDate, setSelectedDate] = useState<Date[]>([
+    new Date(),
+    new Date(),
+  ]);
+
+  const fetchCounts = async (fromDate: Date, toDate: Date) => {
     const results = await Promise.allSettled([
-      getTotalProjectsStats(),
-      getTotalUsersStats(),
-      getTotalTasksStats(),
-      getTotalActiveStats(),
+      getTotalProjectsStats({
+        from_date: formatDate(fromDate),
+        to_date: formatDate(toDate),
+      }),
+      getTotalTasksStats({
+        from_date: formatDate(fromDate),
+        to_date: formatDate(toDate),
+      }),
+      getTotalUsersStats({
+        from_date: formatDate(fromDate),
+        to_date: formatDate(toDate),
+      }),
+      getTotalActiveStats({
+        from_date: formatDate(fromDate),
+        to_date: formatDate(toDate),
+      }),
     ]);
     return results;
   };
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["getTotalCounts"],
-    queryFn: fetchCounts,
+  const { data, isLoading } = useQuery({
+    queryKey: ["getTotalCounts", selectedDate],
+    queryFn: () => fetchCounts(selectedDate[0], selectedDate[1]),
+    enabled: !!selectedDate,
   });
+
+  const handleDateChange = (fromDate: any, toDate: any) => {
+    if (fromDate && toDate) {
+      const [fromDateUTC, toDateUTC] = changeDateToUTC(fromDate, toDate);
+      setSelectedDate([fromDateUTC, toDateUTC]);
+    } else {
+      setSelectedDate([new Date(), new Date()]);
+    }
+  };
 
   const projectsCount =
     data?.[0]?.status === "fulfilled" ? data[0].value.data.data?.total : 0;
@@ -45,10 +72,7 @@ const DashBoard = () => {
   const tasksCount =
     data?.[2]?.status === "fulfilled" ? data[2].value.data?.data?.total : 0;
   const activeUsersCount =
-    data?.[3]?.status === "fulfilled" ? data[3].value.data?.data?.total : 0;
-  const handleDateChange = (date: Date | undefined) => {
-    setSelectedDate(date);
-  };
+    data?.[3]?.status === "fulfilled" ? data[3].value.data.data?.total : 0;
 
   return (
     <div className="h-full overflow-auto p-4">
@@ -56,7 +80,10 @@ const DashBoard = () => {
         <Card className="p-6 bg-white shadow-lg rounded-lg">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-gray-800">Stats</h2>
-            <DatePickerField value={selectedDate} onChange={handleDateChange} />
+            <DatePickerField
+              value={selectedDate}
+              onChangeData={handleDateChange}
+            />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -83,7 +110,7 @@ const DashBoard = () => {
                 />
               </div>
               <h1 className="text-3xl font-semibold text-gray-800">
-                <CountUp end={usersCount} duration={2.5} />
+                <CountUp end={tasksCount} duration={2.5} />
               </h1>
               <p className="text-sm text-gray-600">Tasks</p>
             </div>
@@ -97,7 +124,7 @@ const DashBoard = () => {
                 />
               </div>
               <h1 className="text-3xl font-semibold text-gray-800">
-                <CountUp end={tasksCount} duration={2.5} />
+                <CountUp end={usersCount} duration={2.5} />
               </h1>
               <p className="text-sm text-gray-600">Users</p>
             </div>
@@ -117,7 +144,7 @@ const DashBoard = () => {
             </div>
           </div>
         </Card>
-        <Card className=" h-[100%] p-2 bg-white shadow-lg rounded-lg">
+        <Card className="h-[100%] p-2 bg-white shadow-lg rounded-lg">
           <StatsAndGraph />
         </Card>
       </div>
