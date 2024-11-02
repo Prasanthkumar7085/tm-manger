@@ -1,15 +1,20 @@
 import DeleteProjects from "@/components/Projects/DeleteProject";
 import { Button } from "@/components/ui/button";
 import { fileUploadAPI, uploadToS3API } from "@/lib/services/projects";
-import { getAttachmentsAPI, uploadAttachmentAPI } from "@/lib/services/tasks";
+import {
+  downloadAttachmentAPI,
+  getAttachmentsAPI,
+  uploadAttachmentAPI,
+} from "@/lib/services/tasks";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
-import { Loader2, UploadCloud, X } from "lucide-react";
+import { CloudDownload, Loader2, UploadCloud, X } from "lucide-react";
 import { useState } from "react";
 import { useDropzone, FileRejection } from "react-dropzone";
 import { toast } from "sonner";
 import DeleteAttachments from "./DelteteAttachments";
 import LoadingComponent from "@/components/core/LoadingComponent";
+import { downloadFileFromS3 } from "@/lib/helpers/apiHelpers";
 
 const UploadAttachments = () => {
   const { taskId } = useParams({ strict: false });
@@ -34,7 +39,6 @@ const UploadAttachments = () => {
         if (response?.status === 200 || response?.status === 201) {
           const info = response?.data?.data;
           setAttachments(info);
-
           return info;
         }
       } catch (err: any) {
@@ -165,6 +169,30 @@ const UploadAttachments = () => {
     },
   });
 
+  const downloadFileMutation = useMutation({
+    mutationFn: async (payload: any) => {
+      try {
+        let body = {
+          file_key: payload.key,
+        };
+        setLoading(true);
+        const response = await downloadAttachmentAPI(body);
+        if (response.data.status === 200 || response.data.status === 201) {
+          downloadFileFromS3(
+            response?.data?.data?.download_url,
+            payload?.file_name
+          );
+        } else {
+          throw new Error("Failed to download attachment");
+        }
+      } catch (err) {
+        toast.error("Failed to download attachment.");
+      } finally {
+        setLoading(false);
+      }
+    },
+  });
+
   const handleRemoveFile = () => {
     setSelectedFiles([]);
   };
@@ -183,11 +211,21 @@ const UploadAttachments = () => {
                 <span className="text-xl">📄</span>
                 <p>{file.file_name}</p>
               </div>
-              <DeleteAttachments
-                attachmentId={file.id}
-                onSuccess={() => setRefreshCount((prev) => prev + 1)}
-                taskId={taskId}
-              />
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => {
+                    downloadFileMutation.mutate(file);
+                  }}
+                  title="download"
+                >
+                  <CloudDownload className="text-green-500 w-6 h-6" />
+                </button>
+                <DeleteAttachments
+                  attachmentId={file.id}
+                  onSuccess={() => setRefreshCount((prev) => prev + 1)}
+                  taskId={taskId}
+                />
+              </div>
             </div>
           ))
         ) : (
@@ -205,9 +243,11 @@ const UploadAttachments = () => {
             {selectedFiles.map((file, index) => (
               <div key={index} className="flex justify-between items-center">
                 <span className="font-medium">{file.name}</span>
-                <button onClick={handleRemoveFile}>
-                  <X className="text-red-500 w-6 h-6" />
-                </button>
+                <div>
+                  <button onClick={handleRemoveFile} title="Remove">
+                    <X className="text-red-500 w-6 h-6" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -229,7 +269,7 @@ const UploadAttachments = () => {
           <p className="text-red-600 mt-2">{rejectionMessage}</p>
         )}
       </div>
-      <LoadingComponent loading={isLoading || loading} />
+      <LoadingComponent loading={loading} />
     </div>
   );
 };

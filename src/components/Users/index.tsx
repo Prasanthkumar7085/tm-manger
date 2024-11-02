@@ -23,6 +23,7 @@ import { errPopper } from "@/lib/helpers/errPopper";
 import LoadingComponent from "../core/LoadingComponent";
 import { StatusFilter } from "../core/StatusFilter";
 import AddSheetRover from "../core/AddSheetRovar";
+import { Pencil } from 'lucide-react';
 
 function UsersTable() {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ function UsersTable() {
   const router = useRouter();
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("current_page")) || 1;
-  const pageSizeParam = Number(searchParams.get("page_size")) || 10;
+  const pageSizeParam = Number(searchParams.get("page_size")) || 25;
   const orderBY = searchParams.get("order_by")
     ? searchParams.get("order_by")
     : "";
@@ -108,10 +109,10 @@ function UsersTable() {
         fname: userData?.fname,
         lname: userData?.lname,
         email: userData?.email,
-        designation: userData?.designation,
+        designation: userData?.designation || null,
         password: userData?.password,
         user_type: userType,
-        phone_number: userData?.phone_number,
+        phone_number: userData?.phone_number || null,
       };
       const response = await addUsersAPI(payload);
       if (response?.status === 200 || response?.status === 201) {
@@ -320,7 +321,7 @@ function UsersTable() {
         fname: "",
         lname: "",
         email: "",
-        designation:"",
+        designation: "",
         password: "",
         phone_number: "",
       });
@@ -477,7 +478,7 @@ function UsersTable() {
           <div className="flex justify-between items-center">
             <div className="heading"></div>
             <div className="filters">
-              <ul className="flex justify-end space-x-4">
+              <ul className="flex justify-end space-x-3">
                 <li>
                   <StatusFilter
                     value={selectedStatus}

@@ -22,7 +22,7 @@ const Tasks = () => {
 
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
-  const pageSizeParam = Number(searchParams.get("page_size")) || 10;
+  const pageSizeParam = Number(searchParams.get("page_size")) || 25;
   const orderBY = searchParams.get("order_by")
     ? searchParams.get("order_by")
     : "";
@@ -96,9 +96,9 @@ const Tasks = () => {
         location.pathname == "/dashboard"
           ? ""
           : router.navigate({
-              to: "/tasks",
-              search: queryParams,
-            });
+            to: "/tasks",
+            search: queryParams,
+          });
       }
 
       return response;
@@ -164,14 +164,11 @@ const Tasks = () => {
   return (
     <section id="tasks" className="relative">
       <div>{!isDashboard && <TotalCounts />}</div>
-      <div className="card-container shadow-md border p-5 rounded-lg mt-3">
+      <div className="card-container shadow-md border p-5 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
           <div className="flex justify-between items-center">
-            <div className="heading">
-              <h2 className="text-lg">Tasks List</h2>
-            </div>
             <div className="filters">
-              <ul className="flex justify-end space-x-4">
+              <ul className="flex justify-end space-x-3">
                 <li>
                   <SelectTaskProjects
                     selectedProject={selectedProject}

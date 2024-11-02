@@ -32,11 +32,8 @@ const LoginComponent = () => {
           toast.success(response?.data?.message);
           const { data } = response?.data;
           const { access_token } = data;
-          const expirationDate = new Date();
-          expirationDate.setTime(expirationDate.getTime() + 300 * 10000);
           Cookies.set("token", access_token, {
             priority: "High",
-            expires: expirationDate,
           });
           dispatch(setUserDetails(data));
           navigate({

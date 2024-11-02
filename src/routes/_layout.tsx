@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_layout")({
 
 function LayoutComponent() {
   return (
-    <div className="flex">
+    <div className="flex bg-[#F7F8FA]">
       <SideBar />
       <MainSection />
     </div>

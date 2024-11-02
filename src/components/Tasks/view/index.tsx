@@ -13,6 +13,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import AssignedUsers from "../AssigneTasks";
 import UploadAttachments from "./Attachments";
+import LoadingComponent from "@/components/core/LoadingComponent";
 
 const TaskView = () => {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ const TaskView = () => {
     },
     enabled: Boolean(taskId),
   });
+
   const { isFetching } = useQuery({
     queryKey: ["gettags", taskId],
     queryFn: async () => {
@@ -96,7 +98,6 @@ const TaskView = () => {
   const handleTagSubmit = () => {
     // Ensure input is not empty
     const trimmedTag = tagsInput.trim();
-    console.log(trimmedTag, "trimmed");
     if (!trimmedTag) {
       setErrorMessages((prev: any) => ({
         ...prev,
@@ -119,7 +120,7 @@ const TaskView = () => {
   };
 
   return (
-    <div className=" flex flex-col space-y-6 md:space-y-0 md:flex-row md:space-x-6 px-3">
+    <div className=" flex flex-col space-y-6 md:space-y-0 md:flex-row md:space-x-6 px-3 relative">
       <div className="md:w-2/3 w-full bg-white rounded-lg shadow-md  space-y-4">
         <div className="flex justify-between items-start border-b pb-4">
           <div className="flex flex-col space-y-2">
@@ -173,84 +174,22 @@ const TaskView = () => {
             >
               Edit Task
             </Button>
-          </div>{" "}
+          </div>
         </div>
 
-        {/* Assigned To Section */}
         <div>
           <h2 className="font-semibold">Assigned To</h2>
           <div className="mt-2">
             <AssignedUsers />
-            {/* <table className="w-full text-left"> */}
-            {/* <thead>
-                <tr className="border-b">
-                  <th className="py-2 px-3">S No</th>
-                  <th className="py-2 px-3">Name</th>
-                  <th className="py-2 px-3">Actions</th>
-                </tr>
-              </thead> */}
-            {/* <tbody>
-                {/* Loop through each member */}
-            {/* {[
-              { name: "Pavan", role: "Manager" },
-              { name: "Gowtham", role: "Member" },
-              { name: "Sudhakar", role: "Member" },
-            ].map((person, idx) => (
-              <tr key={idx} className="border-b">
-                <td className="py-2 px-3">{`0${idx + 1}`}</td>
-                <td className="py-2 px-3 flex items-center space-x-2">
-                  <img
-                    className="w-8 h-8 rounded-full"
-                    src="https://i.pravatar.cc/150?img=4"
-                    alt="Avatar"
-                  />
-                  <span>{person.name}</span>
-                  <span className="text-green-600 ml-2">{person.role}</span>
-                </td>
-                <td className="py-2 px-3">
-                  <button className="text-red-500">🗑️</button>
-                </td>
-              </tr>
-            ))} */}
-            {/* </tbody>  */}
-            {/* </table> */}
           </div>
         </div>
-
-        {/* Attachments Section */}
         <div>
-          {/* <h2 className="font-semibold">Attachments</h2> */}
-          {/* <div className="mt-2 space-y-2">
-            {/* Loop through each attachment */}
-          {/* {Array(6)
-            .fill("user-journey-01.pdf")
-            .map((file, idx) => (
-              <div
-                key={idx}
-                className="flex justify-between items-center border rounded-md p-2"
-              >
-                <div className="flex items-center space-x-2">
-                  <span className="text-xl">📄</span>
-                  <p>{file}</p>
-                </div>
-                <div className="text-gray-500 flex items-center space-x-2">
-                  <span>604KB</span>
-                  <button className="text-gray-500">⋮</button>
-                </div>
-              </div>
-            ))} */}
-          {/* </div>  */}
-          {/* <button className="bg-red-500 text-white flex items-center space-x-2 mt-4 px-4 py-2 rounded-md">
-            <span>Upload</span>
-          </button> */}
           <UploadAttachments />
         </div>
       </div>
 
-      {/* Right Section - Comments */}
       <div className="md:w-1/3 w-full bg-white rounded-lg shadow-md p-6 space-y-4">
         <h2 className="font-semibold">Comments</h2>
-        {/* Loop through each comment */}
         <div className="space-y-4">
           <div className="border-b pb-4">
             <div className="flex justify-between items-center">
@@ -309,6 +248,7 @@ const TaskView = () => {
           </button>
         </div>
       </div>
+      <LoadingComponent loading={isLoading || loading} />
     </div>
   );
 };
