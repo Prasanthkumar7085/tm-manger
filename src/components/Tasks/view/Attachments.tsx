@@ -198,20 +198,40 @@ const UploadAttachments = () => {
   };
 
   return (
-    <div className="relative px-2">
-      <h2 className="font-semibold">Attachments</h2>
-      <div className="mt-2 space-y-2">
+    <div id="upload-attachments" className="mt-5">
+      <div className="flex justify-between">
+        <h2 className="text-lg font-semibold">Attachments</h2>
+        <Button
+          onClick={open}
+          className="bg-[#BF1B39] text-white flex items-center font-semibold rounded-lg"
+        >
+          {uploadingStatus.loading && (
+            <div className="flex items-center">
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            </div>
+          )}
+          <img src="/upload.svg" alt="icon" className="mr-2 w-4" />
+          Upload
+        </Button>
+      </div>
+      <div className="attachments-list mt-5 space-y-2">
         {attachmentsData.length > 0 ? (
           attachmentsData.map((file: any) => (
             <div
               key={file.id}
-              className="flex justify-between items-center border rounded-md p-2"
+              className="each-attachment flex justify-between items-center"
             >
-              <div className="flex items-center space-x-2">
+              <div className="attachment-name flex space-x-4">
                 <span className="text-xl">📄</span>
-                <p>{file.file_name}</p>
+                <div>
+                  <p className="name text-black font-semibold leading-tight">{file.file_name}</p>
+                  <p className="time mt-0">2m ago</p>
+                </div>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="attachment-actions flex justify-center space-x-4">
+                <p className="file-size border text-black font-semibold text-[10px] px-2 flex items-center rounded-sm border-slate-300">
+                  604KB
+                </p>
                 <button
                   onClick={() => {
                     downloadFileMutation.mutate(file);
@@ -232,7 +252,9 @@ const UploadAttachments = () => {
           <p>No attachments found.</p>
         )}
       </div>
+      <div className="mt-2 space-y-2">
 
+      </div>
       <div className="mt-4">
         <div {...getRootProps()} className="hidden">
           <input {...getInputProps()} />
@@ -252,18 +274,7 @@ const UploadAttachments = () => {
             ))}
           </div>
         )}
-        <Button
-          onClick={open}
-          className="bg-red-500 text-white flex items-center"
-        >
-          {uploadingStatus.loading && (
-            <div className="flex items-center mt-2">
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-            </div>
-          )}
-          <UploadCloud className="h-5 w-5 mr-2" />
-          Upload
-        </Button>
+
 
         {rejectionMessage && (
           <p className="text-red-600 mt-2">{rejectionMessage}</p>

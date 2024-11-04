@@ -255,15 +255,17 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
             <li onClick={handleActionClick}>
               <img
                 src={"/table/edit.svg"}
-                title="edit"
+                title={project?.active ? "edit" : "Unable to edit"}
                 alt="edit"
                 height={16}
                 width={16}
-                className="cursor-pointer"
+                className={project?.active ? "cursor-pointer" : `opacity-15`}
                 onClick={() => {
-                  navigate({
-                    to: `/projects/${project.id}`,
-                  });
+                  if (project?.active) {
+                    navigate({
+                      to: `/projects/${project.id}`,
+                    });
+                  }
                 }}
               />
             </li>

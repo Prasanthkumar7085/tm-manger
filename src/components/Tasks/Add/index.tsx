@@ -29,6 +29,7 @@ import React, { useState } from "react";
 import { DatePicker } from "rsuite";
 import { toast } from "sonner";
 import TagsComponent from "./TagsComponent";
+import UploadAttachments from "./UploadAttachments";
 
 const AddTask = () => {
   const navigate = useNavigate();
@@ -182,286 +183,175 @@ const AddTask = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-100 relative overflow-auto h-[90vh]">
-      <main className="flex-1 p-8">
-        <div className="bg-white shadow rounded-lg p-8 overflow-auto h-[80vh]">
-          <h2 className="text-2xl font-bold mb-6">
-            {taskId ? "Edit Task" : "Add Task"}
-          </h2>
-          <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-2 gap-6">
-              <div className="w-full">
-                <Popover open={openProjects} onOpenChange={setOpenProjects}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={openProjects}
-                      className="w-[200px] justify-between"
-                    >
-                      {task.project_id
-                        ? projectsList.find(
-                          (p: any) => p.id === task.project_id
-                        )?.title
-                        : "Select Project"}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      {task.project_id && (
-                        <X
-                          className="mr-4 h-4 w-4 cursor-pointer"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setTask((prev: any) => ({
-                              ...prev,
-                              project_id: null,
-                            }));
-                          }}
-                        />
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[200px] p-0 bg-white">
-                    <Command>
-                      <CommandInput placeholder="Search Projects" />
-                      <CommandList>
-                        <CommandEmpty>No Projects found.</CommandEmpty>
-                        <CommandGroup>
-                          {projectsList.map((project: any) => (
-                            <CommandItem
-                              key={project.id}
-                              onSelect={() => handleProjectSelect(project)}
-                              className="text-ellipsis overflow-hidden"
-                            >
-                              <Check
-                                className="mr-2 h-4 w-4"
-                                style={{
-                                  opacity:
-                                    task.project_id === project.id ? 1 : 0,
-                                }}
-                              />
-                              {project.title}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+    <section id="add-task" className="min-h-screen overflow-auto m-3 bg-white shadow rounded-lg">
+      <h2 className="text-lg font-bold mb-5 border-b px-6 py-4">
+        {taskId ? "Edit Task" : "Add Task"}
+      </h2>
+      <form onSubmit={handleSubmit} className="px-6">
+        <div className="grid grid-cols-2 gap-10">
+          <div className="leftColumn space-y-5">
+            <div className="form-item">
+              <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+                Select Project
+              </label>
+              <Popover open={openProjects} onOpenChange={setOpenProjects}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    disabled={taskId ? true : false}
+                    aria-expanded={openProjects}
+                    className="justify-between  bg-slate-50 h-[35px] w-[220px] relative"
+                  >
+                    {task.project_id
+                      ? projectsList.find(
+                        (p: any) => p.id === task.project_id
+                      )?.title
+                      : "Select Project"}
+                    <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
+                    {task.project_id && (
+                      <X
+                        className="mr-4 h-4 w-4 cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setTask((prev: any) => ({
+                            ...prev,
+                            project_id: null,
+                          }));
+                        }}
+                      />
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0 bg-white">
+                  <Command>
+                    <CommandInput placeholder="Search Projects" />
+                    <CommandList>
+                      <CommandEmpty>No Projects found.</CommandEmpty>
+                      <CommandGroup>
+                        {projectsList.map((project: any) => (
+                          <CommandItem
+                            key={project.id}
+                            onSelect={() => handleProjectSelect(project)}
+                            className="text-ellipsis overflow-hidden"
+                          >
+                            <Check
+                              className="mr-2 h-4 w-4"
+                              style={{
+                                opacity:
+                                  task.project_id === project.id ? 1 : 0,
+                              }}
+                            />
+                            {project.title}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
 
-                {errorMessages.project_id && (
+              {errorMessages.project_id && (
+                <p style={{ color: "red" }}>
+                  {errorMessages?.project_id?.[0]}
+                </p>
+              )}
+            </div>
+            <div className="form-item">
+              <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+                Task Title
+              </label>
+              <input
+                type="text"
+                name="title"
+                value={task.title}
+                onChange={handleChange}
+                className="bg-slate-50 h-[35px] p-2 border w-full rounded-md"
+                placeholder="Enter Task Title"
+              />
+              {errorMessages.title && (
+                <p style={{ color: "red" }}>{errorMessages?.title?.[0]}</p>
+              )}
+            </div>
+            <div className="form-item">
+              <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+                Description
+              </label>
+              <textarea
+                name="description"
+                value={task.description}
+                onChange={handleChange}
+                rows={4}
+                className="w-full p-2 bg-slate-50 border rounded-md"
+                placeholder="Enter Task Description"
+              ></textarea>
+              {errorMessages.description && (
+                <p style={{ color: "red" }}>
+                  {errorMessages?.description?.[0]}
+                </p>
+              )}
+            </div>
+            <div className="form-item">
+              <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+                Upload Attachments
+              </label>
+              <UploadAttachments />
+            </div>
+          </div>
+          <div className="rightColumn space-y-5">
+            <div className="grid grid-cols-2 gap-5">
+              <div className="form-item">
+                <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+                  Due Date
+                </label>
+                <DatePicker
+                  name="due_date"
+                  onChange={(date: any) =>
+                    handleChange({
+                      target: { name: "due_date", value: date },
+                    })
+                  }
+                  value={task.due_date ? new Date(task.due_date) : null}
+                  placeholder="Select Due Date"
+                  editable={false}
+                  disabledDate={(date: any) =>
+                    date < new Date().setHours(0, 0, 0, 0)
+                  }
+                  style={{ width: "100%" }}
+                />
+
+                {errorMessages.due_date && (
                   <p style={{ color: "red" }}>
-                    {errorMessages?.project_id?.[0]}
+                    {errorMessages?.due_date?.[0]}
                   </p>
                 )}
-
-                <div className="mb-4">
-                  <label className="block text-gray-700 font-bold mb-2">
-                    Task Title
-                  </label>
-                  <input
-                    type="text"
-                    name="title"
-                    value={task.title}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                    placeholder="Enter Task Title"
-                  />
-                  {errorMessages.title && (
-                    <p style={{ color: "red" }}>{errorMessages?.title?.[0]}</p>
-                  )}
-                </div>
-
-                <div className="mb-4">
-                  <label className="block text-gray-700 font-bold mb-2">
-                    Description
-                  </label>
-                  <textarea
-                    name="description"
-                    value={task.description}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                    placeholder="Enter Task Description"
-                  ></textarea>
-                  {errorMessages.description && (
-                    <p style={{ color: "red" }}>
-                      {errorMessages?.description?.[0]}
-                    </p>
-                  )}
-                </div>
-                {!taskId && (
-                  <div className="mb-4">
-                    <label className="block text-gray-700 font-bold mb-2">
-                      Assign To
-                    </label>
-                    <Popover open={openUsers} onOpenChange={setOpenUsers}>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-full">
-                          Select Users
-                          <ChevronsUpDown className="ml-2 h-4 w-4" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[200px] p-0 bg-white">
-                        <Command>
-                          <CommandInput placeholder="Search Users" />
-                          <CommandList>
-                            <CommandEmpty>No Users found.</CommandEmpty>
-                            <CommandGroup>
-                              {users.map((user) => (
-                                <CommandItem
-                                  key={user.id}
-                                  onSelect={() => handleUserSelect(user)}
-                                  disabled={task.users?.some(
-                                    (u: any) => u.id === user.id
-                                  )}
-                                >
-                                  <Check
-                                    className="mr-2 h-4 w-4"
-                                    style={{
-                                      opacity: selectedUsers.has(user.id)
-                                        ? 1
-                                        : 0,
-                                    }}
-                                  />
-                                  <p className="capitalize">
-                                    {user.fname} {user.lname}
-                                  </p>
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                        <div className="flex justify-end p-2">
-                          <Button onClick={handleConfirmSelection}>
-                            Confirm
-                          </Button>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                    {task.users?.length > 0 ? (
-                      <div>
-                        <label className="block text-gray-700 font-bold mb-2 mt-4">
-                          Assigned Users
-                        </label>
-
-                        <div className="overflow-auto max-h-40">
-                          <table className="min-w-full bg-white border border-gray-300">
-                            <thead className="bg-gray-200 sticky top-0">
-                              <tr>
-                                <th className="border px-4 py-2">S.No.</th>
-                                <th className="border px-4 py-2">Name</th>
-                                <th className="border px-4 py-2">User Type</th>
-                                <th className="border px-4 py-2">Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {task.users.map((user: any, index: number) => (
-                                <tr key={user.id} className="hover:bg-gray-100">
-                                  <td className="border px-4 py-2">
-                                    {index + 1}
-                                  </td>
-                                  <td className="border px-4 py-2 capitalize">
-                                    {user.fname} {user.lname}
-                                  </td>
-                                  <td className="border px-4 py-2 capitalize">
-                                    {user.user_type}
-                                  </td>
-                                  <td className="border px-4 py-2">
-                                    <button
-                                      className="text-red-500 hover:underline"
-                                      onClick={() => handleUserRemove(user.id)}
-                                    >
-                                      Remove
-                                    </button>
-                                  </td>
-                                </tr>
-                              ))}
-                              {task.users.length === 0 && (
-                                <tr>
-                                  <td className="text-center border px-4 py-2">
-                                    No Users Assigned
-                                  </td>
-                                </tr>
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                  </div>
+              </div>
+              <div className="form-item">
+                <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+                  Priority Level
+                </label>
+                <select
+                  name="priority"
+                  value={task.priority}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                >
+                  <option value="">Select priority</option>
+                  <option value="HIGH">High</option>
+                  <option value="MEDIUM">Medium</option>
+                  <option value="LOW">Low</option>
+                </select>
+                {errorMessages.priority && (
+                  <p style={{ color: "red" }}>
+                    {errorMessages?.priority?.[0]}
+                  </p>
                 )}
               </div>
-
-              <div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 font-bold mb-2">
-                    Due Date
-                  </label>
-                  <DatePicker
-                    name="due_date"
-                    onChange={(date: any) =>
-                      handleChange({
-                        target: { name: "due_date", value: date },
-                      })
-                    }
-                    value={task.due_date ? new Date(task.due_date) : null}
-                    placeholder="Select Due Date"
-                    editable={false}
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                    disabledDate={(date: any) => date < new Date()}
-                    style={{ width: "100%" }}
-                  />
-
-                  {errorMessages.due_date && (
-                    <p style={{ color: "red" }}>
-                      {errorMessages?.due_date?.[0]}
-                    </p>
-                  )}
-                </div>
-
-                <div className="mb-4">
-                  <label className="block text-gray-700 font-bold mb-2">
-                    Priority Level
-                  </label>
-                  <select
-                    name="priority"
-                    value={task.priority}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  >
-                    <option value="">Select priority</option>
-                    <option value="HIGH">High</option>
-                    <option value="MEDIUM">Medium</option>
-                    <option value="LOW">Low</option>
-                  </select>
-                  {errorMessages.priority && (
-                    <p style={{ color: "red" }}>
-                      {errorMessages?.priority?.[0]}
-                    </p>
-                  )}
-                </div>
-
-                <div className="mb-4">
-                  <label className="block text-gray-700 font-bold mb-2">
-                    Task Status
-                  </label>
-                  <select
-                    name="status"
-                    value={task.status}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  >
-                    <option value="">Select Status</option>
-                    <option value="TODO">Todo</option>
-                    <option value="IN_PROGRESS">In Progress</option>
-                    <option value="OVER_DUE">Overdue</option>
-                    <option value="COMPLETED">Completed</option>
-                  </select>
-                  {errorMessages.status && (
-                    <p style={{ color: "red" }}>{errorMessages?.status?.[0]}</p>
-                  )}
-                </div>
-
+            </div>
+            <div className="form-item">
+              {taskId ? (
+                ""
+              ) : (
                 <TagsComponent
                   tagInput={tagInput}
                   setTagInput={setTagInput}
@@ -470,30 +360,155 @@ const AddTask = () => {
                   errorMessages={errorMessages}
                   setErrorMessages={setErrorMessages}
                 />
-
-                <div className="flex justify-end">
-                  <Button
-                    type="button"
-                    className="px-6 py-2 bg-red-500 text-white rounded-md mr-2"
-                    onClick={() => window.history.back()}
-                  >
-                    Cancel
-                  </Button>
-
-                  <Button
-                    type="submit"
-                    className="px-6 py-2 bg-blue-600 text-white rounded-md"
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </div>
+              )}
             </div>
-          </form>
+            <div className="form-item">
+              {!taskId && (
+                <div className="mb-4">
+                  <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+                    Assign To
+                  </label>
+                  <Popover open={openUsers} onOpenChange={setOpenUsers}>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full">
+                        Select Users
+                        <ChevronsUpDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0 bg-white">
+                      <Command>
+                        <CommandInput placeholder="Search Users" />
+                        <CommandList>
+                          <CommandEmpty>No Users found.</CommandEmpty>
+                          <CommandGroup>
+                            {users.map((user) => (
+                              <CommandItem
+                                key={user.id}
+                                onSelect={() => handleUserSelect(user)}
+                                disabled={task.users?.some(
+                                  (u: any) => u.id === user.id
+                                )}
+                              >
+                                <Check
+                                  className="mr-2 h-4 w-4"
+                                  style={{
+                                    opacity: selectedUsers.has(user.id)
+                                      ? 1
+                                      : 0,
+                                  }}
+                                />
+                                <p className="capitalize">
+                                  {user.fname} {user.lname}
+                                </p>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                      <div className="flex justify-end p-2">
+                        <Button onClick={handleConfirmSelection}>
+                          Confirm
+                        </Button>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  {task.users?.length > 0 ? (
+                    <div>
+                      <label className="block text-gray-700 font-bold mb-2 mt-4">
+                        Assigned Users
+                      </label>
+
+                      <div className="overflow-auto max-h-40">
+                        <table className="min-w-full bg-white border border-gray-300">
+                          <thead className="bg-gray-200 sticky top-0">
+                            <tr>
+                              <th className="border px-4 py-2">S.No.</th>
+                              <th className="border px-4 py-2">Name</th>
+                              <th className="border px-4 py-2">User Type</th>
+                              <th className="border px-4 py-2">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {task.users.map((user: any, index: number) => (
+                              <tr key={user.id} className="hover:bg-gray-100">
+                                <td className="border px-4 py-2">
+                                  {index + 1}
+                                </td>
+                                <td className="border px-4 py-2 capitalize">
+                                  {user.fname} {user.lname}
+                                </td>
+                                <td className="border px-4 py-2 capitalize">
+                                  {user.user_type}
+                                </td>
+                                <td className="border px-4 py-2">
+                                  <button
+                                    className="text-red-500 hover:underline"
+                                    onClick={() => handleUserRemove(user.id)}
+                                  >
+                                    Remove
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                            {task.users.length === 0 && (
+                              <tr>
+                                <td className="text-center border px-4 py-2">
+                                  No Users Assigned
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="form-item">
+              <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+                Task Status
+              </label>
+              <select
+                name="status"
+                value={task.status}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+              >
+                <option value="">Select Status</option>
+                <option value="TODO">Todo</option>
+                <option value="IN_PROGRESS">In Progress</option>
+                <option value="OVER_DUE">Overdue</option>
+                <option value="COMPLETED">Completed</option>
+              </select>
+              {errorMessages.status && (
+                <p style={{ color: "red" }}>{errorMessages?.status?.[0]}</p>
+              )}
+            </div>
+
+          </div>
         </div>
-      </main>
+        <div className="form-action-button flex justify-end mt-5">
+          <Button
+            type="button"
+            className="px-6 py-2 bg-red-500 text-white rounded-md mr-2"
+            onClick={() => window.history.back()}
+          >
+            Cancel
+          </Button>
+
+          <Button
+            type="submit"
+            className="px-6 py-2 bg-blue-600 text-white rounded-md"
+          >
+            Submit
+          </Button>
+        </div>
+      </form>
       <LoadingComponent loading={loading || isLoading || isTaskLoading} />
-    </div>
+    </section>
   );
 };
 

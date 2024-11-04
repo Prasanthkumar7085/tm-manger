@@ -423,6 +423,7 @@ function UsersTable() {
       accessorFn: (row: any) => row.actions,
       id: "actions",
       cell: (info: any) => {
+        const isActive = info.row.original.active;
         return (
           <div className="flex ">
             <Button
@@ -430,6 +431,7 @@ function UsersTable() {
               onClick={() => handlePasswordUpdateOpen(info.row.original.id)}
               size={"sm"}
               variant={"ghost"}
+              disabled={!isActive}
             >
               <img
                 src={"/table/change-password-icon.svg"}
@@ -443,6 +445,7 @@ function UsersTable() {
               onClick={() => handleUpdate(info.row.original.id)}
               size={"sm"}
               variant={"ghost"}
+             disabled={!isActive}
             >
               <img src={"/table/edit.svg"} alt="view" height={16} width={16} />
             </Button>
@@ -515,7 +518,7 @@ function UsersTable() {
             loading={isLoading || isFetching || loading}
             paginationDetails={data?.data?.data?.pagination_info}
             getData={getAllUsers}
-            removeSortingForColumnIds={["serial", "actions"]}
+            removeSortingForColumnIds={["serial", "actions","active"]}
           />
         </div>
         <DeleteDialog

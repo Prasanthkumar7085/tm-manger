@@ -7,7 +7,7 @@ import {
   updateMembersAPI,
 } from "@/lib/services/projects/members";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useParams, useRouter } from "@tanstack/react-router";
+import { useLocation, useParams, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -28,10 +28,13 @@ import {
 } from "@/components/ui/command";
 import LoadingComponent from "@/components/core/LoadingComponent";
 import DeleteDialog from "@/components/core/deleteDialog";
+import { Tooltip } from "@/components/ui/tooltip";
 
-const ProjectMembersManagment = () => {
+const ProjectMembersManagment = ({ projectDetails }: any) => {
   const { projectId } = useParams({ strict: false });
   const router = useRouter();
+  const { pathname } = useLocation();
+
   const [selectedMembers, setSelectedMembers] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [errorMessages, setErrorMessages] = useState({});
@@ -83,14 +86,12 @@ const ProjectMembersManagment = () => {
         member.user_id === userId ? { ...member, role } : member
       )
     );
-    console.log(selectedMembers, "selectedMembers");
     let allMembers = [
       ...selectedMembers,
       ...selectedMembers.map((member: any) =>
         member.user_id === userId ? { ...member, role } : member
       ),
     ];
-    console.log(allMembers, "allMembers");
     let payload = allMembers.map((member: any) => {
       return { user_id: member.user_id, role: member.role };
     });
@@ -115,7 +116,7 @@ const ProjectMembersManagment = () => {
   };
 
   const { isLoading: isUsersLoading } = useQuery({
-    queryKey: ["users", projectId],
+    queryKey: ["users", projectId, pathname],
     queryFn: async () => {
       const response = await getAllMembers();
       if (response?.data?.data && Array.isArray(response.data.data)) {
@@ -135,7 +136,7 @@ const ProjectMembersManagment = () => {
   });
 
   const { isFetching, isLoading } = useQuery({
-    queryKey: ["getSingleProjectMembers", projectId, updating],
+    queryKey: ["getSingleProjectMembers", projectId, updating, pathname],
     queryFn: async () => {
       if (!projectId) return;
       try {
@@ -217,14 +218,10 @@ const ProjectMembersManagment = () => {
     removeMembers(removedUser);
   };
   return (
-    <div>
+    <div className="relative">
       <div className="flex flex-col justify-start gap-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <ArrowBigLeft
-              className="h-10 w-10 cursor-pointer"
-              onClick={() => window.history.back()}
-            />
             <h1 className="text-xl font-semibold">Project Members</h1>
           </div>
 
@@ -278,6 +275,14 @@ const ProjectMembersManagment = () => {
                   <Button
                     size="sm"
                     variant="outline"
+                    title={
+                      projectDetails?.active ? "" : "Project is not active"
+                    }
+                    disabled={
+                      projectDetails?.active && tempSelectedMember.length > 0
+                        ? false
+                        : true
+                    }
                     onClick={confirmSelection}
                   >
                     Confirm
@@ -309,6 +314,7 @@ const ProjectMembersManagment = () => {
                     <td className="border p-2">
                       <select
                         value={member.role}
+                        disabled={projectDetails?.active ? false : true}
                         onChange={(e) =>
                           changeRole(member.user_id, e.target.value)
                         }
@@ -327,6 +333,7 @@ const ProjectMembersManagment = () => {
                     <td className="border p-2">
                       <button
                         type="button"
+                        disabled={projectDetails?.active ? false : true}
                         className="text-red-500"
                         onClick={() => removeMember(member)}
                       >
@@ -340,13 +347,13 @@ const ProjectMembersManagment = () => {
           </div>
         ) : (
           <div
-            className={`text-center w-full ${loading || isLoading || isFetching ? "hidden" : "block"}`}
+            className={`min-h-[300px] text-center w-full ${loading || isLoading || isFetching ? "hidden" : "block"}`}
           >
             No members found
           </div>
         )}
       </div>
-      <LoadingComponent loading={loading || isLoading || isFetching} />
+      <LoadingComponent loading={loading} />
       <DeleteDialog
         openOrNot={removeUserDialog}
         onCancelClick={() => serRemoveUserDialog(false)}

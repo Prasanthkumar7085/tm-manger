@@ -9,6 +9,7 @@ interface GetAllPaginatedUsersPropTypes {
   status: string;
   priority: string;
   project_id: any;
+  
 }
 
 export const getAllPaginatedTasks = async ({
@@ -174,6 +175,14 @@ export const deleteAssignesAPI = async (assigneId: any) => {
 export const downloadAttachmentAPI = async (payload: any) => {
   try {
     return await $fetch.post(`/files/download`, payload);
+  } catch (err: any) {
+    throw err;
+  }
+};
+
+export const getTaskStatsCountsAPI = async () => {
+  try {
+    return await $fetch.get(`/tasks/tasks-stats`);
   } catch (err: any) {
     throw err;
   }
