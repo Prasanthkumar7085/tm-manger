@@ -199,11 +199,12 @@ const UploadAttachments = () => {
 
   return (
     <div id="upload-attachments" className="mt-5">
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <h2 className="text-lg font-semibold">Attachments</h2>
         <Button
+          type="button"
           onClick={open}
-          className="bg-[#BF1B39] text-white flex items-center font-semibold rounded-lg"
+          variant="add" size="DefaultButton"
         >
           {uploadingStatus.loading && (
             <div className="flex items-center">

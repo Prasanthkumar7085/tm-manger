@@ -16,10 +16,10 @@ function TaskStatus() {
     <div className="relative inline-block text-left">
       <button
         onClick={toggleDropdown}
-        className="flex items-center px-4 py-2 border border-blue-300 rounded-md text-blue-500 bg-white hover:bg-blue-100"
+        className="bg-[#e7e7e7] text-white px-4 h-[35px] font-semibold rounded-lg flex items-center"
       >
-        <span className="text-lg">{selectedStatus}</span>
-        <svg className="ml-2 w-3 h-3 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+        <span>{selectedStatus}</span>
+        <svg className="ml-2 w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
           <path d="M5.5 7.5L10 12l4.5-4.5H5.5z" />
         </svg>
       </button>

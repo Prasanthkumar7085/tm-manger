@@ -133,7 +133,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
   return (
     <div className="mb-4">
       <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">Tags</label>
-      <div className="flex">
+      <div className="flex space-x-3">
         <input
 
           type="text"
@@ -148,19 +148,22 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
           className="bg-slate-50 h-[35px] p-2 border w-full rounded-md"
           placeholder="Enter tag"
         />
-        <Button type="button" onClick={handleTagSubmit} className="ml-2 bg-[#1B2459] px-10 text-white h-[35px] font-semibold">
+        <Button type="button" variant="add" size="DefaultButton" onClick={handleTagSubmit}>
+          <span className="text-xl pr-2">+</span>
           Add
         </Button>
       </div>
-      {errorMessages?.tags && (
-        <p style={{ color: "red" }}>{errorMessages?.tags?.[0]}</p>
-      )}
+      {
+        errorMessages?.tags && (
+          <p style={{ color: "red" }}>{errorMessages?.tags?.[0]}</p>
+        )
+      }
       <div className="flex flex-wrap mt-2">
         {task?.tags?.length > 0
           ? task?.tags.map((tag: any, index: number) => (
             <div
               key={index}
-              className="flex items-center mt-2 px-3 py-1 bg-green-100 text-green-800 text-sm rounded mr-2"
+              className="bg-green-100 text-green-800 text-[0.8em] font-semibold mr-2 flex px-2 rounded-full"
             >
               {tag}
               <p
@@ -175,7 +178,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
             ? ""
             : "No Tags Found"}
       </div>
-    </div>
+    </div >
   );
 };
 

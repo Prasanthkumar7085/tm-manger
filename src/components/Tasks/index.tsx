@@ -207,9 +207,10 @@ const Tasks = () => {
                 </li>
                 <li>
                   <Button
-                    className="bg-red-700 text-white h-[35px] px-6"
+                    variant="add" size="DefaultButton"
                     onClick={handleNavigation}
                   >
+                    <span className="text-xl pr-2">+</span>
                     Add Task
                   </Button>
                 </li>

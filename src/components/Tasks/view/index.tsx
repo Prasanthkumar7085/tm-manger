@@ -108,7 +108,7 @@ const TaskView = () => {
     <div className="flex flex-col space-y-6 md:space-y-0 md:flex-row md:space-x-4  relative">
       <div id="task-details" className="md:w-2/3 w-full bg-white rounded-lg shadow-md  space-y-4 p-4 overflow-y-auto overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200" style={{ height: 'calc(100vh - 100px)' }}
       >
-        <div className="task-prime-details grid grid-cols-2">
+        <div className="task-prime-details grid grid-cols-2 border-b">
           <div>
             <h1 className="text-xl font-semibold">
               {viewData?.title ? capitalizeWords(viewData?.title) : "--"}
@@ -135,13 +135,14 @@ const TaskView = () => {
               <TaskStatus />
               <Button
                 type="button"
-                className="flex bg-blue-500"
+                variant="edit" size="DefaultButton"
                 onClick={() => {
                   router.navigate({
                     to: `/tasks/${taskId}`,
                   });
                 }}
               >
+                <img src="/edit-icon.svg" alt="icon" className="w-3 h-3 mr-2" />
                 Edit Task
               </Button>
             </div>
