@@ -104,8 +104,9 @@ const TaskView = () => {
   };
 
   return (
-    <div className="flex flex-col space-y-6 md:space-y-0 md:flex-row md:space-x-4 px-3 relative">
-      <div id="task-details" className="md:w-2/3 w-full bg-white rounded-lg shadow-md  space-y-4 p-4">
+    <div className="flex flex-col space-y-6 md:space-y-0 md:flex-row md:space-x-4  relative">
+      <div id="task-details" className="md:w-2/3 w-full bg-white rounded-lg shadow-md  space-y-4 p-4 overflow-y-auto overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200" style={{ height: 'calc(100vh - 100px)' }}
+      >
         <div className="flex justify-between items-start border-b pb-4">
           <div className="flex flex-col space-y-2">
             <h1 className="text-2xl font-semibold">
@@ -154,7 +155,6 @@ const TaskView = () => {
             </Button>
           </div>
         </div>
-
         <div>
           <h2 className="font-semibold">Assigned To</h2>
           <div className="mt-2">
