@@ -27,11 +27,11 @@ const ProjectTasksCounts = ({ projectStatsUpdate }: any) => {
 
   return (
     <section id="tasks-counts">
-      <div className="flex justify-between items-center gap-4 py-4 bg-gradient-to-rounded-lg  px-6">
-        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
-          <div className="flex justify-between w-full">
+      <div className="flex justify-between items-center gap-4 bg-gradient-to-rounded-lg  px-6">
+        <Card className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg">
+          <div className="flex justify-between w-full items-center">
             <div className="content">
-              <h3 className="leading-5">Total Tasks</h3>
+              <h3 className="leading-5 text-slate-500">Total Tasks</h3>
               <CardContent className="p-0 text-2xl">
                 <CountUp
                   end={
@@ -50,10 +50,10 @@ const ProjectTasksCounts = ({ projectStatsUpdate }: any) => {
             </div>
           </div>
         </Card>
-        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
-          <div className="flex justify-between w-full">
+        <Card className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg">
+          <div className="flex justify-between w-full items-center">
             <div className="content">
-              <h3 className="leading-5">To Do</h3>
+              <h3 className="leading-5 text-slate-500">To Do</h3>
               <CardContent className="p-0 text-2xl">
                 <CountUp
                   end={totalProjectWiseTasks?.todo_count?.toLocaleString() || 0}
@@ -70,10 +70,10 @@ const ProjectTasksCounts = ({ projectStatsUpdate }: any) => {
             </div>
           </div>
         </Card>
-        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
-          <div className="flex justify-between w-full">
+        <Card className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg">
+          <div className="flex justify-between w-full items-center">
             <div className="content">
-              <h3 className="leading-5">In Progress</h3>
+              <h3 className="leading-5 text-slate-500">In Progress</h3>
               <CardContent className="p-0 text-2xl">
                 <CountUp
                   end={
@@ -93,11 +93,10 @@ const ProjectTasksCounts = ({ projectStatsUpdate }: any) => {
             </div>
           </div>
         </Card>
-
-        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
-          <div className="flex justify-between w-full">
+        <Card className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg">
+          <div className="flex justify-between w-full items-center">
             <div className="content">
-              <h3 className="leading-5">Overdue</h3>
+              <h3 className="leading-5 text-slate-500">Overdue</h3>
               <CardContent className="p-0 text-2xl">
                 <CountUp
                   end={totalProjectWiseTasks?.overdue_count?.toLocaleString()}
@@ -114,11 +113,10 @@ const ProjectTasksCounts = ({ projectStatsUpdate }: any) => {
             </div>
           </div>
         </Card>
-
-        <Card className="flex-1 flex flex-row items-center bg-white shadow-md p-4 rounded-lg">
-          <div className="flex justify-between w-full">
+        <Card className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg">
+          <div className="flex justify-between w-full items-center">
             <div className="content">
-              <h3 className="leading-5">Completed</h3>
+              <h3 className="leading-5 text-slate-500">Completed</h3>
               <CardContent className="p-0 text-2xl">
                 <CountUp
                   end={totalProjectWiseTasks?.completed_count?.toLocaleString()}
