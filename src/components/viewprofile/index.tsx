@@ -16,7 +16,7 @@ import {
 import { useSelector } from "react-redux";
 import { fileUploadAPI, uploadToS3API } from "@/lib/services/projects";
 import { toast } from "sonner";
-import { Pencil, X } from "lucide-react";
+import { CirclePlus, Pencil, Plus, UserRoundPlus, X } from "lucide-react";
 
 function ViewProfile() {
   const userID = useSelector(
@@ -69,13 +69,16 @@ function ViewProfile() {
     if (file) {
       setPreviewUrl(URL.createObjectURL(file));
       fileUploadMutation.mutate(file);
-    } else {
-      setPreviewUrl(null);
     }
   };
 
   const handleRemoveFile = () => {
     setPreviewUrl(null);
+    setUserData((prev: any) => ({
+      ...prev,
+      profile_pic: "",
+    }));
+    // uploadProfileMutation.mutate({ profile_pic: "" });
   };
 
   const fileUploadMutation = useMutation({
@@ -145,31 +148,31 @@ function ViewProfile() {
           className="hidden"
         />
         <label htmlFor="file-upload" className="cursor-pointer">
-          {previewUrl ? (
-            <div className="relative">
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className="w-32 h-32 object-cover"
-              />
-              <button
-                onClick={handleRemoveFile}
-                className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border"
-              >
-                <X className="text-white w-4 h-4" />
-              </button>
-              <span className="absolute bottom-2 middle-3 bg-blue-800 text-white text-xs rounded-full p-2">
-                <Pencil className="w-4 h-4" />
+          <div className="relative w-32 h-32 flex items-center justify-center bg-gray-300 rounded-full">
+            {previewUrl || userData.profile_pic ? (
+              <div className="relative">
+                <img
+                  src={previewUrl || userData.profile_pic}
+                  alt="Profile"
+                  className="w-32 h-32 object-cover rounded-full"
+                />
+                <button
+                  onClick={handleRemoveFile}
+                  className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border"
+                >
+                  <X className="text-white w-4 h-4" />
+                </button>
+                <span className="absolute bottom-2 right-2 bg-blue-800 text-white text-xs rounded-full p-2">
+                  <Pencil className="w-4 h-4" />
+                </span>
+              </div>
+            ) : (
+              <span className="text-gray-700 text-7xl relative">
+                👤
+                <CirclePlus className="absolute -bottom-0.29 right-0.5 text-gray-500 w-11 h-11"/>
               </span>
-            </div>
-          ) : (
-            <img
-              src={userData.profile_pic}
-              alt="User Profile"
-              height={300}
-              width={300}
-            />
-          )}
+            )}
+          </div>
         </label>
       </CardHeader>
       <CardContent className="flex flex-row items-center space-x-4">
