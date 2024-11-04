@@ -1,11 +1,8 @@
 // src/components/KanbanBoard.tsx
-import LoadingComponent from "@/components/core/LoadingComponent";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  taskPriorityConstants,
-  taskStatusConstants,
-} from "@/lib/helpers/statusConstants";
+import { Skeleton } from "@/components/ui/skeleton";
+import { taskStatusConstants } from "@/lib/helpers/statusConstants";
 import {
   getTasksBasedOnProjectAPI,
   updateProjectTaskStatusAPI,
@@ -37,7 +34,10 @@ type TaskColumn = {
   [key: string]: Task[];
 };
 
-const KanbanBoard: React.FC = () => {
+const KanbanBoard: React.FC<any> = ({
+  projectDetails,
+  setProjetStatsUpdate,
+}) => {
   const { projectId } = useParams({ strict: false });
   const navigate = useNavigate();
   const router = useRouter();
@@ -87,98 +87,6 @@ const KanbanBoard: React.FC = () => {
     }
   };
 
-  const renderColumn = (columnName: string) => (
-    <Droppable droppableId={columnName}>
-      {(provided) => (
-        <div
-          {...provided.droppableProps}
-          ref={provided.innerRef}
-          className="flex flex-col p-4 bg-gray-100 rounded-md"
-        >
-          <h2 className="text-lg font-bold">
-            {
-              taskStatusConstants.find((item: any) => item.value == columnName)
-                ?.label
-            }
-          </h2>
-          {tasks[columnName].map((task, index) => (
-            <Draggable
-              key={task.task_id}
-              draggableId={String(task.task_id)}
-              index={index}
-            >
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                  className="bg-[#eef5ff] border p-4 my-2 rounded-lg shadow-md  cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => {
-                    router.navigate({
-                      to: `/tasks/view/${task.task_id}`,
-                    });
-                  }}
-                >
-                  <p
-                    className="text-ellipsis overflow-hidden"
-                    title={task.task_title}
-                  >
-                    {task.task_title || "--"}
-                  </p>
-                  <p
-                    className="text-gray-500 text-ellipsis overflow-hidden"
-                    title={task.task_description}
-                  >
-                    {task.task_description || "--"}
-                  </p>
-                  <div className="flex justify-start mt-3 -space-x-3">
-                    {task?.assignees?.slice(0, 5).map((assignee) => (
-                      <Avatar
-                        key={assignee.user_id}
-                        className="w-8 h-8 border-2 border-white"
-                      >
-                        <AvatarImage
-                          src={assignee.user_profile_pic}
-                          alt={assignee.name}
-                          title={
-                            assignee.user_first_name +
-                            " " +
-                            assignee.user_last_name
-                          }
-                        />
-                        <AvatarFallback>
-                          {assignee.user_first_name[0] +
-                            assignee.user_last_name[0]}
-                        </AvatarFallback>
-                      </Avatar>
-                    ))}
-
-                    {task?.assignees?.length > 5 && (
-                      <div className="flex items-center justify-center w-8 h-8 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold">
-                        +{task.assignees.length - 5}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </Draggable>
-          ))}
-          {provided.placeholder}
-          <Button
-            onClick={() => {
-              router.navigate({
-                to: "/tasks/add",
-                search: { project_id: projectId, status: columnName },
-              });
-            }}
-          >
-            Add Task
-          </Button>
-        </div>
-      )}
-    </Droppable>
-  );
-
   const { isFetching, isLoading } = useQuery({
     queryKey: ["getSingleProjectTasks", projectId, callProjectTasks],
     queryFn: async () => {
@@ -209,6 +117,109 @@ const KanbanBoard: React.FC = () => {
     enabled: Boolean(projectId),
   });
 
+  const renderColumn = (columnName: string) => (
+    <Droppable droppableId={columnName}>
+      {(provided) => (
+        <div
+          {...provided.droppableProps}
+          ref={provided.innerRef}
+          className="flex flex-col p-4 bg-gray-100 rounded-md"
+        >
+          <h2 className="text-lg font-bold">
+            {
+              taskStatusConstants.find((item: any) => item.value == columnName)
+                ?.label
+            }
+          </h2>
+          {isLoading || isFetching
+            ? Array.from({ length: 2 }).map((_, index) => (
+                <div className="flex flex-col space-y-3  border">
+                  <Skeleton className="h-[105px] w-[250px] rounded-xl" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[200px]" />
+                  </div>
+                </div>
+              ))
+            : tasks[columnName].map((task, index) => (
+                <Draggable
+                  key={task.task_id}
+                  draggableId={String(task.task_id)}
+                  index={index}
+                >
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      className="bg-[#eef5ff] border p-4 my-2 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+                      onClick={() => {
+                        router.navigate({
+                          to: `/tasks/view/${task.task_id}`,
+                        });
+                      }}
+                    >
+                      <p
+                        className="text-ellipsis overflow-hidden"
+                        title={task.task_title}
+                      >
+                        {task.task_title || "--"}
+                      </p>
+                      <p
+                        className="text-gray-500 text-ellipsis overflow-hidden"
+                        title={task.task_description}
+                      >
+                        {task.task_description || "--"}
+                      </p>
+                      <div className="flex justify-start mt-3 -space-x-3">
+                        {task?.assignees?.slice(0, 5).map((assignee) => (
+                          <Avatar
+                            key={assignee.user_id}
+                            className="w-8 h-8 border-2 border-white"
+                          >
+                            <AvatarImage
+                              src={assignee.user_profile_pic}
+                              alt={assignee.name}
+                              title={
+                                assignee.user_first_name +
+                                " " +
+                                assignee.user_last_name
+                              }
+                            />
+                            <AvatarFallback>
+                              {assignee.user_first_name[0] +
+                                assignee.user_last_name[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                        ))}
+                        {task?.assignees?.length > 5 && (
+                          <div className="flex items-center justify-center w-8 h-8 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold">
+                            +{task.assignees.length - 5}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+          {provided.placeholder}
+          <Button
+            disabled={projectDetails?.active ? false : true}
+            title="Add Task"
+            onClick={() => {
+              router.navigate({
+                to: "/tasks/add",
+                search: { project_id: projectId, status: columnName },
+              });
+            }}
+          >
+            Add Task
+          </Button>
+        </div>
+      )}
+    </Droppable>
+  );
+
   const updateTaskStatus = async (status: string, task: Task) => {
     setLoading(true);
     try {
@@ -219,6 +230,7 @@ const KanbanBoard: React.FC = () => {
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message);
         setCallProjectTasks((prev) => prev + 1);
+        setProjetStatsUpdate((prev: any) => prev + 1);
       } else {
         toast.error("Failed to change status");
       }

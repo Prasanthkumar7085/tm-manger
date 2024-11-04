@@ -1,4 +1,4 @@
-import ProjectMembersManagment from "@/components/Projects/View/ProjectMembersManagment";
+import ProjectView from "@/components/Projects/View";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute(
@@ -6,7 +6,7 @@ export const Route = createFileRoute(
 )({
   component: () => (
     <div>
-      <ProjectMembersManagment />
+      <ProjectView />
     </div>
   ),
 });

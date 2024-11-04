@@ -4,8 +4,27 @@ import overDueTasksIcon from "@/assets/overdue-tasks-icon.svg";
 import todoTasksIcon from "@/assets/todo-tasks-icon.svg";
 import totalTasksicon from "@/assets/total-tasks-icon.svg";
 import { Card, CardContent } from "@/components/ui/card";
+import { getProjectWiseTasksAPI } from "@/lib/services/projects";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "@tanstack/react-router";
 import CountUp from "react-countup";
-const ProjectTasksCounts = () => {
+const ProjectTasksCounts = ({ projectStatsUpdate }: any) => {
+  const { projectId } = useParams({ strict: false });
+
+  const { data: totalProjectWiseTasks } = useQuery({
+    queryKey: ["totalTasks", projectStatsUpdate],
+    queryFn: () => getProjectWiseTotalTasksCounts(),
+  });
+
+  const getProjectWiseTotalTasksCounts = async () => {
+    try {
+      const response = await getProjectWiseTasksAPI(projectId);
+      return response?.data?.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <section id="tasks-counts">
       <div className="flex justify-between items-center gap-4 py-4 bg-gradient-to-rounded-lg  px-6">
@@ -14,7 +33,12 @@ const ProjectTasksCounts = () => {
             <div className="content">
               <h3 className="leading-5">Total Tasks</h3>
               <CardContent className="p-0 text-2xl">
-                <CountUp end={1000} duration={2.5} />
+                <CountUp
+                  end={
+                    totalProjectWiseTasks?.total_tasks?.toLocaleString() || 0
+                  }
+                  duration={2.5}
+                />
               </CardContent>
             </div>
             <div className="image">
@@ -31,7 +55,10 @@ const ProjectTasksCounts = () => {
             <div className="content">
               <h3 className="leading-5">To Do</h3>
               <CardContent className="p-0 text-2xl">
-                <CountUp end={100} duration={2.5} />
+                <CountUp
+                  end={totalProjectWiseTasks?.todo_count?.toLocaleString() || 0}
+                  duration={2.5}
+                />
               </CardContent>
             </div>
             <div className="image">
@@ -48,7 +75,13 @@ const ProjectTasksCounts = () => {
             <div className="content">
               <h3 className="leading-5">In Progress</h3>
               <CardContent className="p-0 text-2xl">
-                <CountUp end={700} duration={2.5} />
+                <CountUp
+                  end={
+                    totalProjectWiseTasks?.inProgress_count?.toLocaleString() ||
+                    0
+                  }
+                  duration={2.5}
+                />
               </CardContent>
             </div>
             <div className="image">
@@ -66,7 +99,10 @@ const ProjectTasksCounts = () => {
             <div className="content">
               <h3 className="leading-5">Overdue</h3>
               <CardContent className="p-0 text-2xl">
-                <CountUp end={100} duration={2.5} />
+                <CountUp
+                  end={totalProjectWiseTasks?.overDue_count?.toLocaleString()}
+                  duration={2.5}
+                />
               </CardContent>
             </div>
             <div className="image">
@@ -84,7 +120,10 @@ const ProjectTasksCounts = () => {
             <div className="content">
               <h3 className="leading-5">Completed</h3>
               <CardContent className="p-0 text-2xl">
-                <CountUp end={100} duration={2.5} />
+                <CountUp
+                  end={totalProjectWiseTasks?.completed_count?.toLocaleString()}
+                  duration={2.5}
+                />
               </CardContent>
             </div>
             <div className="image">

@@ -14,8 +14,8 @@ interface TagsComponentProps {
   setTagInput: React.Dispatch<React.SetStateAction<string>>;
   task: any;
   setTask: React.Dispatch<React.SetStateAction<any>>;
-  errorMessages: any;
-  setErrorMessages: React.Dispatch<React.SetStateAction<any>>;
+  errorMessages?: any;
+  setErrorMessages?: React.Dispatch<React.SetStateAction<any>> | any;
 }
 
 const TagsComponent: React.FC<TagsComponentProps> = ({
@@ -59,7 +59,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
     },
     onSuccess: (response: any) => {
       if (response?.status === 200 || response?.status === 201) {
-        // toast.success(response?.data?.message);
+        toast.success(response?.data?.message);
       }
     },
     onError: (error: any) => {
@@ -75,7 +75,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
     },
     onSuccess: (response: any) => {
       if (response?.status === 200 || response?.status === 201) {
-        // toast.success(response?.data?.message);
+        toast.success(response?.data?.message);
       } else {
         throw new Error("Failed to remove tag");
       }
@@ -111,6 +111,12 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
         tags: ["Tag already exists"],
       }));
     }
+    if (!tagInput) {
+      setErrorMessages((prev: any) => ({
+        ...prev,
+        tags: ["Please enter a valid tag"],
+      }));
+    }
   };
 
   const handleTagDelete = (tag: any) => {
@@ -126,7 +132,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
 
   return (
     <div className="mb-4">
-      <label className="block text-gray-700 font-bold mb-2">Tags</label>
+      <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">Tags</label>
       <div className="flex">
         <input
           type="text"
@@ -145,25 +151,25 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
           Add
         </Button>
       </div>
-      {errorMessages.tags && (
+      {errorMessages?.tags && (
         <p style={{ color: "red" }}>{errorMessages?.tags?.[0]}</p>
       )}
       <div className="flex flex-wrap mt-2">
-        {task.tags?.length > 0
-          ? task.tags.map((tag: any, index: number) => (
-              <div
-                key={index}
-                className="flex items-center mt-2 px-3 py-1 bg-green-100 text-green-800 text-sm rounded mr-2"
+        {task?.tags?.length > 0
+          ? task?.tags.map((tag: any, index: number) => (
+            <div
+              key={index}
+              className="flex items-center mt-2 px-3 py-1 bg-green-100 text-green-800 text-sm rounded mr-2"
+            >
+              {tag}
+              <p
+                className="ml-1 text-red-500 rotate-[45deg] cursor-pointer"
+                onClick={() => handleTagDelete(tag)}
               >
-                {tag}
-                <p
-                  className="ml-1 text-red-500 rotate-[45deg] cursor-pointer"
-                  onClick={() => handleTagDelete(tag)}
-                >
-                  +
-                </p>
-              </div>
-            ))
+                +
+              </p>
+            </div>
+          ))
           : isTaskTagsLoading
             ? ""
             : "No Tags Found"}

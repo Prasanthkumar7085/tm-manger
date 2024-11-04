@@ -7,11 +7,13 @@ import DateRangeFilter from "./core/DateRangePicker";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 
-const StatsAndGraph = () => {
+const StatsAndGraph = ({ selectedDate }: any) => {
+  const today = new Date();
+
   const [selectedDateRange, setSelectedDateRange] = useState<
     [Date, Date] | null
-  >(null);
-  const [dateValue, setDateValue] = useState<[Date, Date] | null>(null);
+  >([new Date(today.setHours(0, 0, 0, 0)), new Date()]);
+  const [dateValue, setDateValue] = useState<[Date, Date] | null>();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -31,15 +33,18 @@ const StatsAndGraph = () => {
     enabled: !!selectedDateRange,
   });
 
-  const categories = Array.isArray(data)
-    ? data.map((item: any) => item.date)
-    : [];
-  const completedData = Array.isArray(data)
-    ? data.map((item: any) => item.completed_count)
-    : [];
-  const inProgressData = Array.isArray(data)
-    ? data.map((item: any) => item.inprogress_count)
-    : [];
+  const dummyData = [
+    { date: "2024-10-30", completed_count: 5, inprogress_count: 3 },
+    { date: "2024-10-31", completed_count: 8, inprogress_count: 2 },
+    { date: "2024-11-01", completed_count: 4, inprogress_count: 6 },
+    { date: "2024-11-02", completed_count: 7, inprogress_count: 1 },
+  ];
+
+  const trendData = Array.isArray(data) && data.length > 0 ? data : dummyData;
+
+  const categories = trendData.map((item: any) => item.date);
+  const completedData = trendData.map((item: any) => item.completed_count);
+  const inProgressData = trendData.map((item: any) => item.inprogress_count);
 
   const options = {
     chart: { type: "spline", height: 200, style: { borderRadius: "16px" } },

@@ -1,34 +1,31 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useParams, useRouter } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocation, useParams, useRouter } from "@tanstack/react-router";
 import dayjs from "dayjs";
+import { useState } from "react";
 import { toast } from "sonner";
 
+import LoadingComponent from "@/components/core/LoadingComponent";
+import { Button } from "@/components/ui/button";
 import {
   fileUploadAPI,
   uploadLogoAPI,
   uploadToS3API,
   viewProjectAPI,
 } from "@/lib/services/projects";
-import ProjectTasksCounts from "./ProjectTasksCounts";
-import ProjectMembersManagment from "./ProjectMembersManagment";
-import LoadingComponent from "@/components/core/LoadingComponent";
-import { Button } from "@/components/ui/button";
-import { CameraIcon, X, ZoomIn } from "lucide-react";
+import { CameraIcon, X } from "lucide-react";
 import KanbanBoard from "../KanBanView";
+import ProjectMembersManagment from "./ProjectMembersManagment";
+import ProjectTasksCounts from "./ProjectTasksCounts";
 
-const ProjectView = ({
-  setRefreshCount,
-  refreshCount,
-}: {
-  setRefreshCount: (count: any) => void;
-  refreshCount: number;
-}) => {
+const ProjectView = () => {
   const { projectId } = useParams({ strict: false });
   const router = useRouter();
   const queryClient = useQueryClient();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
 
   const [projectDetails, setProjectDetails] = useState<any>({});
+  const [projectStatsUpdate, setProjetStatsUpdate] = useState<number>(0);
   const [uploadingStatus, setUploadingStatus] = useState({
     startUploading: false,
     uploadSuccess: false,
@@ -115,9 +112,7 @@ const ProjectView = ({
         const response = await uploadLogoAPI(projectId, payload);
         if (response.data.status === 200 || response.data.status === 201) {
           toast.success("Logo uploaded successfully!");
-          if (setRefreshCount) {
-            setRefreshCount((prev: any) => prev + 1);
-          }
+
           return response;
         } else {
           throw new Error("Failed to upload logo");
@@ -146,7 +141,7 @@ const ProjectView = ({
   };
 
   return (
-    <div className="flex flex-col justify-between h-full w-full overflow-auto">
+    <div className="flex flex-col justify-between h-full w-full overflow-auto relative">
       <div className="w-full flex  items-center ">
         <div className="mt-4 flex flex-col w-[10%] ">
           {previewUrl ? (
@@ -198,12 +193,16 @@ const ProjectView = ({
           {uploadingStatus.startUploading && <p>Uploading...</p>}
         </div>
         <div className="w-[90%]">
-          <ProjectTasksCounts />
+          <ProjectTasksCounts projectStatsUpdate={projectStatsUpdate} />
         </div>
       </div>
       <div className="flex items-center mt-4 space-x-2 w-full justify-between relative">
         <div>
           <h2 className="text-xl font-semibold capitalize flex-1">
+            <span
+              title={projectDetails?.active ? "Active" : "Inactive"}
+              className={`inline-block w-2 h-2 rounded-full mr-2 ${projectDetails?.active ? "bg-green-500" : "bg-red-500"}`}
+            ></span>
             {projectDetails?.title}
           </h2>
           <p className="text-sm text-gray-500 capitalize flex-1">
@@ -213,13 +212,25 @@ const ProjectView = ({
         <div className="flex flex-row items-center gap-4">
           <Button
             onClick={() => {
-              router.navigate({
-                to: `/projects/${projectId}/project_members`,
-              });
+              if (openMembers || searchParams.get("tab") == "project_members") {
+                router.navigate({
+                  to: `/projects/view//${projectId}`,
+                  search: { tab: "kanban" },
+                });
+                setOpenMembers(!openMembers);
+              } else {
+                router.navigate({
+                  to: `/projects/view/${projectId}`,
+                  search: { tab: "project_members" },
+                });
+                setOpenMembers(!openMembers);
+              }
             }}
             className="bg-[#f3d1d7]"
           >
-            {openMembers ? "Close Members" : "View Members"}
+            {openMembers || searchParams.get("tab") == "project_members"
+              ? "Close Members"
+              : "View Members"}
           </Button>
           <div>
             <h2 className="text-sm font-semibold">Created at</h2>
@@ -232,17 +243,19 @@ const ProjectView = ({
             <p className="text-sm text-gray-500">{"Member"}</p>
           </div>
         </div>
-        {/* <LoadingComponent loading={isLoading || isFetching} /> */}
       </div>
 
-      {/* {openMembers && (
-        <div className="mt-2">
-          <ProjectMembersManagment />
-        </div>
-      )} */}
       <div className="mt-4">
-        <KanbanBoard />
+        {openMembers || searchParams.get("tab") == "project_members" ? (
+          <ProjectMembersManagment projectDetails={projectDetails} />
+        ) : (
+          <KanbanBoard
+            projectDetails={projectDetails}
+            setProjetStatsUpdate={setProjetStatsUpdate}
+          />
+        )}
       </div>
+      <LoadingComponent loading={isLoading || isFetching} />
     </div>
   );
 };
