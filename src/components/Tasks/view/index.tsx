@@ -105,7 +105,7 @@ const TaskView = () => {
 
   return (
     <div className="flex flex-col space-y-6 md:space-y-0 md:flex-row md:space-x-4 px-3 relative">
-      <div className="md:w-2/3 w-full bg-white rounded-lg shadow-md  space-y-4">
+      <div id="task-details" className="md:w-2/3 w-full bg-white rounded-lg shadow-md  space-y-4 p-4">
         <div className="flex justify-between items-start border-b pb-4">
           <div className="flex flex-col space-y-2">
             <h1 className="text-2xl font-semibold">
