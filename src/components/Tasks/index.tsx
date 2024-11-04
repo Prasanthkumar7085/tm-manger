@@ -96,9 +96,9 @@ const Tasks = () => {
         location.pathname == "/dashboard"
           ? ""
           : router.navigate({
-              to: "/tasks",
-              search: queryParams,
-            });
+            to: "/tasks",
+            search: queryParams,
+          });
       }
 
       return response;
