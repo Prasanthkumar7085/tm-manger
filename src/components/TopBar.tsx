@@ -38,9 +38,6 @@ function TopBar() {
             My Account
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Update Password</DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => {

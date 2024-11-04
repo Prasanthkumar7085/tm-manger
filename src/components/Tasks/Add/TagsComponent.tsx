@@ -88,7 +88,21 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
   });
 
   const handleTagSubmit = () => {
-    if (tagInput.trim() && !task.tags.includes(tagInput.trim())) {
+    if (task.tags.includes(tagInput.trim())) {
+      setErrorMessages((prev: any) => ({
+        ...prev,
+        tags: ["Tag already exists"],
+      }));
+      return;
+    }
+    if (!tagInput) {
+      setErrorMessages((prev: any) => ({
+        ...prev,
+        tags: ["Please enter a valid tag"],
+      }));
+      return;
+    }
+    if (tagInput.trim()) {
       setErrorMessages((prev: any) => ({
         ...prev,
         tags: [""],
@@ -105,18 +119,6 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
         });
       }
     }
-    if (task.tags.includes(tagInput.trim())) {
-      setErrorMessages((prev: any) => ({
-        ...prev,
-        tags: ["Tag already exists"],
-      }));
-    }
-    if (!tagInput) {
-      setErrorMessages((prev: any) => ({
-        ...prev,
-        tags: ["Please enter a valid tag"],
-      }));
-    }
   };
 
   const handleTagDelete = (tag: any) => {
@@ -132,10 +134,11 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
 
   return (
     <div className="mb-4">
-      <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">Tags</label>
+      <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+        Tags
+      </label>
       <div className="flex space-x-3">
         <input
-
           type="text"
           value={tagInput}
           onChange={(e) => setTagInput(e.target.value)}
@@ -148,37 +151,40 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
           className="bg-slate-50 h-[35px] p-2 border w-full rounded-md"
           placeholder="Enter tag"
         />
-        <Button type="button" variant="add" size="DefaultButton" onClick={handleTagSubmit}>
+        <Button
+          type="button"
+          variant="add"
+          size="DefaultButton"
+          onClick={handleTagSubmit}
+        >
           <span className="text-xl pr-2">+</span>
           Add
         </Button>
       </div>
-      {
-        errorMessages?.tags && (
-          <p style={{ color: "red" }}>{errorMessages?.tags?.[0]}</p>
-        )
-      }
+      {errorMessages?.tags && (
+        <p style={{ color: "red" }}>{errorMessages?.tags?.[0]}</p>
+      )}
       <div className="flex flex-wrap mt-2">
         {task?.tags?.length > 0
           ? task?.tags.map((tag: any, index: number) => (
-            <div
-              key={index}
-              className="bg-green-100 text-green-800 text-[0.8em] font-semibold mr-2 flex px-2 rounded-full"
-            >
-              {tag}
-              <p
-                className="ml-1 text-red-500 rotate-[45deg] cursor-pointer"
-                onClick={() => handleTagDelete(tag)}
+              <div
+                key={index}
+                className="bg-green-100 text-green-800 text-[0.8em] font-semibold mr-2 flex px-2 rounded-full"
               >
-                +
-              </p>
-            </div>
-          ))
+                {tag}
+                <p
+                  className="ml-1 text-red-500 rotate-[45deg] cursor-pointer"
+                  onClick={() => handleTagDelete(tag)}
+                >
+                  +
+                </p>
+              </div>
+            ))
           : isTaskTagsLoading
             ? ""
             : "No Tags Found"}
       </div>
-    </div >
+    </div>
   );
 };
 

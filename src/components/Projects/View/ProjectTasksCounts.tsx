@@ -77,7 +77,7 @@ const ProjectTasksCounts = ({ projectStatsUpdate }: any) => {
               <CardContent className="p-0 text-2xl">
                 <CountUp
                   end={
-                    totalProjectWiseTasks?.inProgress_count?.toLocaleString() ||
+                    totalProjectWiseTasks?.inprogress_count?.toLocaleString() ||
                     0
                   }
                   duration={2.5}
@@ -100,7 +100,7 @@ const ProjectTasksCounts = ({ projectStatsUpdate }: any) => {
               <h3 className="leading-5">Overdue</h3>
               <CardContent className="p-0 text-2xl">
                 <CountUp
-                  end={totalProjectWiseTasks?.overDue_count?.toLocaleString()}
+                  end={totalProjectWiseTasks?.overdue_count?.toLocaleString()}
                   duration={2.5}
                 />
               </CardContent>

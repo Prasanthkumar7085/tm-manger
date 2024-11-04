@@ -132,7 +132,7 @@ const KanbanBoard: React.FC<any> = ({
             }
           </h2>
           {isLoading || isFetching
-            ? Array.from({ length: 2 }).map((_, index) => (
+            ? Array.from({ length: 1 }).map((_, index) => (
                 <div className="flex flex-col space-y-3  border">
                   <Skeleton className="h-[105px] w-[250px] rounded-xl" />
                   <div className="space-y-2">
@@ -166,10 +166,10 @@ const KanbanBoard: React.FC<any> = ({
                         {task.task_title || "--"}
                       </p>
                       <p
-                        className="text-gray-500 text-ellipsis overflow-hidden"
-                        title={task.task_description}
+                        className="font-medium text-gray-600 max-h-15 max-w-[250px] overflow-hidden overflow-ellipsis whitespace-nowrap"
+                        title={task?.task_description}
                       >
-                        {task.task_description || "--"}
+                        {task?.task_description ? task.task_description : "--"}
                       </p>
                       <div className="flex justify-start mt-3 -space-x-3">
                         {task?.assignees?.slice(0, 5).map((assignee) => (

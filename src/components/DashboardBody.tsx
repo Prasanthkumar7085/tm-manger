@@ -17,6 +17,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import LoadingComponent from "./core/LoadingComponent";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
+import ProjectDataTable from "./ProjectWiseStats";
 
 const formatDate = (date: Date) => {
   return date.toISOString().split("T")[0];
@@ -149,7 +150,7 @@ const DashBoard = () => {
         </Card>
       </div>
       <Card className="mt-6 bg-white shadow-lg rounded-lg">
-        <Tasks />
+        <ProjectDataTable />
       </Card>
       <LoadingComponent loading={isLoading} />
     </div>
