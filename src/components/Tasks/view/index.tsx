@@ -15,6 +15,7 @@ import AssignedUsers from "../AssigneTasks";
 import UploadAttachments from "./Attachments";
 import LoadingComponent from "@/components/core/LoadingComponent";
 import TagsComponent from "../Add/TagsComponent";
+import TaskStatus from "./TaskStatus";
 
 const TaskView = () => {
   const navigate = useNavigate();
@@ -107,14 +108,13 @@ const TaskView = () => {
     <div className="flex flex-col space-y-6 md:space-y-0 md:flex-row md:space-x-4  relative">
       <div id="task-details" className="md:w-2/3 w-full bg-white rounded-lg shadow-md  space-y-4 p-4 overflow-y-auto overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200" style={{ height: 'calc(100vh - 100px)' }}
       >
-        <div className="flex justify-between items-start border-b pb-4">
-          <div className="flex flex-col space-y-2">
-            <h1 className="text-2xl font-semibold">
+        <div className="task-prime-details grid grid-cols-2">
+          <div>
+            <h1 className="text-xl font-semibold">
               {viewData?.title ? capitalizeWords(viewData?.title) : "--"}
             </h1>
-
             <div className="text-gray-500 font-medium">
-              Project:{" "}
+              Project:{" "} <br />
               <span className="font-semibold text-gray-800">
                 {viewData?.project_title
                   ? capitalizeWords(viewData?.project_title)
@@ -123,43 +123,75 @@ const TaskView = () => {
             </div>
 
             <div className="font-medium">
-              Description:{" "}
               <span className="text-gray-800">
                 {viewData?.project_description
                   ? capitalizeWords(viewData?.project_description)
                   : "--"}
               </span>
             </div>
-            <div className="flex flex-col items-start ">
-              <TagsComponent
-                tagInput={tagInput}
-                setTagInput={setTagInput}
-                task={viewData}
-                setTask={setViewData}
-                errorMessages={errorMessages}
-                setErrorMessages={setErrorMessages}
-              />
+          </div>
+          <div>
+            <div className="flex justify-end space-x-3">
+              <TaskStatus />
+              <Button
+                type="button"
+                className="flex bg-blue-500"
+                onClick={() => {
+                  router.navigate({
+                    to: `/tasks/${taskId}`,
+                  });
+                }}
+              >
+                Edit Task
+              </Button>
+            </div>
+            <TagsComponent
+              tagInput={tagInput}
+              setTagInput={setTagInput}
+              task={viewData}
+              setTask={setViewData}
+              errorMessages={errorMessages}
+              setErrorMessages={setErrorMessages}
+            />
+          </div>
+
+        </div>
+        <div className="task-assignment-details grid grid-cols-[60%,auto] gap-4">
+          <div>
+            <h2 className="font-semibold">Assigned To</h2>
+            <div className="mt-2">
+              <AssignedUsers viewTaskData={viewData} />
             </div>
           </div>
           <div>
-            <Button
-              type="button"
-              className="flex bg-blue-500"
-              onClick={() => {
-                router.navigate({
-                  to: `/tasks/${taskId}`,
-                });
-              }}
-            >
-              Edit Task
-            </Button>
+            <div className="p-4">
+              {/* Created By Section */}
+              <div className="flex items-center space-x-3">
+                <img
+                  src="https://via.placeholder.com/40" // Replace with the actual image URL
+                  alt="User"
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+                <div>
+                  <p className="text-gray-500 text-sm">Created By</p>
+                  <p className="text-black font-medium text-lg">Mark</p>
+                  <p className="text-gray-500 text-sm">04-01-2023, 04:33 PM</p>
+                </div>
+              </div>
+
+              {/* Due Date Section */}
+              <div className="mt-4">
+                <p className="text-gray-500 text-sm">Due Date</p>
+                <div className="inline-block px-3 py-1 mt-1 text-red-500 bg-red-100 text-md font-medium rounded-md">
+                  05-01-2023, 10:00 AM
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+
         <div>
-          <h2 className="font-semibold">Assigned To</h2>
-          <div className="mt-2">
-            <AssignedUsers viewTaskData={viewData} />
-          </div>
+
         </div>
         <div>
           <UploadAttachments />
