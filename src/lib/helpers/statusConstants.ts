@@ -50,3 +50,13 @@ export const roleConstants = [
 
   { value: "MAINTAINER", label: "Maintainer" },
 ];
+export const bgColorObjectForStatus: any = {
+  High: "#FF3C5833",
+  Medium: "#FFA00033",
+  Low: "#499DFF33",
+};
+export const colorObjectForStatus: any = {
+  High: "#FF3C58",
+  Medium: "#FFA000",
+  Low: "#499DFF",
+};

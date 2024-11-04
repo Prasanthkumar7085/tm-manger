@@ -76,6 +76,13 @@ export const removeTagAPI = async (tagId: string) => {
     throw err;
   }
 };
+export const statusUpdateAPI = async () => {
+  try {
+    return await $fetch.put(`/`);
+  } catch (err: any) {
+    throw err;
+  }
+};
 
 export const addTasksAPI = async (payload: any) => {
   try {

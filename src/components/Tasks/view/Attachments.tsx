@@ -19,6 +19,7 @@ import { downloadFileFromS3 } from "@/lib/helpers/apiHelpers";
 const UploadAttachments = () => {
   const { taskId } = useParams({ strict: false });
   const [attachmentsData, setAttachments] = useState([]);
+  console.log(attachmentsData, "data");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [refreshCount, setRefreshCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -224,14 +225,16 @@ const UploadAttachments = () => {
               <div className="attachment-name flex space-x-4">
                 <span className="text-xl">📄</span>
                 <div>
-                  <p className="name text-black font-semibold leading-tight">{file.file_name}</p>
-                  <p className="time mt-0">2m ago</p>
+                  <p className="name text-black font-semibold leading-tight">
+                    {file.file_name}
+                  </p>
+                  {/* <p className="time mt-0">2m ago</p> */}
                 </div>
               </div>
               <div className="attachment-actions flex justify-center space-x-4">
-                <p className="file-size border text-black font-semibold text-[10px] px-2 flex items-center rounded-sm border-slate-300">
-                  604KB
-                </p>
+                {/* <p className="file-size border text-black font-semibold text-[10px] px-2 flex items-center rounded-sm border-slate-300"> */}
+                {/* {file?.file_size} */}
+                {/* </p> */}
                 <button
                   onClick={() => {
                     downloadFileMutation.mutate(file);
@@ -252,9 +255,7 @@ const UploadAttachments = () => {
           <p>No attachments found.</p>
         )}
       </div>
-      <div className="mt-2 space-y-2">
-
-      </div>
+      <div className="mt-2 space-y-2"></div>
       <div className="mt-4">
         <div {...getRootProps()} className="hidden">
           <input {...getInputProps()} />
@@ -274,7 +275,6 @@ const UploadAttachments = () => {
             ))}
           </div>
         )}
-
 
         {rejectionMessage && (
           <p className="text-red-600 mt-2">{rejectionMessage}</p>
