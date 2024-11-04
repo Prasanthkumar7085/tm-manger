@@ -334,7 +334,7 @@ const AddTask = () => {
                   name="priority"
                   value={task.priority}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="bg-slate-50 h-[35px] p-2 border w-full rounded-md"
                 >
                   <option value="">Select priority</option>
                   <option value="HIGH">High</option>
@@ -370,9 +370,9 @@ const AddTask = () => {
                   </label>
                   <Popover open={openUsers} onOpenChange={setOpenUsers}>
                     <PopoverTrigger asChild>
-                      <Button variant="outline" className="w-full">
+                      <Button variant="outline" className="justify-between  bg-slate-50 h-[35px] w-[220px] relative">
                         Select Users
-                        <ChevronsUpDown className="ml-2 h-4 w-4" />
+                        <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[200px] p-0 bg-white">
@@ -475,7 +475,7 @@ const AddTask = () => {
                 name="status"
                 value={task.status}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className="bg-slate-50 h-[35px] p-2 border w-full rounded-md"
               >
                 <option value="">Select Status</option>
                 <option value="TODO">Todo</option>

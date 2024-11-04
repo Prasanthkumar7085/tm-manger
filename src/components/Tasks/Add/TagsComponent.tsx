@@ -135,6 +135,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
       <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">Tags</label>
       <div className="flex">
         <input
+
           type="text"
           value={tagInput}
           onChange={(e) => setTagInput(e.target.value)}
@@ -144,10 +145,10 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
               e.preventDefault();
             }
           }}
-          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+          className="bg-slate-50 h-[35px] p-2 border w-full rounded-md"
           placeholder="Enter tag"
         />
-        <Button type="button" onClick={handleTagSubmit} className="ml-2">
+        <Button type="button" onClick={handleTagSubmit} className="ml-2 bg-[#1B2459] px-10 text-white h-[35px] font-semibold">
           Add
         </Button>
       </div>
