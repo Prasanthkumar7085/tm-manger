@@ -29,7 +29,7 @@ import React, { useState } from "react";
 import { DatePicker } from "rsuite";
 import { toast } from "sonner";
 import TagsComponent from "./TagsComponent";
-import UploadAttachments from "../view/Attachments";
+import UploadAttachments from "./UploadAttachments";
 
 const AddTask = () => {
   const navigate = useNavigate();
@@ -314,7 +314,6 @@ const AddTask = () => {
                   value={task.due_date ? new Date(task.due_date) : null}
                   placeholder="Select Due Date"
                   editable={false}
-                  className="w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                   disabledDate={(date: any) =>
                     date < new Date().setHours(0, 0, 0, 0)
                   }
