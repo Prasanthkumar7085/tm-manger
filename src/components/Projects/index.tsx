@@ -137,9 +137,9 @@ const Projects = () => {
   };
   const userOptions = Array.isArray(users)
     ? users.map((user: any) => ({
-        value: user.id,
-        label: `${user.fname} ${user.lname}`,
-      }))
+      value: user.id,
+      label: `${user.fname} ${user.lname}`,
+    }))
     : [];
 
   useEffect(() => {
@@ -192,9 +192,10 @@ const Projects = () => {
               </li>
               <li>
                 <Button
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                  variant="add" size="DefaultButton"
                   onClick={handleNavigation}
                 >
+                  <span className="text-xl pr-2">+</span>
                   Add Project
                 </Button>
               </li>

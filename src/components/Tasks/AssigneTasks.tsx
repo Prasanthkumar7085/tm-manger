@@ -252,7 +252,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
           <Button
             onClick={() => {
               router.navigate({
-                to: `/projects/${viewTaskData?.project_id}/project_members`,
+                to: `/projects/view/${viewTaskData?.project_id}?tab=project_members`,
               });
             }}
             className="bg-[#f3d1d7]"
@@ -260,7 +260,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
             Add Project members
           </Button>
         </div>
-        {selectedMembers.length > 0 && (
+        {selectedMembers.length > 0 ? (
           <table className="min-w-full border mt-4">
             <thead>
               <tr>
@@ -288,13 +288,17 @@ const AssignedUsers = ({ viewTaskData }: any) => {
               ))}
             </tbody>
           </table>
+        ) : (
+          <div className="flex items-center justify-center mt-3">
+            <p>Task Not Assigned to any user</p>
+          </div>
         )}
 
         {/* {errorMessages.user_ids[0] && (
           <p className="text-red-500">{errorMessages.user_ids[0]}</p>
         )} */}
       </div>
-      <LoadingComponent loading={loading || isLoading} />
+      <LoadingComponent loading={loading} />
     </div>
   );
 };

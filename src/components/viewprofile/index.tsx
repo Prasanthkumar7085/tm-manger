@@ -16,23 +16,25 @@ import {
 import { useSelector } from "react-redux";
 import { fileUploadAPI, uploadToS3API } from "@/lib/services/projects";
 import { toast } from "sonner";
-import { Pencil, X } from "lucide-react";
+import { Pencil, Loader } from "lucide-react"; // Import Loader icon
+import { CirclePlus, Plus, UserRoundPlus, X } from "lucide-react";
 
 function ViewProfile() {
   const userID = useSelector(
     (state: any) => state.auth?.user?.user_details?.id
   );
+
   const [loading, setLoading] = useState(false);
   const [userType, setUserType] = useState<any>("");
   const [userData, setUserData] = useState<any>({
     fname: "",
     lname: "",
     email: "",
-    password: "",
     phone_number: "",
     profile_pic: "",
   });
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false); // State for upload loading
 
   const { isLoading, isError, error, data, isFetching } = useQuery({
     queryKey: ["users", userID],
@@ -68,18 +70,22 @@ function ViewProfile() {
     const file = event.target.files?.[0] || null;
     if (file) {
       setPreviewUrl(URL.createObjectURL(file));
+      setIsUploading(true);
       fileUploadMutation.mutate(file);
-    } else {
-      setPreviewUrl(null);
     }
   };
 
   const handleRemoveFile = () => {
     setPreviewUrl(null);
+    setUserData((prev: any) => ({
+      ...prev,
+      profile_pic: "",
+    }));
+    // uploadProfileMutation.mutate({ profile_pic: "" });
   };
 
   const fileUploadMutation = useMutation({
-    mutationFn: async (file: File) => {
+    mutationFn: async (file: any) => {
       const { data } = await fileUploadAPI({
         file_name: file.name,
         file_type: file.type,
@@ -101,6 +107,9 @@ function ViewProfile() {
     onError: (error) => {
       console.error(error);
       toast.error("Failed to upload file.");
+    },
+    onSettled: () => {
+      setIsUploading(false); // Reset uploading state after mutation completes
     },
   });
 
@@ -133,10 +142,14 @@ function ViewProfile() {
   });
 
   return (
-    <Card className="flex flex-col md:flex-row items-center p-4">
-      <CardHeader className="flex-none mb-4 md:mb-0 md:mr-4">
-        <CardTitle>Profile Information</CardTitle>
-        <CardDescription>Details about the user</CardDescription>
+    <Card className="flex flex-col md:flex-row items-center p-4 shadow-lg rounded-lg bg-white">
+      <CardHeader className="flex-none mb-4 md:mb-0 md:mr-4 relative">
+        <CardTitle className="text-xl font-semibold">
+          Profile Information
+        </CardTitle>
+        <CardDescription className="text-gray-600">
+          Details about the user
+        </CardDescription>
         <input
           id="file-upload"
           type="file"
@@ -144,43 +157,46 @@ function ViewProfile() {
           onChange={handleFileChange}
           className="hidden"
         />
-        <label htmlFor="file-upload" className="cursor-pointer">
+        <label htmlFor="file-upload" className="cursor-pointer relative">
           {previewUrl ? (
             <div className="relative">
               <img
                 src={previewUrl}
                 alt="Preview"
-                className="w-32 h-32 object-cover"
+                className="w-32 h-32 rounded-full object-cover border-2 border-gray-300 shadow"
               />
+              {isUploading && (
+                <div className="absolute w-32 h-32 inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 rounded-full">
+                  <Loader className="text-white w-6 h-6 animate-spin" />
+                </div>
+              )}
               <button
                 onClick={handleRemoveFile}
-                className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border"
+                className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border border-white"
               >
                 <X className="text-white w-4 h-4" />
               </button>
-              <span className="absolute bottom-2 middle-3 bg-blue-800 text-white text-xs rounded-full p-2">
-                <Pencil className="w-4 h-4" />
-              </span>
             </div>
           ) : (
             <img
               src={userData.profile_pic}
               alt="User Profile"
-              height={300}
-              width={300}
+              className="w-32 h-32 rounded-full object-cover border-2 border-gray-300 shadow"
             />
           )}
+          <span className="absolute bottom-2 left-2 bg-blue-500 text-white rounded-full p-1">
+            <Pencil className="w-4 h-4" />
+          </span>
+          <button
+            onClick={handleRemoveFile}
+            className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border border-white"
+          >
+            <X className="text-white w-4 h-4" />
+          </button>
         </label>
       </CardHeader>
       <CardContent className="flex flex-row items-center space-x-4">
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, auto)",
-            gap: "11px",
-            fontSize: "20px",
-          }}
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg">
           <p>
             <strong>First Name:</strong> {userData.fname}
           </p>
@@ -198,8 +214,9 @@ function ViewProfile() {
           </p>
         </div>
       </CardContent>
-      <CardFooter></CardFooter>
+      <CardFooter className="mt-4 md:mt-0"></CardFooter>
     </Card>
   );
 }
+
 export default ViewProfile;

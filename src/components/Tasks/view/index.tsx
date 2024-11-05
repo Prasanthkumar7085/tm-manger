@@ -16,6 +16,13 @@ import UploadAttachments from "./Attachments";
 import LoadingComponent from "@/components/core/LoadingComponent";
 import TagsComponent from "../Add/TagsComponent";
 import TaskStatus from "./TaskStatus";
+import dayjs from "dayjs";
+import {
+  bgColorObjectForStatus,
+  colorObjectForStatus,
+  taskStatusConstants,
+} from "@/lib/helpers/statusConstants";
+import PriorityStatus from "./PriorityStatus";
 
 const TaskView = () => {
   const navigate = useNavigate();
@@ -29,9 +36,19 @@ const TaskView = () => {
   const [tagsInput, setTagsInput] = useState("");
   const [errorMessages, setErrorMessages] = useState();
   const [tagInput, setTagInput] = useState<any>("");
+  const [updateDetailsOfTask, setUpdateDetailsOfTask] = useState<any>(0);
+  const [updatePrority, setUpdatePriority] = useState<{
+    label: string;
+    value: string;
+  }>();
+  const [selectedStatus, setSelectedStatus] = useState<{
+    label: string;
+    value: string;
+  }>();
+  const [selectedPriority, setSelectedPriority] = useState<any>();
 
   const { isLoading, isError, error, data } = useQuery({
-    queryKey: ["getSingleTask", taskId],
+    queryKey: ["getSingleTask", taskId, updateDetailsOfTask],
     queryFn: async () => {
       const response = await getSingleTaskAPI(taskId);
       const taskData = response?.data?.data;
@@ -39,6 +56,10 @@ const TaskView = () => {
       try {
         if (response?.status === 200 || response?.status === 201) {
           setViewData(taskData);
+          let status = taskStatusConstants.find(
+            (item: any) => item.value === taskData?.status
+          );
+          setSelectedStatus(status);
         } else {
           throw new Error("Failed to fetch task");
         }
@@ -48,30 +69,6 @@ const TaskView = () => {
       }
     },
     enabled: Boolean(taskId),
-  });
-
-  const { isFetching } = useQuery({
-    queryKey: ["gettags", taskId],
-    queryFn: async () => {
-      const response = await getTagsAPI(taskId);
-      const tagsData = response?.data?.data;
-      try {
-        if (response?.status === 200 || response?.status === 201) {
-          setTagsData(tagsData);
-          const tagsDetails = tagsData.map((tag: any) => tag.title);
-
-          setViewData((prev: any) => ({
-            ...prev,
-            tags: tagsDetails,
-          }));
-        } else {
-          throw new Error("Failed to fetch task");
-        }
-      } catch (err: any) {
-        toast.error(err?.message || "Something went wrong");
-        throw err;
-      }
-    },
   });
 
   const title = viewData?.project_description;
@@ -106,42 +103,75 @@ const TaskView = () => {
 
   return (
     <div className="flex flex-col space-y-6 md:space-y-0 md:flex-row md:space-x-4  relative">
-      <div id="task-details" className="md:w-2/3 w-full bg-white rounded-lg shadow-md  space-y-4 p-4 overflow-y-auto overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200" style={{ height: 'calc(100vh - 100px)' }}
+      <div
+        id="task-details"
+        className="md:w-2/3 w-full bg-white rounded-lg shadow-md  space-y-4 p-4 overflow-y-auto overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
+        style={{ height: "calc(100vh - 100px)" }}
       >
-        <div className="task-prime-details grid grid-cols-2">
-          <div>
-            <h1 className="text-xl font-semibold">
-              {viewData?.title ? capitalizeWords(viewData?.title) : "--"}
-            </h1>
+        <div className="task-prime-details grid grid-cols-2 border-b">
+          <div className="relative">
+            <div className="flex items-center">
+              <h1
+                className="text-xl font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap"
+                title={viewData?.title}
+              >
+                {viewData?.title ? capitalizeWords(viewData?.title) : "--"}
+              </h1>
+              <span className="capitalize ml-10">
+                <PriorityStatus
+                  taskId={taskId}
+                  setUpdatePriority={setUpdatePriority}
+                  selectedPriority={selectedPriority}
+                  setSelectedPriority={setSelectedPriority}
+                  viewData={viewData}
+                />
+              </span>
+            </div>
+            <div className="relative">
+              <p
+                className="font-medium text-gray-800 max-h-15 overflow-hidden overflow-ellipsis whitespace-nowrap"
+                title={viewData?.description}
+              >
+                {viewData?.description ? viewData.description : "--"}
+              </p>
+
+              <div
+                className="absolute left-0 bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded px-2 py-1"
+                style={{ whiteSpace: "nowrap" }}
+              >
+                {viewData?.description ? viewData.description : "--"}
+              </div>
+            </div>
+
             <div className="text-gray-500 font-medium">
-              Project:{" "} <br />
+              <span>Project:</span>{" "}
               <span className="font-semibold text-gray-800">
                 {viewData?.project_title
                   ? capitalizeWords(viewData?.project_title)
                   : "--"}
               </span>
             </div>
-
-            <div className="font-medium">
-              <span className="text-gray-800">
-                {viewData?.project_description
-                  ? capitalizeWords(viewData?.project_description)
-                  : "--"}
-              </span>
-            </div>
           </div>
+
           <div>
             <div className="flex justify-end space-x-3">
-              <TaskStatus />
+              <TaskStatus
+                taskId={taskId}
+                setUpdateDetailsOfTask={setUpdateDetailsOfTask}
+                selectedStatus={selectedStatus}
+                setSelectedStatus={setSelectedStatus}
+              />
               <Button
                 type="button"
-                className="flex bg-blue-500"
+                variant="edit"
+                size="DefaultButton"
                 onClick={() => {
                   router.navigate({
                     to: `/tasks/${taskId}`,
                   });
                 }}
               >
+                <img src="/edit-icon.svg" alt="icon" className="w-3 h-3 mr-2" />
                 Edit Task
               </Button>
             </div>
@@ -154,7 +184,6 @@ const TaskView = () => {
               setErrorMessages={setErrorMessages}
             />
           </div>
-
         </div>
         <div className="task-assignment-details grid grid-cols-[60%,auto] gap-4">
           <div>
@@ -165,17 +194,20 @@ const TaskView = () => {
           </div>
           <div>
             <div className="p-4">
-              {/* Created By Section */}
               <div className="flex items-center space-x-3">
                 <img
-                  src="https://via.placeholder.com/40" // Replace with the actual image URL
+                  src={viewData?.created_profile_pic}
                   alt="User"
                   className="w-10 h-10 rounded-full object-cover"
                 />
                 <div>
                   <p className="text-gray-500 text-sm">Created By</p>
-                  <p className="text-black font-medium text-lg">Mark</p>
-                  <p className="text-gray-500 text-sm">04-01-2023, 04:33 PM</p>
+                  <p className="text-black font-medium text-lg capatitalize">
+                    {viewData?.created_name}
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    {dayjs(viewData?.created_at).format("MM/DD/YYYY")}
+                  </p>
                 </div>
               </div>
 
@@ -183,25 +215,28 @@ const TaskView = () => {
               <div className="mt-4">
                 <p className="text-gray-500 text-sm">Due Date</p>
                 <div className="inline-block px-3 py-1 mt-1 text-red-500 bg-red-100 text-md font-medium rounded-md">
-                  05-01-2023, 10:00 AM
+                  {dayjs(viewData?.due_date).format("MM/DD/YYYY")}
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div>
-
-        </div>
+        <div></div>
         <div>
           <UploadAttachments />
         </div>
       </div>
 
-      <div id="task-comments" className="w-full md:w-1/3 bg-white rounded-lg shadow-md relative">
+      <div
+        id="task-comments"
+        className="w-full md:w-1/3 bg-white rounded-lg shadow-md relative"
+      >
         <div className="card-header flex justify-between px-4 py-2 items-center mb-4">
           <h3 className="text-lg font-semibold">Comments</h3>
-          <button className="check-activity-button btn px-5 py-2 bg-[#28A74533] rounded-lg text-[#28A745] font-semibold">Check Activity</button>
+          <button className="check-activity-button btn px-5 py-2 bg-[#28A74533] rounded-lg text-[#28A745] font-semibold">
+            Check Activity
+          </button>
         </div>
         <div className="card-body px-4">
           <div className="member-comments space-y-3">
@@ -217,7 +252,9 @@ const TaskView = () => {
                   </div>
                   <div className="member-name">
                     <span className="font-semibold">Robert</span>
-                    <span className="text-gray-500 text-sm pl-2">1 month ago</span>
+                    <span className="text-gray-500 text-sm pl-2">
+                      1 month ago
+                    </span>
                   </div>
                 </div>
                 <button className="replay-button text-[#5357B6] flex items-center font-semibold">
@@ -227,8 +264,8 @@ const TaskView = () => {
               </div>
               <div className="person-message">
                 <p className="mt-2 text-slate-500 leading-snug">
-                  Impressive! Though it seems the drag feature could be improved.
-                  But overall it looks incredible.
+                  Impressive! Though it seems the drag feature could be
+                  improved. But overall it looks incredible.
                 </p>
               </div>
             </div>
@@ -244,7 +281,9 @@ const TaskView = () => {
                   </div>
                   <div className="member-name">
                     <span className="font-semibold">Robert</span>
-                    <span className="text-gray-500 text-sm pl-2">1 month ago</span>
+                    <span className="text-gray-500 text-sm pl-2">
+                      1 month ago
+                    </span>
                   </div>
                 </div>
                 <button className="replay-button text-[#5357B6] flex items-center font-semibold">
@@ -254,8 +293,11 @@ const TaskView = () => {
               </div>
               <div className="person-message">
                 <p className="mt-2 text-slate-500 leading-snug">
-                  <span className="reply-person text-[#5357B6] font-semibold">@robert</span> Impressive! Though it seems the drag feature could be improved.
-                  But overall it looks incredible.
+                  <span className="reply-person text-[#5357B6] font-semibold">
+                    @robert
+                  </span>{" "}
+                  Impressive! Though it seems the drag feature could be
+                  improved. But overall it looks incredible.
                 </p>
               </div>
             </div>
@@ -275,12 +317,12 @@ const TaskView = () => {
               <textarea
                 placeholder="Add a comment..."
                 style={{
-                  width: '100%',
-                  padding: '0.5em',
-                  resize: 'none',
-                  overflow: 'hidden',
-                  border: 'none',
-                  height: '90px'
+                  width: "100%",
+                  padding: "0.5em",
+                  resize: "none",
+                  overflow: "hidden",
+                  border: "none",
+                  height: "90px",
                 }}
                 className="focus:outline-none text-black"
               />

@@ -12,7 +12,7 @@ import {
   uploadToS3API,
   viewProjectAPI,
 } from "@/lib/services/projects";
-import { CameraIcon, X } from "lucide-react";
+import { CameraIcon, Loader, X } from "lucide-react";
 import KanbanBoard from "../KanBanView";
 import ProjectMembersManagment from "./ProjectMembersManagment";
 import ProjectTasksCounts from "./ProjectTasksCounts";
@@ -141,7 +141,7 @@ const ProjectView = () => {
   };
 
   return (
-    <div className="flex flex-col justify-between h-full w-full overflow-auto relative">
+    <div className="card-container shadow-md border p-5 rounded-lg  bg-white">
       <div className="w-full flex  items-center ">
         <div className="mt-4 flex flex-col w-[10%] ">
           {previewUrl ? (
@@ -156,6 +156,11 @@ const ProjectView = () => {
                     "https://via.placeholder.com/150?text=No preview";
                 }}
               />
+              {uploadingStatus.loading && (
+                <div className="absolute w-20 h-20 inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 rounded-full">
+                  <Loader className="text-white w-6 h-6 animate-spin" />
+                </div>
+              )}
               <button
                 onClick={handleRemoveFile}
                 className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border"

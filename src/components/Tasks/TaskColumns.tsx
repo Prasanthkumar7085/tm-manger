@@ -7,9 +7,18 @@ import DeleteDialog from "../core/deleteDialog";
 import { toast } from "sonner";
 import { deleteTaskAPI } from "@/lib/services/tasks";
 import {
+  bgColorObjectForStatus,
+  colorObjectForStatus,
   taskPriorityConstants,
   taskStatusConstants,
 } from "@/lib/helpers/statusConstants";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import { Badge } from "../ui/badge";
 
 export const taskColumns = ({ setDel }: any) => {
   const navigate = useNavigate();
@@ -91,15 +100,49 @@ export const taskColumns = ({ setDel }: any) => {
     {
       accessorFn: (row: any) => row.description,
       id: "description",
-      cell: (info: any) => (
-        <span className="capitalize">{info.getValue() || "-"}</span>
-      ),
+      cell: (info: any) => {
+        const title = info.getValue();
+        const shouldShowDescriptionTooltip = title && title.length > 30;
+        const truncatedDescription = shouldShowDescriptionTooltip
+          ? `${title.substring(0, 30)}...`
+          : title;
+
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="text-sm text-gray-500 cursor-pointer">
+                  {truncatedDescription || "-"}
+                </span>
+              </TooltipTrigger>
+              {shouldShowDescriptionTooltip && (
+                <TooltipContent
+                  style={{
+                    backgroundColor: "white",
+                    border: "1px solid #e0e0e0",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "4px",
+                    padding: "8px",
+                    maxWidth: "300px",
+                    fontSize: "14px",
+                    whiteSpace: "normal",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  <div>{title}</div>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        );
+      },
       width: "150px",
       maxWidth: "150px",
       minWidth: "150px",
       header: () => <span>Description</span>,
       footer: (props: any) => props.column.id,
     },
+
     {
       accessorFn: (row: any) => row.status,
       id: "status",
@@ -109,8 +152,8 @@ export const taskColumns = ({ setDel }: any) => {
           <span className="capitalize">
             {title
               ? taskStatusConstants.find(
-                (item: any) => item.value === info.getValue()
-              )?.label
+                  (item: any) => item.value === info.getValue()
+                )?.label
               : "-"}
           </span>
         );
@@ -121,16 +164,31 @@ export const taskColumns = ({ setDel }: any) => {
       header: () => <span>Status</span>,
       footer: (props: any) => props.column.id,
     },
+
     {
       accessorFn: (row: any) => row.priority,
       id: "priority",
-      cell: (info: any) => (
-        <span className="capitalize">
-          {taskPriorityConstants.find(
-            (item: any) => item.value === info.getValue()
-          )?.label || "-"}
-        </span>
-      ),
+      cell: (info: any) => {
+        const priorityValue = info.getValue();
+        const priorityLabel =
+          taskPriorityConstants.find(
+            (item: any) => item.value === priorityValue
+          )?.value || "-";
+
+        return (
+          <span className="capitalize">
+            <Badge
+              style={{
+                backgroundColor:
+                  bgColorObjectForStatus[priorityLabel] || "gray",
+                color: colorObjectForStatus[priorityLabel] || "black",
+              }}
+            >
+              {priorityLabel}
+            </Badge>
+          </span>
+        );
+      },
       width: "70px",
       maxWidth: "70px",
       minWidth: "70px",
@@ -161,7 +219,7 @@ export const taskColumns = ({ setDel }: any) => {
                 title="View"
                 variant={"ghost"}
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
-                onClick={() => handleView(info.row.original.id)} // Pass the task ID
+                onClick={() => handleView(info.row.original.id)}
               >
                 <img src={viewButtonIcon} alt="view" height={18} width={18} />
               </Button>
@@ -186,7 +244,8 @@ export const taskColumns = ({ setDel }: any) => {
                 <img
                   src={"/table/delete.svg"}
                   alt="delete"
-                  height={18} width={18}
+                  height={18}
+                  width={18}
                 />
               </Button>
             </li>
@@ -199,7 +258,6 @@ export const taskColumns = ({ setDel }: any) => {
             deleteLoading={deleteLoading}
           />
         </>
-
       ),
       header: () => <span>Actions</span>,
       footer: (props: any) => props.column.id,

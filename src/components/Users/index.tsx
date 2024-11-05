@@ -10,7 +10,7 @@ import {
 } from "@/lib/services/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TanStackTable from "../core/TanstackTable";
 import { userColumns } from "./UserColumns";
 import { Button } from "../ui/button";
@@ -23,12 +23,12 @@ import { errPopper } from "@/lib/helpers/errPopper";
 import LoadingComponent from "../core/LoadingComponent";
 import { StatusFilter } from "../core/StatusFilter";
 import AddSheetRover from "../core/AddSheetRovar";
-import { Pencil } from 'lucide-react';
 
 function UsersTable() {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
+  const popoverRef = useRef<HTMLDivElement>(null);
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("current_page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 25;
@@ -419,48 +419,68 @@ function UsersTable() {
     handleDrawerOpen(id);
     mutate();
   };
+
   const userActions = [
     {
       accessorFn: (row: any) => row.actions,
       id: "actions",
       cell: (info: any) => {
+        const isActive = info.row.original.active;
         return (
-          <div className="flex ">
-            <Button
-              title="reset password"
-              onClick={() => handlePasswordUpdateOpen(info.row.original.id)}
-              size={"sm"}
-              variant={"ghost"}
-            >
-              <img
-                src={"/table/change-password-icon.svg"}
-                alt="view"
-                height={16}
-                width={16}
-              />
-            </Button>
-            <Button
-              title="edit"
-              onClick={() => handleUpdate(info.row.original.id)}
-              size={"sm"}
-              variant={"ghost"}
-            >
-              <img src={"/table/edit.svg"} alt="view" height={16} width={16} />
-            </Button>
-            <Button
-              title="delete"
-              onClick={() => onClickOpen(info.row.original.id)}
-              size={"sm"}
-              variant={"ghost"}
-            >
-              <img
-                src={"/table/delete.svg"}
-                alt="view"
-                height={16}
-                width={16}
-              />
-            </Button>
-          </div>
+          <>
+            <ul className="table-action-buttons flex space-x-2 items-center">
+              <li>
+                <Button
+                  title="reset password"
+                  onClick={() => handlePasswordUpdateOpen(info.row.original.id)}
+                  size={"sm"}
+                  variant={"ghost"}
+                  disabled={!isActive}
+                  className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
+                >
+                  <img
+                    src={"/table/change-password-icon.svg"}
+                    alt="view"
+                    height={18}
+                    width={18}
+                  />
+                </Button>
+              </li>
+              <li>
+                <Button
+                  title="edit"
+                  onClick={() => handleUpdate(info.row.original.id)}
+                  size={"sm"}
+                  variant={"ghost"}
+                  disabled={!isActive}
+                  className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
+                >
+                  <img
+                    src={"/table/edit.svg"}
+                    alt="view"
+                    height={18}
+                    width={18}
+                  />
+                </Button>
+              </li>
+              <li>
+                <Button
+                  title="delete"
+                  onClick={() => onClickOpen(info.row.original.id)}
+                  size={"sm"}
+                  variant={"ghost"}
+                  className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
+                >
+                  <img
+                    src={"/table/delete.svg"}
+                    alt="view"
+                    height={18}
+                    width={18}
+                  />
+                </Button>
+              </li>
+            </ul>
+          </>
         );
       },
       header: () => <span>Actions</span>,
@@ -471,9 +491,24 @@ function UsersTable() {
     },
   ];
 
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (popoverRef.current && !popoverRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
   return (
     <section id="users" className="relative">
-      <div className="card-container shadow-all border p-3 rounded-xl">
+      <div className="card-container shadow-all border p-3 rounded-xl bg-white">
         <div className="tasks-navbar">
           <div className="flex justify-between items-center">
             <div className="heading"></div>
@@ -494,17 +529,15 @@ function UsersTable() {
                 </li>
                 <li>
                   <Button
-                    className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm  ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 py-2 bg-red-700 text-white h-[35px] px-6 font-semibold"
+                    type="button"
+                    variant="add"
+                    size="DefaultButton"
                     onClick={() => handleDrawerOpen()}
                   >
-                    + Add Users
+                    <span className="text-xl pr-2">+</span>
+                    Add Users
                   </Button>
                 </li>
-                {/* <li>
-                  <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    import
-                  </Button>
-                </li> */}
               </ul>
             </div>
           </div>
@@ -516,7 +549,7 @@ function UsersTable() {
             loading={isLoading || isFetching || loading}
             paginationDetails={data?.data?.data?.pagination_info}
             getData={getAllUsers}
-            removeSortingForColumnIds={["serial", "actions"]}
+            removeSortingForColumnIds={["serial", "actions", "active"]}
           />
         </div>
         <DeleteDialog
