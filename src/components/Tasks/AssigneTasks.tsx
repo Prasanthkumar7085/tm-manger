@@ -251,7 +251,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                 to: `/projects/view/${viewTaskData?.project_id}?tab=project_members`,
               });
             }}
-            className="bg-[#f3d1d7]"
+            className="bg-[#f3d1d7] hover:text-white"
           >
             Add Project members
           </Button>
@@ -269,7 +269,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="text-center">
+              <tbody className="text-left">
                 {selectedMembers.map((member) => (
                   <tr key={member.user_id}>
                     <td className=" !px-3 !py-2 capitalize text-[#000000CC]">
