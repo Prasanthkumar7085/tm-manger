@@ -85,7 +85,7 @@ const DashBoard = () => {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-gray-800">Stats</h2>
             <DatePickerField
-              value={selectedDate}
+              dateValue={selectedDate}
               onChangeData={handleDateChange}
             />
           </div>
