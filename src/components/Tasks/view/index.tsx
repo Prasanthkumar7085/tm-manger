@@ -22,6 +22,7 @@ import {
   colorObjectForStatus,
   taskStatusConstants,
 } from "@/lib/helpers/statusConstants";
+import PriorityStatus from "./PriorityStatus";
 
 const TaskView = () => {
   const navigate = useNavigate();
@@ -36,10 +37,12 @@ const TaskView = () => {
   const [errorMessages, setErrorMessages] = useState();
   const [tagInput, setTagInput] = useState<any>("");
   const [updateDetailsOfTask, setUpdateDetailsOfTask] = useState<any>(0);
+  const [updatePrority, setUpdatePriority] = useState<any>(0);
   const [selectedStatus, setSelectedStatus] = useState<{
     label: string;
     value: string;
   }>();
+  const [selectedPriority, setSelectedPriority] = useState<any>();
 
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["getSingleTask", taskId, updateDetailsOfTask],
@@ -151,6 +154,12 @@ const TaskView = () => {
 
           <div>
             <div className="flex justify-end space-x-3">
+              <PriorityStatus
+                taskId={taskId}
+                setUpdatePriority={setUpdatePriority}
+                selectedPriority={selectedPriority}
+                setSelectedPriority={setSelectedPriority}
+              />
               <TaskStatus
                 taskId={taskId}
                 setUpdateDetailsOfTask={setUpdateDetailsOfTask}

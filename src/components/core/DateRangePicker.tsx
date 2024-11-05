@@ -7,6 +7,7 @@ import "rsuite/dist/rsuite.css";
 const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
   const today = [new Date(), new Date()];
   const [selectedDate, setSelectedDate] = useState(dateValue || today);
+  console.log(selectedDate, "select");
 
   useEffect(() => {
     if (!dateValue) {
