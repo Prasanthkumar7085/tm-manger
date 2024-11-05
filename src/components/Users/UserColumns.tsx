@@ -161,22 +161,16 @@ export const userColumns = [
         >
           <div
             style={{
-              color: isActive ? "green" : "red",
-              borderColor: isActive ? "green" : "red",
-              borderStyle: "solid",
-              borderWidth: "1px",
-              padding: "2px 6px",
-              display: "flex",
-              alignItems: "center",
-              borderRadius: "5px",
-              cursor: "pointer",
+              color: isActive ? "#28A745" : "#A71D2A",
+              background: isActive ? "#28A74533" : "#A71D2A33",
             }}
+            className="rounded-full cursor-pointer flex items-center py-0 px-3 min-w-[90px]"
             onClick={togglePopover}
           >
             <span
               style={{
-                height: "10px",
-                width: "10px",
+                height: "8px",
+                width: "8px",
                 borderRadius: "50%",
                 backgroundColor: isActive ? "green" : "red",
                 marginRight: "8px",
