@@ -41,12 +41,12 @@ const ProjectDataTable = () => {
           getData={getAllProjectStats}
           removeSortingForColumnIds={[
             "serial",
-            "project_name",
-            "todo_count",
-            "inprogress_count",
-            "completed_count",
-            "overdue_count",
-            "total_tasks",
+            "project_title",
+            "task_todo_count",
+            "task_inprogress_count",
+            "task_completed_count",
+            "task_overdue_count",
+            "total_tasks_count",
           ]}
         />
       </div>

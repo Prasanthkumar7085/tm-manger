@@ -109,7 +109,7 @@ function ViewProfile() {
       toast.error("Failed to upload file.");
     },
     onSettled: () => {
-      setIsUploading(false); // Reset uploading state after mutation completes
+      setIsUploading(false);
     },
   });
 

@@ -14,12 +14,21 @@ export const projectWiseColumns = [
       ),
     },
     {
-      accessorFn: (row: any) => row.project_name,
-      id: "project_name",
+      accessorFn: (row: any) => row.project_title,
+      id: "project_title",
       cell: (info: any) => {
-        let title = info.getValue();
+        const title = info.getValue();
+        const downloadUrl = info.row.original.download_url;
+    
         return (
-          <div style={{ padding: "16px", textAlign: "left" }}>
+          <div style={{ display: "flex", alignItems: "center", padding: "16px", textAlign: "left" }}>
+            {downloadUrl && (
+              <img
+                src={downloadUrl}
+                alt="project logo"
+                style={{ width: "24px", height: "24px", marginRight: "8px" }}
+              />
+            )}
             <span className="capitalize">{title ? title : "-"}</span>
           </div>
         );
@@ -31,8 +40,8 @@ export const projectWiseColumns = [
       footer: (props: any) => props.column.id,
     },
     {
-        accessorFn: (row:any) => row.task_stats.todo_count,
-        id: "todo_count",
+        accessorFn: (row:any) => row.task_todo_count,
+        id: "task_todo_count",
         cell: (info:any) => {
           const title = info.getValue();
           return (
@@ -48,8 +57,8 @@ export const projectWiseColumns = [
         footer: (props:any) => props.column.id,
       },
       {
-        accessorFn: (row:any) => row.task_stats.inprogress_count,
-        id: "inprogress_count",
+        accessorFn: (row:any) => row.task_inprogress_count,
+        id: "task_inprogress_count",
         cell: (info:any) => {
           const title = info.getValue();
           return (
@@ -65,8 +74,8 @@ export const projectWiseColumns = [
         footer: (props:any) => props.column.id,
       },
       {
-        accessorFn: (row:any) => row.task_stats.completed_count,
-        id: "completed_count",
+        accessorFn: (row:any) => row.task_completed_count,
+        id: "task_completed_count",
         cell: (info:any) => {
           const title = info.getValue();
           return (
@@ -82,8 +91,8 @@ export const projectWiseColumns = [
         footer: (props:any) => props.column.id,
       },
       {
-        accessorFn: (row:any) => row.task_stats.overdue_count,
-        id: "overdue_count",
+        accessorFn: (row:any) => row.task_overdue_count,
+        id: "task_overdue_count",
         cell: (info:any) => {
           const title = info.getValue();
           return (
@@ -99,8 +108,8 @@ export const projectWiseColumns = [
         footer: (props:any) => props.column.id,
       },
       {
-        accessorFn: (row:any) => row.task_stats.total_tasks,
-        id: "total_tasks",
+        accessorFn: (row:any) => row.total_tasks_count,
+        id: "total_tasks_count",
         cell: (info:any) => {
           const title = info.getValue();
           return (
