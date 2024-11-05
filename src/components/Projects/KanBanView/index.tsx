@@ -123,14 +123,17 @@ const KanbanBoard: React.FC<any> = ({
         <div
           {...provided.droppableProps}
           ref={provided.innerRef}
-          className="flex flex-col p-4 bg-gray-100 rounded-md"
+          className="flex flex-col p-4 bg-gray-100 rounded-md max-h-[450px] w-[260px] overflow-y-auto"
         >
-          <h2 className="text-lg font-bold">
-            {
-              taskStatusConstants.find((item: any) => item.value == columnName)
-                ?.label
-            }
-          </h2>
+          <div className="sticky top-0 bg-white w-full p-4 z-10">
+            <h2 className="text-lg font-bold">
+              {
+                taskStatusConstants.find(
+                  (item: any) => item.value == columnName
+                )?.label
+              }
+            </h2>
+          </div>
           {isLoading || isFetching
             ? Array.from({ length: 1 }).map((_, index) => (
                 <div className="flex flex-col space-y-3  border">
@@ -152,7 +155,7 @@ const KanbanBoard: React.FC<any> = ({
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className="bg-[#eef5ff] border p-4 my-2 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+                      className="bg-[#eef5ff] border p-4 my-2 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow "
                       onClick={() => {
                         router.navigate({
                           to: `/tasks/view/${task.task_id}`,
@@ -206,6 +209,7 @@ const KanbanBoard: React.FC<any> = ({
           <Button
             disabled={projectDetails?.active ? false : true}
             title="Add Task"
+            className="shadow-md sticky mb-0"
             onClick={() => {
               router.navigate({
                 to: "/tasks/add",

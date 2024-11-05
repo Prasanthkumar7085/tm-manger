@@ -65,30 +65,6 @@ const TaskView = () => {
     enabled: Boolean(taskId),
   });
 
-  const { isFetching } = useQuery({
-    queryKey: ["gettags", taskId],
-    queryFn: async () => {
-      const response = await getTagsAPI(taskId);
-      const tagsData = response?.data?.data;
-      try {
-        if (response?.status === 200 || response?.status === 201) {
-          setTagsData(tagsData);
-          const tagsDetails = tagsData.map((tag: any) => tag.title);
-
-          setViewData((prev: any) => ({
-            ...prev,
-            tags: tagsDetails,
-          }));
-        } else {
-          throw new Error("Failed to fetch task");
-        }
-      } catch (err: any) {
-        toast.error(err?.message || "Something went wrong");
-        throw err;
-      }
-    },
-  });
-
   const title = viewData?.project_description;
   const shouldShowDescriptionTooltip = title && title.length > 30;
   const truncatedDescription = shouldShowDescriptionTooltip

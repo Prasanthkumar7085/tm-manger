@@ -12,7 +12,7 @@ const ProjectTasksCounts = ({ projectStatsUpdate }: any) => {
   const { projectId } = useParams({ strict: false });
 
   const { data: totalProjectWiseTasks } = useQuery({
-    queryKey: ["totalTasks", projectStatsUpdate],
+    queryKey: ["totalTasks", projectStatsUpdate, projectId],
     queryFn: () => getProjectWiseTotalTasksCounts(),
   });
 
