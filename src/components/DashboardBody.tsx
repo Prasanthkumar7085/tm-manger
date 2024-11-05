@@ -26,7 +26,6 @@ const formatDate = (date: any) => {
 const DashBoard = () => {
   const [selectedDate, setSelectedDate] = useState([new Date(), new Date()]);
 
-  // Ensure the date is set to today each time the dashboard loads
   useEffect(() => {
     const today = new Date();
     setSelectedDate([today, today]);
@@ -86,7 +85,7 @@ const DashBoard = () => {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-gray-800">Stats</h2>
             <DatePickerField
-              value={selectedDate}
+              dateValue={selectedDate}
               onChangeData={handleDateChange}
             />
           </div>
@@ -156,7 +155,7 @@ const DashBoard = () => {
       <Card className="mt-6 bg-white shadow-lg rounded-lg">
         <ProjectDataTable />
       </Card>
-      <LoadingComponent loading={isLoading} />
+      {/* <LoadingComponent loading={isLoading} /> */}
     </div>
   );
 };

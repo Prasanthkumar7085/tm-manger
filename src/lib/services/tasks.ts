@@ -9,7 +9,6 @@ interface GetAllPaginatedUsersPropTypes {
   status: string;
   priority: string;
   project_id: any;
-  
 }
 
 export const getAllPaginatedTasks = async ({
@@ -83,6 +82,17 @@ export const statusUpdateAPI = async (
 ) => {
   try {
     return await $fetch.put(`/tasks/${task_id}/status`, body);
+  } catch (err: any) {
+    throw err;
+  }
+};
+
+export const priorityUpdateAPI = async (
+  task_id: string,
+  body: { priority: string }
+) => {
+  try {
+    return await $fetch.put(`/tasks/${task_id}/priority`, body);
   } catch (err: any) {
     throw err;
   }

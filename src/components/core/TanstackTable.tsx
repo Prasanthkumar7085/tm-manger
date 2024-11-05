@@ -110,45 +110,108 @@ const TanStackTable: FC<pageProps> = ({
               return (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header: any, index: number) => {
-                    return (
-                      <TableHead
-                        key={index}
-                        colSpan={header.colSpan}
-                        style={{
-                          minWidth: getWidth(header.id),
-                          width: getWidth(header.id),
-                          color: "#000",
-                          background: "#F0EDFF",
-                        }}
-                      >
-                        {header.isPlaceholder ? null : (
-                          <div
-                            {...{
-                              className: header.column.getCanSort()
-                                ? "cursor-pointer select-none"
-                                : "",
-                            }}
-                            onClick={() => sortAndGetData(header)}
-                            className="flex items-center gap-1 cursor-pointer"
-                            style={{
-                              minWidth: getWidth(header.id),
-                              width: getWidth(header.id),
-                            }}
-                          >
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                            <SortItems
-                              header={header}
-                              removeSortingForColumnIds={
-                                removeSortingForColumnIds
-                              }
-                            />
-                          </div>
-                        )}
-                      </TableHead>
-                    );
+                    if (location.pathname.includes("/dashboard")) {
+                      return (
+                        <TableHead
+                          key={index}
+                          colSpan={header.colSpan}
+                          style={{
+                            minWidth: getWidth(header.id),
+                            width: getWidth(header.id),
+                            color: "#000",
+                            background: "#F0EDFF",
+                          }}
+                        >
+                          {header.isPlaceholder ? null : (
+                            <div
+                              {...{
+                                className: header.column.getCanSort()
+                                  ? "cursor-pointer select-none"
+                                  : "",
+                                onClick:
+                                  header.column.getToggleSortingHandler(),
+                              }}
+                              style={{
+                                display: "flex",
+                                gap: "10px",
+                                cursor: "pointer",
+                              }}
+                            >
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                              {{
+                                asc: (
+                                  <img
+                                    src="/table/sort-asc.svg"
+                                    height={15}
+                                    width={15}
+                                    alt="Asc"
+                                  />
+                                ),
+                                desc: (
+                                  <img
+                                    src="/table/sort-desc.svg"
+                                    height={15}
+                                    width={15}
+                                    alt="Desc"
+                                  />
+                                ),
+                              }[header.column.getIsSorted() as string] ?? (
+                                <img
+                                  src="/table/sort-norm.svg"
+                                  height={15}
+                                  width={15}
+                                  alt="No Sort"
+                                />
+                              )}
+                            </div>
+                          )}
+                        </TableHead>
+                      );
+                    } else {
+                      return (
+                        <TableHead
+                          key={index}
+                          colSpan={header.colSpan}
+                          style={{
+                            minWidth: getWidth(header.id),
+                            width: getWidth(header.id),
+                            color: "#000",
+                            background: "#F0EDFF",
+                          }}
+                        >
+                          {header.isPlaceholder ? null : (
+                            <div
+                              {...{
+                                className: header.column.getCanSort()
+                                  ? "cursor-pointer select-none"
+                                  : "",
+                              }}
+                              onClick={() => sortAndGetData(header)}
+                              className="flex items-center gap-1 cursor-pointer"
+                              style={{
+                                minWidth: getWidth(header.id),
+                                width: getWidth(header.id),
+                              }}
+                            >
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+
+                              <SortItems
+                                header={header}
+                                removeSortingForColumnIds={
+                                  removeSortingForColumnIds
+                                }
+                              />
+                            </div>
+                          )}
+                        </TableHead>
+                      );
+                    }
                   })}
                 </TableRow>
               );
@@ -193,12 +256,12 @@ const TanStackTable: FC<pageProps> = ({
         </Table>
       </div>
       {location.pathname !== "/dashboard" && (
-      <Pagination
-        paginationDetails={paginationDetails}
-        capturePageNum={capturePageNum}
-        captureRowPerItems={captureRowPerItems}
-      />
-    )}
+        <Pagination
+          paginationDetails={paginationDetails}
+          capturePageNum={capturePageNum}
+          captureRowPerItems={captureRowPerItems}
+        />
+      )}
     </div>
   );
 };

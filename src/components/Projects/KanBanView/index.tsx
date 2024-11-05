@@ -23,10 +23,8 @@ type Task = {
   created_at: string;
   description: string;
   id: number;
-  task_description: string;
   task_id: string;
-  task_status: string;
-  task_title: string;
+  status: string;
   title: string;
 };
 
@@ -100,11 +98,12 @@ const KanbanBoard: React.FC<any> = ({
             OVER_DUE: [],
             COMPLETED: [],
           };
-          data.forEach((task: Task) => {
+          data.forEach((task: any) => {
             if (task.task_status in categorizedTasks) {
               categorizedTasks[task.task_status].push(task);
             }
           });
+          console.log(categorizedTasks, "categorizedTasks");
           setTasks(categorizedTasks);
         } else {
           throw new Error("Failed to fetch project task details");
@@ -141,7 +140,7 @@ const KanbanBoard: React.FC<any> = ({
                   </div>
                 </div>
               ))
-            : tasks[columnName].map((task, index) => (
+            : tasks[columnName].map((task: any, index) => (
                 <Draggable
                   key={task.task_id}
                   draggableId={String(task.task_id)}
@@ -163,16 +162,16 @@ const KanbanBoard: React.FC<any> = ({
                         className="text-ellipsis overflow-hidden"
                         title={task.task_title}
                       >
-                        {task.task_title || "--"}
+                        {task.title || "--"}
                       </p>
                       <p
                         className="font-medium text-gray-600 max-h-15 max-w-[250px] overflow-hidden overflow-ellipsis whitespace-nowrap"
-                        title={task?.task_description}
+                        title={task?.description}
                       >
-                        {task?.task_description ? task.task_description : "--"}
+                        {task?.description ? task.description : "--"}
                       </p>
                       <div className="flex justify-start mt-3 -space-x-3">
-                        {task?.assignees?.slice(0, 5).map((assignee) => (
+                        {task?.assignees?.slice(0, 5).map((assignee: any) => (
                           <Avatar
                             key={assignee.user_id}
                             className="w-8 h-8 border-2 border-white"
