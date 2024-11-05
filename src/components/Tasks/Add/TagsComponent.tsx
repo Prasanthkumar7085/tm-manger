@@ -134,9 +134,10 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
 
   return (
     <div className="mb-4">
-      <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+      <label className="block text-[#666666] text-sm font-medium mb-1">
         Tags
       </label>
+
       <div className="flex space-x-3">
         <input
           type="text"
@@ -169,7 +170,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
           ? task?.tags.map((tag: any, index: number) => (
               <div
                 key={index}
-                className="bg-green-100 text-green-800 text-[0.8em] font-semibold mr-2 flex px-2 rounded-full"
+                className="bg-green-100 text-green-800 text-[0.8em] font-semibold mr-2 mb-2 flex px-2 rounded-full"
               >
                 {tag}
                 <p

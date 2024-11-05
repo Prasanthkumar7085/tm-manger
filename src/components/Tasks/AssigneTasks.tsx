@@ -261,22 +261,23 @@ const AssignedUsers = ({ viewTaskData }: any) => {
           </Button>
         </div>
         {selectedMembers.length > 0 ? (
-          <table className="min-w-full border mt-4">
-            <thead>
-              <tr>
-                <th className="border p-2">Members</th>
-                <th className="border p-2">User Type</th>
-                <th className="border p-2">Action</th>
+          <div className="overflow-hidden rounded-[10px] border border-gray-200 mt-4">
+          <table className="min-w-full">
+            <thead >
+              <tr >
+                <th className="text-left p-2  !bg-[#F5F5F5] text-[#00000099]">Members</th>
+                <th className="text-left p-2 !bg-[#F5F5F5] text-[#00000099]">User Type</th>
+                <th className="text-left p-2 !bg-[#F5F5F5] text-[#00000099]">Action</th>
               </tr>
             </thead>
             <tbody>
               {selectedMembers.map((member) => (
                 <tr key={member.user_id}>
-                  <td className="border p-2 capitalize">
+                  <td className=" !px-3 !py-2 capitalize text-[#000000CC]">
                     {capitalize(getFullName(member))}
                   </td>
-                  <td className="border p-2">{capitalize(member.user_type)}</td>
-                  <td className="border p-2">
+                  <td className=" !px-3 !py-2 text-[#000000CC]">{capitalize(member.user_type)}</td>
+                  <td className=" !px-3 !py-2 text-[#000000CC]">
                     <DeleteAssignes
                       assigneeId={member.task_assignee_id}
                       onSuccess={() => {
@@ -288,6 +289,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
               ))}
             </tbody>
           </table>
+          </div>
         ) : (
           <div className="flex items-center justify-center mt-3">
             <p>Task Not Assigned to any user</p>
