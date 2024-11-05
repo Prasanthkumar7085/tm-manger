@@ -26,7 +26,6 @@ const formatDate = (date: any) => {
 const DashBoard = () => {
   const [selectedDate, setSelectedDate] = useState([new Date(), new Date()]);
 
-  // Ensure the date is set to today each time the dashboard loads
   useEffect(() => {
     const today = new Date();
     setSelectedDate([today, today]);

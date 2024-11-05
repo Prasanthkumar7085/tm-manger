@@ -196,7 +196,7 @@ const TaskView = () => {
             <div className="p-4">
               <div className="flex items-center space-x-3">
                 <img
-                  src="https://via.placeholder.com/40"
+                  src={viewData?.created_profile_pic}
                   alt="User"
                   className="w-10 h-10 rounded-full object-cover"
                 />

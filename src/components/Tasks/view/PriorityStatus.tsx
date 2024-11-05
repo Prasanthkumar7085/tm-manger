@@ -1,3 +1,4 @@
+import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
 import {
   taskPriorityConstants,
   taskStatusConstants,
@@ -83,7 +84,9 @@ function PriorityStatus({
         onClick={toggleDropdown}
         className="bg-[#e7e7e7] text-black px-4 h-[35px]  rounded-lg flex items-center"
       >
-        {selectedPriority?.label ? selectedPriority.label : viewData?.priority}
+        {selectedPriority?.label
+          ? selectedPriority.label
+          : capitalizeWords(viewData?.priority)}
         <svg
           className="ml-2 w-5 h-5 text-black"
           fill="currentColor"
