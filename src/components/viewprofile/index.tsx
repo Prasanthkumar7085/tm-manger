@@ -77,10 +77,11 @@ function ViewProfile() {
 
   const handleRemoveFile = () => {
     setPreviewUrl(null);
-    fileUploadMutation.mutate({
-      file_name: "",
-      file_type: "",
-    });
+    setUserData((prev: any) => ({
+      ...prev,
+      profile_pic: "",
+    }));
+    // uploadProfileMutation.mutate({ profile_pic: "" });
   };
 
   const fileUploadMutation = useMutation({

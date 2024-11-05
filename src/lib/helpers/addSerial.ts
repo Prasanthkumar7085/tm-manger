@@ -7,4 +7,13 @@ export const addSerial = (dataArray: any, page: any, limit: any) => {
     }
     return [];
   };
+  export const addDataSerial = (dataArray: any) => {
+    if (dataArray?.length) {
+      let arrayAfterSerial = dataArray.map((item: any, index: number) => {
+        return { ...item, serial:+ (index + 1) };
+      });
+      return arrayAfterSerial;
+    }
+    return [];
+  };
   
