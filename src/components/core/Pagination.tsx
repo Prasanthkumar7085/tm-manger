@@ -26,13 +26,13 @@ const Pagination = ({
   limitOptionsFromProps,
   paginationDetails,
 }: DynamicPaginationProps) => {
-  const [currentPage, setCurrentPage] = useState<any>();
-  const [pageValue, setPageValue] = useState<any>();
+  const [currentPage, setCurrentPage] = useState<number>(initialPage);
+  const [pageValue, setPageValue] = useState<number>(initialPage);
   const [limitOptions, setLimitOptions] = useState<
     { title: string; value: number }[]
   >([]);
-  const totalPages = paginationDetails ? paginationDetails?.total_pages : 1;
 
+  const totalPages = paginationDetails ? paginationDetails.total_pages : 1;
   const selectedValue = paginationDetails?.page_size;
 
   useEffect(() => {
@@ -40,14 +40,14 @@ const Pagination = ({
       limitOptionsFromProps?.length
         ? limitOptionsFromProps
         : [
-            { title: "10/page", value: 10 },
-            { title: "12/page", value: 12 },
-            { title: "25/page", value: 25 },
-            { title: "50/page", value: 50 },
-            { title: "100/page", value: 100 },
-            { title: "250/page", value: 250 },
-            { title: "500/page", value: 500 },
-          ]
+          { title: "10/page", value: 10 },
+          { title: "12/page", value: 12 },
+          { title: "25/page", value: 25 },
+          { title: "50/page", value: 50 },
+          { title: "100/page", value: 100 },
+          { title: "250/page", value: 250 },
+          { title: "500/page", value: 500 },
+        ]
     );
   }, [limitOptionsFromProps]);
 
@@ -69,10 +69,11 @@ const Pagination = ({
       handlePageChange(page);
     }
   };
+
   useEffect(() => {
     if (paginationDetails?.current_page) {
-      setPageValue(paginationDetails?.current_page);
-      setCurrentPage(paginationDetails?.current_page);
+      setPageValue(paginationDetails.current_page);
+      setCurrentPage(paginationDetails.current_page);
     }
   }, [paginationDetails]);
 
@@ -110,6 +111,7 @@ const Pagination = ({
 
     return pageNumbers;
   };
+
   return (
     <ShadCNPagination className="flex justify-between px-2 py-0 ">
       <PaginationContent className="px-1 py-0 flex gap-2">
@@ -144,7 +146,7 @@ const Pagination = ({
               value={pageValue}
               onChange={(e) => setPageValue(Number(e.target.value))}
               onKeyDown={onKeyDownInPageChange}
-              className="h-[30px] w-[50px] m-auto flex items-center text-center ml-2 bg-[#f5f5f5]"
+              className="h-[30px] w-[40px] m-auto flex items-center text-center ml-2 bg-[#f5f5f5] focus:outline-none focus:ring-0 text-sm pl-1 pr-0"
               placeholder="Page"
             />
           </div>
@@ -163,11 +165,10 @@ const Pagination = ({
                 handlePageChange(currentPage - 1);
               }}
               aria-disabled={currentPage === 1}
-              className={`${
-                currentPage === 1
-                  ? "pointer-events-none cursor-not-allowed opacity-50"
-                  : "cursor-pointer opacity-100"
-              }`}
+              className={`${currentPage === 1
+                ? "pointer-events-none cursor-not-allowed opacity-50"
+                : "cursor-pointer opacity-100"
+                }`}
             />
           </PaginationItem>
 
@@ -204,11 +205,10 @@ const Pagination = ({
                 handlePageChange(currentPage + 1);
               }}
               aria-disabled={currentPage === totalPages}
-              className={`${
-                currentPage === totalPages
-                  ? "pointer-events-none cursor-not-allowed opacity-50"
-                  : "cursor-pointer opacity-100"
-              }`}
+              className={`${currentPage === totalPages
+                ? "pointer-events-none cursor-not-allowed opacity-50"
+                : "cursor-pointer opacity-100"
+                }`}
             />
           </PaginationItem>
         </PaginationContent>

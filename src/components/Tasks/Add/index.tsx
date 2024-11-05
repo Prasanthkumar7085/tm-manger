@@ -183,7 +183,10 @@ const AddTask = () => {
   };
 
   return (
-    <section id="add-task" className="min-h-screen overflow-auto m-3 bg-white shadow rounded-lg">
+    <section
+      id="add-task"
+      className="min-h-screen overflow-auto m-3 bg-white shadow rounded-lg"
+    >
       <h2 className="text-lg font-bold mb-5 border-b px-6 py-4">
         {taskId ? "Edit Task" : "Add Task"}
       </h2>
@@ -204,9 +207,8 @@ const AddTask = () => {
                     className="justify-between  bg-slate-50 h-[35px] w-[220px] relative"
                   >
                     {task.project_id
-                      ? projectsList.find(
-                        (p: any) => p.id === task.project_id
-                      )?.title
+                      ? projectsList.find((p: any) => p.id === task.project_id)
+                          ?.title
                       : "Select Project"}
                     <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
                     {task.project_id && (
@@ -238,8 +240,7 @@ const AddTask = () => {
                             <Check
                               className="mr-2 h-4 w-4"
                               style={{
-                                opacity:
-                                  task.project_id === project.id ? 1 : 0,
+                                opacity: task.project_id === project.id ? 1 : 0,
                               }}
                             />
                             {project.title}
@@ -252,9 +253,7 @@ const AddTask = () => {
               </Popover>
 
               {errorMessages.project_id && (
-                <p style={{ color: "red" }}>
-                  {errorMessages?.project_id?.[0]}
-                </p>
+                <p style={{ color: "red" }}>{errorMessages?.project_id?.[0]}</p>
               )}
             </div>
             <div className="form-item">
@@ -291,12 +290,6 @@ const AddTask = () => {
                 </p>
               )}
             </div>
-            <div className="form-item">
-              <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
-                Upload Attachments
-              </label>
-              <UploadAttachments />
-            </div>
           </div>
           <div className="rightColumn space-y-5">
             <div className="grid grid-cols-2 gap-5">
@@ -321,9 +314,7 @@ const AddTask = () => {
                 />
 
                 {errorMessages.due_date && (
-                  <p style={{ color: "red" }}>
-                    {errorMessages?.due_date?.[0]}
-                  </p>
+                  <p style={{ color: "red" }}>{errorMessages?.due_date?.[0]}</p>
                 )}
               </div>
               <div className="form-item">
@@ -334,7 +325,7 @@ const AddTask = () => {
                   name="priority"
                   value={task.priority}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="bg-slate-50 h-[35px] p-2 border w-full rounded-md"
                 >
                   <option value="">Select priority</option>
                   <option value="HIGH">High</option>
@@ -342,9 +333,7 @@ const AddTask = () => {
                   <option value="LOW">Low</option>
                 </select>
                 {errorMessages.priority && (
-                  <p style={{ color: "red" }}>
-                    {errorMessages?.priority?.[0]}
-                  </p>
+                  <p style={{ color: "red" }}>{errorMessages?.priority?.[0]}</p>
                 )}
               </div>
             </div>
@@ -370,9 +359,12 @@ const AddTask = () => {
                   </label>
                   <Popover open={openUsers} onOpenChange={setOpenUsers}>
                     <PopoverTrigger asChild>
-                      <Button variant="outline" className="w-full">
+                      <Button
+                        variant="outline"
+                        className="justify-between  bg-slate-50 h-[35px] w-[220px] relative"
+                      >
                         Select Users
-                        <ChevronsUpDown className="ml-2 h-4 w-4" />
+                        <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[200px] p-0 bg-white">
@@ -392,9 +384,7 @@ const AddTask = () => {
                                 <Check
                                   className="mr-2 h-4 w-4"
                                   style={{
-                                    opacity: selectedUsers.has(user.id)
-                                      ? 1
-                                      : 0,
+                                    opacity: selectedUsers.has(user.id) ? 1 : 0,
                                   }}
                                 />
                                 <p className="capitalize">
@@ -475,7 +465,7 @@ const AddTask = () => {
                 name="status"
                 value={task.status}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className="bg-slate-50 h-[35px] p-2 border w-full rounded-md"
               >
                 <option value="">Select Status</option>
                 <option value="TODO">Todo</option>
@@ -487,7 +477,6 @@ const AddTask = () => {
                 <p style={{ color: "red" }}>{errorMessages?.status?.[0]}</p>
               )}
             </div>
-
           </div>
         </div>
         <div className="form-action-button flex justify-end mt-5">

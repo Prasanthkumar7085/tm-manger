@@ -22,17 +22,18 @@ function ViewProfile() {
   const userID = useSelector(
     (state: any) => state.auth?.user?.user_details?.id
   );
+
   const [loading, setLoading] = useState(false);
   const [userType, setUserType] = useState<any>("");
   const [userData, setUserData] = useState<any>({
     fname: "",
     lname: "",
     email: "",
-    password: "",
     phone_number: "",
     profile_pic: "",
   });
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false); // State for upload loading
 
   const { isLoading, isError, error, data, isFetching } = useQuery({
     queryKey: ["users", userID],
@@ -68,6 +69,7 @@ function ViewProfile() {
     const file = event.target.files?.[0] || null;
     if (file) {
       setPreviewUrl(URL.createObjectURL(file));
+      setIsUploading(true);
       fileUploadMutation.mutate(file);
     }
   };
@@ -82,7 +84,7 @@ function ViewProfile() {
   };
 
   const fileUploadMutation = useMutation({
-    mutationFn: async (file: File) => {
+    mutationFn: async (file: any) => {
       const { data } = await fileUploadAPI({
         file_name: file.name,
         file_type: file.type,
@@ -104,6 +106,9 @@ function ViewProfile() {
     onError: (error) => {
       console.error(error);
       toast.error("Failed to upload file.");
+    },
+    onSettled: () => {
+      setIsUploading(false); // Reset uploading state after mutation completes
     },
   });
 
@@ -136,10 +141,14 @@ function ViewProfile() {
   });
 
   return (
-    <Card className="flex flex-col md:flex-row items-center p-4">
-      <CardHeader className="flex-none mb-4 md:mb-0 md:mr-4">
-        <CardTitle>Profile Information</CardTitle>
-        <CardDescription>Details about the user</CardDescription>
+    <Card className="flex flex-col md:flex-row items-center p-4 shadow-lg rounded-lg bg-white">
+      <CardHeader className="flex-none mb-4 md:mb-0 md:mr-4 relative">
+        <CardTitle className="text-xl font-semibold">
+          Profile Information
+        </CardTitle>
+        <CardDescription className="text-gray-600">
+          Details about the user
+        </CardDescription>
         <input
           id="file-upload"
           type="file"
@@ -176,14 +185,7 @@ function ViewProfile() {
         </label>
       </CardHeader>
       <CardContent className="flex flex-row items-center space-x-4">
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, auto)",
-            gap: "11px",
-            fontSize: "20px",
-          }}
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg">
           <p>
             <strong>First Name:</strong> {userData.fname}
           </p>
@@ -201,8 +203,9 @@ function ViewProfile() {
           </p>
         </div>
       </CardContent>
-      <CardFooter></CardFooter>
+      <CardFooter className="mt-4 md:mt-0"></CardFooter>
     </Card>
   );
 }
+
 export default ViewProfile;

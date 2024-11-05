@@ -361,6 +361,7 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
         onOKClick={handleDeleteUser}
         deleteLoading={loading || isLoading || isFetching}
       />
+      <LoadingComponent loading={loading || isLoading || isFetching} />
     </div>
   );
 };
