@@ -1,17 +1,31 @@
 import { DateRangePicker } from "rsuite";
-
 import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 import { predefinedRanges } from "./CommonComponents/DatePickerRanges";
 import "rsuite/dist/rsuite.css";
 
 const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
-  console.log(dateValue, "dateValue");
+  const today = [new Date(), new Date()];
+  const [selectedDate, setSelectedDate] = useState(dateValue || today);
+
+  useEffect(() => {
+    if (!dateValue) {
+      const todayFormatted = [
+        dayjs(today[0]).format("YYYY-MM-DD"),
+        dayjs(today[1]).format("YYYY-MM-DD"),
+      ];
+      onChangeData(todayFormatted[0], todayFormatted[1]);
+    }
+  }, [dateValue, onChangeData]);
+
   const updateDateValues = (newDate: any) => {
     if (newDate) {
       const date1 = dayjs(newDate[0]).format("YYYY-MM-DD");
       const date2 = dayjs(newDate[1]).format("YYYY-MM-DD");
+      setSelectedDate(newDate);
       onChangeData(date1, date2);
     } else {
+      setSelectedDate(today);
       onChangeData("", "");
     }
   };
@@ -22,7 +36,7 @@ const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
       placeholder={"Select Date"}
       placement="bottomEnd"
       ranges={predefinedRanges}
-      value={dateValue}
+      value={selectedDate}
       onChange={updateDateValues}
       showHeader={false}
     />

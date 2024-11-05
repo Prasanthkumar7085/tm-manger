@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import StatsAndGraph from "./StatsAndGraphs";
 import Tasks from "./Tasks";
 import DatePickerField from "./core/DateRangePicker";
@@ -19,17 +19,20 @@ import LoadingComponent from "./core/LoadingComponent";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 import ProjectDataTable from "./ProjectWiseStats";
 
-const formatDate = (date: Date) => {
+const formatDate = (date: any) => {
   return date.toISOString().split("T")[0];
 };
 
 const DashBoard = () => {
-  const [selectedDate, setSelectedDate] = useState<Date[]>([
-    new Date(),
-    new Date(),
-  ]);
+  const [selectedDate, setSelectedDate] = useState([new Date(), new Date()]);
 
-  const fetchCounts = async (fromDate: Date, toDate: Date) => {
+  // Ensure the date is set to today each time the dashboard loads
+  useEffect(() => {
+    const today = new Date();
+    setSelectedDate([today, today]);
+  }, []);
+
+  const fetchCounts = async (fromDate: any, toDate: any) => {
     const results = await Promise.allSettled([
       getTotalProjectsStats({
         from_date: formatDate(fromDate),
@@ -62,7 +65,8 @@ const DashBoard = () => {
       const [fromDateUTC, toDateUTC] = changeDateToUTC(fromDate, toDate);
       setSelectedDate([fromDateUTC, toDateUTC]);
     } else {
-      setSelectedDate([new Date(), new Date()]);
+      const today = new Date();
+      setSelectedDate([today, today]);
     }
   };
 

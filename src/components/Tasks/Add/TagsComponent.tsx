@@ -182,7 +182,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
             ))
           : isTaskTagsLoading
             ? ""
-            : "No Tags Found"}
+            : ""}
       </div>
     </div>
   );
