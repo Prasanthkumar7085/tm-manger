@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import { toast } from "sonner";
-import React, { useState } from "react";
 
 import DeleteDialog from "@/components/core/deleteDialog";
 import { deleteAttachmentsAPI } from "@/lib/services/tasks";
@@ -28,9 +28,11 @@ const DeleteAttachments = ({ attachmentId, onSuccess }: any) => {
           onSuccess();
         } else {
           throw new Error("Failed to delete attachment");
+          setDeleteDialogOpen(false);
         }
       } catch (err: any) {
         toast.error(err?.message || "Something went wrong");
+        setDeleteDialogOpen(false);
       } finally {
         setLoading(false);
       }

@@ -16,7 +16,8 @@ import {
 import { useSelector } from "react-redux";
 import { fileUploadAPI, uploadToS3API } from "@/lib/services/projects";
 import { toast } from "sonner";
-import { Pencil, X, Loader } from "lucide-react"; // Import Loader icon
+import { Pencil, Loader } from "lucide-react"; // Import Loader icon
+import { CirclePlus, Plus, UserRoundPlus, X } from "lucide-react";
 
 function ViewProfile() {
   const userID = useSelector(
@@ -71,17 +72,16 @@ function ViewProfile() {
       setPreviewUrl(URL.createObjectURL(file));
       setIsUploading(true);
       fileUploadMutation.mutate(file);
-    } else {
-      setPreviewUrl(null);
     }
   };
 
   const handleRemoveFile = () => {
     setPreviewUrl(null);
-    fileUploadMutation.mutate({
-      file_name: "",
-      file_type: "",
-    });
+    setUserData((prev: any) => ({
+      ...prev,
+      profile_pic: "",
+    }));
+    // uploadProfileMutation.mutate({ profile_pic: "" });
   };
 
   const fileUploadMutation = useMutation({

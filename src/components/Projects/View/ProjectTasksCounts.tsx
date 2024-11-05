@@ -12,7 +12,7 @@ const ProjectTasksCounts = ({ projectStatsUpdate }: any) => {
   const { projectId } = useParams({ strict: false });
 
   const { data: totalProjectWiseTasks } = useQuery({
-    queryKey: ["totalTasks", projectStatsUpdate],
+    queryKey: ["totalTasks", projectStatsUpdate, projectId],
     queryFn: () => getProjectWiseTotalTasksCounts(),
   });
 
@@ -35,7 +35,8 @@ const ProjectTasksCounts = ({ projectStatsUpdate }: any) => {
               <CardContent className="p-0 text-2xl">
                 <CountUp
                   end={
-                    totalProjectWiseTasks?.total_tasks?.toLocaleString() || 0
+                    totalProjectWiseTasks?.total_tasks_count?.toLocaleString() ||
+                    0
                   }
                   duration={2.5}
                 />
@@ -56,7 +57,10 @@ const ProjectTasksCounts = ({ projectStatsUpdate }: any) => {
               <h3 className="leading-5 text-slate-500">To Do</h3>
               <CardContent className="p-0 text-2xl">
                 <CountUp
-                  end={totalProjectWiseTasks?.todo_count?.toLocaleString() || 0}
+                  end={
+                    totalProjectWiseTasks?.task_todo_count?.toLocaleString() ||
+                    0
+                  }
                   duration={2.5}
                 />
               </CardContent>
@@ -77,7 +81,7 @@ const ProjectTasksCounts = ({ projectStatsUpdate }: any) => {
               <CardContent className="p-0 text-2xl">
                 <CountUp
                   end={
-                    totalProjectWiseTasks?.inprogress_count?.toLocaleString() ||
+                    totalProjectWiseTasks?.task_inprogress_count?.toLocaleString() ||
                     0
                   }
                   duration={2.5}
@@ -99,7 +103,7 @@ const ProjectTasksCounts = ({ projectStatsUpdate }: any) => {
               <h3 className="leading-5 text-slate-500">Overdue</h3>
               <CardContent className="p-0 text-2xl">
                 <CountUp
-                  end={totalProjectWiseTasks?.overdue_count?.toLocaleString()}
+                  end={totalProjectWiseTasks?.task_overdue_count?.toLocaleString()}
                   duration={2.5}
                 />
               </CardContent>
@@ -119,7 +123,7 @@ const ProjectTasksCounts = ({ projectStatsUpdate }: any) => {
               <h3 className="leading-5 text-slate-500">Completed</h3>
               <CardContent className="p-0 text-2xl">
                 <CountUp
-                  end={totalProjectWiseTasks?.completed_count?.toLocaleString()}
+                  end={totalProjectWiseTasks?.task_completed_count?.toLocaleString()}
                   duration={2.5}
                 />
               </CardContent>

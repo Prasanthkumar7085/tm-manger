@@ -155,7 +155,7 @@ const DashBoard = () => {
       <Card className="mt-6 bg-white shadow-lg rounded-lg">
         <ProjectDataTable />
       </Card>
-      <LoadingComponent loading={isLoading} />
+      {/* <LoadingComponent loading={isLoading} /> */}
     </div>
   );
 };

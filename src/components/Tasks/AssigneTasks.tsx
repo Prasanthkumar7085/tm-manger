@@ -298,7 +298,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
           <p className="text-red-500">{errorMessages.user_ids[0]}</p>
         )} */}
       </div>
-      <LoadingComponent loading={loading || isLoading} />
+      <LoadingComponent loading={loading} />
     </div>
   );
 };

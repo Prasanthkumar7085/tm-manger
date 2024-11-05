@@ -55,6 +55,8 @@ const Tasks = () => {
     order_by: orderBY,
   });
 
+  console.log(selectedProject,"selectedProject");
+
   const isDashboard = location.pathname === "/dashboard";
 
   const { isLoading, isError, data, error, isFetching } = useQuery({
@@ -66,7 +68,7 @@ const Tasks = () => {
       del,
       selectedStatus,
       selectedpriority,
-      selectedProject,
+      selectedProject
     ],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
@@ -76,7 +78,7 @@ const Tasks = () => {
         search_string: debouncedSearch,
         status: selectedStatus,
         priority: selectedpriority,
-        project_id: selectedProject?.id,
+        project_id: selectedProject,
         from_date: selectedDate?.length ? selectedDate[0] : null,
         to_date: selectedDate?.length ? selectedDate[1] : null,
       });
@@ -88,7 +90,7 @@ const Tasks = () => {
         from_date: selectedDate?.length ? selectedDate[0] : undefined,
         to_date: selectedDate?.length ? selectedDate[1] : undefined,
         status: selectedStatus || undefined,
-        project_id: selectedProject?.id || undefined,
+        project_id: selectedProject || undefined,
         priority: selectedpriority || undefined,
       };
 
@@ -123,7 +125,7 @@ const Tasks = () => {
         searchString ||
         selectedStatus ||
         selectedpriority ||
-        selectedProject?.id
+        selectedProject
       ) {
         getAllTasks({
           pageIndex: 1,
@@ -141,7 +143,7 @@ const Tasks = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString, selectedStatus, selectedpriority, selectedProject?.id]);
+  }, [searchString, selectedStatus, selectedpriority,selectedProject]);
 
   const handleNavigation = () => {
     navigate({

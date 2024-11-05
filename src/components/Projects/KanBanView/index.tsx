@@ -23,10 +23,8 @@ type Task = {
   created_at: string;
   description: string;
   id: number;
-  task_description: string;
   task_id: string;
-  task_status: string;
-  task_title: string;
+  status: string;
   title: string;
 };
 
@@ -44,7 +42,7 @@ const KanbanBoard: React.FC<any> = ({
 
   const [tasks, setTasks] = useState<TaskColumn>({
     TODO: [],
-    IN_PROGRESS: [],
+    "IN-PROGRESS": [],
     OVER_DUE: [],
     COMPLETED: [],
   });
@@ -96,13 +94,13 @@ const KanbanBoard: React.FC<any> = ({
           const { data } = response.data;
           let categorizedTasks: TaskColumn = {
             TODO: [],
-            IN_PROGRESS: [],
+            "IN-PROGRESS": [],
             OVER_DUE: [],
             COMPLETED: [],
           };
           data.forEach((task: Task) => {
-            if (task.task_status in categorizedTasks) {
-              categorizedTasks[task.task_status].push(task);
+            if (task.status in categorizedTasks) {
+              categorizedTasks[task.status].push(task);
             }
           });
           setTasks(categorizedTasks);
@@ -123,7 +121,7 @@ const KanbanBoard: React.FC<any> = ({
         <div
           {...provided.droppableProps}
           ref={provided.innerRef}
-          className="flex flex-col p-4 bg-gray-100 rounded-md"
+          className="flex flex-col rounded-md"
         >
           <h2 className="text-lg font-bold">
             {
@@ -161,15 +159,15 @@ const KanbanBoard: React.FC<any> = ({
                     >
                       <p
                         className="text-ellipsis overflow-hidden"
-                        title={task.task_title}
+                        title={task.title}
                       >
-                        {task.task_title || "--"}
+                        {task.title || "--"}
                       </p>
                       <p
                         className="font-medium text-gray-600 max-h-15 max-w-[250px] overflow-hidden overflow-ellipsis whitespace-nowrap"
-                        title={task?.task_description}
+                        title={task?.description}
                       >
-                        {task?.task_description ? task.task_description : "--"}
+                        {task?.description ? task.description : "--"}
                       </p>
                       <div className="flex justify-start mt-3 -space-x-3">
                         {task?.assignees?.slice(0, 5).map((assignee) => (
@@ -206,6 +204,7 @@ const KanbanBoard: React.FC<any> = ({
           <Button
             disabled={projectDetails?.active ? false : true}
             title="Add Task"
+            className="bg-transparent border-dotted border-2 border-[#5A5A5A] text-black text-md"
             onClick={() => {
               router.navigate({
                 to: "/tasks/add",
@@ -213,7 +212,7 @@ const KanbanBoard: React.FC<any> = ({
               });
             }}
           >
-            Add Task
+            Add new Task
           </Button>
         </div>
       )}
@@ -245,7 +244,7 @@ const KanbanBoard: React.FC<any> = ({
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="flex space-x-4 relative">
-        {["TODO", "IN_PROGRESS", "OVER_DUE", "COMPLETED"].map((column) => (
+        {["TODO", "IN-PROGRESS", "OVER_DUE", "COMPLETED"].map((column) => (
           <div key={column} className="flex-1">
             {renderColumn(column)}
           </div>

@@ -19,7 +19,6 @@ import { downloadFileFromS3 } from "@/lib/helpers/apiHelpers";
 const UploadAttachments = () => {
   const { taskId } = useParams({ strict: false });
   const [attachmentsData, setAttachments] = useState([]);
-  console.log(attachmentsData, "data");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [refreshCount, setRefreshCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -41,6 +40,9 @@ const UploadAttachments = () => {
           const info = response?.data?.data;
           setAttachments(info);
           return info;
+        } else if (response?.status === 404) {
+          setAttachments([]);
+          return [];
         }
       } catch (err: any) {
         toast.error(err?.message || "Something went Wrong");
@@ -202,11 +204,7 @@ const UploadAttachments = () => {
     <div id="upload-attachments" className="mt-5">
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-semibold">Attachments</h2>
-        <Button
-          type="button"
-          onClick={open}
-          variant="add" size="DefaultButton"
-        >
+        <Button type="button" onClick={open} variant="add" size="DefaultButton">
           {uploadingStatus.loading && (
             <div className="flex items-center">
               <Loader2 className="h-4 w-4 animate-spin mr-2" />

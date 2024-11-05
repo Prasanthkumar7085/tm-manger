@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+th{
+  background: #f3e5f5!important;
+}
 td{
   padding: 5px 10px!important;
 }
