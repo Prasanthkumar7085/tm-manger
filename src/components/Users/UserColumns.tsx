@@ -1,5 +1,4 @@
-
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { updateUserStatueAPI } from "@/lib/services/users";
 import { toast } from "sonner";
 export const userColumns = [
@@ -150,6 +149,26 @@ export const userColumns = [
           setIsOpen(false);
         }
       };
+      useEffect(() => {
+        const handleClickOutside = (event: any) => {
+          if (
+            popoverRef.current &&
+            !popoverRef.current.contains(event.target)
+          ) {
+            setIsOpen(false);
+          }
+        };
+
+        if (isOpen) {
+          document.addEventListener("mousedown", handleClickOutside);
+        } else {
+          document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }, [isOpen]);
 
       return (
         <div
