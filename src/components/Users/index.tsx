@@ -425,44 +425,60 @@ function UsersTable() {
       cell: (info: any) => {
         const isActive = info.row.original.active;
         return (
-          <div className="flex ">
-            <Button
-              title="reset password"
-              onClick={() => handlePasswordUpdateOpen(info.row.original.id)}
-              size={"sm"}
-              variant={"ghost"}
-              disabled={!isActive}
-            >
-              <img
-                src={"/table/change-password-icon.svg"}
-                alt="view"
-                height={16}
-                width={16}
-              />
-            </Button>
-            <Button
-              title="edit"
-              onClick={() => handleUpdate(info.row.original.id)}
-              size={"sm"}
-              variant={"ghost"}
-             disabled={!isActive}
-            >
-              <img src={"/table/edit.svg"} alt="view" height={16} width={16} />
-            </Button>
-            <Button
-              title="delete"
-              onClick={() => onClickOpen(info.row.original.id)}
-              size={"sm"}
-              variant={"ghost"}
-            >
-              <img
-                src={"/table/delete.svg"}
-                alt="view"
-                height={16}
-                width={16}
-              />
-            </Button>
-          </div>
+          <>
+            <ul className="table-action-buttons flex space-x-2 items-center">
+              <li>
+                <Button
+                  title="reset password"
+                  onClick={() => handlePasswordUpdateOpen(info.row.original.id)}
+                  size={"sm"}
+                  variant={"ghost"}
+                  disabled={!isActive}
+                  className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
+                >
+                  <img
+                    src={"/table/change-password-icon.svg"}
+                    alt="view"
+                    height={18}
+                    width={18}
+                  />
+                </Button>
+              </li>
+              <li>
+                <Button
+                  title="edit"
+                  onClick={() => handleUpdate(info.row.original.id)}
+                  size={"sm"}
+                  variant={"ghost"}
+                  disabled={!isActive}
+                  className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
+                >
+                  <img
+                    src={"/table/edit.svg"}
+                    alt="view"
+                    height={18}
+                    width={18}
+                  />
+                </Button>
+              </li>
+              <li>
+                <Button
+                  title="delete"
+                  onClick={() => onClickOpen(info.row.original.id)}
+                  size={"sm"}
+                  variant={"ghost"}
+                  className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
+                >
+                  <img
+                    src={"/table/delete.svg"}
+                    alt="view"
+                    height={18}
+                    width={18}
+                  />
+                </Button>
+              </li>
+            </ul>
+          </>
         );
       },
       header: () => <span>Actions</span>,
@@ -495,9 +511,15 @@ function UsersTable() {
                   />
                 </li>
                 <li>
-                  <Button type="button" variant="add" size="DefaultButton" onClick={() => handleDrawerOpen()}>
+                  <Button
+                    type="button"
+                    variant="add"
+                    size="DefaultButton"
+                    onClick={() => handleDrawerOpen()}
+                  >
                     <span className="text-xl pr-2">+</span>
-                    Add Users</Button>
+                    Add Users
+                  </Button>
                 </li>
               </ul>
             </div>
@@ -510,7 +532,7 @@ function UsersTable() {
             loading={isLoading || isFetching || loading}
             paginationDetails={data?.data?.data?.pagination_info}
             getData={getAllUsers}
-            removeSortingForColumnIds={["serial", "actions","active"]}
+            removeSortingForColumnIds={["serial", "actions", "active"]}
           />
         </div>
         <DeleteDialog
