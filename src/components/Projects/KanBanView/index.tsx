@@ -42,7 +42,7 @@ const KanbanBoard: React.FC<any> = ({
 
   const [tasks, setTasks] = useState<TaskColumn>({
     TODO: [],
-    "IN-PROGRESS": [],
+    IN_PROGRESS: [],
     OVER_DUE: [],
     COMPLETED: [],
   });
@@ -94,15 +94,16 @@ const KanbanBoard: React.FC<any> = ({
           const { data } = response.data;
           let categorizedTasks: TaskColumn = {
             TODO: [],
-            "IN-PROGRESS": [],
+            IN_PROGRESS: [],
             OVER_DUE: [],
             COMPLETED: [],
           };
-          data.forEach((task: Task) => {
-            if (task.status in categorizedTasks) {
-              categorizedTasks[task.status].push(task);
+          data.forEach((task: any) => {
+            if (task.task_status in categorizedTasks) {
+              categorizedTasks[task.task_status].push(task);
             }
           });
+          console.log(categorizedTasks, "categorizedTasks");
           setTasks(categorizedTasks);
         } else {
           throw new Error("Failed to fetch project task details");
@@ -139,7 +140,7 @@ const KanbanBoard: React.FC<any> = ({
                   </div>
                 </div>
               ))
-            : tasks[columnName].map((task, index) => (
+            : tasks[columnName].map((task: any, index) => (
                 <Draggable
                   key={task.task_id}
                   draggableId={String(task.task_id)}
@@ -159,7 +160,7 @@ const KanbanBoard: React.FC<any> = ({
                     >
                       <p
                         className="text-ellipsis overflow-hidden"
-                        title={task.title}
+                        title={task.task_title}
                       >
                         {task.title || "--"}
                       </p>
@@ -170,7 +171,7 @@ const KanbanBoard: React.FC<any> = ({
                         {task?.description ? task.description : "--"}
                       </p>
                       <div className="flex justify-start mt-3 -space-x-3">
-                        {task?.assignees?.slice(0, 5).map((assignee) => (
+                        {task?.assignees?.slice(0, 5).map((assignee: any) => (
                           <Avatar
                             key={assignee.user_id}
                             className="w-8 h-8 border-2 border-white"
@@ -244,7 +245,7 @@ const KanbanBoard: React.FC<any> = ({
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="flex space-x-4 relative">
-        {["TODO", "IN-PROGRESS", "OVER_DUE", "COMPLETED"].map((column) => (
+        {["TODO", "IN_PROGRESS", "OVER_DUE", "COMPLETED"].map((column) => (
           <div key={column} className="flex-1">
             {renderColumn(column)}
           </div>

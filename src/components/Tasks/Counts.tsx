@@ -23,7 +23,6 @@ const TotalCounts = ({ taksDataAfterSerial }: any) => {
     }
   };
 
-  console.log(totalTasks, "totalTasks");
   return (
     <section id="tasks-counts">
       <div className="flex justify-between items-center gap-4 bg-gradient-to-rounded-lg  px-6">

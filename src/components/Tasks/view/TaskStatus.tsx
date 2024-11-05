@@ -77,14 +77,14 @@ function TaskStatus({
   }, []);
 
   return (
-    <div className="relative inline-block text-left" ref={dropdownRef}>
+    <div className="relative inline-block text-left pb-4" ref={dropdownRef}>
       <button
         onClick={toggleDropdown}
-        className="bg-[#e7e7e7] text-black px-4 h-[35px]  rounded-lg flex items-center"
+        className="bg-white text-[#5FADFF] text-md px-2 h-[35px] border-[#007BFF] border font-normal rounded-[4px] flex items-center max-w-[130px] justify-between"
       >
         <span>{selectedStatus?.label}</span>
         <svg
-          className="ml-2 w-5 h-5 text-black"
+          className="ml-2 w-8 h-8 text-[#696969]"
           fill="currentColor"
           viewBox="0 0 20 20"
         >

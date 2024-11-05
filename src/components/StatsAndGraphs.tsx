@@ -98,7 +98,7 @@ const StatsAndGraph = ({ selectedDate }: any) => {
     <div className="relative">
       <div className="flex justify-between items-center mb-4">
         <DateRangeFilter
-          dateValue={dateValue}
+          dateValue={selectedDateRange}
           onChangeData={handleDateChange}
         />
       </div>
