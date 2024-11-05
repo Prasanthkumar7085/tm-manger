@@ -6,6 +6,7 @@ import { getTaskTrendsAPI } from "@/lib/services/dashboard";
 import DateRangeFilter from "./core/DateRangePicker";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
+import LoadingComponent from "./core/LoadingComponent";
 
 const StatsAndGraph = ({ selectedDate }: any) => {
   const today = new Date();
@@ -33,14 +34,14 @@ const StatsAndGraph = ({ selectedDate }: any) => {
     enabled: !!selectedDateRange,
   });
 
-  const dummyData = [
-    { date: "2024-10-30", completed_count: 5, inprogress_count: 3 },
-    { date: "2024-10-31", completed_count: 8, inprogress_count: 2 },
-    { date: "2024-11-01", completed_count: 4, inprogress_count: 6 },
-    { date: "2024-11-02", completed_count: 7, inprogress_count: 1 },
-  ];
+  // const dummyData = [
+  //   { date: "2024-10-30", completed_count: 5, inprogress_count: 3 },
+  //   { date: "2024-10-31", completed_count: 8, inprogress_count: 2 },
+  //   { date: "2024-11-01", completed_count: 4, inprogress_count: 6 },
+  //   { date: "2024-11-02", completed_count: 7, inprogress_count: 1 },
+  // ];
 
-  const trendData = Array.isArray(data) && data.length > 0 ? data : dummyData;
+  const trendData = Array.isArray(data) && data.length > 0 ? data : [];
 
   const categories = trendData.map((item: any) => item.date);
   const completedData = trendData.map((item: any) => item.completed_count);
@@ -107,7 +108,11 @@ const StatsAndGraph = ({ selectedDate }: any) => {
         />
       </div>
       <HighchartsReact highcharts={Highcharts} options={options} />
-      {isFetching && <div>Loading data...</div>}
+      {isFetching && (
+        <div>
+          <LoadingComponent loading />
+        </div>
+      )}
     </div>
   );
 };
