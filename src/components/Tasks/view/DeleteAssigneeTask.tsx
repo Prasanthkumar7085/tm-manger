@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import React, { useState } from "react";
+import listingDelete from "@/assets/delete-listing.svg";
 import DeleteDialog from "@/components/core/deleteDialog";
 import { deleteAssignesAPI } from "@/lib/services/tasks";
 import { useParams } from "@tanstack/react-router";
@@ -39,16 +40,17 @@ const DeleteAssignes = ({
   return (
     <>
       <button
+      className="flex items-center"
         onClick={() => setDeleteDialogOpen(true)}
         title="Delete Assignee"
         aria-label="Delete Assignee"
       >
         <img
-          src={"/table/delete.svg"}
+        src={listingDelete}
           alt="Delete"
           className="cursor-pointer"
-          height={16}
-          width={16}
+          height={24}
+          width={24}
         />
       </button>
 

@@ -147,7 +147,7 @@ const ProjectView = () => {
           {previewUrl ? (
             <div className="relative w-20 h-20 rounded-full border-2 shadow-md">
               <img
-                src={previewUrl}
+                src={previewUrl || "/favicon.png"}
                 alt="Profile Preview"
                 className="w-20 h-20 object-cover rounded-full border  bg-black"
                 onError={(e: any) => {
@@ -171,9 +171,9 @@ const ProjectView = () => {
           ) : (
             <div className="relative w-20 h-20 rounded-full border-2 shadow-md">
               <img
-                src="https://via.placeholder.com/150?text=No+Image"
+                src="/favicon.png"
                 alt="company logo"
-                className="w-20 h-20 object-cover rounded-full border  bg-black"
+                className="w-20 h-20 object-contain	 rounded-full border  bg-white"
                 onError={(e: any) => {
                   e.target.onerror = null;
                   e.target.src =

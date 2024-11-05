@@ -86,6 +86,18 @@ export const taskColumns = ({ setDel }: any) => {
       footer: (props: any) => props.column.id,
     },
     {
+      accessorFn: (row: any) => row.ref_id,
+      id: "ref_id",
+      cell: (info: any) => (
+        <span className="capitalize">{info.getValue()}</span>
+      ),
+      width: "100px",
+      maxWidth: "100px",
+      minWidth: "100px",
+      header: () => <span>Task Id</span>,
+      footer: (props: any) => props.column.id,
+    },
+    {
       accessorFn: (row: any) => row.title,
       id: "title",
       cell: (info: any) => (
@@ -136,7 +148,7 @@ export const taskColumns = ({ setDel }: any) => {
           </TooltipProvider>
         );
       },
-      width: "150px",
+      width: "100px",
       maxWidth: "150px",
       minWidth: "150px",
       header: () => <span>Description</span>,

@@ -1,4 +1,5 @@
 // src/components/KanbanBoard.tsx
+import LoadingComponent from "@/components/core/LoadingComponent";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -162,13 +163,13 @@ const KanbanBoard: React.FC<any> = ({
                         className="text-ellipsis overflow-hidden"
                         title={task.task_title}
                       >
-                        {task.title || "--"}
+                        {task.task_title || "--"}
                       </p>
                       <p
                         className="font-medium text-gray-600 max-h-15 max-w-[250px] overflow-hidden overflow-ellipsis whitespace-nowrap"
-                        title={task?.description}
+                        title={task?.task_description}
                       >
-                        {task?.description ? task.description : "--"}
+                        {task?.task_description ? task.task_description : "--"}
                       </p>
                       <div className="flex justify-start mt-3 -space-x-3">
                         {task?.assignees?.slice(0, 5).map((assignee: any) => (
@@ -251,7 +252,7 @@ const KanbanBoard: React.FC<any> = ({
           </div>
         ))}
       </div>
-      {/* <LoadingComponent loading={isFetching || isLoading || loading} /> */}
+      <LoadingComponent loading={isFetching || isLoading || loading} />
     </DragDropContext>
   );
 };
