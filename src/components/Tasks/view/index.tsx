@@ -37,7 +37,10 @@ const TaskView = () => {
   const [errorMessages, setErrorMessages] = useState();
   const [tagInput, setTagInput] = useState<any>("");
   const [updateDetailsOfTask, setUpdateDetailsOfTask] = useState<any>(0);
-  const [updatePrority, setUpdatePriority] = useState<any>(0);
+  const [updatePrority, setUpdatePriority] = useState<{
+    label: string;
+    value: string;
+  }>();
   const [selectedStatus, setSelectedStatus] = useState<{
     label: string;
     value: string;
@@ -115,15 +118,13 @@ const TaskView = () => {
                 {viewData?.title ? capitalizeWords(viewData?.title) : "--"}
               </h1>
               <span className="capitalize ml-10">
-                <Badge
-                  style={{
-                    backgroundColor:
-                      bgColorObjectForStatus[viewData?.priority] || "gray",
-                    color: colorObjectForStatus[viewData?.priority] || "black",
-                  }}
-                >
-                  {viewData?.priority}
-                </Badge>
+                <PriorityStatus
+                  taskId={taskId}
+                  setUpdatePriority={setUpdatePriority}
+                  selectedPriority={selectedPriority}
+                  setSelectedPriority={setSelectedPriority}
+                  viewData={viewData}
+                />
               </span>
             </div>
             <div className="relative">
@@ -154,12 +155,6 @@ const TaskView = () => {
 
           <div>
             <div className="flex justify-end space-x-3">
-              <PriorityStatus
-                taskId={taskId}
-                setUpdatePriority={setUpdatePriority}
-                selectedPriority={selectedPriority}
-                setSelectedPriority={setSelectedPriority}
-              />
               <TaskStatus
                 taskId={taskId}
                 setUpdateDetailsOfTask={setUpdateDetailsOfTask}

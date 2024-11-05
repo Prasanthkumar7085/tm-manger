@@ -87,6 +87,17 @@ export const statusUpdateAPI = async (
   }
 };
 
+export const priorityUpdateAPI = async (
+  task_id: string,
+  body: { priority: string }
+) => {
+  try {
+    return await $fetch.put(`/tasks/${task_id}/priority`, body);
+  } catch (err: any) {
+    throw err;
+  }
+};
+
 export const addTasksAPI = async (payload: any) => {
   try {
     return await $fetch.post(`/tasks`, payload);
