@@ -91,9 +91,9 @@ export const userColumns = [
         </div>
       );
     },
-    width: "120px",
-    maxWidth: "120px",
-    minWidth: "120px",
+    width: "130px",
+    maxWidth: "130px",
+    minWidth: "130px",
     header: () => <span>Mobile Number</span>,
     footer: (props: any) => props.column.id,
   },
