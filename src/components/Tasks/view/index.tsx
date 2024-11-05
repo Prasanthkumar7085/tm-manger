@@ -32,6 +32,7 @@ const TaskView = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [viewData, setViewData] = useState<any>();
+  console.log(viewData, "view");
   const [tagsData, setTagsData] = useState<any>({ tags: [] });
   const [tagsInput, setTagsInput] = useState("");
   const [errorMessages, setErrorMessages] = useState();

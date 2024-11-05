@@ -55,7 +55,7 @@ const Tasks = () => {
     order_by: orderBY,
   });
 
-  console.log(selectedProject,"selectedProject");
+  console.log(selectedProject, "selectedProject");
 
   const isDashboard = location.pathname === "/dashboard";
 
@@ -68,7 +68,7 @@ const Tasks = () => {
       del,
       selectedStatus,
       selectedpriority,
-      selectedProject
+      selectedProject,
     ],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
@@ -98,9 +98,9 @@ const Tasks = () => {
         location.pathname == "/dashboard"
           ? ""
           : router.navigate({
-            to: "/tasks",
-            search: queryParams,
-          });
+              to: "/tasks",
+              search: queryParams,
+            });
       }
 
       return response;
@@ -143,7 +143,7 @@ const Tasks = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString, selectedStatus, selectedpriority,selectedProject]);
+  }, [searchString, selectedStatus, selectedpriority, selectedProject]);
 
   const handleNavigation = () => {
     navigate({
@@ -209,7 +209,8 @@ const Tasks = () => {
                 </li>
                 <li>
                   <Button
-                    variant="add" size="DefaultButton"
+                    variant="add"
+                    size="DefaultButton"
                     onClick={handleNavigation}
                   >
                     <span className="text-xl pr-2">+</span>
