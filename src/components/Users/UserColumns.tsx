@@ -8,11 +8,11 @@ export const userColumns = [
     id: "serial",
     header: () => <span>S.No</span>,
     footer: (props: any) => props.column.id,
-    width: "30px",
-    maxWidth: "30px",
-    minWidth: "60px",
+    width: "45px",
+    maxWidth: "50px",
+    minWidth: "45px",
     cell: (props: any) => (
-      <div style={{ padding: "16px", textAlign: "left" }}>
+      <div style={{ textAlign: "left" }}>
         {props.getValue()}
       </div>
     ),
@@ -23,7 +23,7 @@ export const userColumns = [
     cell: (info: any) => {
       let title = info.getValue();
       return (
-        <div style={{ padding: "16px", textAlign: "left" }}>
+        <div style={{ textAlign: "left" }}>
           <span className="capitalize">{title ? title : "-"}</span>
         </div>
       );
@@ -40,7 +40,7 @@ export const userColumns = [
     cell: (info: any) => {
       let title = info.getValue();
       return (
-        <div style={{ padding: "16px", textAlign: "left" }}>
+        <div style={{ textAlign: "left" }}>
           <span className="capitalize">{title ? title : "-"}</span>
         </div>
       );
@@ -58,9 +58,9 @@ export const userColumns = [
       let title = info.getValue();
       return <span>{title ? title : "-"}</span>;
     },
-    width: "150px",
-    maxWidth: "150px",
-    minWidth: "150px",
+    width: "170px",
+    maxWidth: "170px",
+    minWidth: "170px",
     header: () => <span>Email</span>,
     footer: (props: any) => props.column.id,
   },
@@ -70,14 +70,14 @@ export const userColumns = [
     cell: (info: any) => {
       let title = info.getValue();
       return (
-        <div style={{ padding: "16px", textAlign: "left" }}>
+        <div style={{ textAlign: "left" }}>
           <span className="capitalize">{title ? title : "-"}</span>
         </div>
       );
     },
-    width: "150px",
-    maxWidth: "150px",
-    minWidth: "150px",
+    width: "120px",
+    maxWidth: "120px",
+    minWidth: "120px",
     header: () => <span>Designation</span>,
     footer: (props: any) => props.column.id,
   },
@@ -87,28 +87,28 @@ export const userColumns = [
     cell: (info: any) => {
       let title = info.getValue();
       return (
-        <div style={{ padding: "16px", textAlign: "left" }}>
+        <div style={{ textAlign: "left" }}>
           <span>{title ? title : "-"}</span>
         </div>
       );
     },
-    width: "150px",
-    maxWidth: "150px",
-    minWidth: "150px",
-    header: () => <span>Mobile Num</span>,
+    width: "120px",
+    maxWidth: "120px",
+    minWidth: "120px",
+    header: () => <span>Mobile Number</span>,
     footer: (props: any) => props.column.id,
   },
 
   {
     accessorFn: (row: any) => row.user_type,
     id: "user_type",
-    width: "80px",
-    maxWidth: "100px",
-    minWidth: "100px",
+    width: "60px",
+    maxWidth: "60px",
+    minWidth: "60px",
     cell: (info: any) => {
       const userType = info.getValue();
       return (
-        <div style={{ padding: "16px", textAlign: "left" }}>
+        <div style={{ textAlign: "left" }}>
           <span>{userType ? userType : "-"}</span>
         </div>
       );

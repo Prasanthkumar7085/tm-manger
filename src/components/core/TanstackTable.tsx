@@ -129,7 +129,7 @@ const TanStackTable: FC<pageProps> = ({
                                 : "",
                             }}
                             onClick={() => sortAndGetData(header)}
-                            className="flex items-center gap-2 cursor-pointer"
+                            className="flex items-center gap-1 cursor-pointer"
                             style={{
                               minWidth: getWidth(header.id),
                               width: getWidth(header.id),
