@@ -100,7 +100,7 @@ export const getTasksBasedOnProjectAPI = async (projectId: any) => {
 
 export const getProjectWiseTasksAPI = async (projectId: any) => {
   try {
-    return await $fetch.get(`/tasks/${projectId}/task-stats`);
+    return await $fetch.get(`/projects/${projectId}/task-stats`);
   } catch (err: any) {
     throw err;
   }

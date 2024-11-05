@@ -5,8 +5,9 @@ import { useRouter } from "@tanstack/react-router";
 import React, { useState } from "react";
 import TanStackTable from "./core/TanstackTable";
 import { projectWiseColumns } from "./ProjectWiseColumns";
-import { addDataSerial} from "@/lib/helpers/addSerial";
+import { addDataSerial } from "@/lib/helpers/addSerial";
 import LoadingComponent from "./core/LoadingComponent";
+import Loading from "./core/Loading";
 
 const ProjectDataTable = () => {
   const router = useRouter();
@@ -16,11 +17,12 @@ const ProjectDataTable = () => {
     queryFn: async () => {
       try {
         const response = await getAllProjectStats();
+        console.log(response, "response");
         if (response.success) {
           const dataWithSerials = addDataSerial(response?.data?.data);
           return dataWithSerials;
         } else {
-          throw new Error("Data retrieval failed");
+          throw new Error("Failed to fetch project details");
         }
       } catch (errData) {
         console.error(errData);
@@ -31,7 +33,7 @@ const ProjectDataTable = () => {
   });
 
   return (
-    <div>
+    <div className="relative">
       <div className="mt-5">
         <TanStackTable
           data={data}
@@ -50,7 +52,7 @@ const ProjectDataTable = () => {
           ]}
         />
       </div>
-      <LoadingComponent loading={isLoading || isFetching || loading} />
+      <Loading loading={isLoading || isFetching || loading} />
     </div>
   );
 };

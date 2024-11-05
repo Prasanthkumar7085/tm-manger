@@ -7,6 +7,7 @@ import DateRangeFilter from "./core/DateRangePicker";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 import LoadingComponent from "./core/LoadingComponent";
+import Loading from "./core/Loading";
 
 const StatsAndGraph = ({ selectedDate }: any) => {
   const today = new Date();
@@ -100,7 +101,7 @@ const StatsAndGraph = ({ selectedDate }: any) => {
   };
 
   return (
-    <div>
+    <div className="relative">
       <div className="flex justify-between items-center mb-4">
         <DateRangeFilter
           dateValue={dateValue}
@@ -110,7 +111,7 @@ const StatsAndGraph = ({ selectedDate }: any) => {
       <HighchartsReact highcharts={Highcharts} options={options} />
       {isFetching && (
         <div>
-          <LoadingComponent loading />
+          <Loading loading />
         </div>
       )}
     </div>

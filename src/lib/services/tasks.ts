@@ -9,7 +9,6 @@ interface GetAllPaginatedUsersPropTypes {
   status: string;
   priority: string;
   project_id: any;
-  
 }
 
 export const getAllPaginatedTasks = async ({
