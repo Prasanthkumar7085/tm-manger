@@ -14,7 +14,6 @@ function SideMenu() {
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
   );
-  console.log(profileData, "profile");
 
   const isActive = (href: string) => {
     return pathname.includes(href);
