@@ -81,11 +81,11 @@ function PriorityStatus({
     <div className="relative inline-block text-left" ref={dropdownRef}>
       <button
         onClick={toggleDropdown}
-        className="bg-[#e7e7e7] text-white px-4 h-[35px] font-semibold rounded-lg flex items-center"
+        className="bg-[#e7e7e7] text-black px-4 h-[35px]  rounded-lg flex items-center"
       >
         {selectedPriority?.label ? selectedPriority.label : viewData?.priority}
         <svg
-          className="ml-2 w-5 h-5 text-white"
+          className="ml-2 w-5 h-5 text-black"
           fill="currentColor"
           viewBox="0 0 20 20"
         >
