@@ -10,7 +10,7 @@ import {
 } from "@/lib/services/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TanStackTable from "../core/TanstackTable";
 import { userColumns } from "./UserColumns";
 import { Button } from "../ui/button";
@@ -28,6 +28,7 @@ function UsersTable() {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
+  const popoverRef = useRef<HTMLDivElement>(null);
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("current_page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 25;
@@ -418,6 +419,7 @@ function UsersTable() {
     handleDrawerOpen(id);
     mutate();
   };
+
   const userActions = [
     {
       accessorFn: (row: any) => row.actions,
@@ -489,6 +491,21 @@ function UsersTable() {
     },
   ];
 
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (popoverRef.current && !popoverRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
   return (
     <section id="users" className="relative">
       <div className="card-container shadow-all border p-3 rounded-xl bg-white">
