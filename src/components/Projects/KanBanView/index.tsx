@@ -123,7 +123,7 @@ const KanbanBoard: React.FC<any> = ({
         <div
           {...provided.droppableProps}
           ref={provided.innerRef}
-          className="flex flex-col p-4 bg-gray-100 rounded-md"
+          className="flex flex-col rounded-md"
         >
           <h2 className="text-lg font-bold">
             {
@@ -133,79 +133,80 @@ const KanbanBoard: React.FC<any> = ({
           </h2>
           {isLoading || isFetching
             ? Array.from({ length: 1 }).map((_, index) => (
-                <div className="flex flex-col space-y-3  border">
-                  <Skeleton className="h-[105px] w-[250px] rounded-xl" />
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-[250px]" />
-                    <Skeleton className="h-4 w-[200px]" />
-                  </div>
+              <div className="flex flex-col space-y-3  border">
+                <Skeleton className="h-[105px] w-[250px] rounded-xl" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-[250px]" />
+                  <Skeleton className="h-4 w-[200px]" />
                 </div>
-              ))
+              </div>
+            ))
             : tasks[columnName].map((task, index) => (
-                <Draggable
-                  key={task.task_id}
-                  draggableId={String(task.task_id)}
-                  index={index}
-                >
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      className="bg-[#eef5ff] border p-4 my-2 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow"
-                      onClick={() => {
-                        router.navigate({
-                          to: `/tasks/view/${task.task_id}`,
-                        });
-                      }}
+              <Draggable
+                key={task.task_id}
+                draggableId={String(task.task_id)}
+                index={index}
+              >
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    className="bg-[#eef5ff] border p-4 my-2 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+                    onClick={() => {
+                      router.navigate({
+                        to: `/tasks/view/${task.task_id}`,
+                      });
+                    }}
+                  >
+                    <p
+                      className="text-ellipsis overflow-hidden"
+                      title={task.task_title}
                     >
-                      <p
-                        className="text-ellipsis overflow-hidden"
-                        title={task.task_title}
-                      >
-                        {task.task_title || "--"}
-                      </p>
-                      <p
-                        className="font-medium text-gray-600 max-h-15 max-w-[250px] overflow-hidden overflow-ellipsis whitespace-nowrap"
-                        title={task?.task_description}
-                      >
-                        {task?.task_description ? task.task_description : "--"}
-                      </p>
-                      <div className="flex justify-start mt-3 -space-x-3">
-                        {task?.assignees?.slice(0, 5).map((assignee) => (
-                          <Avatar
-                            key={assignee.user_id}
-                            className="w-8 h-8 border-2 border-white"
-                          >
-                            <AvatarImage
-                              src={assignee.user_profile_pic}
-                              alt={assignee.name}
-                              title={
-                                assignee.user_first_name +
-                                " " +
-                                assignee.user_last_name
-                              }
-                            />
-                            <AvatarFallback>
-                              {assignee.user_first_name[0] +
-                                assignee.user_last_name[0]}
-                            </AvatarFallback>
-                          </Avatar>
-                        ))}
-                        {task?.assignees?.length > 5 && (
-                          <div className="flex items-center justify-center w-8 h-8 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold">
-                            +{task.assignees.length - 5}
-                          </div>
-                        )}
-                      </div>
+                      {task.task_title || "--"}
+                    </p>
+                    <p
+                      className="font-medium text-gray-600 max-h-15 max-w-[250px] overflow-hidden overflow-ellipsis whitespace-nowrap"
+                      title={task?.task_description}
+                    >
+                      {task?.task_description ? task.task_description : "--"}
+                    </p>
+                    <div className="flex justify-start mt-3 -space-x-3">
+                      {task?.assignees?.slice(0, 5).map((assignee) => (
+                        <Avatar
+                          key={assignee.user_id}
+                          className="w-8 h-8 border-2 border-white"
+                        >
+                          <AvatarImage
+                            src={assignee.user_profile_pic}
+                            alt={assignee.name}
+                            title={
+                              assignee.user_first_name +
+                              " " +
+                              assignee.user_last_name
+                            }
+                          />
+                          <AvatarFallback>
+                            {assignee.user_first_name[0] +
+                              assignee.user_last_name[0]}
+                          </AvatarFallback>
+                        </Avatar>
+                      ))}
+                      {task?.assignees?.length > 5 && (
+                        <div className="flex items-center justify-center w-8 h-8 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold">
+                          +{task.assignees.length - 5}
+                        </div>
+                      )}
                     </div>
-                  )}
-                </Draggable>
-              ))}
+                  </div>
+                )}
+              </Draggable>
+            ))}
           {provided.placeholder}
           <Button
             disabled={projectDetails?.active ? false : true}
             title="Add Task"
+            className="bg-transparent border-dotted border-2 border-[#5A5A5A] text-black text-md"
             onClick={() => {
               router.navigate({
                 to: "/tasks/add",
@@ -213,7 +214,7 @@ const KanbanBoard: React.FC<any> = ({
               });
             }}
           >
-            Add Task
+            Add new Task
           </Button>
         </div>
       )}
