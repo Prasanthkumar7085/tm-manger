@@ -14,22 +14,19 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { getDropDownForProjects } from "@/lib/services/projects";
-import { getAllMembers } from "@/lib/services/projects/members";
+import { getProjectMembersAPI } from "@/lib/services/projects/members";
 import {
   addTasksAPI,
   getSingleTaskAPI,
-  getTasksBasedTagsAPI,
   updateTasksAPI,
 } from "@/lib/services/tasks";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useLocation } from "@tanstack/react-router";
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { useLocation, useNavigate, useParams } from "@tanstack/react-router";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import React, { useState } from "react";
 import { DatePicker } from "rsuite";
 import { toast } from "sonner";
 import TagsComponent from "./TagsComponent";
-import UploadAttachments from "./UploadAttachments";
 
 const AddTask = () => {
   const navigate = useNavigate();
@@ -43,7 +40,7 @@ const AddTask = () => {
     ref_id: "",
     description: "",
     priority: "",
-    status: searchParams.get("status") || "",
+    status: searchParams.get("status") || "TODO",
     due_date: "",
     tags: [],
     users: [],
@@ -76,7 +73,7 @@ const AddTask = () => {
     if (!taskId) {
       payload["users"] = task.users.map((user: any) => ({
         name: user.name,
-        id: user.id,
+        id: user.user_id,
       }));
     }
     mutate(payload);
@@ -119,7 +116,11 @@ const AddTask = () => {
       const taskData = response?.data?.data;
       try {
         if (response?.status === 200 || response?.status === 201) {
-          setTask(taskData);
+          let data = {
+            ...taskData,
+            description: taskData?.description || "-",
+          };
+          setTask(data);
         } else {
           throw new Error("Failed to fetch task");
         }
@@ -143,11 +144,12 @@ const AddTask = () => {
 
   //to get the users
   const { isLoading: isUsersLoading } = useQuery({
-    queryKey: ["users"],
+    queryKey: ["users", task?.project_id],
     queryFn: async () => {
-      const response = await getAllMembers();
-      if (response?.data?.data && Array.isArray(response.data.data)) {
-        setUsers(response.data.data);
+      const response = await getProjectMembersAPI(task?.project_id);
+      if (response.success) {
+        const data = response.data?.data;
+        setUsers(data?.records || []);
       } else {
         setUsers([]);
       }
@@ -195,7 +197,7 @@ const AddTask = () => {
           <div className="leftColumn space-y-5">
             <div className="form-item">
               <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
-                Select Project
+                Select Project<span className="text-red-500">*</span>
               </label>
               <Popover open={openProjects} onOpenChange={setOpenProjects}>
                 <PopoverTrigger asChild>
@@ -258,7 +260,7 @@ const AddTask = () => {
             </div>
             <div className="form-item">
               <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
-                Task Title
+                Task Title<span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -278,7 +280,7 @@ const AddTask = () => {
               </label>
               <textarea
                 name="description"
-                value={task.description}
+                value={task.description == "-" ? "" : task.description}
                 onChange={handleChange}
                 rows={4}
                 className="w-full p-2 bg-slate-50 border rounded-md"
@@ -295,7 +297,7 @@ const AddTask = () => {
             <div className="grid grid-cols-2 gap-5">
               <div className="form-item">
                 <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
-                  Due Date
+                  Due Date<span className="text-red-500">*</span>
                 </label>
                 <DatePicker
                   name="due_date"
@@ -414,7 +416,6 @@ const AddTask = () => {
                             <tr>
                               <th className="border px-4 py-2">S.No.</th>
                               <th className="border px-4 py-2">Name</th>
-                              <th className="border px-4 py-2">User Type</th>
                               <th className="border px-4 py-2">Actions</th>
                             </tr>
                           </thead>
@@ -427,9 +428,7 @@ const AddTask = () => {
                                 <td className="border px-4 py-2 capitalize">
                                   {user.fname} {user.lname}
                                 </td>
-                                <td className="border px-4 py-2 capitalize">
-                                  {user.user_type}
-                                </td>
+
                                 <td className="border px-4 py-2">
                                   <button
                                     className="text-red-500 hover:underline"
@@ -492,7 +491,7 @@ const AddTask = () => {
             type="submit"
             className="px-6 py-2 bg-blue-600 text-white rounded-md"
           >
-            Submit
+            {taskId ? "Update" : " Submit"}
           </Button>
         </div>
       </form>

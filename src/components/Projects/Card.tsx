@@ -83,9 +83,7 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
       <div className="top_header mb-3 flex justify-between">
         <div className="company-icon">
           <img
-            src={
-              project?.logo || "https://via.placeholder.com/150?text=No+Image"
-            }
+            src={project?.logo || "/favicon.png"}
             alt="company logo"
             className="object-contain w-6 h-6"
             onError={(e: any) => {

@@ -14,7 +14,7 @@ const StatsAndGraph = ({ selectedDate }: any) => {
 
   const [selectedDateRange, setSelectedDateRange] = useState<
     [Date, Date] | null
-  >([new Date(today.setHours(0, 0, 0, 0)), new Date()]);
+  >([new Date(), new Date()]);
   const [dateValue, setDateValue] = useState<[Date, Date] | null>();
   const location = useLocation();
   const navigate = useNavigate();

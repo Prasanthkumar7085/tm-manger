@@ -186,17 +186,8 @@ const TaskView = () => {
           </div>
         </div>
         <div className="flex items-center justify-between w-[60%]">
-              <h2 className="font-medium text-[#0D0D0D] text-lg">
-                Assigned To
-              </h2>
-              <div >
-                {" "}
-                <Button type="button" variant="add" size="DefaultButton" className="text-[#1B2459] border-[#1B2459] flex items-center border bg-white rounded-[10px] hover:bg-white">
-                  <span className="text-xl text-[#1B2459] pr-2">+</span>
-                  Add User
-                </Button>{" "}
-              </div>
-            </div>
+          <h2 className="font-medium text-[#0D0D0D] text-lg">Assigned To</h2>
+        </div>
         <div className="task-assignment-details grid grid-cols-[60%,auto] gap-4">
           <div>
             <div className="mt-2">
@@ -207,7 +198,7 @@ const TaskView = () => {
             <div className="px-4 py-1">
               <div className="flex items-center space-x-3">
                 <img
-                  src={viewData?.created_profile_pic}
+                  src={viewData?.created_profile_pic || ""}
                   alt="User"
                   className="w-10 h-10 rounded-full object-cover"
                 />

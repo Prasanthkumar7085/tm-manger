@@ -223,12 +223,11 @@ const UploadAttachments = () => {
               className="each-attachment flex justify-between items-center"
             >
               <div className="attachment-name flex space-x-4">
-                <span className="text-xl">  <img
-        src={pdfIcon}
-          alt="pdf"
-          height={20}
-          width={20}
-        /></span>
+                <span className="text-xl">
+                  {" "}
+                  {/* <img src={pdfIcon} alt="pdf" height={20} width={20} /> */}
+                  📄
+                </span>
                 <div>
                   <p className="name text-[#242634] font-medium text-sm leading-tight">
                     {file.file_name}
