@@ -34,7 +34,7 @@ function ViewProfile() {
     profile_pic: "",
   });
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false); // State for upload loading
+  const [isUploading, setIsUploading] = useState(false);
 
   const { isLoading, isError, error, data, isFetching } = useQuery({
     queryKey: ["users", userID],

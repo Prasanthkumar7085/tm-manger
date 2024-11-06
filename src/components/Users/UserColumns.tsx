@@ -180,7 +180,7 @@ export const userColumns = [
     width: "100px",
     maxWidth: "100px",
     minWidth: "100px",
-    header: () => <span>Complet</span>,
+    header: () => <span>Completed</span>,
     footer: (props: any) => props.column.id,
   },
   {

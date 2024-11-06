@@ -485,9 +485,9 @@ function UsersTable() {
       },
       header: () => <span>Actions</span>,
       footer: (props: any) => props.column.id,
-      width: "130px",
-      minWidth: "130px",
-      maxWidth: "130px",
+      width: "120px",
+      minWidth: "120px",
+      maxWidth: "120px",
     },
   ];
 

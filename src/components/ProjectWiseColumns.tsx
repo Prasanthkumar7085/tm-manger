@@ -19,7 +19,7 @@ export const projectWiseColumns = [
     id: "project_title",
     cell: (info: any) => {
       const title = info.getValue();
-      const downloadUrl = info.row.original.download_url;
+      const downloadUrl = info.row.original.download_url ||"/favicon.png";
 
       return (
         <div
@@ -34,7 +34,7 @@ export const projectWiseColumns = [
             <img
               src={downloadUrl}
               alt="project logo"
-              style={{ width: "24px", height: "24px", marginRight: "8px" }}
+              style={{ width: "24px", height: "24px", marginRight: "8px", borderRadius:"50%",}}
             />
           )}
           <span className="capitalize">{title ? title : "-"}</span>
