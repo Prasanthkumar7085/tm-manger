@@ -95,7 +95,7 @@ const TaskView = () => {
   };
 
   return (
-    <div className="flex flex-col space-y-6 md:space-y-6 md:flex-col md:space-x-4  relative">
+    <div className="grid grid-cols-[60%,40%] space-x-4 items-start relative">
       <div
         id="task-details"
         className=" w-full bg-white rounded-lg shadow-md  space-y-4 p-4 overflow-y-auto  scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"

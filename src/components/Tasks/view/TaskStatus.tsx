@@ -80,7 +80,7 @@ function TaskStatus({
     <div className="relative inline-block text-left pb-4" ref={dropdownRef}>
    <button
   onClick={toggleDropdown}
-  className={`text-md px-2 h-[35px] border  font-normal rounded-[4px] flex items-center max-w-[130px] justify-between ${
+  className={`text-md px-2 h-[35px] border  font-normal rounded-[4px] flex items-center max-w-[140px] justify-between ${
     selectedStatus?.value === 'TODO'
       ? 'bg-white text-[#6F42C1] border-[#6F42C1]'
       : selectedStatus?.value === 'IN_PROGRESS'

@@ -96,7 +96,7 @@ export const taskColumns = ({ setDel }: any) => {
             style={{
               display: "flex",
               alignItems: "center",
-              padding: "16px",
+              padding: "5px ",
               textAlign: "left",
             }}
           >

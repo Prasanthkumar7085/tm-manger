@@ -204,10 +204,10 @@ const TaskComments = ({ taskId }: any) => {
   }, [groupedComments]);
 
   return (
-    <div>
+    <div style={{ height: "calc(100vh - 100px)" }}>
       <div className="card-header flex justify-between px-4 py-2 items-center mb-4 sticky top-0 bg-white z-10">
-        <h3 className="text-lg font-semibold">Comments</h3>
-        <button className="check-activity-button btn px-5 py-2 bg-[#28A74533] rounded-lg text-[#28A745] font-semibold">
+        <h3 className="text-lg font-medium">Comments</h3>
+        <button className="check-activity-button btn px-5 py-2 bg-[#28A74533] rounded-lg text-[#28A745] font-medium">
           Check Activity
         </button>
       </div>
@@ -240,7 +240,7 @@ const TaskComments = ({ taskId }: any) => {
                           return (
                             <div
                               key={comment.id}
-                              className={`each-member bg-[#FEF7FD] py-4 px-4 rounded-md max-w-md mx-auto ${isUserComment ? "self-end" : ""}`}
+                              className={`each-member bg-[#FEF7FD] py-4 px-4 rounded-md  ${isUserComment ? "self-end" : ""}`}
                             >
                               <div className="flex justify-between items-center">
                                 <div className="member-details flex items-center space-x-3">
@@ -260,7 +260,7 @@ const TaskComments = ({ taskId }: any) => {
                                         ? "You"
                                         : comment.user?.name || "Unknown"}
                                     </span>
-                                    <span className="text-gray-500 text-sm pl-2">
+                                    <span className="text-[#67727E] font-normal text-sm pl-2">
                                       {formattedDistance}{" "}
                                       {isEdited && (
                                         <span className="text-xs text-gray-400">
@@ -350,8 +350,8 @@ const TaskComments = ({ taskId }: any) => {
         </div>
       </div>
 
-      <div className="card-footer sticky bottom-0 left-0 right-0 bg-white py-4 shadow-md z-10">
-        <div className="flex space-x-3">
+      <div className="card-footer sticky bottom-0 left-0 right-0 bg-white px-4 py-4  z-10 overflow-hidden">
+        <div className="grid grid-cols-[50px,auto]">
           <div className="profile-image">
             <img
               className="shadow-lg rounded-full"
@@ -359,16 +359,21 @@ const TaskComments = ({ taskId }: any) => {
               alt="User"
             />
           </div>
-          <div className="text-area-group border border-[#A9A9A9] rounded-lg flex items-start space-x-3">
+          <div className="text-area-group border border-[#A9A9A9] rounded-lg items-start space-x-3 grid grid-cols-[90%,auto]">
+            <div>
             {taskId && (
               <CKEditorComponent
                 editorData={commentText}
                 handleEditorChange={handleTestDetailsChange}
               />
             )}
-            <button className="rounded-md pt-2 pr-2" onClick={handleAddComment}>
-              <img src="/add-comment-arrow.svg" alt="icon" />
+            </div>
+      <div>
+             <button className="rounded-md pt-2 pr-2" onClick={handleAddComment}>
+              <img src="/add-comment-arrow.svg" alt="icon" className="w-[40px] h-[40x]" />
             </button>
+      </div>
+          
           </div>
         </div>
       </div>
