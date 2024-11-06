@@ -105,7 +105,7 @@ const TaskView = () => {
     <div className="flex flex-col space-y-6 md:space-y-0 md:flex-row md:space-x-4  relative">
       <div
         id="task-details"
-        className="md:w-2/3 w-full bg-white rounded-lg shadow-md  space-y-4 p-4 overflow-y-auto overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
+        className="md:w-2/3 w-full bg-white rounded-lg shadow-md  space-y-4 p-4 overflow-y-auto  scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
         style={{ height: "calc(100vh - 100px)" }}
       >
         <div className="task-prime-details grid grid-cols-2 border-b">
