@@ -217,125 +217,136 @@ const TaskComments = ({ taskId }: any) => {
           className="member-comments space-y-3 overflow-y-scroll flex-1 pr-3"
           ref={commentsContainerRef}
         >
-          {groupedComments?.map((group: any, index: number) => {
-            const formattedDate = format(new Date(group.date), "PPP");
-            return (
-              <div key={index} className="group space-y-3">
-                <div className="my-4 text-center text-gray-500 text-xs">
-                  <span className="bg-white px-2">{formattedDate}</span>
-                </div>
-
-                {group.comments.map((comment: any) => {
-                  const isUserComment = comment.commented_by === userID;
-                  const formattedDistance = formatDistanceToNow(
-                    new Date(comment.created_at),
-                    { addSuffix: true }
-                  );
-                  const isEdited =
-                    comment.updated_at &&
-                    comment.created_at !== comment.updated_at;
-
-                  return (
-                    <div
-                      key={comment.id}
-                      className={`each-member bg-[#FEF7FD] py-4 px-4 rounded-md max-w-md mx-auto ${isUserComment ? "self-end" : ""}`}
-                    >
-                      <div className="flex justify-between items-center">
-                        <div className="member-details flex items-center space-x-3">
-                          <div className="member-profile-image">
-                            <img
-                              className="w-8 h-8 rounded-full"
-                              src={
-                                comment.user?.avatar ||
-                                "https://i.pravatar.cc/150?img=5"
-                              }
-                              alt="Avatar"
-                            />
-                          </div>
-                          <div className="member-name">
-                            <span className="font-semibold">
-                              {isUserComment
-                                ? "You"
-                                : comment.user?.name || "Unknown"}
-                            </span>
-                            <span className="text-gray-500 text-sm pl-2">
-                              {formattedDistance}{" "}
-                              {isEdited && (
-                                <span className="text-xs text-gray-400">
-                                  (edited)
-                                </span>
-                              )}
-                            </span>
-                          </div>
-                        </div>
-
-                        <DropdownMenu>
-                          <DropdownMenuTrigger>
-                            <button className="text-gray-500 hover:text-gray-800">
-                              <DotsHorizontalIcon className="w-5 h-5" />
-                            </button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent
-                            align="end"
-                            className="bg-white p-2 rounded-md shadow-lg"
-                          >
-                            <DropdownMenuItem
-                              className="cursor-pointer"
-                              onClick={() => handleDeleteComment(comment.id)}
-                            >
-                              Delete
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="cursor-pointer"
-                              onClick={() =>
-                                handleEditComment(comment.id, comment.message)
-                              }
-                            >
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="cursor-pointer">
-                              Reply
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-
-                      <div className="person-message mt-2 text-slate-500 leading-snug">
-                        {editingCommentId === comment.id ? (
-                          <div className="flex flex-col">
-                            <CKEditorComponent
-                              editorData={commentText}
-                              handleEditorChange={handleTestDetailsChange}
-                            />
-                            <div className="mt-3 flex justify-end space-x-3">
-                              <button
-                                className="text-gray-500"
-                                onClick={handleCancelEdit}
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                className="text-[#28A745]"
-                                onClick={handleSaveEdit}
-                              >
-                                Save
-                              </button>
-                            </div>
-                          </div>
-                        ) : (
-                          <p
-                            dangerouslySetInnerHTML={{
-                              __html: comment.message,
-                            }}
-                          />
-                        )}
-                      </div>
+          {groupedComments?.length > 0
+            ? groupedComments?.map((group: any, index: number) => {
+                const formattedDate = format(new Date(group.date), "PPP");
+                return (
+                  <div key={index} className="group space-y-3">
+                    <div className="my-4 text-center text-gray-500 text-xs">
+                      <span className="bg-white px-2">{formattedDate}</span>
                     </div>
-                  );
-                })}
-              </div>
-            );
-          })}
+
+                    {group.comments?.length > 0
+                      ? group.comments.map((comment: any) => {
+                          const isUserComment = comment.commented_by === userID;
+                          const formattedDistance = formatDistanceToNow(
+                            new Date(comment.created_at),
+                            { addSuffix: true }
+                          );
+                          const isEdited =
+                            comment.updated_at &&
+                            comment.created_at !== comment.updated_at;
+
+                          return (
+                            <div
+                              key={comment.id}
+                              className={`each-member bg-[#FEF7FD] py-4 px-4 rounded-md max-w-md mx-auto ${isUserComment ? "self-end" : ""}`}
+                            >
+                              <div className="flex justify-between items-center">
+                                <div className="member-details flex items-center space-x-3">
+                                  <div className="member-profile-image">
+                                    <img
+                                      className="w-8 h-8 rounded-full"
+                                      src={
+                                        comment.user?.avatar ||
+                                        "https://i.pravatar.cc/150?img=5"
+                                      }
+                                      alt="Avatar"
+                                    />
+                                  </div>
+                                  <div className="member-name">
+                                    <span className="font-semibold">
+                                      {isUserComment
+                                        ? "You"
+                                        : comment.user?.name || "Unknown"}
+                                    </span>
+                                    <span className="text-gray-500 text-sm pl-2">
+                                      {formattedDistance}{" "}
+                                      {isEdited && (
+                                        <span className="text-xs text-gray-400">
+                                          (edited)
+                                        </span>
+                                      )}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger>
+                                    <button className="text-gray-500 hover:text-gray-800">
+                                      <DotsHorizontalIcon className="w-5 h-5" />
+                                    </button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent
+                                    align="end"
+                                    className="bg-white p-2 rounded-md shadow-lg"
+                                  >
+                                    <DropdownMenuItem
+                                      className="cursor-pointer"
+                                      onClick={() =>
+                                        handleDeleteComment(comment.id)
+                                      }
+                                    >
+                                      Delete
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      className="cursor-pointer"
+                                      onClick={() =>
+                                        handleEditComment(
+                                          comment.id,
+                                          comment.message
+                                        )
+                                      }
+                                    >
+                                      Edit
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem className="cursor-pointer">
+                                      Reply
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </div>
+
+                              <div className="person-message mt-2 text-slate-500 leading-snug">
+                                {editingCommentId === comment.id ? (
+                                  <div className="flex flex-col">
+                                    <CKEditorComponent
+                                      editorData={commentText}
+                                      handleEditorChange={
+                                        handleTestDetailsChange
+                                      }
+                                    />
+                                    <div className="mt-3 flex justify-end space-x-3">
+                                      <button
+                                        className="text-gray-500"
+                                        onClick={handleCancelEdit}
+                                      >
+                                        Cancel
+                                      </button>
+                                      <button
+                                        className="text-[#28A745]"
+                                        onClick={handleSaveEdit}
+                                      >
+                                        Save
+                                      </button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <p
+                                    dangerouslySetInnerHTML={{
+                                      __html: comment.message,
+                                    }}
+                                  />
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })
+                      : "Comments not found"}
+                  </div>
+                );
+              })
+            : "No comments found"}
         </div>
       </div>
 
