@@ -16,7 +16,7 @@ const SearchFilter: React.FC<IReportsFilters> = ({
         value={searchString}
         type="search"
         onChange={(e) => setSearchString(e.target.value)}
-        className="pl-8bg-slate-100 pl-9 bg-slate-50 h-[35px] w-[220px]"
+        className="pl-8bg-slate-100 pl-9 bg-[#F4F4F6] border-[#E2E2E2] rounded-[8px] h-[35px] w-[220px]"
       />
     </div>
   );
