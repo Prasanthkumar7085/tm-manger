@@ -74,6 +74,16 @@ export const TasksSelectPriority: React.FC<StatusFilterProps> = ({
                     setOpen(false);
                   }}
                 >
+                   <span
+                    style={{
+                      width: "10px",
+                      height: "10px",
+                      borderRadius: "50%",
+                      backgroundColor: status.color,
+                      display: "inline-block",
+                      marginRight: "8px",
+                    }}
+                  ></span>
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",

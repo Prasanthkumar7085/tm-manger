@@ -1,3 +1,4 @@
+import { a } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 import { $fetch } from "../fetch";
 interface GetAllPaginatedUsersPropTypes {
   pageIndex: number;
@@ -112,16 +113,39 @@ export const updateTasksAPI = async (taskId: any, payload: any) => {
     throw err;
   }
 };
-export const addPostCommentsAPI = async (task_id: any, payload: any) => {
+export const addCommentsAPI = async (task_id: any, payload: any) => {
   try {
     return await $fetch.post(`/tasks/${task_id}/comments`, payload);
   } catch (err: any) {
     throw err;
   }
 };
-export const getCommentsAPI = async () => {
+
+export const deleteCommentsAPI = async (task_id: any, commet_id: any) => {
   try {
-    return await $fetch.get(`/tasks/2/comments`);
+    return await $fetch.delete(`/tasks/${task_id}/comments/${commet_id}`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+
+export const updateCommentsAPI = async (
+  task_id: any,
+  commet_id: any,
+  payload: any
+) => {
+  try {
+    return await $fetch.patch(
+      `/tasks/${task_id}/comments/${commet_id}`,
+      payload
+    );
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const getCommentsForTaskAPI = async (task_id: any) => {
+  try {
+    return await $fetch.get(`/tasks/${task_id}/comments`);
   } catch (err: any) {
     throw err;
   }

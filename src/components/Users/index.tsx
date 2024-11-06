@@ -485,9 +485,9 @@ function UsersTable() {
       },
       header: () => <span>Actions</span>,
       footer: (props: any) => props.column.id,
-      width: "90px",
-      minWidth: "90px",
-      maxWidth: "90px",
+      width: "120px",
+      minWidth: "120px",
+      maxWidth: "120px",
     },
   ];
 
@@ -550,7 +550,15 @@ function UsersTable() {
             loading={isLoading || isFetching || loading}
             paginationDetails={data?.data?.data?.pagination_info}
             getData={getAllUsers}
-            removeSortingForColumnIds={["serial", "actions", "active"]}
+            removeSortingForColumnIds={[
+              "serial",
+              "actions",
+              "active",
+              "todo_count",
+              "in_progress_count",
+              "overdue_count",
+              "completed_count",
+            ]}
           />
         </div>
         <DeleteDialog
