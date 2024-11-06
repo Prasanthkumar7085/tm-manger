@@ -31,13 +31,14 @@ const LoginComponent = () => {
         if (response?.status === 200 || response?.status === 201) {
           toast.success(response?.data?.message);
           const { data } = response?.data;
-          const { access_token } = data;
+          const { access_token, user_details } = data;
+          console.log(data, "uiui");
           Cookies.set("token", access_token, {
             priority: "High",
           });
           dispatch(setUserDetails(data));
           navigate({
-            to: "/dashboard",
+            to: user_details?.user_type === "admin" ? "/users" : "/dashboard",
           });
         } else if (response?.status === 422) {
           const errData = response?.data?.errData;
@@ -53,6 +54,7 @@ const LoginComponent = () => {
       }
     },
   });
+
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors([]);

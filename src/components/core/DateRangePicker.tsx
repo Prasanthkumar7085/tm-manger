@@ -5,28 +5,12 @@ import { predefinedRanges } from "./CommonComponents/DatePickerRanges";
 import "rsuite/dist/rsuite.css";
 
 const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
-  const today = [new Date(), new Date()];
-  const [selectedDate, setSelectedDate] = useState(dateValue || today);
-  console.log(selectedDate, "select");
-
-  useEffect(() => {
-    if (!dateValue) {
-      const todayFormatted = [
-        dayjs(today[0]).format("YYYY-MM-DD"),
-        dayjs(today[1]).format("YYYY-MM-DD"),
-      ];
-      onChangeData(todayFormatted[0], todayFormatted[1]);
-    }
-  }, [dateValue, onChangeData]);
-
   const updateDateValues = (newDate: any) => {
     if (newDate) {
       const date1 = dayjs(newDate[0]).format("YYYY-MM-DD");
       const date2 = dayjs(newDate[1]).format("YYYY-MM-DD");
-      setSelectedDate(newDate);
       onChangeData(date1, date2);
     } else {
-      setSelectedDate(today);
       onChangeData("", "");
     }
   };
@@ -37,7 +21,7 @@ const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
       placeholder={"Select Date"}
       placement="bottomEnd"
       ranges={predefinedRanges}
-      value={selectedDate}
+      value={dateValue}
       onChange={updateDateValues}
       showHeader={false}
     />

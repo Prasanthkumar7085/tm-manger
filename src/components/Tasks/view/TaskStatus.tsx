@@ -77,20 +77,30 @@ function TaskStatus({
   }, []);
 
   return (
-    <div className="relative inline-block text-left" ref={dropdownRef}>
-      <button
-        onClick={toggleDropdown}
-        className="bg-[#e7e7e7] text-white px-4 h-[35px] font-semibold rounded-lg flex items-center"
-      >
-        <span>{selectedStatus?.label}</span>
-        <svg
-          className="ml-2 w-5 h-5 text-white"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path d="M5.5 7.5L10 12l4.5-4.5H5.5z" />
-        </svg>
-      </button>
+    <div className="relative inline-block text-left pb-4" ref={dropdownRef}>
+   <button
+  onClick={toggleDropdown}
+  className={`text-md px-2 h-[35px] border  font-normal rounded-[4px] flex items-center max-w-[130px] justify-between ${
+    selectedStatus?.value === 'TODO'
+      ? 'bg-white text-[#6F42C1] border-[#6F42C1]'
+      : selectedStatus?.value === 'IN_PROGRESS'
+      ? 'bg-white text-[#007BFF] border-[#007BFF]'
+       : selectedStatus?.value === 'OVER_DUE'
+      ? 'bg-white text-[#A71D2A] border-[#A71D2A]'
+      : selectedStatus?.value === 'COMPLETED'
+      ? 'bg-white text-[#28A745] border-[#28A745]'
+      : 'bg-white text-[#5FADFF] border-[#007BFF]'
+  }`}
+>
+  <span>{selectedStatus?.label || "Default Status"}</span>
+  <svg
+    className="ml-2 w-8 h-8 text-[#696969]"
+    fill="currentColor"
+    viewBox="0 0 20 20"
+  >
+    <path d="M5.5 7.5L10 12l4.5-4.5H5.5z" />
+  </svg>
+</button>
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">

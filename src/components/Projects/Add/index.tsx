@@ -181,6 +181,9 @@ const AddProject = () => {
         {projectId ? "Edit Project" : "Add Project"}
       </h2>
       <div className="space-y-4">
+        <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+          Title<span className="text-red-500">*</span>
+        </label>
         <Input
           id="title"
           placeholder="Enter title"
@@ -194,7 +197,9 @@ const AddProject = () => {
         {invalidErrors?.title && (
           <p className="text-red-500">{invalidErrors.title}</p>
         )}
-
+        <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+          Project code<span className="text-red-500">*</span>
+        </label>
         <Input
           id="code"
           placeholder="Enter Code"
@@ -208,6 +213,9 @@ const AddProject = () => {
         {invalidErrors?.code && (
           <p className="text-red-500">{invalidErrors.code}</p>
         )}
+        <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+          Project Description
+        </label>
         <Textarea
           placeholder="Enter project description"
           id="description"
@@ -224,7 +232,7 @@ const AddProject = () => {
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-[200px]">
-                  Select Members
+                  Select Members<span className="text-red-500">*</span>
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-[200px] p-0 bg-white border">

@@ -37,7 +37,10 @@ const TaskView = () => {
   const [errorMessages, setErrorMessages] = useState();
   const [tagInput, setTagInput] = useState<any>("");
   const [updateDetailsOfTask, setUpdateDetailsOfTask] = useState<any>(0);
-  const [updatePrority, setUpdatePriority] = useState<any>(0);
+  const [updatePrority, setUpdatePriority] = useState<{
+    label: string;
+    value: string;
+  }>();
   const [selectedStatus, setSelectedStatus] = useState<{
     label: string;
     value: string;
@@ -107,33 +110,24 @@ const TaskView = () => {
       >
         <div className="task-prime-details grid grid-cols-2 border-b">
           <div className="relative">
-            <div className="flex items-center">
+            <div className="flex items-center pb-4">
               <h1
-                className="text-xl font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap"
+                className="text-2xl text-[#1B2459] font-medium overflow-hidden overflow-ellipsis whitespace-nowrap"
                 title={viewData?.title}
               >
                 {viewData?.title ? capitalizeWords(viewData?.title) : "--"}
               </h1>
               <span className="capitalize ml-10">
-                <Badge
-                  style={{
-                    backgroundColor:
-                      bgColorObjectForStatus[viewData?.priority] || "gray",
-                    color: colorObjectForStatus[viewData?.priority] || "black",
-                  }}
-                >
-                  {viewData?.priority}
-                </Badge>
+                <PriorityStatus
+                  taskId={taskId}
+                  setUpdatePriority={setUpdatePriority}
+                  selectedPriority={selectedPriority}
+                  setSelectedPriority={setSelectedPriority}
+                  viewData={viewData}
+                />
               </span>
             </div>
             <div className="relative">
-              <p
-                className="font-medium text-gray-800 max-h-15 overflow-hidden overflow-ellipsis whitespace-nowrap"
-                title={viewData?.description}
-              >
-                {viewData?.description ? viewData.description : "--"}
-              </p>
-
               <div
                 className="absolute left-0 bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-sm rounded px-2 py-1"
                 style={{ whiteSpace: "nowrap" }}
@@ -142,24 +136,24 @@ const TaskView = () => {
               </div>
             </div>
 
-            <div className="text-gray-500 font-medium">
-              <span>Project:</span>{" "}
-              <span className="font-semibold text-gray-800">
+            <div>
+              <h5 className="text-[#666666] text-sm font-medium">Project</h5>{" "}
+              <p className="font-medium text-md text-[#000000]">
                 {viewData?.project_title
                   ? capitalizeWords(viewData?.project_title)
                   : "--"}
-              </span>
+              </p>
+              <p
+                className="font-medium text-[#000000CC] max-h-15 overflow-hidden overflow-ellipsis whitespace-nowrap"
+                title={viewData?.description}
+              >
+                {viewData?.description ? viewData.description : "--"}
+              </p>
             </div>
           </div>
 
           <div>
             <div className="flex justify-end space-x-3">
-              <PriorityStatus
-                taskId={taskId}
-                setUpdatePriority={setUpdatePriority}
-                selectedPriority={selectedPriority}
-                setSelectedPriority={setSelectedPriority}
-              />
               <TaskStatus
                 taskId={taskId}
                 setUpdateDetailsOfTask={setUpdateDetailsOfTask}
@@ -190,27 +184,29 @@ const TaskView = () => {
             />
           </div>
         </div>
+        <div className="flex items-center justify-between w-[60%]">
+          <h2 className="font-medium text-[#0D0D0D] text-lg">Assigned To</h2>
+        </div>
         <div className="task-assignment-details grid grid-cols-[60%,auto] gap-4">
           <div>
-            <h2 className="font-semibold">Assigned To</h2>
             <div className="mt-2">
               <AssignedUsers viewTaskData={viewData} />
             </div>
           </div>
           <div>
-            <div className="p-4">
+            <div className="px-4 py-1">
               <div className="flex items-center space-x-3">
                 <img
-                  src="https://via.placeholder.com/40"
+                  src={viewData?.created_profile_pic || ""}
                   alt="User"
                   className="w-10 h-10 rounded-full object-cover"
                 />
                 <div>
-                  <p className="text-gray-500 text-sm">Created By</p>
-                  <p className="text-black font-medium text-lg capatitalize">
+                  <p className="text-[#666666] text-[12px] !mt-0">Created By</p>
+                  <p className="text-[#0000000] font-medium text-md !mt-0 py-1 capatitalize">
                     {viewData?.created_name}
                   </p>
-                  <p className="text-gray-500 text-sm">
+                  <p className="text-[#666666] text-sm !mt-0 font-medium">
                     {dayjs(viewData?.created_at).format("MM/DD/YYYY")}
                   </p>
                 </div>
@@ -218,8 +214,8 @@ const TaskView = () => {
 
               {/* Due Date Section */}
               <div className="mt-4">
-                <p className="text-gray-500 text-sm">Due Date</p>
-                <div className="inline-block px-3 py-1 mt-1 text-red-500 bg-red-100 text-md font-medium rounded-md">
+                <p className="text-[#666666] text-sm font-normal">Due Date</p>
+                <div className="inline-block px-3 py-1 mt-1 text-[#FF0021] bg-[#FFE0E480] text-md font-medium rounded-[4px]">
                   {dayjs(viewData?.due_date).format("MM/DD/YYYY")}
                 </div>
               </div>

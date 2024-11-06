@@ -7,6 +7,7 @@ import {
   uploadAttachmentAPI,
 } from "@/lib/services/tasks";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import pdfIcon from "@/assets/pdf-icon.svg";
 import { useParams } from "@tanstack/react-router";
 import { CloudDownload, Loader2, UploadCloud, X } from "lucide-react";
 import { useState } from "react";
@@ -203,7 +204,7 @@ const UploadAttachments = () => {
   return (
     <div id="upload-attachments" className="mt-5">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold">Attachments</h2>
+        <h2 className="text-lg text-[#0D0D0D] font-medium">Attachments</h2>
         <Button type="button" onClick={open} variant="add" size="DefaultButton">
           {uploadingStatus.loading && (
             <div className="flex items-center">
@@ -214,7 +215,7 @@ const UploadAttachments = () => {
           Upload
         </Button>
       </div>
-      <div className="attachments-list mt-5 space-y-2">
+      <div className="attachments-list mt-5 space-y-4">
         {attachmentsData.length > 0 ? (
           attachmentsData.map((file: any) => (
             <div
@@ -222,9 +223,13 @@ const UploadAttachments = () => {
               className="each-attachment flex justify-between items-center"
             >
               <div className="attachment-name flex space-x-4">
-                <span className="text-xl">📄</span>
+                <span className="text-xl">
+                  {" "}
+                  {/* <img src={pdfIcon} alt="pdf" height={20} width={20} /> */}
+                  📄
+                </span>
                 <div>
-                  <p className="name text-black font-semibold leading-tight">
+                  <p className="name text-[#242634] font-medium text-sm leading-tight">
                     {file.file_name}
                   </p>
                   {/* <p className="time mt-0">2m ago</p> */}

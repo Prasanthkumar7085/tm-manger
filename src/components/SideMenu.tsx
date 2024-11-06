@@ -7,9 +7,13 @@ import usersBlackIcon from "@/assets/users-icon.svg";
 import usersWhiteIcon from "@/assets/users-white-icon.svg";
 import projectsBlackIcon from "@/assets/projects-icon.svg";
 import projectsWhiteIcon from "@/assets/projects-white-icon.svg";
+import { useSelector } from "react-redux";
 function SideMenu() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const profileData: any = useSelector(
+    (state: any) => state.auth.user.user_details
+  );
 
   const isActive = (href: string) => {
     return pathname.includes(href);
@@ -83,22 +87,24 @@ function SideMenu() {
               </Link>
             </li>
             <li>
-              <Link to="/users">
-                <div
-                  className={`flex items-center gap-3 px-4 py-2 text-gray-600 rounded-md ${
-                    isActive("/users")
-                      ? "bg-blue-900 text-white"
-                      : "hover:bg-blue-100"
-                  }`}
-                >
-                  <img
-                    src={isActive("/users") ? usersWhiteIcon : usersBlackIcon}
-                    alt="dashboard"
-                    className="h-[23px] w-[23px]"
-                  />
-                  <span>Users</span>
-                </div>
-              </Link>
+              {profileData?.user_type === "admin" && (
+                <Link to="/users">
+                  <div
+                    className={`flex items-center gap-3 px-4 py-2 text-gray-600 rounded-md ${
+                      isActive("/users")
+                        ? "bg-blue-900 text-white"
+                        : "hover:bg-blue-100"
+                    }`}
+                  >
+                    <img
+                      src={isActive("/users") ? usersWhiteIcon : usersBlackIcon}
+                      alt="dashboard"
+                      className="h-[23px] w-[23px]"
+                    />
+                    <span>Users</span>
+                  </div>
+                </Link>
+              )}
             </li>
           </ul>
         </div>

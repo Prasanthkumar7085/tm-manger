@@ -53,7 +53,7 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
         >
           {selectedProject
             ? data?.find((item: any) => item.id == selectedProject)?.title
-            : "Select Projects"}
+            : "Select Project"}
           <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
           {selectedProject && (
             <X

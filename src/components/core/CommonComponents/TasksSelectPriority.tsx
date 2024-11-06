@@ -18,7 +18,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { statusConstants, taskPriorityConstants, taskStatusConstants } from "@/lib/helpers/statusConstants";
+import {
+  statusConstants,
+  taskPriorityConstants,
+  taskStatusConstants,
+} from "@/lib/helpers/statusConstants";
 
 interface StatusFilterProps {
   value: string;
@@ -38,7 +42,7 @@ export const TasksSelectPriority: React.FC<StatusFilterProps> = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between  bg-slate-50 h-[35px] w-[220px] relative"
+          className="justify-between  bg-slate-50 h-[35px] w-[170px] relative"
         >
           {value
             ? taskPriorityConstants.find((item) => item.value === value)?.label

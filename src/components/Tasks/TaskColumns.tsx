@@ -69,9 +69,9 @@ export const taskColumns = ({ setDel }: any) => {
       id: "serial",
       header: () => <span>S.No</span>,
       footer: (props: any) => props.column.id,
-      width: "30px",
-      maxWidth: "30px",
-      minWidth: "30px",
+      width: "50px",
+      maxWidth: "50px",
+      minWidth: "50px",
     },
     {
       accessorFn: (row: any) => row.project_title,
@@ -83,6 +83,18 @@ export const taskColumns = ({ setDel }: any) => {
       maxWidth: "150px",
       minWidth: "150px",
       header: () => <span>Project</span>,
+      footer: (props: any) => props.column.id,
+    },
+    {
+      accessorFn: (row: any) => row.ref_id,
+      id: "ref_id",
+      cell: (info: any) => (
+        <span className="capitalize">{info.getValue()}</span>
+      ),
+      width: "100px",
+      maxWidth: "100px",
+      minWidth: "100px",
+      header: () => <span>Task Id</span>,
       footer: (props: any) => props.column.id,
     },
     {
@@ -136,7 +148,7 @@ export const taskColumns = ({ setDel }: any) => {
           </TooltipProvider>
         );
       },
-      width: "150px",
+      width: "100px",
       maxWidth: "150px",
       minWidth: "150px",
       header: () => <span>Description</span>,
@@ -149,18 +161,46 @@ export const taskColumns = ({ setDel }: any) => {
       cell: (info: any) => {
         let title = info.getValue();
         return (
-          <span className="capitalize">
+          <div   className={`rounded-full cursor-pointer flex items-center py-[2px] px-3 min-w-[110px]  ${
+            info.getValue() === 'OVER_DUE'
+              ? 'text-[#A71D2A] bg-[#A71D2A33]'
+              : info.getValue() === 'TODO'
+              ? 'text-[#6F42C1] bg-[#EADEFF]'
+               : info.getValue() === 'COMPLETED'
+              ? 'text-[#28A745] bg-[#28A74533]'
+              : info.getValue() === 'IN_PROGRESS'
+              ? 'text-[#007BFF] bg-[#007BFF33]'
+              : 'text-black'
+          }`}>
+                    <span
+              style={{
+                height: "8px",
+                width: "8px",
+                borderRadius: "50%",
+                background:
+                info.getValue() === 'OVER_DUE'
+                  ? '#A71D2A'
+                  : info.getValue() === 'TODO'
+                  ? '#6F42C1'
+                  : info.getValue() === 'COMPLETED'
+                  ? '#28A745'
+                  : info.getValue() === 'IN_PROGRESS'
+                  ? '#007BFF'
+                  : 'black',
+                marginRight: "8px",
+              }}
+            ></span>
             {title
               ? taskStatusConstants.find(
                   (item: any) => item.value === info.getValue()
                 )?.label
               : "-"}
-          </span>
+          </div>
         );
       },
-      width: "90px",
-      maxWidth: "90px",
-      minWidth: "90px",
+      width: "115px",
+      maxWidth: "115px",
+      minWidth: "1150px",
       header: () => <span>Status</span>,
       footer: (props: any) => props.column.id,
     },

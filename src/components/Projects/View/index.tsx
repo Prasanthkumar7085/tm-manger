@@ -147,7 +147,7 @@ const ProjectView = () => {
           {previewUrl ? (
             <div className="relative w-20 h-20 rounded-full border-2 shadow-md">
               <img
-                src={previewUrl}
+                src={previewUrl || "/favicon.png"}
                 alt="Profile Preview"
                 className="w-20 h-20 object-cover rounded-full border  bg-black"
                 onError={(e: any) => {
@@ -171,9 +171,9 @@ const ProjectView = () => {
           ) : (
             <div className="relative w-20 h-20 rounded-full border-2 shadow-md">
               <img
-                src="https://via.placeholder.com/150?text=No+Image"
+                src="/favicon.png"
                 alt="company logo"
-                className="w-20 h-20 object-cover rounded-full border  bg-black"
+                className="w-20 h-20 object-contain	 rounded-full border  bg-white"
                 onError={(e: any) => {
                   e.target.onerror = null;
                   e.target.src =
@@ -203,14 +203,14 @@ const ProjectView = () => {
       </div>
       <div className="flex items-center mt-4 space-x-2 w-full justify-between relative">
         <div>
-          <h2 className="text-xl font-semibold capitalize flex-1">
+          <h2 className="text-xl font-semibold capitalize flex-1 text-[#1B2459]">
             <span
               title={projectDetails?.active ? "Active" : "Inactive"}
-              className={`inline-block w-2 h-2 rounded-full mr-2 ${projectDetails?.active ? "bg-green-500" : "bg-red-500"}`}
+              className={`inline-block w-2 h-2 rounded-full mr-2 relative bottom-[3px] ${projectDetails?.active ? "bg-green-500" : "bg-red-500"}`}
             ></span>
             {projectDetails?.title}
           </h2>
-          <p className="text-sm text-gray-500 capitalize flex-1">
+          <p className="text-md text-gray-500 mt-[6px] capitalize flex-1">
             {projectDetails?.description}
           </p>
         </div>
@@ -231,21 +231,21 @@ const ProjectView = () => {
                 setOpenMembers(!openMembers);
               }
             }}
-            className="bg-[#f3d1d7]"
+            className="bg-[#f3d1d7] rounded-lg text-[#BF1B39] leading-none hover:text-[#ffffff]"
           >
             {openMembers || searchParams.get("tab") == "project_members"
               ? "Close Members"
               : "View Members"}
           </Button>
           <div>
-            <h2 className="text-sm font-semibold">Created at</h2>
-            <p className="text-sm text-gray-500">
+            <h2 className="text-sm text-[#666666]">Created At</h2>
+            <p className="text-sm text-[#038847] font-[600]">
               {dayjs(projectDetails?.created_at).format("MM-DD-YYYY")}
             </p>
           </div>
           <div>
-            <h2 className="text-sm font-semibold">Created by</h2>
-            <p className="text-sm text-gray-500">{"Member"}</p>
+            <h2 className="text-sm text-[#666666]">Created By</h2>
+            <p className="text-sm text-[#000000]">{"Member"}</p>
           </div>
         </div>
       </div>
