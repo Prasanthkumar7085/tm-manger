@@ -532,6 +532,7 @@ function UsersTable() {
                     type="button"
                     variant="add"
                     size="DefaultButton"
+                    className="font-normal"
                     onClick={() => handleDrawerOpen()}
                   >
                     <span className="text-xl pr-2">+</span>

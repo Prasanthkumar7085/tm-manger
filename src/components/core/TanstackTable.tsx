@@ -120,6 +120,7 @@ const TanStackTable: FC<pageProps> = ({
                             width: getWidth(header.id),
                             color: "#000",
                             background: "#F0EDFF",
+                            fontWeight: "500",
                           }}
                         >
                           {header.isPlaceholder ? null : (
@@ -159,13 +160,13 @@ const TanStackTable: FC<pageProps> = ({
                                   />
                                 ),
                               }[header.column.getIsSorted() as string] ?? (
-                                  <img
-                                    src="/table/sort-norm.svg"
-                                    height={15}
-                                    width={15}
-                                    alt="No Sort"
-                                  />
-                                )}
+                                <img
+                                  src="/table/sort-norm.svg"
+                                  height={15}
+                                  width={15}
+                                  alt="No Sort"
+                                />
+                              )}
                             </div>
                           )}
                         </TableHead>
@@ -180,6 +181,7 @@ const TanStackTable: FC<pageProps> = ({
                             width: getWidth(header.id),
                             color: "#000",
                             background: "#F0EDFF",
+                            fontWeight: "500",
                           }}
                         >
                           {header.isPlaceholder ? null : (

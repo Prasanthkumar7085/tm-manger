@@ -11,9 +11,7 @@ export const userColumns = [
     maxWidth: "50px",
     minWidth: "45px",
     cell: (props: any) => (
-      <div style={{ textAlign: "left" }}>
-        {props.getValue()}
-      </div>
+      <div style={{ textAlign: "left" }}>{props.getValue()}</div>
     ),
   },
   {
@@ -183,7 +181,7 @@ export const userColumns = [
               color: isActive ? "#28A745" : "#A71D2A",
               background: isActive ? "#28A74533" : "#A71D2A33",
             }}
-            className="rounded-full cursor-pointer flex items-center py-0 px-3 min-w-[90px]"
+            className="rounded-full cursor-pointer flex items-center py-0 px-3 min-w-[100px]"
             onClick={togglePopover}
           >
             <span
@@ -238,8 +236,8 @@ export const userColumns = [
         </div>
       );
     },
-    width: "80px",
-    maxWidth: "100px",
+    width: "100px",
+    maxWidth: "115px",
     minWidth: "150px",
     header: () => <span>Status</span>,
     footer: (props: any) => props.column.id,
