@@ -41,7 +41,7 @@ export const TasksSelectStatusFilter: React.FC<StatusFilterProps> = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between  bg-slate-50 h-[35px] w-[150px] relative"
+          className="justify-between  bg-[#F4F4F6] h-[35px] w-[150px] relative text-[#00000099] font-normal text-sm border border-[#E2E2E2]"
         >
           {value
             ? taskStatusConstants.find((item: any) => item.value === value)

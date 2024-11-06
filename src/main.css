@@ -31,3 +31,6 @@ border: none;
   margin-top: 3px;
   margin-right: 5px;
 }
+.rs-picker-popup{
+  z-index: 999;
+}

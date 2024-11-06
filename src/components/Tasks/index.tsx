@@ -172,7 +172,7 @@ const Tasks = () => {
       </div>
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-end items-center">
             <div className="filters">
               <ul className="flex justify-end space-x-3">
                 <li>
@@ -209,10 +209,11 @@ const Tasks = () => {
                 </li>
                 <li>
                   <Button
+                  className="font-normal text-sm"
                     variant="add" size="DefaultButton"
                     onClick={handleNavigation}
                   >
-                    <span className="text-xl pr-2">+</span>
+                    <span className="text-xl font-normal pr-2 text-md">+</span>
                     Add Task
                   </Button>
                 </li>

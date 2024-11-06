@@ -170,11 +170,11 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
           ? task?.tags.map((tag: any, index: number) => (
               <div
                 key={index}
-                className="bg-green-100 text-green-800 text-[0.8em] font-semibold mr-2 mb-2 flex px-2 rounded-full"
+                className="bg-[#00B8121A] text-[#00B812] text-[0.8em] font-medium  mr-2 mb-2 flex px-2 rounded-full"
               >
                 {tag}
                 <p
-                  className="ml-1 text-red-500 rotate-[45deg] cursor-pointer"
+                  className="ml-1 text-[#000000]   rotate-[45deg] font-medium cursor-pointer"
                   onClick={() => handleTagDelete(tag)}
                 >
                   +
