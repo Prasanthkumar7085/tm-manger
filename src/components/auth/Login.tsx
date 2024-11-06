@@ -32,7 +32,7 @@ const LoginComponent = () => {
           toast.success(response?.data?.message);
           const { data } = response?.data;
           const { access_token, user_details } = data;
-          console.log(data, "uiui");
+
           Cookies.set("token", access_token, {
             priority: "High",
           });

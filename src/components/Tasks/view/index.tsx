@@ -23,6 +23,7 @@ import {
   taskStatusConstants,
 } from "@/lib/helpers/statusConstants";
 import PriorityStatus from "./PriorityStatus";
+import TopBar from "@/components/TopBar";
 
 const TaskView = () => {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ const TaskView = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [viewData, setViewData] = useState<any>();
-  console.log(viewData, "view");
+  console.log(viewData, "mani");
   const [tagsData, setTagsData] = useState<any>({ tags: [] });
   const [tagsInput, setTagsInput] = useState("");
   const [errorMessages, setErrorMessages] = useState();
@@ -198,7 +199,9 @@ const TaskView = () => {
             <div className="px-4 py-1">
               <div className="flex items-center space-x-3">
                 <img
-                  src={viewData?.created_profile_pic || ""}
+                  src={
+                    viewData?.created_profile_pic_url || "/profile-picture.png"
+                  }
                   alt="User"
                   className="w-10 h-10 rounded-full object-cover"
                 />
@@ -334,6 +337,7 @@ const TaskView = () => {
             </div>
           </div>
         </div>
+        <TopBar viewData={viewData} />
       </div>
       <LoadingComponent loading={isLoading || loading} />
     </div>

@@ -14,11 +14,14 @@ import LoadingComponent from "../core/LoadingComponent";
 import { TasksSelectStatusFilter } from "../core/CommonComponents/TasksSelectStatusFilter";
 import { TasksSelectPriority } from "../core/CommonComponents/TasksSelectPriority";
 import { SelectTaskProjects } from "../core/CommonComponents/SelectTaskProjects";
+import { setRefId } from "@/redux/Modules/userlogin";
+import { useDispatch } from "react-redux";
 
 const Tasks = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
@@ -54,8 +57,6 @@ const Tasks = () => {
     pageSize: pageSizeParam,
     order_by: orderBY,
   });
-
-  console.log(selectedProject, "selectedProject");
 
   const isDashboard = location.pathname === "/dashboard";
 
@@ -102,6 +103,7 @@ const Tasks = () => {
               search: queryParams,
             });
       }
+      dispatch(setRefId(response.data?.data?.records[0]?.ref_id));
 
       return response;
     },
