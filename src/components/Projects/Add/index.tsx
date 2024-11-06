@@ -176,12 +176,14 @@ const AddProject = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-6 overflow-auto h-[calc(100vh-4rem)] relative">
-      <h2 className="text-2xl font-semibold">
+    <div className="max-w-full bg-white  p-12 space-y-6 overflow-auto h-[calc(100vh-4rem)] rounded-2xl relative ">
+      <div className="w-[50%]"> 
+      <h2 className="text-2xl font-semibold pb-6">
         {projectId ? "Edit Project" : "Add Project"}
       </h2>
-      <div className="space-y-4">
-        <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+      <div>
+        <div className="mb-4">
+        <label className="block text-[#383838] font-medium text-sm mb-1">
           Title<span className="text-red-500">*</span>
         </label>
         <Input
@@ -190,6 +192,7 @@ const AddProject = () => {
           value={projectData.title}
           name="title"
           onChange={handleInputChange}
+          className="h-[48px] bg-[#F5F6FA] border border-[#CDCED2] rounded-[8px] placeholder-[#00000066]"
         />
         {errorMessages.title && (
           <p className="text-red-500">{errorMessages.title[0]}</p>
@@ -197,7 +200,9 @@ const AddProject = () => {
         {invalidErrors?.title && (
           <p className="text-red-500">{invalidErrors.title}</p>
         )}
-        <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+           </div>
+           <div className="mb-4">
+        <label className="block text-[#383838] font-medium text-sm mb-1">
           Project code<span className="text-red-500">*</span>
         </label>
         <Input
@@ -206,6 +211,8 @@ const AddProject = () => {
           value={projectData.code}
           name="code"
           onChange={handleInputChange}
+          className="h-[48px] bg-[#F5F6FA] border border-[#CDCED2] rounded-[8px] placeholder-[#00000066]"
+
         />
         {errorMessages.code && (
           <p className="text-red-500">{errorMessages.code[0]}</p>
@@ -213,7 +220,9 @@ const AddProject = () => {
         {invalidErrors?.code && (
           <p className="text-red-500">{invalidErrors.code}</p>
         )}
-        <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+        </div>
+        <div className="mb-4">
+        <label className="block text-[#383838] font-medium text-sm mb-1">
           Project Description
         </label>
         <Textarea
@@ -222,20 +231,26 @@ const AddProject = () => {
           value={projectData.description}
           name="description"
           onChange={handleInputChange}
+          className="h-[48px] bg-[#F5F6FA] border border-[#CDCED2] rounded-[8px] placeholder-[#00000066]"
+
         />
+        </div>
       </div>
       {projectId ? (
         " "
       ) : (
-        <div className="space-y-4">
+        <div className="mb-6">
+             <label className="block text-[#383838] font-medium text-sm mb-1">
+             Members<span className="text-red-500">*</span>
+        </label>
           <div className="flex flex-col justify-start gap-4">
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-[200px]">
-                  Select Members<span className="text-red-500">*</span>
+                <Button variant="outline" className="w-full text-left justify-start h-[40px] bg-[#F5F6FA] border border-[#CDCED2] rounded-[8px] text-[#00000066]">
+                  Select Members
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-[200px] p-0 bg-white border">
+              <PopoverContent className="w-[400px] p-0 bg-white border rounded-[8px]">
                 <Command>
                   <CommandInput placeholder="Search Members" />
                   <CommandList>
@@ -243,6 +258,7 @@ const AddProject = () => {
                       {Array.isArray(users) &&
                         users.map((user: any) => (
                           <CommandItem
+                          className="hover:bg-[#F5F5F5] active:bg-[#28A74533] cursor-pointer"
                             key={user.id}
                             value={getFullName(user)}
                             onSelect={() => toggleValue(user.id.toString())}
@@ -252,13 +268,13 @@ const AddProject = () => {
                           >
                             <Check
                               className={cn(
-                                "mr-2 h-4 w-4",
+                                "mr-2 h-4 w-4 ",
                                 tempSelectedMember.includes(user.id.toString())
                                   ? "opacity-100"
                                   : "opacity-0"
                               )}
                             />
-                            {getFullName(user)}
+                           <span className="cursor-pointer">{getFullName(user)}</span> 
                           </CommandItem>
                         ))}
                     </CommandGroup>
@@ -266,6 +282,7 @@ const AddProject = () => {
                   </CommandList>
                   <div className="flex justify-end space-x-2 p-2 border-t">
                     <Button
+                    className="bg-white border-transparent px-6 text-[#000000] text-sm font-medium"
                       variant="outline"
                       size="sm"
                       onClick={() => setTempSelectedMember([])}
@@ -273,6 +290,7 @@ const AddProject = () => {
                       Clear
                     </Button>
                     <Button
+                     className="bg-[#000000] text-white px-6 font-medium text-sm rounded-[4px]"
                       size="sm"
                       variant="outline"
                       onClick={confirmSelection}
@@ -284,23 +302,24 @@ const AddProject = () => {
               </PopoverContent>
             </Popover>
             {selectedMembers.length > 0 && (
-              <table className="min-w-full border">
+              <div className="overflow-hidden rounded-[10px] border border-gray-200 mt-4">
+              <table className="min-w-full ">
                 <thead>
                   <tr>
-                    <th className="border p-2">Members</th>
-                    <th className="border p-2">Role</th>
-                    <th className="border p-2">Action</th>
+                    <th  className="text-left p-2  !bg-[#F5F5F5] font-normal text-[#00000099]">Members</th>
+                    <th  className="text-left p-2  !bg-[#F5F5F5] font-normal text-[#00000099]">Role</th>
+                    <th  className="text-left p-2  !bg-[#F5F5F5] font-normal text-[#00000099]">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {selectedMembers.map((member) => (
-                    <tr key={member.user_id}>
-                      <td className="border p-2">
+                    <tr key={member.user_id} className="text-left">
+                      <td className=" !px-3 !py-2 capitalize text-[#000000CC]">
                         {getFullName(
                           users.find((user: any) => user.id === member.user_id)
                         )}
                       </td>
-                      <td className="border p-2">
+                      <td className=" !px-3 !py-2 capitalize text-[#000000CC]">
                         <select
                           value={member.role}
                           onChange={(e) =>
@@ -310,6 +329,7 @@ const AddProject = () => {
                         >
                           {roleConstants.map((memberConstant) => (
                             <option
+                  
                               key={memberConstant.value}
                               value={memberConstant.value}
                             >
@@ -318,7 +338,7 @@ const AddProject = () => {
                           ))}
                         </select>
                       </td>
-                      <td className="border p-2">
+                      <td className=" !px-3 !py-2 capitalize text-[#000000CC]">
                         <button
                           type="button"
                           onClick={() => removeMember(member.user_id)}
@@ -332,6 +352,7 @@ const AddProject = () => {
                   ))}
                 </tbody>
               </table>
+              </div>
             )}
           </div>
           {errorMessages.project_members && (
@@ -341,14 +362,15 @@ const AddProject = () => {
       )}
 
       <div className="flex justify-end mb-4 gap-5">
-        <Button variant="outline" onClick={() => navigate({ to: "/projects" })}>
+        <Button className="bg-white border-transparent text-[#FF6000] text-md font-medium" variant="outline" onClick={() => navigate({ to: "/projects" })}>
           Cancel
         </Button>
-        <Button variant="outline" onClick={handleSubmit} disabled={loading}>
+        <Button className="bg-[#1B2459] text-white font-medium text-md" variant="outline" onClick={handleSubmit} disabled={loading}>
           {projectId ? "Update Project" : "Add Project"}
         </Button>
       </div>
       <LoadingComponent loading={loading || isFetching || isLoading} />
+    </div>
     </div>
   );
 };

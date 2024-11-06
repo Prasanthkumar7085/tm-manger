@@ -14,11 +14,14 @@ import LoadingComponent from "../core/LoadingComponent";
 import { TasksSelectStatusFilter } from "../core/CommonComponents/TasksSelectStatusFilter";
 import { TasksSelectPriority } from "../core/CommonComponents/TasksSelectPriority";
 import { SelectTaskProjects } from "../core/CommonComponents/SelectTaskProjects";
+import { setRefId } from "@/redux/Modules/userlogin";
+import { useDispatch } from "react-redux";
 
 const Tasks = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
@@ -55,8 +58,6 @@ const Tasks = () => {
     order_by: orderBY,
   });
 
-  console.log(selectedProject, "selectedProject");
-
   const isDashboard = location.pathname === "/dashboard";
 
   const { isLoading, isError, data, error, isFetching } = useQuery({
@@ -68,7 +69,7 @@ const Tasks = () => {
       del,
       selectedStatus,
       selectedpriority,
-      selectedProject
+      selectedProject,
     ],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
@@ -98,10 +99,11 @@ const Tasks = () => {
         location.pathname == "/dashboard"
           ? ""
           : router.navigate({
-            to: "/tasks",
-            search: queryParams,
-          });
+              to: "/tasks",
+              search: queryParams,
+            });
       }
+      dispatch(setRefId(response.data?.data?.records[0]?.ref_id));
 
       return response;
     },
@@ -172,7 +174,7 @@ const Tasks = () => {
       </div>
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-end items-center">
             <div className="filters">
               <ul className="flex justify-end space-x-3">
                 <li>
@@ -209,10 +211,11 @@ const Tasks = () => {
                 </li>
                 <li>
                   <Button
+                  className="font-normal text-sm"
                     variant="add" size="DefaultButton"
                     onClick={handleNavigation}
                   >
-                    <span className="text-xl pr-2">+</span>
+                    <span className="text-xl font-normal pr-2 text-md">+</span>
                     Add Task
                   </Button>
                 </li>

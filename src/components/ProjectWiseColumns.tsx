@@ -18,10 +18,26 @@ export const projectWiseColumns = [
     accessorFn: (row: any) => row.project_title,
     id: "project_title",
     cell: (info: any) => {
-      let title = info.getValue();
+      const title = info.getValue();
+      const downloadUrl = info.row.original.download_url ||"/favicon.png";
+
       return (
-        <div style={{ padding: "16px", textAlign: "left" }}>
-          <span className="capitalize">{title ? title : "0"}</span>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "16px",
+            textAlign: "left",
+          }}
+        >
+          {downloadUrl && (
+            <img
+              src={downloadUrl}
+              alt="project logo"
+              style={{ width: "24px", height: "24px", marginRight: "8px", borderRadius:"50%",}}
+            />
+          )}
+          <span className="capitalize">{title ? title : "-"}</span>
         </div>
       );
     },
@@ -38,7 +54,7 @@ export const projectWiseColumns = [
       const title = info.getValue();
       return (
         <div style={{ padding: "16px", textAlign: "left" }}>
-          <span className="capitalize">{title ? title : "0"}</span>
+          <span className="capitalize">{title ? title : "-"}</span>
         </div>
       );
     },
@@ -55,7 +71,7 @@ export const projectWiseColumns = [
       const title = info.getValue();
       return (
         <div style={{ padding: "16px", textAlign: "left" }}>
-          <span className="capitalize">{title ? title : "0"}</span>
+          <span className="capitalize">{title ? title : "-"}</span>
         </div>
       );
     },
@@ -72,7 +88,7 @@ export const projectWiseColumns = [
       const title = info.getValue();
       return (
         <div style={{ padding: "16px", textAlign: "left" }}>
-          <span className="capitalize">{title ? title : "0"}</span>
+          <span className="capitalize">{title ? title : "-"}</span>
         </div>
       );
     },
@@ -89,7 +105,7 @@ export const projectWiseColumns = [
       const title = info.getValue();
       return (
         <div style={{ padding: "16px", textAlign: "left" }}>
-          <span className="capitalize">{title ? title : "0"}</span>
+          <span className="capitalize">{title ? title : "-"}</span>
         </div>
       );
     },
@@ -106,7 +122,7 @@ export const projectWiseColumns = [
       const title = info.getValue();
       return (
         <div style={{ padding: "16px", textAlign: "left" }}>
-          <span className="capitalize">{title ? title : "0"}</span>
+          <span className="capitalize">{title ? title : "-"}</span>
         </div>
       );
     },

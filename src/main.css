@@ -32,6 +32,6 @@ td {
   margin-top: 3px;
   margin-right: 5px;
 }
-.projects-container .tasks-navbar input {
-  background-color: red !important;
+.rs-picker-popup {
+  z-index: 999;
 }

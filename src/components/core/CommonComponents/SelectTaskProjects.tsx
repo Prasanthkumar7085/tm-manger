@@ -49,7 +49,7 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between  bg-slate-50 h-[35px] w-[220px] relative"
+          className="justify-between bg-[#F4F4F6] h-[35px] w-[220px] relative text-[#00000099] font-normal text-sm border border-[#E2E2E2]"
         >
           {selectedProject
             ? data?.find((item: any) => item.id == selectedProject)?.title
@@ -82,6 +82,13 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
                         key={project.id}
                         onSelect={() => handleSelect(project)}
                       >
+                        {(project.logo_url || "/favicon.png") && (
+                          <img
+                            src={project.logo_url || "/favicon.png"}
+                            alt={`${project.title} logo`}
+                            className="mr-2 h-6 w-6 rounded-full object-cover"
+                          />
+                        )}
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",

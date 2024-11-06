@@ -2,18 +2,23 @@ import { errPopper } from "@/lib/helpers/errPopper";
 import { getAllProjectStats } from "@/lib/services/dashboard";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TanStackTable from "./core/TanstackTable";
 import { projectWiseColumns } from "./ProjectWiseColumns";
 import { addDataSerial } from "@/lib/helpers/addSerial";
 import LoadingComponent from "./core/LoadingComponent";
 import Loading from "./core/Loading";
+import SearchFilter from "./core/CommonComponents/SearchFilter";
 
 const ProjectDataTable = () => {
+  const searchParams = new URLSearchParams(location.search);
+  // const initialSearch = searchParams.get("search") || "project_title";
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  // const [searchString, setSearchString] = useState<any>(initialSearch);
+  // const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const { isLoading, isError, error, data, isFetching } = useQuery({
-    queryKey: ["users"],
+  queryKey: ["users"],
     queryFn: async () => {
       try {
         const response = await getAllProjectStats();
@@ -31,9 +36,29 @@ const ProjectDataTable = () => {
       }
     },
   });
-
+  // useEffect(() => {
+  //   const handler = setTimeout(() => {
+  //     setDebouncedSearch(searchString);
+  //     if (
+  //       searchString   
+  //     ) {
+  //     getAllProjectStats()
+  //     } else {
+  //     getAllProjectStats() 
+  //     }
+  //   }, 500);
+  //   return () => {
+  //     clearTimeout(handler);
+  //   };
+  // }, [searchString]);
   return (
     <div className="relative">
+                {/* <SearchFilter
+                  searchString={searchString}
+                  setSearchString={setSearchString}
+                  title="Search By title"
+                /> */}
+              
       <div className="mt-5">
         <TanStackTable
           data={data}
@@ -43,12 +68,12 @@ const ProjectDataTable = () => {
           getData={getAllProjectStats}
           removeSortingForColumnIds={[
             "serial",
-            "project_name",
-            "todo_count",
-            "inprogress_count",
-            "completed_count",
-            "overdue_count",
-            "total_tasks",
+            "project_title",
+            "task_todo_count",
+            "task_inprogress_count",
+            "task_completed_count",
+            "task_overdue_count",
+            "total_tasks_count",
           ]}
         />
       </div>
