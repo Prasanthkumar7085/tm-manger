@@ -29,8 +29,8 @@ const TotalCounts = ({ taksDataAfterSerial }: any) => {
         <Card className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg">
           <div className="flex justify-between w-full items-center">
             <div className="content">
-              <h3 className="leading-5 text-slate-500">Total Tasks</h3>
-              <CardContent className="p-0 text-2xl">
+              <h3 className="leading-5 text-sm font-medium text-[#7E7E98]">Total Tasks</h3>
+              <CardContent className="p-0 text-2xl text-[#000000]">
                 <CountUp
                   end={totalTasks?.total_tasks?.toLocaleString() || 0}
                   duration={2.5}
@@ -49,8 +49,8 @@ const TotalCounts = ({ taksDataAfterSerial }: any) => {
         <Card className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg">
           <div className="flex justify-between w-full items-center">
             <div className="content">
-              <h3 className="leading-5 text-slate-500">To Do</h3>
-              <CardContent className="p-0 text-2xl">
+              <h3 className="leading-5 text-sm font-medium text-[#7E7E98]">To Do</h3>
+              <CardContent className="p-0 text-2xl text-[#6F42C1]">
                 <CountUp
                   end={totalTasks?.todo_count?.toLocaleString() || 0}
                   duration={2.5}
@@ -69,8 +69,8 @@ const TotalCounts = ({ taksDataAfterSerial }: any) => {
         <Card className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg">
           <div className="flex justify-between w-full items-center">
             <div className="content">
-              <h3 className="leading-5 text-slate-500">In Progress</h3>
-              <CardContent className="p-0 text-2xl">
+              <h3 className="leading-5 text-sm font-medium text-[#7E7E98]">In Progress</h3>
+              <CardContent className="p-0 text-2xl text-[#007BFF]">
                 <CountUp
                   end={totalTasks?.inProgress_count?.toLocaleString() || 0}
                   duration={2.5}
@@ -89,8 +89,8 @@ const TotalCounts = ({ taksDataAfterSerial }: any) => {
         <Card className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg">
           <div className="flex justify-between w-full items-center">
             <div className="content">
-              <h3 className="leading-5 text-slate-500">Overdue</h3>
-              <CardContent className="p-0 text-2xl">
+              <h3 className="leading-5 text-sm font-medium text-[#7E7E98]">Overdue</h3>
+              <CardContent className="p-0 text-2xl text-[#A71D2A]">
                 <CountUp
                   end={totalTasks?.overDue_count?.toLocaleString() || 0}
                   duration={2.5}
@@ -109,8 +109,8 @@ const TotalCounts = ({ taksDataAfterSerial }: any) => {
         <Card className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg">
           <div className="flex justify-between w-full items-center">
             <div className="content">
-              <h3 className="leading-5 text-slate-500">Completed</h3>
-              <CardContent className="p-0 text-2xl">
+              <h3 className="leading-5 text-sm font-medium text-[#4C4C66]">Completed</h3>
+              <CardContent className="p-0 text-2xl text-[#28A745]">
                 <CountUp
                   end={totalTasks?.completed_count?.toLocaleString() || 0}
                   duration={2.5}

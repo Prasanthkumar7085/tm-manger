@@ -21,7 +21,7 @@ export const getAllPaginatedUsers = async ({
       search_string: search,
       active: active,
     };
-    return await $fetch.get("/users", queryParams);
+    return await $fetch.get("/users/status-count", queryParams);
   } catch (err) {
     throw err;
   }

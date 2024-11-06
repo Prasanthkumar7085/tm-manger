@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@import 'tailwindcss/tailwind.css';
+
+
+body { @apply font-sans; }
+
 th{
   background: #f3e5f5!important;
 }

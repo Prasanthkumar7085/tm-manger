@@ -69,110 +69,177 @@ export const taskColumns = ({ setDel }: any) => {
       id: "serial",
       header: () => <span>S.No</span>,
       footer: (props: any) => props.column.id,
-      width: "30px",
-      maxWidth: "30px",
-      minWidth: "30px",
+      width: "50px",
+      maxWidth: "50px",
+      minWidth: "50px",
     },
+    // {
+    //   accessorFn: (row: any) => row.project_title,
+    //   id: "project_title",
+    //   cell: (info: any) => (
+    //     <span className="capitalize">{info.getValue()}</span>
+    //   ),
+    //   width: "150px",
+    //   maxWidth: "150px",
+    //   minWidth: "150px",
+    //   header: () => <span>Project</span>,
+    //   footer: (props: any) => props.column.id,
+    // },
     {
       accessorFn: (row: any) => row.project_title,
       id: "project_title",
-      cell: (info: any) => (
-        <span className="capitalize">{info.getValue()}</span>
-      ),
-      width: "150px",
-      maxWidth: "150px",
-      minWidth: "150px",
-      header: () => <span>Project</span>,
-      footer: (props: any) => props.column.id,
-    },
-    {
-      accessorFn: (row: any) => row.ref_id,
-      id: "ref_id",
-      cell: (info: any) => (
-        <span className="capitalize">{info.getValue()}</span>
-      ),
-      width: "100px",
-      maxWidth: "100px",
-      minWidth: "100px",
-      header: () => <span>Task Id</span>,
-      footer: (props: any) => props.column.id,
-    },
-    {
-      accessorFn: (row: any) => row.title,
-      id: "title",
-      cell: (info: any) => (
-        <span className="capitalize">{info.getValue() || "-"}</span>
-      ),
-      width: "150px",
-      maxWidth: "150px",
-      minWidth: "150px",
-      header: () => <span>Task Name</span>,
-      footer: (props: any) => props.column.id,
-    },
-    {
-      accessorFn: (row: any) => row.description,
-      id: "description",
       cell: (info: any) => {
         const title = info.getValue();
-        const shouldShowDescriptionTooltip = title && title.length > 30;
-        const truncatedDescription = shouldShowDescriptionTooltip
-          ? `${title.substring(0, 30)}...`
-          : title;
-
+        const project_logo_url = info.row.original.project_logo_url ||"/favicon.png";
         return (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="text-sm text-gray-500 cursor-pointer">
-                  {truncatedDescription || "-"}
-                </span>
-              </TooltipTrigger>
-              {shouldShowDescriptionTooltip && (
-                <TooltipContent
-                  style={{
-                    backgroundColor: "white",
-                    border: "1px solid #e0e0e0",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                    borderRadius: "4px",
-                    padding: "8px",
-                    maxWidth: "300px",
-                    fontSize: "14px",
-                    whiteSpace: "normal",
-                    wordWrap: "break-word",
-                  }}
-                >
-                  <div>{title}</div>
-                </TooltipContent>
-              )}
-            </Tooltip>
-          </TooltipProvider>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              padding: "16px",
+              textAlign: "left",
+            }}
+          >
+            {project_logo_url && (
+              <img
+                src={project_logo_url}
+                alt="project logo"
+                style={{ width: "24px", height: "24px", marginRight: "8px", borderRadius:"50%",}}
+              />
+            )}
+            <span className="capitalize">{title ? title : "-"}</span>
+          </div>
         );
       },
-      width: "100px",
+      width: "150px",
       maxWidth: "150px",
       minWidth: "150px",
-      header: () => <span>Description</span>,
+      header: () => <span>Projects</span>,
       footer: (props: any) => props.column.id,
     },
-
+    {
+      accessorFn: (row: any) => ({ ref_id: row.ref_id, title: row.title }),
+      id: "title",
+      cell: (info: any) => {
+        const { ref_id, title } = info.getValue();
+        return (
+          <span className="flex justify-between capitalize">
+            <span>{title || "-"}</span>
+            <span className="ml-2">[{ref_id}]</span>
+          </span>
+        );
+      },
+      width: "200px",
+      maxWidth: "200px",
+      minWidth: "200px",
+      header: () => <span>Tasks</span>,
+      footer: (props: any) => props.column.id,
+    },
+    {
+      accessorFn: (row: any) =>
+        row.assignees.map((assignee: any) => {
+           return assignee.user_profile_pic_url ? (
+            <img
+              src={assignee.user_profile_pic_url}
+              className="profile-pic"
+              style={{
+                marginRight: "5px",
+                borderRadius: "50%", 
+                width: "30px",
+                height: "30px",
+              }}
+            />
+          ) : null;
+        }),
+      id: "assignees",
+      cell: (info: any) => (
+        <div style={{ display: "flex", justifyContent: "flex-start" }}>
+          {info.getValue()}
+        </div>
+      ),
+      width: "150px",
+      maxWidth: "150px",
+      minWidth: "150px",
+      header: () => <span>Assigned User</span>,
+      footer: (props: any) => props.column.id,
+    },
+    // {
+    //   accessorFn: (row: any) =>
+    //     row.assignees.map((assignee: any) => {
+    //       const profilePic = assignee.user_profile_pic || "/favicon.png";
+    //       return (
+    //         <img
+    //           src={profilePic}
+    //           className="profile-pic"
+    //           style={{
+    //             marginRight: "5px",
+    //             borderRadius: "50%",
+    //             width: "30px",
+    //             height: "30px",
+    //           }}
+    //         />
+    //       );
+    //     }),
+    //   id: "assignees",
+    //   cell: (info: any) => (
+    //     <div style={{ display: "flex", justifyContent: "flex-start" }}>
+    //       {info.getValue()}
+    //     </div>
+    //   ),
+    //   width: "280px",
+    //   maxWidth: "280px",
+    //   minWidth: "280px",
+    //   header: () => <span>Assigned User</span>,
+    //   footer: (props: any) => props.column.id,
+    // },
     {
       accessorFn: (row: any) => row.status,
       id: "status",
       cell: (info: any) => {
         let title = info.getValue();
         return (
-          <span className="capitalize">
+          <div
+            className={`rounded-full cursor-pointer flex items-center py-[2px] px-3 min-w-[110px]  ${
+              info.getValue() === "OVER_DUE"
+                ? "text-[#A71D2A] bg-[#A71D2A33]"
+                : info.getValue() === "TODO"
+                  ? "text-[#6F42C1] bg-[#EADEFF]"
+                  : info.getValue() === "COMPLETED"
+                    ? "text-[#28A745] bg-[#28A74533]"
+                    : info.getValue() === "IN_PROGRESS"
+                      ? "text-[#007BFF] bg-[#007BFF33]"
+                      : "text-black"
+            }`}
+          >
+            <span
+              style={{
+                height: "8px",
+                width: "8px",
+                borderRadius: "50%",
+                background:
+                  info.getValue() === "OVER_DUE"
+                    ? "#A71D2A"
+                    : info.getValue() === "TODO"
+                      ? "#6F42C1"
+                      : info.getValue() === "COMPLETED"
+                        ? "#28A745"
+                        : info.getValue() === "IN_PROGRESS"
+                          ? "#007BFF"
+                          : "black",
+                marginRight: "8px",
+              }}
+            ></span>
             {title
               ? taskStatusConstants.find(
                   (item: any) => item.value === info.getValue()
                 )?.label
               : "-"}
-          </span>
+          </div>
         );
       },
-      width: "90px",
-      maxWidth: "90px",
-      minWidth: "90px",
+      width: "115px",
+      maxWidth: "115px",
+      minWidth: "1150px",
       header: () => <span>Status</span>,
       footer: (props: any) => props.column.id,
     },

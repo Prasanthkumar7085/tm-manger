@@ -33,6 +33,28 @@ type TaskColumn = {
   [key: string]: Task[];
 };
 
+const getColorFromInitials = (initials: string) => {
+  const colors = [
+    "bg-red-600",
+    "bg-green-600",
+    "bg-blue-600",
+    "bg-yellow-600",
+    "bg-purple-600",
+    "bg-pink-600",
+    "bg-indigo-600",
+    "bg-teal-600",
+    "bg-orange-600",
+    "bg-cyan-600",
+    "bg-amber-600",
+    "bg-lime-600",
+    "bg-emerald-600",
+    "bg-fuchsia-600",
+    "bg-rose-600",
+  ];
+  const index = initials.charCodeAt(0) % colors.length;
+  return colors[index];
+};
+
 const KanbanBoard: React.FC<any> = ({
   projectDetails,
   setProjetStatsUpdate,
@@ -125,7 +147,7 @@ const KanbanBoard: React.FC<any> = ({
           ref={provided.innerRef}
           className="flex flex-col rounded-md"
         >
-          <h2 className="text-lg font-bold">
+          <h2 className="bg-gray-100 px-4 h-[45px] leading-10 rounded-xl font-semibold text-[16px]">
             {
               taskStatusConstants.find((item: any) => item.value == columnName)
                 ?.label
@@ -133,7 +155,7 @@ const KanbanBoard: React.FC<any> = ({
           </h2>
           {isLoading || isFetching
             ? Array.from({ length: 1 }).map((_, index) => (
-                <div className="flex flex-col space-y-3  border">
+                <div className="flex flex-col space-y-3 border">
                   <Skeleton className="h-[105px] w-[250px] rounded-xl" />
                   <div className="space-y-2">
                     <Skeleton className="h-4 w-[250px]" />
@@ -152,46 +174,75 @@ const KanbanBoard: React.FC<any> = ({
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className="bg-[#eef5ff] border p-4 my-2 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+                      className="bg-[#EFF5FF] p-4 my-2 rounded-xl cursor-pointer hover:shadow-md transition-shadow"
                       onClick={() => {
                         router.navigate({
                           to: `/tasks/view/${task.task_id}`,
                         });
                       }}
                     >
+                      <div className="cardBar mb-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="129"
+                          height="8"
+                          viewBox="0 0 129 8"
+                          fill="none"
+                        >
+                          <rect
+                            x="0.400391"
+                            width="60"
+                            height="8"
+                            rx="4"
+                            fill="#0AAAF4"
+                          />
+                          <rect
+                            x="68.4004"
+                            width="60"
+                            height="8"
+                            rx="4"
+                            fill="#F8BD1C"
+                          />
+                        </svg>
+                      </div>
                       <p
-                        className="text-ellipsis overflow-hidden"
+                        className="text-ellipsis overflow-hidden font-semibold text-[18px] capitalize text-[#000000]"
                         title={task.task_title}
                       >
                         {task.task_title || "--"}
                       </p>
                       <p
-                        className="font-medium text-gray-600 max-h-15 max-w-[250px] overflow-hidden overflow-ellipsis whitespace-nowrap"
+                        className="font-medium text-lg text-gray-600 max-h-15 max-w-[250px] overflow-hidden overflow-ellipsis whitespace-nowrap"
                         title={task?.task_description}
                       >
                         {task?.task_description ? task.task_description : "--"}
                       </p>
                       <div className="flex justify-start mt-3 -space-x-3">
-                        {task?.assignees?.slice(0, 5).map((assignee: any) => (
-                          <Avatar
-                            key={assignee.user_id}
-                            className="w-8 h-8 border-2 border-white"
-                          >
-                            <AvatarImage
-                              src={assignee.user_profile_pic}
-                              alt={assignee.name}
-                              title={
-                                assignee.user_first_name +
-                                " " +
-                                assignee.user_last_name
-                              }
-                            />
-                            <AvatarFallback>
-                              {assignee.user_first_name[0] +
-                                assignee.user_last_name[0]}
-                            </AvatarFallback>
-                          </Avatar>
-                        ))}
+                        {task?.assignees?.slice(0, 5).map((assignee: any) => {
+                          const initials =
+                            assignee.user_first_name[0] +
+                            assignee.user_last_name[0];
+                          const backgroundColor =
+                            getColorFromInitials(initials);
+
+                          return (
+                            <Avatar
+                              key={assignee.user_id}
+                              className={`w-8 h-8 ${backgroundColor}`}
+                            >
+                              <AvatarImage
+                                src={assignee.user_profile_pic}
+                                alt={assignee.name}
+                                title={
+                                  assignee.user_first_name +
+                                  " " +
+                                  assignee.user_last_name
+                                }
+                              />
+                              <AvatarFallback>{initials}</AvatarFallback>
+                            </Avatar>
+                          );
+                        })}
                         {task?.assignees?.length > 5 && (
                           <div className="flex items-center justify-center w-8 h-8 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold">
                             +{task.assignees.length - 5}
@@ -206,7 +257,7 @@ const KanbanBoard: React.FC<any> = ({
           <Button
             disabled={projectDetails?.active ? false : true}
             title="Add Task"
-            className="bg-transparent border-dotted border-2 border-[#5A5A5A] text-black text-md"
+            className="bg-transparent border-dashed border-2 rounded-xl border-[#5A5A5A] text-black text-lg mt-2 hover:bg-transparent"
             onClick={() => {
               router.navigate({
                 to: "/tasks/add",
@@ -214,7 +265,7 @@ const KanbanBoard: React.FC<any> = ({
               });
             }}
           >
-            Add new Task
+            Add New Task
           </Button>
         </div>
       )}

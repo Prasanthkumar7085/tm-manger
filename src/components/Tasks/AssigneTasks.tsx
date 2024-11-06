@@ -44,13 +44,16 @@ const AssignedUsers = ({ viewTaskData }: any) => {
       user_type: string;
       role: string;
       task_assignee_id: any;
+      download_url: any;
     }[]
   >([]);
   const [updatedOrNot, setUpdatedOrNot] = useState<boolean>(false);
+  const page = 1;
+  const limit = 10;
 
   const getFullName = (user: any) =>
     `${user?.fname || ""} ${user?.mname || ""} ${user?.lname || ""}`.trim();
-
+  const getFullNames = (member: any) => `${member.fname} ${member.lname}`;
   const capitalize = (str: string) =>
     str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 
@@ -180,7 +183,11 @@ const AssignedUsers = ({ viewTaskData }: any) => {
       user_ids: payload,
     });
   };
-
+  const getInitials = (member: any) => {
+    const firstInitial = member.fname ? member.fname.charAt(0) : "";
+    const lastInitial = member.lname ? member.lname.charAt(0) : "";
+    return `${firstInitial}${lastInitial}`.toUpperCase();
+  };
   return (
     <div className="flex flex-col justify-between h-full w-full overflow-auto">
       <div>
@@ -251,7 +258,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                 to: `/projects/view/${viewTaskData?.project_id}?tab=project_members`,
               });
             }}
-            className="bg-[#f3d1d7]"
+            className="bg-[#f3d1d7] hover:text-white"
           >
             Add Project members
           </Button>
@@ -261,6 +268,12 @@ const AssignedUsers = ({ viewTaskData }: any) => {
             <table className="min-w-full">
               <thead>
                 <tr>
+                  <th className="text-left p-2 !bg-[#F5F5F5] text-[#00000099]">
+                    S.No
+                  </th>
+                  <th className="text-left p-2 !bg-[#F5F5F5] text-[#00000099]">
+                    Profile
+                  </th>
                   <th className="text-left p-2  !bg-[#F5F5F5] text-[#00000099]">
                     Members
                   </th>
@@ -269,9 +282,34 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="text-center">
-                {selectedMembers.map((member) => (
+              <tbody className="text-left">
+                {selectedMembers.map((member, index) => (
                   <tr key={member.user_id}>
+                    <td className="!px-3 !py-2">
+                      {(page - 1) * limit + index + 1}
+                    </td>
+                    <td className="!px-3 !py-4">
+                      {member.download_url ? (
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200">
+                            <img
+                              src={member.download_url}
+                              alt={`${getFullNames(member)}'s profile`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200">
+                          <img
+                            src={"/profile-picture.png"}
+                            // alt={`${getFullName(member)}'s profile`}
+
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                    </td>
                     <td className=" !px-3 !py-2 capitalize text-[#000000CC]">
                       {capitalize(getFullName(member))}
                     </td>

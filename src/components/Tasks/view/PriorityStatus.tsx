@@ -80,21 +80,29 @@ function PriorityStatus({
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
-      <button
-        onClick={toggleDropdown}
-        className="bg-[#e7e7e7] text-black px-4 h-[35px]  rounded-lg flex items-center"
-      >
-        {selectedPriority?.label
-          ? selectedPriority.label
-          : capitalizeWords(viewData?.priority)}
-        <svg
-          className="ml-2 w-5 h-5 text-black"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path d="M5.5 7.5L10 12l4.5-4.5H5.5z" />
-        </svg>
-      </button>
+<button
+  onClick={toggleDropdown}
+  className={`px-4 h-[35px] rounded-lg flex items-center ${
+    (selectedPriority?.value || viewData?.priority) === 'HIGH'
+      ? 'bg-[#ff3c5833] text-[#ff3c58]'
+      : (selectedPriority?.value || viewData?.priority) === 'MEDIUM'
+      ? 'bg-[#ffa00033] text-[#ffa000]'
+      : (selectedPriority?.value || viewData?.priority) === 'LOW'
+      ? 'bg-[#499dff33] text-[#499dff]'
+      : 'bg-[#e7e7e7] text-black'
+  }`}
+>
+  {selectedPriority?.label
+    ? selectedPriority.label
+    : capitalizeWords(viewData?.priority)}
+  <svg
+    className="ml-2 w-5 h-5"
+    fill="currentColor"
+    viewBox="0 0 20 20"
+  >
+    <path d="M5.5 7.5L10 12l4.5-4.5H5.5z" />
+  </svg>
+</button>
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">

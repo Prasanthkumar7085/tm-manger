@@ -27,9 +27,9 @@ function SideMenu() {
             <li>
               <Link to="/dashboard">
                 <div
-                  className={`flex items-center gap-3 px-4 py-2 text-gray-600 rounded-md ${
+                  className={`flex items-center gap-3 px-4 py-3 text-gray-600 rounded-2xl ${
                     isActive("/dashboard")
-                      ? "bg-blue-900 text-white"
+                      ? "bg-[#1B2459] text-white"
                       : "hover:bg-blue-100"
                   }`}
                 >
@@ -49,9 +49,9 @@ function SideMenu() {
             <li>
               <Link to="/tasks">
                 <div
-                  className={`flex items-center gap-3 px-4 py-2 text-gray-600 rounded-md ${
+                  className={`flex items-center gap-3 px-4 py-3 text-gray-600 rounded-2xl ${
                     isActive("/tasks")
-                      ? "bg-blue-900 text-white"
+                      ? "bg-[#1B2459] text-white"
                       : "hover:bg-blue-100"
                   }`}
                 >
@@ -67,9 +67,9 @@ function SideMenu() {
             <li>
               <Link to="/projects">
                 <div
-                  className={`flex items-center gap-3 px-4 py-2 text-gray-600 rounded-md ${
+                  className={`flex items-center gap-3 px-4 py-3 text-gray-600 rounded-2xl ${
                     isActive("/projects")
-                      ? "bg-blue-900 text-white"
+                      ? "bg-[#1B2459] text-white"
                       : "hover:bg-blue-100"
                   }`}
                 >
@@ -90,9 +90,9 @@ function SideMenu() {
               {profileData?.user_type === "admin" && (
                 <Link to="/users">
                   <div
-                    className={`flex items-center gap-3 px-4 py-2 text-gray-600 rounded-md ${
+                    className={`flex items-center gap-3 px-4 py-3 text-gray-600 rounded-2xl ${
                       isActive("/users")
-                        ? "bg-blue-900 text-white"
+                        ? "bg-[#1B2459] text-white"
                         : "hover:bg-blue-100"
                     }`}
                   >
