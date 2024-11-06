@@ -55,7 +55,7 @@ const Tasks = () => {
     order_by: orderBY,
   });
 
-  console.log(selectedProject,"selectedProject");
+  console.log(selectedProject, "selectedProject");
 
   const isDashboard = location.pathname === "/dashboard";
 
@@ -143,7 +143,7 @@ const Tasks = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString, selectedStatus, selectedpriority,selectedProject]);
+  }, [searchString, selectedStatus, selectedpriority, selectedProject]);
 
   const handleNavigation = () => {
     navigate({
@@ -170,7 +170,7 @@ const Tasks = () => {
           <TotalCounts taksDataAfterSerial={taksDataAfterSerial} />
         )}
       </div>
-      <div className="card-container shadow-md border p-5 rounded-lg mt-3 bg-white">
+      <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
           <div className="flex justify-between items-center">
             <div className="filters">
@@ -220,7 +220,7 @@ const Tasks = () => {
             </div>
           </div>
         </div>
-        <div className="mt-5">
+        <div className="mt-3">
           {isError ? (
             <div>Error: {error.message}</div>
           ) : (
