@@ -147,7 +147,7 @@ const KanbanBoard: React.FC<any> = ({
           ref={provided.innerRef}
           className="flex flex-col rounded-md"
         >
-          <h2 className="bg-gray-100 px-4 h-[45px] leading-10 rounded-xl font-semibold text-[16px]">
+          <h2 className="bg-gray-100 px-4 h-[40px] leading-10 rounded-xl font-semibold text-[14px]">
             {
               taskStatusConstants.find((item: any) => item.value == columnName)
                 ?.label
@@ -257,7 +257,7 @@ const KanbanBoard: React.FC<any> = ({
           <Button
             disabled={projectDetails?.active ? false : true}
             title="Add Task"
-            className="bg-transparent border-dashed border-2 rounded-xl border-[#5A5A5A] text-black text-lg mt-2 hover:bg-transparent"
+            className="bg-transparent border-dashed border-2 rounded-xl border-[#5A5A5A] text-black text-md mt-2 hover:bg-transparent"
             onClick={() => {
               router.navigate({
                 to: "/tasks/add",
@@ -265,6 +265,7 @@ const KanbanBoard: React.FC<any> = ({
               });
             }}
           >
+            <span className="relative right-[5px]">+</span>
             Add New Task
           </Button>
         </div>

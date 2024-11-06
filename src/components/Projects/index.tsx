@@ -137,9 +137,9 @@ const Projects = () => {
   };
   const userOptions = Array.isArray(users)
     ? users.map((user: any) => ({
-      value: user.id,
-      label: `${user.fname} ${user.lname}`,
-    }))
+        value: user.id,
+        label: `${user.fname} ${user.lname}`,
+      }))
     : [];
 
   useEffect(() => {
@@ -192,7 +192,9 @@ const Projects = () => {
               </li>
               <li>
                 <Button
-                  variant="add" size="DefaultButton"
+                  variant="add"
+                  size="DefaultButton"
+                  className="font-normal"
                   onClick={handleNavigation}
                 >
                   <span className="text-xl pr-2">+</span>

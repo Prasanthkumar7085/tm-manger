@@ -141,7 +141,7 @@ const ProjectView = () => {
   };
 
   return (
-    <div className="card-container shadow-md border p-5 rounded-lg  bg-white">
+    <div className="card-container shadow-md border p-5 rounded-lg bg-white">
       <div className="w-full flex  items-center ">
         <div className="mt-4 flex flex-col w-[10%] ">
           {previewUrl ? (
