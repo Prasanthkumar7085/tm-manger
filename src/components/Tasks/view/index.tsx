@@ -97,6 +97,7 @@ const TaskView = () => {
       <div
         id="task-details"
         className=" w-full h-full bg-white rounded-lg shadow-md p-3 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
+        style={{ height: "calc(100vh - 100px)" }}
       >
         <div className="task-primary-details">
           <div className="grid grid-cols-1 lg:grid-cols-[70%,auto] gap-5">
@@ -173,7 +174,7 @@ const TaskView = () => {
                     </li>
                     <li className="grid grid-cols-[150px,auto]">
                       <p className="text-[#666666] text-sm font-medium mb-1">Due Date</p>
-                      <div className="inline-block px-3 py-[1px] border text-[#FF0021] bg-[#FFE0E480] text-md font-semibold rounded-sm">
+                      <div className="inline-block px-3 py-[1px]  text-[#FF0021] bg-[#FFE0E480] text-md font-semibold rounded-sm">
                         {dayjs(viewData?.due_date).format("MM/DD/YYYY")}
                       </div>
                     </li>

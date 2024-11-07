@@ -46,7 +46,7 @@ const SortPopover = ({ selectedSort, setSelectedSort }: any) => {
           variant="outline"
           role="combobox"
           aria-expanded={sortPopoverOpen}
-          className="w-[200px] justify-between bg-[#F4F4F6] h-[35px] border-[#E2E2E2] rounded-[8px]"
+          className="w-[200px] justify-between text-[#00000099] font-normal bg-[#F4F4F6] h-[35px] border-[#E2E2E2] rounded-[8px]"
         > 
           {isSortSelected
             ? sortOptions.find((option) => option.value === selectedSort)?.label
@@ -67,21 +67,20 @@ const SortPopover = ({ selectedSort, setSelectedSort }: any) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
-        <div className="p-2">
-          <Input
+       
+        <div className="max-h-[300px] overflow-y-auto">
+        <Input
             type="text"
             placeholder="Search..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="mb-2"
+           className="border-none rounded-[8px] focus:outline-none ring-0 focus:ring-0"
           />
-        </div>
-        <div className="max-h-[300px] overflow-y-auto">
           {filteredOptions.map((option) => (
             <Button
               key={option.value}
               onClick={() => handleSortChange(option.value)}
-              className="w-full justify-start font-normal bg-white text-violet-600 border border-indigo-600 capitalize mb-2 hover:bg-violet-600 hover:text-white"
+              className="w-full justify-start font-normal border-none bg-white text-violet-600  capitalize  hover:bg-violet-600 hover:text-white"
             >
               {isSortSelected && selectedSort === option.value && (
                 <span className="mr-2">✓</span> // Checkmark for selected option

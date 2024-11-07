@@ -82,14 +82,14 @@ const RepliedComments = ({
       </div>
 
       <div className="mb-6 max-h-[300px] overflow-y-auto">
-        <div className="font-semibold text-lg text-gray-800 mb-2">Replies:</div>
+        <div className="font-medium text-md text-gray-800 my-2">Replies:</div>
 
         <div className="space-y-4">
           {replyComments()?.length > 0 ? (
             replyComments()?.map((reply: any) => {
               return (
                 <div
-                  className="flex flex-col bg-[#FEF7FD] py-4 px-4 rounded-md ml-auto text-left  "
+                  className="flex flex-col bg-[#FEF7FD] py-4 px-4 rounded-md ml-4 text-left  "
                   key={reply.id}
                 >
                   <div>

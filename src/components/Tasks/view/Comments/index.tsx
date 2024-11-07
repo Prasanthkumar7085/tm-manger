@@ -255,7 +255,7 @@ const TaskComments = ({ taskId }: any) => {
       >
         <div className="card-header flex justify-between  pr-2 items-center mb-4 sticky top-0 bg-white z-10">
           <h3 className="text-black text-lg font-medium mr-5">Comments</h3>
-          <button className="check-activity-button btn px-3  bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[25px]">
+          <button className="check-activity-button btn px-3 text-sm bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[25px]">
             Check Activity
           </button>
         </div>

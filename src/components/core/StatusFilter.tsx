@@ -34,7 +34,7 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between bg-[#F4F4F6] border-[#E2E2E2] rounded-[8px] h-[35px] w-[220px] relative"
+          className="justify-between bg-[#F4F4F6] border-[#E2E2E2] text-[#00000099] font-normal  rounded-[8px] h-[35px] w-[220px] relative"
         >
           {value
             ? statusConstants.find((item) => item.value === value)?.label

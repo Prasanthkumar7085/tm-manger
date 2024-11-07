@@ -286,7 +286,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                   <div className="profile-image">
                     {member.download_url ? (
                       <div className="flex items-center space-x-3">
-                        <div className="w-6 h-6 rounded-sm overflow-hidden border border-gray-200">
+                        <div className="w-6 h-6 rounded-full overflow-hidden border border-gray-200">
                           <img
                             src={member.download_url}
                             alt={`${getFullNames(member)}'s profile`}
