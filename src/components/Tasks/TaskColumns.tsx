@@ -48,6 +48,7 @@ export const taskColumns = ({ setDel }: any) => {
       to: `/tasks/view/${taskId}`,
     });
   };
+
   const handleEdit = (taskId: any) => {
     navigate({
       to: `/tasks/${taskId}`,
@@ -72,48 +73,32 @@ export const taskColumns = ({ setDel }: any) => {
       width: "50px",
       maxWidth: "50px",
       minWidth: "50px",
+      cell: (info: any) => <span>{info.getValue()}</span>,
     },
-    // {
-    //   accessorFn: (row: any) => row.project_title,
-    //   id: "project_title",
-    //   cell: (info: any) => (
-    //     <span className="capitalize">{info.getValue()}</span>
-    //   ),
-    //   width: "150px",
-    //   maxWidth: "150px",
-    //   minWidth: "150px",
-    //   header: () => <span>Project</span>,
-    //   footer: (props: any) => props.column.id,
-    // },
     {
       accessorFn: (row: any) => row.project_title,
       id: "project_title",
       cell: (info: any) => {
         const title = info.getValue();
-        const project_logo_url = info.row.original.project_logo_url ||"/favicon.png";
+        const project_logo_url = info.row.original.project_logo_url || "/favicon.png";
         return (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              padding: "5px ",
-              textAlign: "left",
-            }}
-          >
+          <div className="project-title flex items-center gap-2">
             {project_logo_url && (
-              <img
-                src={project_logo_url}
-                alt="project logo"
-                style={{ width: "24px", height: "24px", marginRight: "8px", borderRadius:"50%",}}
-              />
+              <div className="project-logo">
+                <img
+                  src={project_logo_url}
+                  alt="project logo"
+                  className="w-[22px] h-[22px] rounded-full border bg-transparent"
+                />
+              </div>
             )}
             <span className="capitalize">{title ? title : "-"}</span>
           </div>
         );
       },
-      width: "150px",
-      maxWidth: "150px",
-      minWidth: "150px",
+      width: "200px",
+      maxWidth: "200px",
+      minWidth: "200px",
       header: () => <span>Projects</span>,
       footer: (props: any) => props.column.id,
     },
@@ -123,39 +108,39 @@ export const taskColumns = ({ setDel }: any) => {
       cell: (info: any) => {
         const { ref_id, title } = info.getValue();
         return (
-          <span className="flex justify-between capitalize">
-            <span>{title || "-"}</span>
-            <span className="ml-2">[{ref_id}]</span>
-          </span>
+          <>
+            <div className="task capitalize flex justify-between">
+              <span className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
+                {title || "-"}
+              </span>
+              <span className="ml-2 text-[11px] font-semibold text-primary">[{ref_id}]</span>
+            </div>
+          </>
         );
       },
-      width: "200px",
-      maxWidth: "200px",
-      minWidth: "200px",
+      width: "300px",
+      maxWidth: "300px",
+      minWidth: "300px",
       header: () => <span>Tasks</span>,
       footer: (props: any) => props.column.id,
     },
     {
       accessorFn: (row: any) =>
         row.assignees.map((assignee: any) => {
-           return assignee.user_profile_pic_url ? (
+          return assignee.user_profile_pic_url ? (
             <img
               src={assignee.user_profile_pic_url}
-              className="profile-pic"
-              style={{
-                marginRight: "5px",
-                borderRadius: "50%", 
-                width: "30px",
-                height: "30px",
-              }}
+              className="profile-pic w-[26px] h-[26px] rounded-full mr-1"
             />
           ) : null;
         }),
       id: "assignees",
       cell: (info: any) => (
-        <div style={{ display: "flex", justifyContent: "flex-start" }}>
-          {info.getValue()}
-        </div>
+        <>
+          <div className="assign-users flex items-center">
+            {info.getValue()}
+          </div>
+        </>
       ),
       width: "150px",
       maxWidth: "150px",
@@ -163,87 +148,65 @@ export const taskColumns = ({ setDel }: any) => {
       header: () => <span>Assigned User</span>,
       footer: (props: any) => props.column.id,
     },
-    // {
-    //   accessorFn: (row: any) =>
-    //     row.assignees.map((assignee: any) => {
-    //       const profilePic = assignee.user_profile_pic || "/favicon.png";
-    //       return (
-    //         <img
-    //           src={profilePic}
-    //           className="profile-pic"
-    //           style={{
-    //             marginRight: "5px",
-    //             borderRadius: "50%",
-    //             width: "30px",
-    //             height: "30px",
-    //           }}
-    //         />
-    //       );
-    //     }),
-    //   id: "assignees",
-    //   cell: (info: any) => (
-    //     <div style={{ display: "flex", justifyContent: "flex-start" }}>
-    //       {info.getValue()}
-    //     </div>
-    //   ),
-    //   width: "280px",
-    //   maxWidth: "280px",
-    //   minWidth: "280px",
-    //   header: () => <span>Assigned User</span>,
-    //   footer: (props: any) => props.column.id,
-    // },
+    {
+      accessorFn: (row: any) => row.due_date,
+      id: "due_date",
+      cell: (info: any) => {
+        const date: string = info.getValue();
+        return <span>{date ? dayjs(date).format("MM-DD-YYYY") : "-"}</span>;
+      },
+      width: "120px",
+      maxWidth: "120px",
+      minWidth: "120px",
+      header: () => <span>Due Date</span>,
+      footer: (props: any) => props.column.id,
+    },
     {
       accessorFn: (row: any) => row.status,
       id: "status",
       cell: (info: any) => {
         let title = info.getValue();
         return (
-          <div
-            className={`rounded-full cursor-pointer flex items-center py-[2px] px-3 min-w-[110px]  ${
-              info.getValue() === "OVER_DUE"
-                ? "text-[#A71D2A] bg-[#A71D2A33]"
-                : info.getValue() === "TODO"
-                  ? "text-[#6F42C1] bg-[#EADEFF]"
-                  : info.getValue() === "COMPLETED"
-                    ? "text-[#28A745] bg-[#28A74533]"
-                    : info.getValue() === "IN_PROGRESS"
-                      ? "text-[#007BFF] bg-[#007BFF33]"
-                      : "text-black"
-            }`}
+          <span
+            className={`rounded-full px-2 leading-1 ${info.getValue() === "OVER_DUE"
+              ? "text-[#A71D2A] bg-[#A71D2A33]"
+              : info.getValue() === "TODO"
+                ? "text-[#6F42C1] bg-[#EADEFF]"
+                : info.getValue() === "COMPLETED"
+                  ? "text-[#28A745] bg-[#28A74533]"
+                  : info.getValue() === "IN_PROGRESS"
+                    ? "text-[#007BFF] bg-[#007BFF33]"
+                    : "text-black"
+              }`}
           >
             <span
-              style={{
-                height: "8px",
-                width: "8px",
-                borderRadius: "50%",
-                background:
-                  info.getValue() === "OVER_DUE"
-                    ? "#A71D2A"
-                    : info.getValue() === "TODO"
-                      ? "#6F42C1"
-                      : info.getValue() === "COMPLETED"
-                        ? "#28A745"
-                        : info.getValue() === "IN_PROGRESS"
-                          ? "#007BFF"
-                          : "black",
-                marginRight: "8px",
-              }}
+              className={`dot w-2 h-2 inline-block mr-1 rounded-full ${info.getValue() === "OVER_DUE"
+                ? "bg-[#A71D2A]"
+                : info.getValue() === "TODO"
+                  ? "bg-[#6F42C1]"
+                  : info.getValue() === "COMPLETED"
+                    ? "bg-[#28A745]"
+                    : info.getValue() === "IN_PROGRESS"
+                      ? "bg-[#007BFF]"
+                      : "text-black"
+                }`}
             ></span>
-            {title
-              ? taskStatusConstants.find(
+            <span className="text-[12px] font-medium">
+              {title
+                ? taskStatusConstants.find(
                   (item: any) => item.value === info.getValue()
                 )?.label
-              : "-"}
-          </div>
+                : "-"}
+            </span>
+          </span>
         );
       },
-      width: "115px",
-      maxWidth: "115px",
-      minWidth: "1150px",
+      width: "120px",
+      maxWidth: "120px",
+      minWidth: "120px",
       header: () => <span>Status</span>,
       footer: (props: any) => props.column.id,
     },
-
     {
       accessorFn: (row: any) => row.priority,
       id: "priority",
@@ -255,38 +218,25 @@ export const taskColumns = ({ setDel }: any) => {
           )?.value || "-";
 
         return (
-          <span className="capitalize">
-            <Badge
-              style={{
-                backgroundColor:
-                  bgColorObjectForStatus[priorityLabel] || "gray",
-                color: colorObjectForStatus[priorityLabel] || "black",
-              }}
-            >
+          <>
+            <span className="capitalize text-[12px] leading-1 px-2 rounded-full font-medium" style={{
+              backgroundColor:
+                bgColorObjectForStatus[priorityLabel] || "gray",
+              color: colorObjectForStatus[priorityLabel] || "black",
+            }}>
               {priorityLabel}
-            </Badge>
-          </span>
+            </span>
+          </>
+
         );
       },
-      width: "70px",
-      maxWidth: "70px",
-      minWidth: "70px",
+      width: "120px",
+      maxWidth: "120px",
+      minWidth: "120px",
       header: () => <span>Priority</span>,
       footer: (props: any) => props.column.id,
     },
-    {
-      accessorFn: (row: any) => row.due_date,
-      id: "due_date",
-      cell: (info: any) => {
-        const date: string = info.getValue();
-        return <span>{date ? dayjs(date).format("MM-DD-YYYY") : "-"}</span>;
-      },
-      width: "90px",
-      maxWidth: "90px",
-      minWidth: "90px",
-      header: () => <span>Due Date</span>,
-      footer: (props: any) => props.column.id,
-    },
+
     {
       accessorFn: (row: any) => row.actions,
       id: "actions",
@@ -310,7 +260,7 @@ export const taskColumns = ({ setDel }: any) => {
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
                 onClick={() => handleEdit(info.row.original.id)}
               >
-                <img src={"table/edit.svg"} alt="view" height={18} width={18} />
+                <img src={"/table/edit.svg"} alt="view" height={18} width={18} />
               </Button>
             </li>
             <li>
@@ -340,9 +290,9 @@ export const taskColumns = ({ setDel }: any) => {
       ),
       header: () => <span>Actions</span>,
       footer: (props: any) => props.column.id,
-      width: "80px",
-      minWidth: "80px",
-      maxWidth: "80px",
+      width: "120px",
+      minWidth: "120px",
+      maxWidth: "120px",
     },
   ];
 };

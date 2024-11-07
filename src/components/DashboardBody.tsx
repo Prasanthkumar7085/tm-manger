@@ -18,20 +18,22 @@ import { useQuery } from "@tanstack/react-query";
 import LoadingComponent from "./core/LoadingComponent";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 import ProjectDataTable from "./ProjectWiseStats";
+import { SelectTaskProjects } from "./core/CommonComponents/SelectTaskProjects";
 
-const formatDate = (date: any) => {
+const formatDate = (date) => {
   return date.toISOString().split("T")[0];
 };
 
 const DashBoard = () => {
   const [selectedDate, setSelectedDate] = useState([new Date(), new Date()]);
+  const [selectedProject, setSelectedProject] = useState(null); // Added selectedProject state
 
   useEffect(() => {
     const today = new Date();
     setSelectedDate([today, today]);
   }, []);
 
-  const fetchCounts = async (fromDate: any, toDate: any) => {
+  const fetchCounts = async (fromDate, toDate) => {
     const results = await Promise.allSettled([
       getTotalProjectsStats({
         from_date: formatDate(fromDate),
@@ -59,7 +61,7 @@ const DashBoard = () => {
     enabled: !!selectedDate,
   });
 
-  const handleDateChange = (fromDate: any, toDate: any) => {
+  const handleDateChange = (fromDate, toDate) => {
     if (fromDate && toDate) {
       const [fromDateUTC, toDateUTC] = changeDateToUTC(fromDate, toDate);
       setSelectedDate([fromDateUTC, toDateUTC]);
@@ -79,11 +81,11 @@ const DashBoard = () => {
     data?.[3]?.status === "fulfilled" ? data[3].value.data.data?.total : 0;
 
   return (
-    <div className="h-full overflow-auto p-4">
-      <div className="grid grid-cols-[60%_40%] gap-3">
-        <Card className="p-6 bg-white shadow-lg rounded-lg">
+    <div className="h-full overflow-auto">
+      <div className="grid grid-cols-[58%,auto] gap-3">
+        <Card className="p-4 bg-white shadow-lg rounded-lg">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold text-gray-800">Stats</h2>
+            <h2 className="text-lg font-sans font-medium text-gray-800">Stats</h2>
             <DatePickerField
               dateValue={selectedDate}
               onChangeData={handleDateChange}
@@ -95,7 +97,7 @@ const DashBoard = () => {
               <div className="flex justify-center items-center mb-4">
                 <img
                   src={dahboardProjectIcon}
-                  alt="logo"
+                  alt="Projects icon"
                   className="h-[33px] w-[33px]"
                 />
               </div>
@@ -109,7 +111,7 @@ const DashBoard = () => {
               <div className="flex justify-center items-center mb-4">
                 <img
                   src={dahboardTaskIcon}
-                  alt="logo"
+                  alt="Tasks icon"
                   className="h-[33px] w-[33px]"
                 />
               </div>
@@ -123,7 +125,7 @@ const DashBoard = () => {
               <div className="flex justify-center items-center mb-4">
                 <img
                   src={dashboardUsersIcon}
-                  alt="logo"
+                  alt="Users icon"
                   className="h-[33px] w-[33px]"
                 />
               </div>
@@ -137,7 +139,7 @@ const DashBoard = () => {
               <div className="flex justify-center items-center mb-4">
                 <img
                   src={dashboardActiveTaskIcon}
-                  alt="logo"
+                  alt="Active Tasks icon"
                   className="h-[33px] w-[33px]"
                 />
               </div>
@@ -148,14 +150,39 @@ const DashBoard = () => {
             </div>
           </div>
         </Card>
-        <Card className="h-[100%] p-2 bg-white shadow-lg rounded-lg">
+        <Card className="p-4 h-[100%] bg-white shadow-lg rounded-lg">
           <StatsAndGraph />
         </Card>
       </div>
-      <Card className="mt-6 bg-white shadow-lg rounded-lg">
+
+      <div className="card-container bg-white shadow-md rounded-lg border p-3 mt-3 ">
+        <div className="tasks-navbar flex justify-between items-center">
+          <h2 className="text-lg font-sans font-medium text-gray-800">Tasks List</h2>
+          <div className="filters">
+            <ul className="flex justify-end space-x-3">
+              <li>
+                <SelectTaskProjects
+                  selectedProject={selectedProject}
+                  setSelectedProject={setSelectedProject}
+                />
+              </li>
+              <li>
+                <SelectTaskProjects
+                  selectedProject={selectedProject}
+                  setSelectedProject={setSelectedProject}
+                />
+              </li>
+              <li>
+                <SelectTaskProjects
+                  selectedProject={selectedProject}
+                  setSelectedProject={setSelectedProject}
+                />
+              </li>
+            </ul>
+          </div>
+        </div>
         <ProjectDataTable />
-      </Card>
-      {/* <LoadingComponent loading={isLoading} /> */}
+      </div>
     </div>
   );
 };
