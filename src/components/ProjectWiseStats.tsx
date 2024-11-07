@@ -51,12 +51,14 @@ const ProjectDataTable = () => {
   //   };
   // }, [searchString]);
   return (
-    <div className="relative">
-      <SearchFilter
-        searchString={searchString}
-        setSearchString={setSearchString}
-        title="Search  Project Name"
-      />
+    <div className="relative ">
+      <div className="justify-end">
+        <SearchFilter
+          searchString={searchString}
+          setSearchString={setSearchString}
+          title="Search  Project Name"
+        />
+      </div>
 
       <div className="mt-5">
         <TanStackTable
