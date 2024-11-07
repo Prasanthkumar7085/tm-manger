@@ -257,14 +257,13 @@ const TanStackTable: FC<pageProps> = ({
           </TableBody>
         </Table>
       </div>
-      {location.pathname !== "/dashboard" ||
-        (location.pathname.includes("projects") && (
-          <Pagination
-            paginationDetails={paginationDetails}
-            capturePageNum={capturePageNum}
-            captureRowPerItems={captureRowPerItems}
-          />
-        ))}
+      {location.pathname !== "/dashboard" || (
+        <Pagination
+          paginationDetails={paginationDetails}
+          capturePageNum={capturePageNum}
+          captureRowPerItems={captureRowPerItems}
+        />
+      )}
     </div>
   );
 };

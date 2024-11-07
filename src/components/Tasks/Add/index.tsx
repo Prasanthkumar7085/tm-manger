@@ -53,6 +53,7 @@ const AddTask = () => {
   const [errorMessages, setErrorMessages] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [users, setUsers] = useState<any[]>([]);
+  console.log(users, "users");
   const [selectedUsers, setSelectedUsers] = useState(new Set());
   const handleChange = (e: any) => {
     setTask({ ...task, [e.target.name]: e.target.value });
@@ -149,7 +150,8 @@ const AddTask = () => {
       const response = await getProjectMembersAPI(task?.project_id);
       if (response.success) {
         const data = response.data?.data;
-        setUsers(data?.records || []);
+
+        setUsers(data?.members || []);
       } else {
         setUsers([]);
       }
@@ -389,6 +391,14 @@ const AddTask = () => {
                                     opacity: selectedUsers.has(user.id) ? 1 : 0,
                                   }}
                                 />
+                                <div className="w-8 h-8 object-contain	 rounded-full border  bg-white">
+                                  <img
+                                    src={
+                                      user?.user_profile_pic_url ||
+                                      "profile-picture.png"
+                                    }
+                                  />
+                                </div>
                                 <p className="capitalize">
                                   {user.fname} {user.lname}
                                 </p>
@@ -398,7 +408,10 @@ const AddTask = () => {
                         </CommandList>
                       </Command>
                       <div className="flex justify-end p-2 border-t">
-                        <Button     className="bg-[#000000] text-white px-6 font-medium text-sm rounded-[4px]" onClick={handleConfirmSelection}>
+                        <Button
+                          className="bg-[#000000] text-white px-6 font-medium text-sm rounded-[4px]"
+                          onClick={handleConfirmSelection}
+                        >
                           Confirm
                         </Button>
                       </div>
@@ -481,7 +494,7 @@ const AddTask = () => {
         <div className="form-action-button flex justify-end mt-5">
           <Button
             type="button"
-            className="bg-white border-transparent text-[#FF6000] text-md px-8 font-medium hover:bg-transparent hover:text-[#FF6000]" 
+            className="bg-white border-transparent text-[#FF6000] text-md px-8 font-medium hover:bg-transparent hover:text-[#FF6000]"
             onClick={() => window.history.back()}
           >
             Cancel
@@ -489,7 +502,7 @@ const AddTask = () => {
 
           <Button
             type="submit"
-          className="bg-[#1B2459] text-white font-medium text-md hover:bg-[#1B2459] hover:text-white px-8"
+            className="bg-[#1B2459] text-white font-medium text-md hover:bg-[#1B2459] hover:text-white px-8"
           >
             {taskId ? "Update" : " Submit"}
           </Button>
