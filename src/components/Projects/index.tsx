@@ -209,7 +209,7 @@ const Projects = () => {
               </li>
               <li>
                 <Button
-                  className="text-white-500"
+                  className="text-white h-[35px]"
                   onClick={() =>
                     setViewMode(viewMode === "card" ? "table" : "card")
                   }

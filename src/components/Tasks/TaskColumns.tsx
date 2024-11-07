@@ -229,22 +229,22 @@ export const taskColumns = ({ setDel }: any) => {
         return (
           <>
             <span
-              className="capitalize text-[12px] leading-1 px-2 rounded-full font-medium"
+              className="capitalize text-[12px] leading-1 px-2 rounded-full font-medium flex justify-center items-center"
               style={{
                 backgroundColor:
                   bgColorObjectForStatus[priorityLabel] || "gray",
                 color: colorObjectForStatus[priorityLabel] || "black",
               }}
             >
-              {ArrowIcon && <ArrowIcon style={{ marginRight: "4px" }} />}
+              {ArrowIcon && <ArrowIcon style={{ marginRight: "4px" }} className="!w-[16px] !h-[16px]" />}
               {priorityLabel}
             </span>
           </>
         );
       },
-      width: "120px",
-      maxWidth: "120px",
-      minWidth: "120px",
+      width: "110px",
+      maxWidth: "110px",
+      minWidth: "110px",
       header: () => <span>Priority</span>,
       footer: (props: any) => props.column.id,
     },
