@@ -543,7 +543,7 @@ function UsersTable() {
             </div>
           </div>
         </div>
-        <div className="mt-5">
+        <div className="mt-3">
           <TanStackTable
             data={usersData}
             columns={[...userColumns, ...userActions]}

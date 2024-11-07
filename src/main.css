@@ -2,17 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-
 body {
   @apply font-sans;
 }
 
-th {
-  background: #f3e5f5 !important;
-}
-td {
-  padding: 5px 10px !important;
-}
 .rs-picker input {
   background: rgb(248 250 252 / var(--tw-bg-opacity)) !important;
 }
@@ -37,4 +30,14 @@ td {
 
 .stats-and-graph-chart .highcharts-title{
   display:none;
+}
+table thead th:first-child,
+table tbody td:first-child{
+  position: sticky;
+  left: 0;
+}
+table thead th:last-child,
+table tbody td:last-child{
+  position: sticky;
+  right: 0;
 }
