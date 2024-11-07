@@ -91,7 +91,7 @@ export const projectColumns = ({
 
   const handleEdit = (projectId: string) => {
     navigate({
-      to: `/projects/edit/${projectId}`,
+      to: `/projects/${projectId}`,
     });
   };
 
