@@ -19,6 +19,7 @@ import {
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import LoadingComponent from "@/components/core/LoadingComponent";
 import RepliedComments from "./RepliedComments";
+import { getAllMembers } from "@/lib/services/projects/members";
 const TaskComments = ({ taskId }: any) => {
   const userID = useSelector(
     (state: any) => state.auth?.user?.user_details?.id
@@ -40,6 +41,15 @@ const TaskComments = ({ taskId }: any) => {
   const handleReplyChange = (data: string) => {
     setReplyText(data);
   };
+
+  const { isLoading: isUserLoading, data: usersData } = useQuery({
+    queryKey: ["getAllUsers", taskId],
+    queryFn: async () => {
+      const response = await getAllMembers();
+      return response?.data?.data;
+    },
+  });
+
   const {
     isLoading,
     isFetching,
@@ -61,6 +71,7 @@ const TaskComments = ({ taskId }: any) => {
     },
     enabled: !!taskId,
   });
+
   useEffect(() => {
     if (commentsData) {
       const sortedComments = [...commentsData].sort((a, b) => {
@@ -84,6 +95,7 @@ const TaskComments = ({ taskId }: any) => {
       setGroupedComments(groupedArray);
     }
   }, [commentsData]);
+
   const mutation = useMutation({
     mutationFn: async (newComment: {
       message: string;
@@ -108,6 +120,7 @@ const TaskComments = ({ taskId }: any) => {
       setLoading(false);
     },
   });
+
   const deleteMutation = useMutation({
     mutationFn: async (payload: any) => {
       setLoading(true);
@@ -128,6 +141,7 @@ const TaskComments = ({ taskId }: any) => {
       toast.error(error.message || "Error removing comment");
     },
   });
+
   const updateMutation = useMutation({
     mutationFn: async (payload: { comment_id: number; message: string }) => {
       setLoading(true);
@@ -150,6 +164,7 @@ const TaskComments = ({ taskId }: any) => {
       toast.error(error.message || "Error updating comment");
     },
   });
+
   const handleAddComment = () => {
     if (!commentText.trim()) {
       toast.error("Comment cannot be empty");
@@ -162,13 +177,16 @@ const TaskComments = ({ taskId }: any) => {
     };
     mutation.mutate(payload);
   };
+
   const handleDeleteComment = (commentId: number) => {
     deleteMutation.mutate({ comment_id: commentId });
   };
+
   const handleEditComment = (commentId: number, message: string) => {
     setEditingCommentId(commentId);
     setCommentText(message);
   };
+
   const handleSaveEdit = () => {
     if (!commentText.trim()) {
       toast.error("Comment cannot be empty");

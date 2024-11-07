@@ -28,13 +28,7 @@ const ProjectMembers = () => {
   const { isLoading, isError, error, data, isFetching } = useQuery({
     queryKey: ["projects", pagination, selectedProject],
     queryFn: async () => {
-      const response = await getAllMembers({
-        // pageIndex: pagination.pageIndex,
-        // pageSize: pagination.pageSize,
-        // order_by: pagination.order_by,
-
-        projectId: selectedProject,
-      });
+      const response = await getAllMembers();
       return response;
     },
   });
