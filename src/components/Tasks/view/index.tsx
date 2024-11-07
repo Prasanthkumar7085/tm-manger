@@ -95,7 +95,7 @@ const TaskView = () => {
   };
 
   return (
-    <div className="grid grid-cols-[60%,40%] space-x-4 items-start relative">
+    <div className="flex flex-col space-x-4 items-start relative">
       <div
         id="task-details"
         className=" w-full bg-white rounded-lg shadow-md  space-y-4 p-4 overflow-y-auto  scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
@@ -226,7 +226,7 @@ const TaskView = () => {
 
       <div
         id="task-comments"
-        className="w-full max-h-[600px]  overflow-hidden bg-white rounded-lg shadow-md relative"
+        className="w-full max-h-[700px] mt-4 overflow-hidden bg-white rounded-lg shadow-md relative"
       >
         <TaskComments taskId={taskId} />
       </div>
