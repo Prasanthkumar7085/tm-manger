@@ -80,7 +80,7 @@ const SortPopover = ({ selectedSort, setSelectedSort }: any) => {
             <Button
               key={option.value}
               onClick={() => handleSortChange(option.value)}
-              className="w-full justify-start font-normal border-none bg-white text-violet-600  capitalize  hover:bg-violet-600 hover:text-white"
+              className="w-full justify-start font-normal border-none bg-white text-[#343434] capitalize  hover:bg-[#f7f8fa] hover:text-[#343434]"
             >
               {isSortSelected && selectedSort === option.value && (
                 <span className="mr-2">✓</span> // Checkmark for selected option

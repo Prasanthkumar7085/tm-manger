@@ -212,6 +212,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                       {Array.isArray(users) &&
                         users.map((user: any) => (
                           <CommandItem
+                          className="cursor-pointer gap-x-2"
                             key={user.id}
                             value={getFullName(user)}
                             onSelect={() =>
@@ -248,6 +249,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                   </CommandList>
                   <div className="flex justify-end space-x-2 p-2 border-t">
                     <Button
+                      className="bg-white border-transparent px-6 text-[#000000] text-sm font-medium"
                       variant="outline"
                       size="sm"
                       onClick={() => setTempSelectedMember([])}
@@ -255,6 +257,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                       Clear
                     </Button>
                     <Button
+                      className="bg-[#000000] text-white px-6 font-medium text-sm rounded-[4px]"
                       size="sm"
                       variant="outline"
                       onClick={confirmSelection}

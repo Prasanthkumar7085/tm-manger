@@ -41,13 +41,13 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
   return (
     <Sheet open={isOpen}>
       <SheetContent className="bg-white overflow-auto">
-        <SheetHeader className="sticky top-0">
-          <div className="custom-header flex items-center justify-between">
-            <SheetTitle>{isEditing ? "Edit User" : "Add User"}</SheetTitle>
+        <SheetHeader className="sticky bg-white top-0">
+          <div className="custom-header  flex items-center justify-between">
+            <SheetTitle className="text-2xl text-normal">{isEditing ? "Edit User" : "Add User"}</SheetTitle>
             <Button
               variant="outline"
               onClick={handleDrawerClose}
-              className="text-center font-semibold  text-lg  text-slate-500 border-none"
+              className="text-center font-semibold  text-lg  text-[#000000] border-none"
             >
               <X></X>
             </Button>
@@ -57,13 +57,13 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
         <div className="grid gap-4 py-4">
           <div className="flex flex-col space-y-1">
             <Label
-              className="text-md text-slate-600 font-semibold"
+              className="text-sm text-[#383838] font-medium"
               htmlFor="firstname"
             >
               First Name <span className="text-red-500">*</span>
             </Label>
             <Input
-              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
+              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg placeholder:text-[#00000066]  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm  border rounded-md text-md"
               id="fname"
               placeholder="Enter First Name"
               value={userData.fname}
@@ -76,13 +76,13 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
           </div>
           <div className="flex flex-col space-y-1">
             <Label
-              className="text-md text-slate-600 font-semibold"
+               className="text-sm text-[#383838] font-medium"
               htmlFor="lastname"
             >
               Last Name <span className="text-red-500">*</span>
             </Label>
             <Input
-              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
+              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg placeholder:text-[#00000066]   focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm  border rounded-md text-md"
               id="lname"
               placeholder="Enter Last Name"
               value={userData.lname}
@@ -95,14 +95,14 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
           </div>
           <div className="flex flex-col space-y-1">
             <Label
-              className="text-md text-slate-600 font-semibold"
+              className="text-sm text-[#383838] font-medium"
               htmlFor="phonenumber"
             >
               Mobile Number
             </Label>
             <Input
               type="tel"
-              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
+              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg placeholder:text-[#00000066]  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm border rounded-md text-md"
               id="phone_number"
               placeholder="Enter Phone Number"
               value={userData.phone_number}
@@ -122,13 +122,13 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
           </div>
           <div className="flex flex-col space-y-1">
             <Label
-              className="text-md text-slate-600 font-semibold"
+               className="text-sm text-[#383838] font-medium"
               htmlFor="email"
             >
               Email <span className="text-red-500">*</span>
             </Label>
             <Input
-              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
+              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg placeholder:text-[#00000066]   focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm  border rounded-md text-md"
               id="email"
               placeholder="Enter Email"
               name="email"
@@ -142,13 +142,13 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
           {!isEditing && (
             <div className="flex flex-col space-y-1">
               <Label
-                className="text-md text-slate-600 font-semibold"
+                className="text-sm text-[#383838] font-medium"
                 htmlFor="password"
               >
                 Password<span className="text-red-500">*</span>
               </Label>
               <Input
-                className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
+                className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg placeholder:text-[#00000066]   focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm  border rounded-md text-md"
                 id="password"
                 placeholder="Enter Password"
                 value={userData.password}
@@ -162,13 +162,13 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
           )}
           <div className="flex flex-col space-y-1">
             <Label
-              className="text-md text-slate-600 font-semibold"
+         className="text-sm text-[#383838] font-medium"
               htmlFor="designation"
             >
               Designation
             </Label>
             <Input
-              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg  focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
+              className="bg-[#F5F6FA] appearance-none block py-1 h-10 text-lg placeholder:text-[#00000066]  focus:outline-none  border rounded-md text-md"
               id="designation"
               placeholder="Enter Designation"
               name="designation"
@@ -182,7 +182,7 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
           <div>
             <label
               htmlFor="panNumber"
-              className="text-md text-slate-600 font-semibold block text-left"
+    className="text-sm text-[#383838] font-medium"
             >
               User Type<span className="text-red-500">*</span>
             </label>
@@ -192,7 +192,7 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
                   variant="outline"
                   role="combobox"
                   aria-expanded={userTypeOpen}
-                  className="w-full text-left flex justify-between bg-[#F5F6FA]"
+                  className="w-full text-left flex justify-between bg-[#F5F6FA] font-normal text-[#00000066]"
                 >
                   {userType
                     ? userTypes.find((type: any) => type.value === userType)
@@ -226,7 +226,7 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
                         onChangeStatus(type.value);
                         setUserTypeOpen(false);
                       }}
-                      className="w-full px-4 py-2 text-left cursor-pointer font-normal text-violet-600 capitalize border-b last:border-b-0 border-white hover:bg-violet-600 hover:text-white"
+                       className="w-full justify-start font-normal border-none bg-white text-[#343434] capitalize  hover:bg-[#f7f8fa] hover:text-[#343434]"
                     >
                       <Check
                         className={cn(
@@ -245,7 +245,7 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
             )}
           </div>
         </div>
-        <SheetFooter className="mt-16">
+        <SheetFooter className="mt-8">
           <Button
             variant="outline"
             onClick={handleDrawerClose}

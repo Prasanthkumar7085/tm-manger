@@ -59,6 +59,7 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
             <CommandGroup>
               {statusConstants.map((status) => (
                 <CommandItem
+                className="cursor-pointer"
                   key={status.value}
                   value={status.value}
                   onSelect={(currentValue) => {
