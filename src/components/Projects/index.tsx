@@ -137,9 +137,9 @@ const Projects = () => {
   };
   const userOptions = Array.isArray(users)
     ? users.map((user: any) => ({
-        value: user.id,
-        label: `${user.fname} ${user.lname}`,
-      }))
+      value: user.id,
+      label: `${user.fname} ${user.lname}`,
+    }))
     : [];
 
   useEffect(() => {
@@ -205,8 +205,8 @@ const Projects = () => {
           </div>
         </div>
       </div>
-      <div className="mt-5 overflow-auto h-[70vh]">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 mt-3">
+      <div className="mt-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 mt-3">
           {projectsData.length === 0 && isLoading == false ? (
             <div className="col-span-full text-center">No Project found</div>
           ) : (

@@ -4,14 +4,14 @@ export const projectWiseColumns = [
     id: "serial",
     header: () => <span>S.No</span>,
     footer: (props: any) => props.column.id,
-    width: "30px",
-    maxWidth: "30px",
-    minWidth: "60px",
+    width: "50px",
+    maxWidth: "50px",
+    minWidth: "50px",
     enableSorging: false,
     cell: (props: any) => (
-      <div style={{ padding: "16px", textAlign: "left" }}>
+      <>
         {props.getValue()}
-      </div>
+      </>
     ),
   },
   {
@@ -19,31 +19,29 @@ export const projectWiseColumns = [
     id: "project_title",
     cell: (info: any) => {
       const title = info.getValue();
-      const downloadUrl = info.row.original.download_url ||"/favicon.png";
+      const downloadUrl = info.row.original.download_url || "/favicon.png";
 
       return (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            padding: "16px",
-            textAlign: "left",
-          }}
-        >
-          {downloadUrl && (
-            <img
-              src={downloadUrl}
-              alt="project logo"
-              style={{ width: "24px", height: "24px", marginRight: "8px", borderRadius:"50%",}}
-            />
-          )}
-          <span className="capitalize">{title ? title : "-"}</span>
-        </div>
+        <>
+          <div className="project-title flex items-center gap-2">
+            {downloadUrl && (
+              <div className="project-logo">
+                <img
+                  src={downloadUrl}
+                  alt="project logo"
+                  className="w-[22px] h-[22px] rounded-full border bg-transparent"
+                />
+              </div>
+            )}
+            <span className="capitalize">{title ? title : "-"}</span>
+          </div>
+        </>
+
       );
     },
-    width: "150px",
-    maxWidth: "150px",
-    minWidth: "150px",
+    width: "200px",
+    maxWidth: "200px",
+    minWidth: "200px",
     header: () => <span>Project Name</span>,
     footer: (props: any) => props.column.id,
   },
@@ -53,14 +51,14 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <div style={{ padding: "16px", textAlign: "left" }}>
-          <span className="capitalize">{title ? title : "-"}</span>
-        </div>
+        <span className="text-center block font-semibold">
+          {title ? title : "-"}
+        </span>
       );
     },
-    width: "150px",
-    maxWidth: "150px",
-    minWidth: "150px",
+    width: "75px",
+    maxWidth: "75px",
+    minWidth: "75px",
     header: () => <span>Todo</span>,
     footer: (props: any) => props.column.id,
   },
@@ -70,14 +68,14 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <div style={{ padding: "16px", textAlign: "left" }}>
-          <span className="capitalize">{title ? title : "-"}</span>
-        </div>
+        <span className="text-center block font-semibold">
+          {title ? title : "-"}
+        </span>
       );
     },
-    width: "150px",
-    maxWidth: "150px",
-    minWidth: "150px",
+    width: "75px",
+    maxWidth: "75px",
+    minWidth: "75px",
     header: () => <span>In Progress</span>,
     footer: (props: any) => props.column.id,
   },
@@ -87,14 +85,14 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <div style={{ padding: "16px", textAlign: "left" }}>
-          <span className="capitalize">{title ? title : "-"}</span>
-        </div>
+        <span className="text-center block font-semibold">
+          {title ? title : "-"}
+        </span>
       );
     },
-    width: "150px",
-    maxWidth: "150px",
-    minWidth: "150px",
+    width: "75px",
+    maxWidth: "75px",
+    minWidth: "75px",
     header: () => <span>Completed</span>,
     footer: (props: any) => props.column.id,
   },
@@ -104,14 +102,14 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <div style={{ padding: "16px", textAlign: "left" }}>
-          <span className="capitalize">{title ? title : "-"}</span>
-        </div>
+        <span className="text-center block font-semibold">
+          {title ? title : "-"}
+        </span>
       );
     },
-    width: "150px",
-    maxWidth: "150px",
-    minWidth: "150px",
+    width: "75px",
+    maxWidth: "75px",
+    minWidth: "75px",
     header: () => <span>Overdue</span>,
     footer: (props: any) => props.column.id,
   },
@@ -121,14 +119,14 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <div style={{ padding: "16px", textAlign: "left" }}>
-          <span className="capitalize">{title ? title : "-"}</span>
-        </div>
+        <span className="text-center block font-semibold">
+          {title ? title : "-"}
+        </span>
       );
     },
-    width: "150px",
-    maxWidth: "150px",
-    minWidth: "150px",
+    width: "50px",
+    maxWidth: "50px",
+    minWidth: "50px",
     header: () => <span>Total</span>,
     footer: (props: any) => props.column.id,
   },
