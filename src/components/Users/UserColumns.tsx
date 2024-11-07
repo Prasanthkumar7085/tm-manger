@@ -19,7 +19,7 @@ export const userColumns = [
     id: "fname",
     cell: (info: any) => {
       const title = info.getValue();
-      const profilePicUrl = info.row.original.profile_pic_url;
+      const profilePicUrl = info.row.original.profile_pic_url||"profile-picture.png";
       return (
         <div style={{ display: "flex", alignItems: "center", textAlign: "left" }}>
           {profilePicUrl ? (
