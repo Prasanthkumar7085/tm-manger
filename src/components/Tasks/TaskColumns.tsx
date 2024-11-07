@@ -128,9 +128,12 @@ export const taskColumns = ({ setDel }: any) => {
       id: "title",
       cell: (info: any) => {
         const { ref_id, title } = info.getValue();
+
         return (
           <span className="flex justify-between capitalize">
-            <span>{title || "-"}</span>
+            <span onClick={() => handleView(info.row.original.id)}>
+              {title || "-"}
+            </span>
             <span className="ml-2">[{ref_id}]</span>
           </span>
         );

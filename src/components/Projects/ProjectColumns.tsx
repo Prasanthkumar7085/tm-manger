@@ -1,7 +1,7 @@
 import viewButtonIcon from "@/assets/view.svg";
 import { deleteTaskAPI } from "@/lib/services/tasks";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import DeleteDialog from "../core/deleteDialog";
 import { Button } from "../ui/button";
@@ -22,14 +22,19 @@ export const projectColumns = ({
   setDel,
   getAllProjects,
   projectsData,
+  row,
 }: any) => {
   const navigate = useNavigate();
+
   const { projectId } = useParams({ strict: false });
+
+  const popoverRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState<any>();
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [isActive, setIsActive] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
+
   const deleteProject = async () => {
     try {
       setDeleteLoading(true);
@@ -49,13 +54,17 @@ export const projectColumns = ({
       setDeleteLoading(false);
     }
   };
-
-  const updateUserStatus = async (projectId: any, status: boolean) => {
+  const updateUserStatus = async (
+    projectId: string,
+    status: boolean,
+    title: string,
+    code: string
+  ) => {
     try {
       const body = {
         active: status,
-        title: projectsData?.title,
-        code: projectsData?.code,
+        title,
+        code,
       };
       const response = await updateProjectAPI(projectId, body);
       if (response?.status === 200 || response?.status === 201) {
@@ -90,6 +99,10 @@ export const projectColumns = ({
   const onClickOpen = (id: string) => {
     setOpen(true);
     setDeleteTaskId(id);
+  };
+  const togglePopover = (e: any) => {
+    e.stopPropagation();
+    setIsOpen(!isOpen);
   };
 
   return [
@@ -152,43 +165,97 @@ export const projectColumns = ({
       maxWidth: "50px",
       minWidth: "50px",
     },
-    // {
-    //   accessorFn: (row: any) => row.active,
-    //   id: "status",
-    //   header: () => <span>Status</span>,
-    //   cell: (info: any) => {
-    //     const isActive = info.getValue();
-    //     return (
-    //       <div
-    //         style={{
-    //           display: "flex",
-    //           alignItems: "center",
-    //           cursor: "pointer",
-    //           padding: "2px 6px",
-    //           borderRadius: "5px",
-    //           borderColor: isActive ? "green" : "red",
-    //           borderStyle: "solid",
-    //           borderWidth: "1px",
-    //         }}
-    //         onClick={() => updateUserStatus(info.row.original.id, !isActive)}
-    //       >
-    //         <span
-    //           style={{
-    //             height: "10px",
-    //             width: "10px",
-    //             borderRadius: "50%",
-    //             backgroundColor: isActive ? "green" : "red",
-    //             marginRight: "8px",
-    //           }}
-    //         ></span>
-    //         {isActive ? "Active" : "Inactive"}
-    //       </div>
-    //     );
-    //   },
-    //   width: "100px",
-    //   maxWidth: "100px",
-    //   minWidth: "100px",
-    // },
+    {
+      accessorFn: (row: any) => row.active,
+      id: "active",
+      cell: (info: any) => {
+        const { id: projectId, title, code } = info.row.original;
+        const isActive = info.getValue();
+        const status = isActive ? "Active" : "Inactive";
+        const statusColor = isActive ? "green" : "red";
+
+        return (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              position: "relative",
+            }}
+          >
+            <div
+              style={{
+                color: statusColor,
+                borderColor: statusColor,
+                borderStyle: "solid",
+                borderWidth: "1px",
+                padding: "2px 6px",
+                display: "flex",
+                alignItems: "center",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+              onClick={togglePopover}
+            >
+              <span
+                style={{
+                  height: "10px",
+                  width: "10px",
+                  borderRadius: "50%",
+                  backgroundColor: statusColor,
+                  marginRight: "8px",
+                }}
+              ></span>
+              {status}
+            </div>
+            {isOpen && (
+              <div
+                ref={popoverRef}
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: "0",
+                  marginTop: "5px",
+                  padding: "5px",
+                  backgroundColor: "white",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  zIndex: 100,
+                }}
+              >
+                <div
+                  style={{
+                    padding: "5px 10px",
+                    cursor: "pointer",
+                    color: "green",
+                  }}
+                  onClick={(e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    updateUserStatus(projectId, true, title, code);
+                  }}
+                >
+                  Active
+                </div>
+                <div
+                  style={{
+                    padding: "5px 10px",
+                    cursor: "pointer",
+                    color: "red",
+                  }}
+                  onClick={(e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    updateUserStatus(projectId, false, title, code);
+                  }}
+                >
+                  Inactive
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      },
+      header: () => <span>Status</span>,
+      footer: (props: any) => props.column.id,
+    },
 
     {
       accessorFn: (row: any) => row.description,
