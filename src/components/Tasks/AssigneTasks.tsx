@@ -191,140 +191,121 @@ const AssignedUsers = ({ viewTaskData }: any) => {
   return (
     <div className="flex flex-col justify-between h-full w-full overflow-auto">
       <div>
-        <div className="flex items-center justify-end gap-4">
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-[200px]"
-                onClick={() => setTempSelectedMember([])}
-              >
-                Select Members
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0 bg-white border z-[99999]">
-              <Command>
-                <CommandInput placeholder="Search Members" />
-                <CommandList className="max-h-[200px] z-[99999]">
-                  <CommandGroup>
-                    {Array.isArray(users) &&
-                      users.map((user: any) => (
-                        <CommandItem
-                          key={user.id}
-                          value={getFullName(user)}
-                          onSelect={() => toggleValue(user.user_id.toString())}
-                          disabled={selectedMembers.some(
-                            (m: any) => m.user_id == user.user_id
-                          )}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              tempSelectedMember.includes(
-                                user.user_id.toString()
-                              )
-                                ? "opacity-100"
-                                : "opacity-0"
+        <div className="flex items-center">
+          <p className="text-[#666666] text-sm font-medium mr-5">Assigned To
+          </p>
+          <div className="flex items-center justify-end gap-4">
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="py-1 h-auto"
+                  onClick={() => setTempSelectedMember([])}
+                >
+                  Select Members
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[200px] p-0 bg-white border z-[99999]">
+                <Command>
+                  <CommandInput placeholder="Search Members" />
+                  <CommandList className="max-h-[200px] z-[99999]">
+                    <CommandGroup>
+                      {Array.isArray(users) &&
+                        users.map((user: any) => (
+                          <CommandItem
+                            key={user.id}
+                            value={getFullName(user)}
+                            onSelect={() => toggleValue(user.user_id.toString())}
+                            disabled={selectedMembers.some(
+                              (m: any) => m.user_id == user.user_id
                             )}
-                          />
-                          <p className="capitalize">{getFullName(user)}</p>
-                        </CommandItem>
-                      ))}
-                  </CommandGroup>
-                  <CommandEmpty>No members found.</CommandEmpty>
-                </CommandList>
-                <div className="flex justify-end space-x-2 p-2 border-t">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setTempSelectedMember([])}
-                  >
-                    Clear
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={confirmSelection}
-                  >
-                    Confirm
-                  </Button>
-                </div>
-              </Command>
-            </PopoverContent>
-          </Popover>
-          <Button
-            onClick={() => {
-              router.navigate({
-                to: `/projects/view/${viewTaskData?.project_id}?tab=project_members`,
-              });
-            }}
-            className="bg-[#f3d1d7] hover:text-white"
-          >
-            Add Project members
-          </Button>
-        </div>
-        {selectedMembers.length > 0 ? (
-          <div className="overflow-hidden rounded-[10px] border border-gray-200 mt-4">
-            <table className="min-w-full">
-              <thead>
-                <tr>
-                  <th className="text-left p-2 !bg-[#F5F5F5] text-[#00000099]">
-                    S.No
-                  </th>
-                  <th className="text-left p-2 !bg-[#F5F5F5] text-[#00000099]">
-                    Profile
-                  </th>
-                  <th className="text-left p-2  !bg-[#F5F5F5] text-[#00000099]">
-                    Members
-                  </th>
-                  <th className="text-left p-2 !bg-[#F5F5F5] text-[#00000099]">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="text-left">
-                {selectedMembers.map((member, index) => (
-                  <tr key={member.user_id}>
-                    <td className="!px-3 !py-2">
-                      {(page - 1) * limit + index + 1}
-                    </td>
-                    <td className="!px-3 !py-4">
-                      {member.download_url ? (
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200">
-                            <img
-                              src={member.download_url}
-                              alt={`${getFullNames(member)}'s profile`}
-                              className="w-full h-full object-cover"
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                tempSelectedMember.includes(
+                                  user.user_id.toString()
+                                )
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
                             />
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200">
-                          <img
-                            src={"/profile-picture.png"}
-                            // alt={`${getFullName(member)}'s profile`}
+                            <p className="capitalize">{getFullName(user)}</p>
+                          </CommandItem>
+                        ))}
+                    </CommandGroup>
+                    <CommandEmpty>No members found.</CommandEmpty>
+                  </CommandList>
+                  <div className="flex justify-end space-x-2 p-2 border-t">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setTempSelectedMember([])}
+                    >
+                      Clear
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={confirmSelection}
+                    >
+                      Confirm
+                    </Button>
+                  </div>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            <Button
+              onClick={() => {
+                router.navigate({
+                  to: `/projects/view/${viewTaskData?.project_id}?tab=project_members`,
+                });
+              }}
+              className="bg-primary text-white hover:text-white py-1 h-auto"
+            >
+              Add members
+            </Button>
+          </div>
+        </div>
 
+        {selectedMembers.length > 0 ? (
+          <div className="mt-4 flex items-center space-x-4  pb-[2px] overflow-x-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+            {selectedMembers.map((member, index) => (
+              <>
+                <div className="each-person relative flex  border items-center space-x-2 rounded-l-full bg-slate-100 rounded-sm pr-5 pt-[2px] pb-[2px] pl-[2px]">
+                  <div className="profile-image">
+                    {member.download_url ? (
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 rounded-sm overflow-hidden border border-gray-200">
+                          <img
+                            src={member.download_url}
+                            alt={`${getFullNames(member)}'s profile`}
                             className="w-full h-full object-cover"
                           />
                         </div>
-                      )}
-                    </td>
-                    <td className=" !px-3 !py-2 capitalize text-[#000000CC]">
-                      {capitalize(getFullName(member))}
-                    </td>
-                    <td className=" !px-3 !py-2 text-[#000000CC]">
-                      <DeleteAssignes
-                        assigneeId={member.task_assignee_id}
-                        onSuccess={() => {
-                          removeMember(member.user_id);
-                        }}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      </div>
+                    ) : (
+                      <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-200">
+                        <img
+                          src={"/profile-picture.png"}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div className="content">
+                    <p className="font-medium text-black pr-3 pl-1 whitespace-nowrap">{capitalize(getFullName(member))}
+                    </p>
+                    <DeleteAssignes
+                      assigneeId={member.task_assignee_id}
+                      onSuccess={() => {
+                        removeMember(member.user_id);
+                      }}
+                    />
+                  </div>
+                </div>
+              </>
+            ))}
           </div>
         ) : (
           <div className="flex items-center justify-center mt-3">

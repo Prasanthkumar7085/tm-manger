@@ -5,7 +5,7 @@ import listingDelete from "@/assets/delete-listing.svg";
 import DeleteDialog from "@/components/core/deleteDialog";
 import { deleteAssignesAPI } from "@/lib/services/tasks";
 import { useParams } from "@tanstack/react-router";
-
+import { X } from "lucide-react";
 const DeleteAssignes = ({
   assigneeId,
   onSuccess,
@@ -40,18 +40,12 @@ const DeleteAssignes = ({
   return (
     <>
       <button
-      className="flex items-center"
         onClick={() => setDeleteDialogOpen(true)}
         title="Delete Assignee"
         aria-label="Delete Assignee"
+        className="flex items-center text-red-600 absolute bg-red-200 w-5 h-full top-0 right-0 bottom-0 hover:bg-red-600 hover:text-white pl-[1px] pr-[1px]"
       >
-        <img
-        src={listingDelete}
-          alt="Delete"
-          className="cursor-pointer"
-          height={24}
-          width={24}
-        />
+        <X />
       </button>
 
       <DeleteDialog

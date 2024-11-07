@@ -133,41 +133,41 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
   };
 
   return (
-    <div className="mb-4">
-      <label className="block text-[#666666] text-sm font-medium mb-1">
-        Tags
-      </label>
+    <div>
+      <div>
+        <div className="tags-heading flex space-x-3 items-center">
+          <label className="block text-[#666666] text-sm font-medium">
+            Tags
+          </label>
+          <div className="flex space-x-3 items-center bg-slate-50 border rounded-md pr-1">
+            <input
+              type="text"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleTagSubmit();
+                  e.preventDefault();
+                }
+              }}
+              className="bg-slate-50 h-[25px] p-2 w-full rounded-md"
+              placeholder="Enter tag"
+            />
+            <Button
+              type="button"
+              variant="add"
+              size="DefaultButton"
+              onClick={handleTagSubmit}
+              className="h-[20px] bg-green-600 px-3"
+            >
+              Add
+            </Button>
+          </div>
+        </div>
 
-      <div className="flex space-x-3">
-        <input
-          type="text"
-          value={tagInput}
-          onChange={(e) => setTagInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleTagSubmit();
-              e.preventDefault();
-            }
-          }}
-          className="bg-slate-50 h-[35px] p-2 border w-full rounded-md"
-          placeholder="Enter tag"
-        />
-        <Button
-          type="button"
-          variant="add"
-          size="DefaultButton"
-          onClick={handleTagSubmit}
-        >
-          <span className="text-xl pr-2">+</span>
-          Add
-        </Button>
-      </div>
-      {errorMessages?.tags && (
-        <p style={{ color: "red" }}>{errorMessages?.tags?.[0]}</p>
-      )}
-      <div className="flex flex-wrap mt-2">
-        {task?.tags?.length > 0
-          ? task?.tags.map((tag: any, index: number) => (
+        <div className="flex flex-wrap mt-2">
+          {task?.tags?.length > 0
+            ? task?.tags.map((tag: any, index: number) => (
               <div
                 key={index}
                 className="bg-[#00B8121A] text-[#00B812] text-[0.8em] font-medium  mr-2 mb-2 flex px-2 rounded-full"
@@ -181,10 +181,16 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
                 </p>
               </div>
             ))
-          : isTaskTagsLoading
-            ? ""
-            : ""}
+            : isTaskTagsLoading
+              ? ""
+              : ""}
+        </div>
       </div>
+
+      {errorMessages?.tags && (
+        <p style={{ color: "red" }}>{errorMessages?.tags?.[0]}</p>
+      )}
+
     </div>
   );
 };

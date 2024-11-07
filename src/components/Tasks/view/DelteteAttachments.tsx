@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-
+import { X } from "lucide-react";
 import DeleteDialog from "@/components/core/deleteDialog";
 import { deleteAttachmentsAPI } from "@/lib/services/tasks";
 import { useParams } from "@tanstack/react-router";
@@ -48,14 +48,9 @@ const DeleteAttachments = ({ attachmentId, onSuccess }: any) => {
 
   return (
     <>
-      <button onClick={() => setDeleteDialogOpen(true)} title="delete">
-        <img
-          src={"/table/delete.svg"}
-          alt="delete"
-          className="cursor-pointer"
-          height={16}
-          width={16}
-        />
+      <button onClick={() => setDeleteDialogOpen(true)} title="delete" className="flex items-center text-red-600">
+        <X className="text-red-500 w-4 h-4 mr-1" />
+        Delete
       </button>
 
       <DeleteDialog

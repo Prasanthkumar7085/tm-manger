@@ -76,7 +76,7 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
 
   return (
     <div
-      className="shadow-md border rounded-xl p-3 cursor-pointer"
+      className="shadow-sm border rounded-xl p-3 cursor-pointer bg-white"
       onClick={handleCardClick}
     >
       <div className="top_header mb-3 flex justify-between">

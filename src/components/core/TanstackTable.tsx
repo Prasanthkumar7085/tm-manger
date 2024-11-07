@@ -102,7 +102,13 @@ const TanStackTable: FC<pageProps> = ({
   return (
     <div className="overflow-x-auto w-full">
       <div
-        className={`overflow-y-auto w-full scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 relative  bg-white ${location.pathname.includes("tasks") ? "h-[calc(100vh-320px)]" : "h-[calc(100vh-240px)]"}`}
+        className={`overflow-y-auto w-full scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 relative bg-white ${
+          location.pathname.includes("dashboard")
+            ? "h-[calc(100vh-480px)]"
+            : location.pathname.includes("tasks")
+              ? "h-[calc(100vh-320px)]"
+              : "h-[calc(100vh-240px)]"
+        }`}
       >
         <Table>
           <TableHeader className="sticky top-[0px] z-10">
@@ -257,7 +263,7 @@ const TanStackTable: FC<pageProps> = ({
           </TableBody>
         </Table>
       </div>
-      {location.pathname !== "/dashboard" || (
+      {location.pathname !== "/dashboard" && (
         <Pagination
           paginationDetails={paginationDetails}
           capturePageNum={capturePageNum}
