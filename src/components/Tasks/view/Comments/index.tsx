@@ -236,19 +236,19 @@ const TaskComments = ({ taskId }: any) => {
   return (
     <div className="flex flex-row overflow-auto">
       <div
-        style={{ height: "calc(100vh - 50px)" }}
-        className={`${openReplies?.open ? " w-[60%]" : "w-[100%]"}`}
+        style={{ height: "calc(100vh - 300px)" }}
+        className={`overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 ${openReplies?.open ? " w-[60%]" : "w-[100%]"}`}
       >
-        <div className="card-header flex justify-between px-4 py-2 items-center mb-4 sticky top-0 bg-white z-10">
-          <h3 className="text-lg font-medium">Comments</h3>
-          <button className="check-activity-button btn px-5 py-2 bg-[#28A74533] rounded-lg text-[#28A745] font-medium">
+        <div className="card-header flex justify-between  pr-2 items-center mb-4 sticky top-0 bg-white z-10">
+          <h3 className="text-black text-lg font-medium mr-5">Comments</h3>
+          <button className="check-activity-button btn px-3  bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[25px]">
             Check Activity
           </button>
         </div>
 
-        <div className="card-body px-4 flex flex-col h-[calc(100vh-300px)] overflow-y-auto">
+        <div className="card-body px-4 flex flex-col h-[calc(100vh-200px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
           <div
-            className="member-comments space-y-3 overflow-y-scroll flex-1 pr-3"
+            className="member-comments space-y-3  flex-1 pr-3"
             ref={commentsContainerRef}
           >
             {groupedComments?.length > 0

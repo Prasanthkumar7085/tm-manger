@@ -98,31 +98,36 @@ const TaskView = () => {
     <div className="relative overflow-auto">
       <div
         id="task-details"
-        className=" w-full h-full bg-white rounded-lg shadow-md p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
+        className=" w-full h-full bg-white rounded-lg shadow-md p-3 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
       >
 
         <div className="task-primary-details">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-[70%,auto] gap-5">
             <div className="leftItem">
-              <h1
-                className="text-xl text-[#1B2459] font-medium overflow-hidden overflow-ellipsis whitespace-nowrap mb-1"
-                title={viewData?.title}
-              >
-                {viewData?.title ? capitalizeWords(viewData?.title) : "--"}
-              </h1>
-
-              <div className="description">
-                <p
-                  className="text-black  rounded-md overflow-hidden line-clamp-2"
-                  title={viewData?.description}
+              <div>
+                <h1
+                  className="text-xl text-[#1B2459] font-medium overflow-hidden overflow-ellipsis whitespace-nowrap mb-1"
+                  title={viewData?.title}
                 >
-                  {viewData?.description ? viewData.description : "--"}
-                </p>
+                  {viewData?.title ? capitalizeWords(viewData?.title) : "--"}
+                </h1>
 
+                <div className="description mt-3 border p-2 rounded-sm mb-3">
+                  <p
+                    className="text-black  text-[.85rem] rounded-md overflow-hidden line-clamp-2"
+                    title={viewData?.description}
+                  >
+                    {viewData?.description ? viewData.description : "--"}
+                  </p>
+
+                </div>
               </div>
+              <AssignedUsers viewTaskData={viewData} />
+              <hr className="my-3" />
+              <TaskComments taskId={taskId} />
             </div>
             <div className="rightItem">
-              <div className="flex justify-end space-x-3">
+              <div className="action-buttons flex space-x-3">
                 <TaskStatus
                   taskId={taskId}
                   setUpdateDetailsOfTask={setUpdateDetailsOfTask}
@@ -143,82 +148,81 @@ const TaskView = () => {
                   Edit Task
                 </Button>
               </div>
+              <div className="focus-details border">
+                <div className="card-header border-b px-4 py-0 bg-gray-50">
+                  <h3 className="leading-1 text-black  text-[1.1em]">Details</h3>
+                </div>
+                <div className="card-body py-3 px-4">
+                  <ul className="space-y-3">
+                    <li className="grid grid-cols-[150px,auto]">
+                      <p className="text-[#666666] text-sm font-medium mb-1">Project</p>
+                      <p className="mt-0 text-black font-medium">{viewData?.project_title
+                        ? capitalizeWords(viewData?.project_title)
+                        : "--"}</p>
+                    </li>
+                    <li className="grid grid-cols-[150px,auto]">
+                      <p className="text-[#666666] text-sm font-medium mb-1">Priority</p>
+                      <PriorityStatus
+                        taskId={taskId}
+                        setUpdatePriority={setUpdatePriority}
+                        selectedPriority={selectedPriority}
+                        setSelectedPriority={setSelectedPriority}
+                        viewData={viewData}
+                      />
+                    </li>
+                    <li className="grid grid-cols-[150px,auto]">
+                      <p className="text-[#666666] text-sm font-medium mb-1">Due Date</p>
+                      <div className="inline-block px-3 py-[1px] border text-[#FF0021] bg-[#FFE0E480] text-md font-semibold rounded-sm">
+                        {dayjs(viewData?.due_date).format("MM/DD/YYYY")}
+                      </div>
+                    </li>
+                    <li className="grid grid-cols-[150px,auto]">
+                      <div>
+                        <p className="text-[#666666] text-sm font-medium mb-1">Created Date</p>
+                      </div>
+                      <div>
+                        <p className="text-black font-medium">
+                          {dayjs(viewData?.created_at).format("MM/DD/YYYY")}
+                        </p>
+                      </div>
+                    </li>
+                    <li className="grid grid-cols-[150px,auto]">
+                      <div>
+                        <p className="text-[#666666] text-sm font-medium mb-1">Created By</p>
+                      </div>
+                      <div>
+                        <div className="created-person flex items-center space-x-3">
+                          <img
+                            src={
+                              viewData?.created_profile_pic_url || "/profile-picture.png"
+                            }
+                            alt="User"
+                            className="object-contain w-6 h-6 rounded-full border"
+                          />
+                          <p className="font-medium text-black  text-md capitalize">
+                            {viewData?.created_name}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+
+              </div>
+              <UploadAttachments />
+              <TagsComponent
+                tagInput={tagInput}
+                setTagInput={setTagInput}
+                task={viewData}
+                setTask={setViewData}
+                errorMessages={errorMessages}
+                setErrorMessages={setErrorMessages}
+              />
+
 
             </div>
           </div>
-          <div className="focus-details mt-3">
-            <ul className="grid grid-cols-5">
-              <li>
-                <p className="text-[#666666] text-sm font-medium mb-1">Project</p>
-                <p className="mt-0 text-black font-medium">{viewData?.project_title
-                  ? capitalizeWords(viewData?.project_title)
-                  : "--"}</p>
-              </li>
-              <li>
-                <p className="text-[#666666] text-sm font-medium mb-1">Priority</p>
-                <PriorityStatus
-                  taskId={taskId}
-                  setUpdatePriority={setUpdatePriority}
-                  selectedPriority={selectedPriority}
-                  setSelectedPriority={setSelectedPriority}
-                  viewData={viewData}
-                />
-              </li>
-
-              <li >
-                <p className="text-[#666666] text-sm font-medium mb-1">Due Date</p>
-                <div className="inline-block px-3 py-[1px] border text-[#FF0021] bg-[#FFE0E480] text-md font-semibold rounded-sm">
-                  {dayjs(viewData?.due_date).format("MM/DD/YYYY")}
-                </div>
-              </li>
-              <li >
-                <div>
-                  <p className="text-[#666666] text-sm font-medium mb-1">Created Date</p>
-                </div>
-                <div>
-                  <p className="text-black font-medium">
-                    {dayjs(viewData?.created_at).format("MM/DD/YYYY")}
-                  </p>
-                </div>
-              </li>
-              <li>
-                <div>
-                  <p className="text-[#666666] text-sm font-medium mb-1">Created By</p>
-                </div>
-                <div>
-                  <div className="created-person flex items-center space-x-3">
-                    <img
-                      src={
-                        viewData?.created_profile_pic_url || "/profile-picture.png"
-                      }
-                      alt="User"
-                      className="object-contain w-6 h-6 rounded-full border"
-                    />
-                    <p className="font-medium text-black  text-md capitalize">
-                      {viewData?.created_name}
-                    </p>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <hr className="mt-2 mb-2" />
-          <div className="tags-and-upload-attachments grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <AssignedUsers viewTaskData={viewData} />
-            <TagsComponent
-              tagInput={tagInput}
-              setTagInput={setTagInput}
-              task={viewData}
-              setTask={setViewData}
-              errorMessages={errorMessages}
-              setErrorMessages={setErrorMessages}
-            />
-
-          </div>
-          <UploadAttachments />
         </div>
-        <hr className="mt-2 mb-2" />
-        <TaskComments taskId={taskId} />
       </div>
       <LoadingComponent loading={isLoading || loading} />
     </div>
