@@ -53,7 +53,7 @@ const AddTask = () => {
   const [errorMessages, setErrorMessages] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [users, setUsers] = useState<any[]>([]);
-  console.log(users, "users");
+
   const [selectedUsers, setSelectedUsers] = useState(new Set());
   const handleChange = (e: any) => {
     setTask({ ...task, [e.target.name]: e.target.value });
@@ -223,6 +223,7 @@ const AddTask = () => {
                           setTask((prev: any) => ({
                             ...prev,
                             project_id: null,
+                            users: [],
                           }));
                         }}
                       />
