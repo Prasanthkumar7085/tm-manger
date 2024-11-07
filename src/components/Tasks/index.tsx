@@ -1,21 +1,20 @@
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { addSerial } from "@/lib/helpers/addSerial";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 import { getAllPaginatedTasks } from "@/lib/services/tasks";
+import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
+import { SelectTaskProjects } from "../core/CommonComponents/SelectTaskProjects";
+import { TasksSelectPriority } from "../core/CommonComponents/TasksSelectPriority";
+import { TasksSelectStatusFilter } from "../core/CommonComponents/TasksSelectStatusFilter";
 import DateRangeFilter from "../core/DateRangePicker";
+import LoadingComponent from "../core/LoadingComponent";
 import TanStackTable from "../core/TanstackTable";
 import { Button } from "../ui/button";
 import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
-import LoadingComponent from "../core/LoadingComponent";
-import { TasksSelectStatusFilter } from "../core/CommonComponents/TasksSelectStatusFilter";
-import { TasksSelectPriority } from "../core/CommonComponents/TasksSelectPriority";
-import { SelectTaskProjects } from "../core/CommonComponents/SelectTaskProjects";
-import { setRefId } from "@/redux/Modules/userlogin";
-import { useDispatch } from "react-redux";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -103,7 +102,6 @@ const Tasks = () => {
               search: queryParams,
             });
       }
-      dispatch(setRefId(response.data?.data?.records[0]?.ref_id));
 
       return response;
     },
@@ -211,8 +209,9 @@ const Tasks = () => {
                 </li>
                 <li>
                   <Button
-                  className="font-normal text-sm"
-                    variant="add" size="DefaultButton"
+                    className="font-normal text-sm"
+                    variant="add"
+                    size="DefaultButton"
                     onClick={handleNavigation}
                   >
                     <span className="text-xl font-normal pr-2 text-md">+</span>

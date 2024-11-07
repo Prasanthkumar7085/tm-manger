@@ -18,7 +18,6 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isActive, setIsActive] = useState(project.active);
   const popoverRef = useRef<HTMLDivElement>(null);
-  console.log(project?.logo, "project");
 
   const togglePopover = (e: any) => {
     e.stopPropagation();

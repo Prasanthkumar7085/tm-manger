@@ -80,7 +80,8 @@ export const taskColumns = ({ setDel }: any) => {
       id: "project_title",
       cell: (info: any) => {
         const title = info.getValue();
-        const project_logo_url = info.row.original.project_logo_url || "/favicon.png";
+        const project_logo_url =
+          info.row.original.project_logo_url || "/favicon.png";
         return (
           <div className="project-title flex items-center gap-2">
             {project_logo_url && (
@@ -107,13 +108,16 @@ export const taskColumns = ({ setDel }: any) => {
       id: "title",
       cell: (info: any) => {
         const { ref_id, title } = info.getValue();
+
         return (
           <>
             <div className="task capitalize flex justify-between">
               <span className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
                 {title || "-"}
               </span>
-              <span className="ml-2 text-[11px] font-semibold text-primary">[{ref_id}]</span>
+              <span className="ml-2 text-[11px] font-semibold text-primary">
+                [{ref_id}]
+              </span>
             </div>
           </>
         );
@@ -168,34 +172,36 @@ export const taskColumns = ({ setDel }: any) => {
         let title = info.getValue();
         return (
           <span
-            className={`rounded-full px-2 leading-1 ${info.getValue() === "OVER_DUE"
-              ? "text-[#A71D2A] bg-[#A71D2A33]"
-              : info.getValue() === "TODO"
-                ? "text-[#6F42C1] bg-[#EADEFF]"
-                : info.getValue() === "COMPLETED"
-                  ? "text-[#28A745] bg-[#28A74533]"
-                  : info.getValue() === "IN_PROGRESS"
-                    ? "text-[#007BFF] bg-[#007BFF33]"
-                    : "text-black"
-              }`}
+            className={`rounded-full px-2 leading-1 ${
+              info.getValue() === "OVER_DUE"
+                ? "text-[#A71D2A] bg-[#A71D2A33]"
+                : info.getValue() === "TODO"
+                  ? "text-[#6F42C1] bg-[#EADEFF]"
+                  : info.getValue() === "COMPLETED"
+                    ? "text-[#28A745] bg-[#28A74533]"
+                    : info.getValue() === "IN_PROGRESS"
+                      ? "text-[#007BFF] bg-[#007BFF33]"
+                      : "text-black"
+            }`}
           >
             <span
-              className={`dot w-2 h-2 inline-block mr-1 rounded-full ${info.getValue() === "OVER_DUE"
-                ? "bg-[#A71D2A]"
-                : info.getValue() === "TODO"
-                  ? "bg-[#6F42C1]"
-                  : info.getValue() === "COMPLETED"
-                    ? "bg-[#28A745]"
-                    : info.getValue() === "IN_PROGRESS"
-                      ? "bg-[#007BFF]"
-                      : "text-black"
-                }`}
+              className={`dot w-2 h-2 inline-block mr-1 rounded-full ${
+                info.getValue() === "OVER_DUE"
+                  ? "bg-[#A71D2A]"
+                  : info.getValue() === "TODO"
+                    ? "bg-[#6F42C1]"
+                    : info.getValue() === "COMPLETED"
+                      ? "bg-[#28A745]"
+                      : info.getValue() === "IN_PROGRESS"
+                        ? "bg-[#007BFF]"
+                        : "text-black"
+              }`}
             ></span>
             <span className="text-[12px] font-medium">
               {title
                 ? taskStatusConstants.find(
-                  (item: any) => item.value === info.getValue()
-                )?.label
+                    (item: any) => item.value === info.getValue()
+                  )?.label
                 : "-"}
             </span>
           </span>
@@ -219,15 +225,17 @@ export const taskColumns = ({ setDel }: any) => {
 
         return (
           <>
-            <span className="capitalize text-[12px] leading-1 px-2 rounded-full font-medium" style={{
-              backgroundColor:
-                bgColorObjectForStatus[priorityLabel] || "gray",
-              color: colorObjectForStatus[priorityLabel] || "black",
-            }}>
+            <span
+              className="capitalize text-[12px] leading-1 px-2 rounded-full font-medium"
+              style={{
+                backgroundColor:
+                  bgColorObjectForStatus[priorityLabel] || "gray",
+                color: colorObjectForStatus[priorityLabel] || "black",
+              }}
+            >
               {priorityLabel}
             </span>
           </>
-
         );
       },
       width: "120px",
@@ -260,7 +268,12 @@ export const taskColumns = ({ setDel }: any) => {
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
                 onClick={() => handleEdit(info.row.original.id)}
               >
-                <img src={"/table/edit.svg"} alt="view" height={18} width={18} />
+                <img
+                  src={"/table/edit.svg"}
+                  alt="view"
+                  height={18}
+                  width={18}
+                />
               </Button>
             </li>
             <li>

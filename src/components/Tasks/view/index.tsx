@@ -3,10 +3,12 @@ import { Button } from "@/components/ui/button";
 import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
 import { taskStatusConstants } from "@/lib/helpers/statusConstants";
 import { getSingleTaskAPI } from "@/lib/services/tasks";
+import { setRefId } from "@/redux/Modules/userlogin";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams, useRouter } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import TagsComponent from "../Add/TagsComponent";
 import AssignedUsers from "../AssigneTasks";
@@ -17,13 +19,11 @@ import TaskComments from "./Comments";
 
 const TaskView = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const router = useRouter();
   const { taskId } = useParams({ strict: false });
-  const [commentsData, setCommentsData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string>("");
   const [viewData, setViewData] = useState<any>();
-  console.log(viewData, "mani");
   const [tagsData, setTagsData] = useState<any>({ tags: [] });
   const [tagsInput, setTagsInput] = useState("");
   const [errorMessages, setErrorMessages] = useState();
@@ -52,6 +52,7 @@ const TaskView = () => {
             (item: any) => item.value === taskData?.status
           );
           setSelectedStatus(status);
+          dispatch(setRefId(response.data?.data?.ref_id));
         } else {
           throw new Error("Failed to fetch task");
         }
@@ -70,7 +71,6 @@ const TaskView = () => {
     : title;
 
   const handleTagSubmit = () => {
-    // Ensure input is not empty
     const trimmedTag = tagsInput.trim();
     if (!trimmedTag) {
       setErrorMessages((prev: any) => ({
@@ -80,7 +80,6 @@ const TaskView = () => {
       return;
     }
 
-    // Check for duplicates
     const isTagAlreadyExists = tagsData?.some(
       (tag: any) => tag.title.toLowerCase() === trimmedTag.toLowerCase()
     );
