@@ -34,6 +34,9 @@ export const projectColumns = ({
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [isActive, setIsActive] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
+  const [openPopoverProjectId, setOpenPopoverProjectId] = useState<
+    string | null
+  >(null);
 
   const deleteProject = async () => {
     try {
@@ -100,9 +103,9 @@ export const projectColumns = ({
     setOpen(true);
     setDeleteTaskId(id);
   };
-  const togglePopover = (e: any) => {
+  const togglePopover = (e: any, projectId: string) => {
     e.stopPropagation();
-    setIsOpen(!isOpen);
+    setOpenPopoverProjectId((prev) => (prev === projectId ? null : projectId));
   };
 
   return [
@@ -166,98 +169,6 @@ export const projectColumns = ({
       minWidth: "50px",
     },
     {
-      accessorFn: (row: any) => row.active,
-      id: "active",
-      cell: (info: any) => {
-        const { id: projectId, title, code } = info.row.original;
-        const isActive = info.getValue();
-        const status = isActive ? "Active" : "Inactive";
-        const statusColor = isActive ? "green" : "red";
-
-        return (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              position: "relative",
-            }}
-          >
-            <div
-              style={{
-                color: statusColor,
-                borderColor: statusColor,
-                borderStyle: "solid",
-                borderWidth: "1px",
-                padding: "2px 6px",
-                display: "flex",
-                alignItems: "center",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-              onClick={togglePopover}
-            >
-              <span
-                style={{
-                  height: "10px",
-                  width: "10px",
-                  borderRadius: "50%",
-                  backgroundColor: statusColor,
-                  marginRight: "8px",
-                }}
-              ></span>
-              {status}
-            </div>
-            {isOpen && (
-              <div
-                ref={popoverRef}
-                style={{
-                  position: "absolute",
-                  top: "100%",
-                  left: "0",
-                  marginTop: "5px",
-                  padding: "5px",
-                  backgroundColor: "white",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  zIndex: 100,
-                }}
-              >
-                <div
-                  style={{
-                    padding: "5px 10px",
-                    cursor: "pointer",
-                    color: "green",
-                  }}
-                  onClick={(e: React.MouseEvent) => {
-                    e.stopPropagation();
-                    updateUserStatus(projectId, true, title, code);
-                  }}
-                >
-                  Active
-                </div>
-                <div
-                  style={{
-                    padding: "5px 10px",
-                    cursor: "pointer",
-                    color: "red",
-                  }}
-                  onClick={(e: React.MouseEvent) => {
-                    e.stopPropagation();
-                    updateUserStatus(projectId, false, title, code);
-                  }}
-                >
-                  Inactive
-                </div>
-              </div>
-            )}
-          </div>
-        );
-      },
-      header: () => <span>Status</span>,
-      footer: (props: any) => props.column.id,
-    },
-
-    {
       accessorFn: (row: any) => row.description,
       id: "description",
       header: () => <span>Description</span>,
@@ -306,9 +217,101 @@ export const projectColumns = ({
         );
       },
       footer: (props: any) => props.column.id,
-      width: "50px",
-      maxWidth: "50px",
-      minWidth: "50px",
+      width: "150px",
+      maxWidth: "150px",
+      minWidth: "150px",
+    },
+    {
+      accessorFn: (row: any) => row.active,
+      id: "active",
+      cell: (info: any) => {
+        const { id: projectId, title, code } = info.row.original;
+        const isActive = info.getValue();
+        const status = isActive ? "Active" : "Inactive";
+        const statusColor = isActive ? "green" : "red";
+
+        return (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              position: "relative",
+            }}
+          >
+            <div
+              style={{
+                color: statusColor,
+                borderColor: statusColor,
+                borderStyle: "solid",
+                borderWidth: "1px",
+                padding: "2px 6px",
+                display: "flex",
+                alignItems: "center",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+              onClick={(e) => togglePopover(e, projectId)}
+            >
+              <span
+                style={{
+                  height: "10px",
+                  width: "10px",
+                  borderRadius: "50%",
+                  backgroundColor: statusColor,
+                  marginRight: "8px",
+                }}
+              ></span>
+              {status}
+            </div>
+            {openPopoverProjectId === projectId && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: "0",
+                  marginTop: "5px",
+                  padding: "5px",
+                  backgroundColor: "white",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  zIndex: 100,
+                }}
+              >
+                <div
+                  style={{
+                    padding: "5px 10px",
+                    cursor: "pointer",
+                    color: "green",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updateUserStatus(projectId, true, title, code);
+                    setOpenPopoverProjectId(null);
+                  }}
+                >
+                  Active
+                </div>
+                <div
+                  style={{
+                    padding: "5px 10px",
+                    cursor: "pointer",
+                    color: "red",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updateUserStatus(projectId, false, title, code);
+                    setOpenPopoverProjectId(null);
+                  }}
+                >
+                  Inactive
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      },
+      header: () => <span>Status</span>,
+      footer: (props: any) => props.column.id,
     },
 
     {

@@ -165,8 +165,7 @@ const TanStackTable: FC<pageProps> = ({
                                     alt="Desc"
                                   />
                                 ),
-                              }
-                              [header.column.getIsSorted() as string] ?? (
+                              }[header.column.getIsSorted() as string] ?? (
                                 <img
                                   src="/table/sort-norm.svg"
                                   height={15}
@@ -264,13 +263,14 @@ const TanStackTable: FC<pageProps> = ({
           </TableBody>
         </Table>
       </div>
-      {location.pathname !== "/dashboard" && (
-        <Pagination
-          paginationDetails={paginationDetails}
-          capturePageNum={capturePageNum}
-          captureRowPerItems={captureRowPerItems}
-        />
-      )}
+      {location.pathname !== "/dashboard" &&
+        location.pathname !== "/projects" && (
+          <Pagination
+            paginationDetails={paginationDetails}
+            capturePageNum={capturePageNum}
+            captureRowPerItems={captureRowPerItems}
+          />
+        )}
     </div>
   );
 };

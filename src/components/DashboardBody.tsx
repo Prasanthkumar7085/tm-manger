@@ -20,20 +20,20 @@ import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 import ProjectDataTable from "./ProjectWiseStats";
 import { SelectTaskProjects } from "./core/CommonComponents/SelectTaskProjects";
 
-const formatDate = (date) => {
+const formatDate = (date: any) => {
   return date.toISOString().split("T")[0];
 };
 
 const DashBoard = () => {
   const [selectedDate, setSelectedDate] = useState([new Date(), new Date()]);
-  const [selectedProject, setSelectedProject] = useState(null); // Added selectedProject state
+  const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
     const today = new Date();
     setSelectedDate([today, today]);
   }, []);
 
-  const fetchCounts = async (fromDate, toDate) => {
+  const fetchCounts = async (fromDate: any, toDate: any) => {
     const results = await Promise.allSettled([
       getTotalProjectsStats({
         from_date: formatDate(fromDate),
@@ -61,7 +61,7 @@ const DashBoard = () => {
     enabled: !!selectedDate,
   });
 
-  const handleDateChange = (fromDate, toDate) => {
+  const handleDateChange = (fromDate: any, toDate: any) => {
     if (fromDate && toDate) {
       const [fromDateUTC, toDateUTC] = changeDateToUTC(fromDate, toDate);
       setSelectedDate([fromDateUTC, toDateUTC]);
@@ -85,7 +85,9 @@ const DashBoard = () => {
       <div className="grid grid-cols-[58%,auto] gap-3">
         <Card className="p-4 bg-white shadow-lg rounded-lg">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-sans font-medium text-gray-800">Stats</h2>
+            <h2 className="text-lg font-sans font-medium text-gray-800">
+              Stats
+            </h2>
             <DatePickerField
               dateValue={selectedDate}
               onChangeData={handleDateChange}
@@ -157,26 +159,28 @@ const DashBoard = () => {
 
       <div className="card-container bg-white shadow-md rounded-lg border p-3 mt-3 ">
         <div className="tasks-navbar flex justify-between items-center">
-          <h2 className="text-lg font-sans font-medium text-gray-800">Tasks List</h2>
+          <h2 className="text-lg font-sans font-medium text-gray-800">
+            Tasks List
+          </h2>
           <div className="filters">
             <ul className="flex justify-end space-x-3">
               <li>
-                <SelectTaskProjects
+                {/* <SelectTaskProjects
                   selectedProject={selectedProject}
                   setSelectedProject={setSelectedProject}
-                />
+                /> */}
               </li>
               <li>
-                <SelectTaskProjects
+                {/* <SelectTaskProjects
                   selectedProject={selectedProject}
                   setSelectedProject={setSelectedProject}
-                />
+                /> */}
               </li>
               <li>
-                <SelectTaskProjects
+                {/* <SelectTaskProjects
                   selectedProject={selectedProject}
                   setSelectedProject={setSelectedProject}
-                />
+                /> */}
               </li>
             </ul>
           </div>
