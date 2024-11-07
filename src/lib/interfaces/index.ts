@@ -10,6 +10,23 @@ export interface MemberPayload {
   user_id: number;
   role: string;
 }
+export interface AddSheetRoverProps {
+  userData: any;
+  isEditing: any;
+  errors: any;
+  userType: any;
+  userTypes: any;
+  userTypeOpen: any;
+  loading: boolean;
+  isOpen: boolean;
+  handleChangeEmail: any;
+  setUserTypeOpen: any;
+  handleChangePassword: any;
+  handleDrawerClose: () => void;
+  handleFormSubmit: () => void;
+  onChangeStatus: any;
+  handleInputChange: any;
+}
 
 export interface DynamicPaginationProps {
   paginationDetails: any;
@@ -25,6 +42,23 @@ export interface StatusFilterProps {
   setValue: React.Dispatch<React.SetStateAction<string>>;
 }
 
+export interface SheetRoverProps {
+  userPasswordData: any;
+  errors: any;
+  loading: boolean;
+  isOpen: boolean;
+  handleCancel: () => void;
+  handleUpdateChangePassword: any;
+  resetUserPassword: () => void;
+}
+
+// export interface DeleteDialogProps {
+//   openOrNot: boolean;
+//   label: string;
+//   onCancelClick: () => void;
+//   onOKClick: () => void;
+//   deleteLoading: boolean;
+// }
 export interface pageProps {
   columns: any[];
   data: any[];

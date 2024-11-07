@@ -159,7 +159,8 @@ const TanStackTable: FC<pageProps> = ({
                                     alt="Desc"
                                   />
                                 ),
-                              }[header.column.getIsSorted() as string] ?? (
+                              }
+                              [header.column.getIsSorted() as string] ?? (
                                 <img
                                   src="/table/sort-norm.svg"
                                   height={15}

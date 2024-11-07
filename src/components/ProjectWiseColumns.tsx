@@ -4,8 +4,8 @@ export const projectWiseColumns = [
     id: "serial",
     header: () => <span>S.No</span>,
     footer: (props: any) => props.column.id,
-    width: "30px",
-    maxWidth: "30px",
+    width: "60px",
+    maxWidth: "60px",
     minWidth: "60px",
     enableSorging: false,
     cell: (props: any) => (
