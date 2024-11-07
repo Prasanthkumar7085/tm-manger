@@ -12,13 +12,15 @@ import { StatusFilter } from "../core/StatusFilter";
 import { Button } from "../ui/button";
 import ProjectCard from "./Card";
 import useUsersHook from "./useUsersHook";
+// Assuming TanStackTable is in the ui folder
+import { projectColumns } from "./ProjectColumns";
+import TanStackTable from "../core/TanstackTable";
 
 const Projects = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
   const searchParams = new URLSearchParams(location.search);
-  const [refreshCount, setRefreshCount] = useState(0);
 
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 12;
@@ -47,6 +49,8 @@ const Projects = () => {
     pageSize: pageSizeParam,
     order_by: selectedSort || orderBY,
   });
+
+  const [viewMode, setViewMode] = useState("card"); // New state for view toggle
 
   const { isLoading, isError, error, data, isFetching } = useQuery({
     queryKey: [
@@ -135,6 +139,7 @@ const Projects = () => {
       setSelectedDate([]);
     }
   };
+
   const userOptions = Array.isArray(users)
     ? users.map((user: any) => ({
         value: user.id,
@@ -164,6 +169,7 @@ const Projects = () => {
     };
   }, [searchString, selectedSort, selectedStatus, dateValue]);
 
+  let colums = projectColumns({ setDel, getAllProjects, projectsData });
   return (
     <section id="projects-container" className="relative">
       <div className="tasks-navbar">
@@ -201,26 +207,46 @@ const Projects = () => {
                   Add Project
                 </Button>
               </li>
+              <li>
+                <Button
+                  className="text-white-500"
+                  onClick={() =>
+                    setViewMode(viewMode === "card" ? "table" : "card")
+                  }
+                >
+                  Table View
+                </Button>
+              </li>
             </ul>
           </div>
         </div>
       </div>
       <div className="mt-5 overflow-auto h-[70vh]">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 mt-3">
-          {projectsData.length === 0 && isLoading == false ? (
-            <div className="col-span-full text-center">No Project found</div>
-          ) : (
-            projectsData?.map((project: any) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                del={del}
-                setDel={setDel}
-                getAllProjects={getAllProjects}
-              />
-            ))
-          )}
-        </div>
+        {viewMode === "card" ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 mt-3">
+            {projectsData.length === 0 && !isLoading ? (
+              <div className="col-span-full text-center">No Project found</div>
+            ) : (
+              projectsData?.map((project: any) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  del={del}
+                  setDel={setDel}
+                  getAllProjects={getAllProjects}
+                />
+              ))
+            )}
+          </div>
+        ) : (
+          <TanStackTable
+            data={projectsData}
+            columns={colums}
+            paginationDetails={data?.data?.data?.pagination_info}
+            getData={getAllProjects}
+            removeSortingForColumnIds={["serial", "actions", "project_title"]}
+          />
+        )}
       </div>
       <div className="pagination">
         <Pagination

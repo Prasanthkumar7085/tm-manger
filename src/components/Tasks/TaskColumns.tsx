@@ -90,7 +90,8 @@ export const taskColumns = ({ setDel }: any) => {
       id: "project_title",
       cell: (info: any) => {
         const title = info.getValue();
-        const project_logo_url = info.row.original.project_logo_url ||"/favicon.png";
+        const project_logo_url =
+          info.row.original.project_logo_url || "/favicon.png";
         return (
           <div
             style={{
@@ -104,7 +105,12 @@ export const taskColumns = ({ setDel }: any) => {
               <img
                 src={project_logo_url}
                 alt="project logo"
-                style={{ width: "24px", height: "24px", marginRight: "8px", borderRadius:"50%",}}
+                style={{
+                  width: "24px",
+                  height: "24px",
+                  marginRight: "8px",
+                  borderRadius: "50%",
+                }}
               />
             )}
             <span className="capitalize">{title ? title : "-"}</span>
@@ -138,13 +144,13 @@ export const taskColumns = ({ setDel }: any) => {
     {
       accessorFn: (row: any) =>
         row.assignees.map((assignee: any) => {
-           return assignee.user_profile_pic_url ? (
+          return assignee.user_profile_pic_url ? (
             <img
               src={assignee.user_profile_pic_url}
               className="profile-pic"
               style={{
                 marginRight: "5px",
-                borderRadius: "50%", 
+                borderRadius: "50%",
                 width: "30px",
                 height: "30px",
               }}
