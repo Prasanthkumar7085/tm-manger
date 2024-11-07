@@ -173,7 +173,6 @@ const TaskComments = ({ taskId }: any) => {
     const payload: any = {
       message: commentText,
       commented_by: userID,
-      reply_to: null,
     };
     mutation.mutate(payload);
   };
@@ -201,8 +200,8 @@ const TaskComments = ({ taskId }: any) => {
     setEditingCommentId(null);
     setCommentText("");
   };
-  const handleReplyComment = (commentId: number) => {
-    setOpenReplies({ commentId: commentId, open: true });
+  const handleReplyComment = (comment: any) => {
+    setOpenReplies({ commentId: comment.id, open: true, comment: comment });
   };
   const IsUserCommentOrNot = (comment: any) => {
     const isUserComment = comment.commented_by === userID;
@@ -217,6 +216,7 @@ const TaskComments = ({ taskId }: any) => {
     );
     return formattedDistance;
   };
+
   const handleAddReply = () => {
     if (!replyText.trim()) {
       toast.error("Reply cannot be empty");
@@ -229,6 +229,17 @@ const TaskComments = ({ taskId }: any) => {
     };
     mutation.mutate(payload);
     setReplyText("");
+  };
+
+  const getRepliesCount = (comments: any, mainCommentId: any) => {
+    let count = 0;
+    comments.forEach((comment: any) => {
+      if (comment.reply_to === mainCommentId) {
+        count++;
+      }
+    });
+    let value = `${count} ${count == 1 ? " Reply" : " Repliies"}`;
+    return [count, value];
   };
   useEffect(() => {
     if (commentsContainerRef.current) {
@@ -257,13 +268,17 @@ const TaskComments = ({ taskId }: any) => {
             {groupedComments?.length > 0
               ? groupedComments?.map((group: any, index: number) => {
                   const formattedDate = format(new Date(group.date), "PPP");
+                  let filtersReplyComments = group.comments.filter(
+                    (comment: any) => comment.reply_to === null
+                  );
+
                   return (
                     <div key={index} className="group space-y-3">
                       <div className="my-4 text-center text-gray-500 text-xs">
                         <span className="bg-white px-2">{formattedDate}</span>
                       </div>
-                      {group.comments?.length > 0
-                        ? group.comments.map((comment: any) => {
+                      {filtersReplyComments?.length > 0
+                        ? filtersReplyComments.map((comment: any) => {
                             const isEdited =
                               comment.updated_at &&
                               comment.created_at !== comment.updated_at;
@@ -332,7 +347,7 @@ const TaskComments = ({ taskId }: any) => {
                                       <DropdownMenuItem
                                         className="cursor-pointer"
                                         onClick={() =>
-                                          handleReplyComment(comment.id)
+                                          handleReplyComment(comment)
                                         }
                                       >
                                         Reply
@@ -371,6 +386,25 @@ const TaskComments = ({ taskId }: any) => {
                                       }}
                                     />
                                   )}
+
+                                  <p
+                                    className={`text-[#3368a1] font-normal text-sm cursor-pointer ${
+                                      getRepliesCount(
+                                        group.comments,
+                                        comment.id
+                                      )[0] === 0
+                                        ? "hidden"
+                                        : ""
+                                    }`}
+                                    onClick={() => handleReplyComment(comment)}
+                                  >
+                                    {
+                                      getRepliesCount(
+                                        group.comments,
+                                        comment.id
+                                      )[1]
+                                    }{" "}
+                                  </p>
                                 </div>
                               </div>
                             );
@@ -423,15 +457,15 @@ const TaskComments = ({ taskId }: any) => {
           className={`${openReplies?.open ? "w-[40%]" : ""}`}
         >
           <RepliedComments
-            mainComment={groupedComments
-              ?.flatMap((group: any) => group.comments)
-              .find((comment: any) => comment.id === openReplies.commentId)}
+            mainComment={openReplies?.comment}
             handleReplyChange={handleReplyChange}
             handleAddReply={handleAddReply}
             replyText={replyText}
             IsUserCommentOrNot={IsUserCommentOrNot}
             formatCommentTime={formatCommentTime}
             setOpenReplies={setOpenReplies}
+            groupedComments={groupedComments}
+            handleDeleteComment={handleDeleteComment}
           />
         </div>
       )}
