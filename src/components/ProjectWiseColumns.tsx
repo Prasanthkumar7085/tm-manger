@@ -8,11 +8,7 @@ export const projectWiseColumns = [
     maxWidth: "50px",
     minWidth: "50px",
     enableSorging: false,
-    cell: (props: any) => (
-      <>
-        {props.getValue()}
-      </>
-    ),
+    cell: (props: any) => <>{props.getValue()}</>,
   },
   {
     accessorFn: (row: any) => row.project_title,
@@ -36,7 +32,6 @@ export const projectWiseColumns = [
             <span className="capitalize">{title ? title : "-"}</span>
           </div>
         </>
-
       );
     },
     width: "200px",

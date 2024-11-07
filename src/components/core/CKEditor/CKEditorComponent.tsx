@@ -48,6 +48,22 @@ const CKEditorComponent: FC<cKEditorComponentPropTypes> = ({
     };
   }
   const [mount, setMount] = useState(false);
+  let users = [
+    {
+      id: 1,
+      name: "John Doe",
+    },
+    {
+      id: 2,
+      name: "fjane Doe",
+    },
+  ];
+
+  const mentionUsers = (query: string) => {
+    return users.filter((user) =>
+      user.name.toLowerCase().includes(query.toLowerCase())
+    );
+  };
 
   useEffect(() => {
     setMount(true);
@@ -56,7 +72,10 @@ const CKEditorComponent: FC<cKEditorComponentPropTypes> = ({
     return (
       <CKEditor
         editor={ClassicEditor}
-        config={{ extraPlugins: [uploadPlugin], ...editorConfiguration }}
+        config={{
+          extraPlugins: [uploadPlugin],
+          ...editorConfiguration,
+        }}
         data={editorData ? editorData : ""}
         onChange={onCKEditorChange}
       />

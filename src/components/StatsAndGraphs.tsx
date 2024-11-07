@@ -43,6 +43,9 @@ const StatsAndGraph = ({ selectedDate }: any) => {
   const inProgressData = trendData.map((item: any) => item.inprogress_count);
 
   const options = {
+    credits: {
+      enabled: false,
+    },
     chart: { type: "spline", height: 200, style: { borderRadius: "16px" } },
     title: {
       text: "Tasks",

@@ -12,13 +12,13 @@ import SearchFilter from "./core/CommonComponents/SearchFilter";
 
 const ProjectDataTable = () => {
   const searchParams = new URLSearchParams(location.search);
-  // const initialSearch = searchParams.get("search") || "project_title";
+  const initialSearch = searchParams.get("search");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  // const [searchString, setSearchString] = useState<any>(initialSearch);
+  const [searchString, setSearchString] = useState<any>(initialSearch);
   // const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const { isLoading, isError, error, data, isFetching } = useQuery({
-  queryKey: ["users"],
+    queryKey: ["users"],
     queryFn: async () => {
       try {
         const response = await getAllProjectStats();
@@ -40,11 +40,11 @@ const ProjectDataTable = () => {
   //   const handler = setTimeout(() => {
   //     setDebouncedSearch(searchString);
   //     if (
-  //       searchString   
+  //       searchString
   //     ) {
   //     getAllProjectStats()
   //     } else {
-  //     getAllProjectStats() 
+  //     getAllProjectStats()
   //     }
   //   }, 500);
   //   return () => {
@@ -53,12 +53,12 @@ const ProjectDataTable = () => {
   // }, [searchString]);
   return (
     <div className="relative">
-                {/* <SearchFilter
-                  searchString={searchString}
-                  setSearchString={setSearchString}
-                  title="Search By title"
-                /> */}
-              
+      <SearchFilter
+        searchString={searchString}
+        setSearchString={setSearchString}
+        title="Search  Project Name"
+      />
+
       <div className="mt-5">
         <TanStackTable
           data={data}

@@ -12,13 +12,15 @@ import { StatusFilter } from "../core/StatusFilter";
 import { Button } from "../ui/button";
 import ProjectCard from "./Card";
 import useUsersHook from "./useUsersHook";
+// Assuming TanStackTable is in the ui folder
+import { projectColumns } from "./ProjectColumns";
+import TanStackTable from "../core/TanstackTable";
 
 const Projects = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
   const searchParams = new URLSearchParams(location.search);
-  const [refreshCount, setRefreshCount] = useState(0);
 
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 12;
@@ -47,6 +49,8 @@ const Projects = () => {
     pageSize: pageSizeParam,
     order_by: selectedSort || orderBY,
   });
+
+  const [viewMode, setViewMode] = useState("card"); // New state for view toggle
 
   const { isLoading, isError, error, data, isFetching } = useQuery({
     queryKey: [
@@ -135,11 +139,12 @@ const Projects = () => {
       setSelectedDate([]);
     }
   };
+
   const userOptions = Array.isArray(users)
     ? users.map((user: any) => ({
-      value: user.id,
-      label: `${user.fname} ${user.lname}`,
-    }))
+        value: user.id,
+        label: `${user.fname} ${user.lname}`,
+      }))
     : [];
 
   useEffect(() => {
@@ -164,6 +169,7 @@ const Projects = () => {
     };
   }, [searchString, selectedSort, selectedStatus, dateValue]);
 
+  let colums = projectColumns({ setDel, getAllProjects, projectsData });
   return (
     <section id="projects-container" className="relative">
       <div className="tasks-navbar">
@@ -199,6 +205,16 @@ const Projects = () => {
                 >
                   <span className="text-xl pr-2">+</span>
                   Add Project
+                </Button>
+              </li>
+              <li>
+                <Button
+                  className="text-white-500"
+                  onClick={() =>
+                    setViewMode(viewMode === "card" ? "table" : "card")
+                  }
+                >
+                  Table View
                 </Button>
               </li>
             </ul>

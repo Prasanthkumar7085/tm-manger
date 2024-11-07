@@ -19,7 +19,6 @@ import {
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import LoadingComponent from "@/components/core/LoadingComponent";
 import RepliedComments from "./RepliedComments";
-
 const TaskComments = ({ taskId }: any) => {
   const userID = useSelector(
     (state: any) => state.auth?.user?.user_details?.id
@@ -35,15 +34,12 @@ const TaskComments = ({ taskId }: any) => {
     open: false,
   });
   const [replyText, setReplyText] = useState("");
-
   const handleTestDetailsChange = (data: string) => {
     setCommentText(data);
   };
-
   const handleReplyChange = (data: string) => {
     setReplyText(data);
   };
-
   const {
     isLoading,
     isFetching,
@@ -65,7 +61,6 @@ const TaskComments = ({ taskId }: any) => {
     },
     enabled: !!taskId,
   });
-
   useEffect(() => {
     if (commentsData) {
       const sortedComments = [...commentsData].sort((a, b) => {
@@ -73,29 +68,22 @@ const TaskComments = ({ taskId }: any) => {
         const dateB = new Date(b.created_at).getTime();
         return dateA - dateB;
       });
-
       const grouped: any = [];
-
       sortedComments.forEach((comment: any) => {
         const commentDate = new Date(comment.created_at);
         const formattedDate = format(commentDate, "yyyy-MM-dd");
-
         if (!grouped[formattedDate]) {
           grouped[formattedDate] = [];
         }
-
         grouped[formattedDate].push(comment);
       });
-
       const groupedArray = Object.keys(grouped).map((date) => ({
         date,
         comments: grouped[date],
       }));
-
       setGroupedComments(groupedArray);
     }
   }, [commentsData]);
-
   const mutation = useMutation({
     mutationFn: async (newComment: {
       message: string;
@@ -120,7 +108,6 @@ const TaskComments = ({ taskId }: any) => {
       setLoading(false);
     },
   });
-
   const deleteMutation = useMutation({
     mutationFn: async (payload: any) => {
       setLoading(true);
@@ -141,7 +128,6 @@ const TaskComments = ({ taskId }: any) => {
       toast.error(error.message || "Error removing comment");
     },
   });
-
   const updateMutation = useMutation({
     mutationFn: async (payload: { comment_id: number; message: string }) => {
       setLoading(true);
@@ -164,77 +150,76 @@ const TaskComments = ({ taskId }: any) => {
       toast.error(error.message || "Error updating comment");
     },
   });
-
   const handleAddComment = () => {
     if (!commentText.trim()) {
       toast.error("Comment cannot be empty");
       return;
     }
-
     const payload: any = {
       message: commentText,
       commented_by: userID,
       reply_to: null,
     };
-
     mutation.mutate(payload);
   };
-
   const handleDeleteComment = (commentId: number) => {
     deleteMutation.mutate({ comment_id: commentId });
   };
-
   const handleEditComment = (commentId: number, message: string) => {
     setEditingCommentId(commentId);
     setCommentText(message);
   };
-
   const handleSaveEdit = () => {
     if (!commentText.trim()) {
       toast.error("Comment cannot be empty");
       return;
     }
-
     updateMutation.mutate({
       comment_id: editingCommentId!,
       message: commentText,
     });
   };
-
   const handleCancelEdit = () => {
     setEditingCommentId(null);
     setCommentText("");
   };
-
   const handleReplyComment = (commentId: number) => {
     setOpenReplies({ commentId: commentId, open: true });
   };
-
+  const IsUserCommentOrNot = (comment: any) => {
+    const isUserComment = comment.commented_by === userID;
+    return isUserComment;
+  };
+  const formatCommentTime = (comment: any) => {
+    const formattedDistance = formatDistanceToNow(
+      new Date(comment.created_at),
+      {
+        addSuffix: true,
+      }
+    );
+    return formattedDistance;
+  };
   const handleAddReply = () => {
     if (!replyText.trim()) {
       toast.error("Reply cannot be empty");
       return;
     }
-
     const payload: any = {
       message: replyText,
       commented_by: userID,
       reply_to: openReplies.commentId,
     };
-
     mutation.mutate(payload);
-    setReplyText(""); // Clear reply text after submission
+    setReplyText("");
   };
-
   useEffect(() => {
     if (commentsContainerRef.current) {
       commentsContainerRef.current.scrollTop =
         commentsContainerRef.current.scrollHeight;
     }
   }, [groupedComments]);
-
   return (
-    <div className="flex flex-row overflow-auto">
+    <div className="flex flex-row">
       <div
         style={{ height: "calc(100vh - 300px)" }}
         className={`overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 ${openReplies?.open ? " w-[60%]" : "w-[100%]"}`}
@@ -259,23 +244,15 @@ const TaskComments = ({ taskId }: any) => {
                     <div className="my-4 text-center text-gray-500 text-xs">
                       <span className="bg-white px-2">{formattedDate}</span>
                     </div>
-
                     {group.comments?.length > 0
                       ? group.comments.map((comment: any) => {
-                        const isUserComment =
-                          comment.commented_by === userID;
-                        const formattedDistance = formatDistanceToNow(
-                          new Date(comment.created_at),
-                          { addSuffix: true }
-                        );
                         const isEdited =
                           comment.updated_at &&
                           comment.created_at !== comment.updated_at;
-
                         return (
                           <div
                             key={comment.id}
-                            className={`each-member flex flex-col bg-[#FEF7FD] py-4 px-4 rounded-md w-[70%] ${isUserComment ? "ml-auto text-right" : "mr-auto text-left"}`}
+                            className={`each-member flex flex-col bg-[#FEF7FD] py-4 px-4 rounded-md w-[70%] ${IsUserCommentOrNot(comment) ? "ml-auto text-right" : "mr-auto text-left"}`}
                           >
                             <div className="flex justify-between items-center">
                               <div className="member-details flex items-center space-x-3">
@@ -291,12 +268,12 @@ const TaskComments = ({ taskId }: any) => {
                                 </div>
                                 <div className="member-name">
                                   <span className="font-semibold">
-                                    {isUserComment
+                                    {IsUserCommentOrNot(comment)
                                       ? "You"
                                       : comment.user?.name || "Unknown"}
                                   </span>
                                   <span className="text-[#67727E] font-normal text-sm pl-2">
-                                    {formattedDistance}{" "}
+                                    {formatCommentTime(comment)}{" "}
                                     {isEdited && (
                                       <span className="text-xs text-gray-400">
                                         (edited)
@@ -305,7 +282,6 @@ const TaskComments = ({ taskId }: any) => {
                                   </span>
                                 </div>
                               </div>
-
                               <DropdownMenu>
                                 <DropdownMenuTrigger>
                                   <button className="text-gray-500 hover:text-gray-800">
@@ -317,7 +293,7 @@ const TaskComments = ({ taskId }: any) => {
                                   className="bg-white p-2 rounded-md shadow-lg"
                                 >
                                   <DropdownMenuItem
-                                    className={`cursor-pointer ${isUserComment ? "" : "hidden"}`}
+                                    className={`cursor-pointer ${IsUserCommentOrNot(comment) ? "" : "hidden"}`}
                                     onClick={() =>
                                       handleDeleteComment(comment.id)
                                     }
@@ -325,7 +301,7 @@ const TaskComments = ({ taskId }: any) => {
                                     Delete
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
-                                    className={`cursor-pointer ${isUserComment ? "" : "hidden"}`}
+                                    className={`cursor-pointer ${IsUserCommentOrNot(comment) ? "" : "hidden"}`}
                                     onClick={() =>
                                       handleEditComment(
                                         comment.id,
@@ -346,7 +322,6 @@ const TaskComments = ({ taskId }: any) => {
                                 </DropdownMenuContent>
                               </DropdownMenu>
                             </div>
-
                             <div className="person-message mt-2 text-slate-500 leading-snug">
                               {editingCommentId === comment.id ? (
                                 <div className="flex flex-col">
@@ -389,7 +364,6 @@ const TaskComments = ({ taskId }: any) => {
               : "No comments found"}
           </div>
         </div>
-
         <div className="card-footer sticky bottom-0 left-0 right-0 bg-white px-4 py-4  z-10 overflow-hidden">
           <div className="grid grid-cols-[50px,auto]">
             <div className="profile-image">
@@ -425,7 +399,6 @@ const TaskComments = ({ taskId }: any) => {
         </div>
         <LoadingComponent loading={loading} />
       </div>
-
       {openReplies?.open && (
         <div
           style={{ height: "calc(100vh - 50px)" }}
@@ -438,11 +411,13 @@ const TaskComments = ({ taskId }: any) => {
             handleReplyChange={handleReplyChange}
             handleAddReply={handleAddReply}
             replyText={replyText}
+            IsUserCommentOrNot={IsUserCommentOrNot}
+            formatCommentTime={formatCommentTime}
+            setOpenReplies={setOpenReplies}
           />
         </div>
       )}
     </div>
   );
 };
-
 export default TaskComments;

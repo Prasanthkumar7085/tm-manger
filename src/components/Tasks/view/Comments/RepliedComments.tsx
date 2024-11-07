@@ -1,33 +1,72 @@
 import CKEditorComponent from "@/components/core/CKEditor/CKEditorComponent";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 const RepliedComments = ({
   mainComment,
   handleReplyChange,
   handleAddReply,
   replyText,
+  IsUserCommentOrNot,
+  formatCommentTime,
+  setOpenReplies,
 }: any) => {
   return (
     <div className="p-4 bg-white rounded-lg shadow-md w-full">
-      {/* Main Comment Section */}
-      <div className="mb-6">
-        <div className="font-semibold text-lg text-gray-800 mb-2">
-          Main Comment:
-        </div>
-        <div
-          className="text-sm text-gray-700 bg-gray-100 p-4 rounded-md"
-          dangerouslySetInnerHTML={{
-            __html: mainComment?.message || "No message available",
+      <div className="flex items-center justify-between">
+        <p>Replies</p>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setOpenReplies({ commentId: null, open: false });
           }}
-        />
+          className="text-center font-semibold  text-lg  text-slate-500 border-none"
+        >
+          <X></X>
+        </Button>
+      </div>
+      <div className="flex flex-col bg-[#FEF7FD] py-4 px-4 rounded-md ml-auto text-left">
+        <div>
+          <div className="flex justify-between items-center">
+            <div className="member-details flex items-center space-x-3">
+              <div className="member-profile-image">
+                <img
+                  className="w-8 h-8 rounded-full"
+                  src={
+                    mainComment.user?.avatar ||
+                    "https://i.pravatar.cc/150?img=5"
+                  }
+                  alt="Avatar"
+                />
+              </div>
+              <div className="member-name">
+                <span className="font-semibold">
+                  {IsUserCommentOrNot(mainComment)
+                    ? "You"
+                    : mainComment.user?.name || "Unknown"}
+                </span>
+                <span className="text-[#67727E] font-normal text-sm pl-2">
+                  {formatCommentTime(mainComment)}{" "}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="person-message mt-2 text-slate-500 leading-snug">
+          <div className="flex flex-col">
+            <p
+              dangerouslySetInnerHTML={{
+                __html: mainComment.message,
+              }}
+            />
+          </div>
+        </div>
       </div>
 
-      {/* Replies Section */}
       <div className="mb-6">
         <div className="font-semibold text-lg text-gray-800 mb-2">Replies:</div>
-        {/* Render the replies here, if any */}
-        {/* For now, we're just rendering a placeholder */}
+
         <div className="space-y-4">
-          {/* Example Reply */}
           {mainComment?.replies?.length > 0 ? (
             mainComment.replies.map((reply: any) => (
               <div key={reply.id} className="flex items-start space-x-3">
@@ -53,7 +92,6 @@ const RepliedComments = ({
         </div>
       </div>
 
-      {/* Add a New Reply */}
       <div className="mt-6">
         <div className="font-semibold text-lg text-gray-800 mb-2">
           Add Your Reply:
