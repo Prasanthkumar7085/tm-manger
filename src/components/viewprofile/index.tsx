@@ -76,7 +76,7 @@ function ViewProfile() {
   };
 
   const handleRemoveFile = () => {
-    setPreviewUrl(null);
+    setPreviewUrl("profile-picture.png");
     setUserData((prev: any) => ({
       ...prev,
       profile_pic: "",
