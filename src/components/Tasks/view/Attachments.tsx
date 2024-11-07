@@ -203,9 +203,9 @@ const UploadAttachments = () => {
   };
 
   return (
-    <div id="upload-attachments" className="mt-5">
-      <div className="flex items-center mb-3 space-x-4">
-        <h2 className="text-[1rem] text-slate-600 font-medium leading-3">Attachments</h2>
+    <div id="upload-attachments" className="mt-3 border">
+      <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
+        <h3 className="leading-1 text-black text-[1.1em]">Attachment</h3>
         <Button type="button" onClick={open} variant="add" size="DefaultButton" className="h-[25px] px-3 bg-orange-400">
           {uploadingStatus.loading && (
             <div className="flex items-center">
@@ -216,47 +216,50 @@ const UploadAttachments = () => {
           Upload
         </Button>
       </div>
-      <div className="attachments-list  flex overflow-x-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 space-x-2">
-        {attachmentsData.length > 0 ? (
-          attachmentsData.map((file: any) => (
-            <div
-              key={file.id}
-              className="each-attachment border min-w-[300px] mb-2 px-2 py-1 rounded-md"
-            >
-              <div className="grid grid-cols-[30px,auto] gap-3 items-center">
-                <div className="icon text-3xl">
-                  📄
-                </div>
-                <div className="content">
-                  <p className="text-black  rounded-md overflow-hidden line-clamp-1">
+      <div className="card-body">
+        <div className="attachments-list max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 space-y-2 pt-3 pl-3 pr-3">
+          {attachmentsData.length > 0 ? (
+            attachmentsData.map((file: any) => (
+              <div
+                key={file.id}
+                className="each-attachment border min-w-[300px] mb-2 px-2 py-1 rounded-md"
+              >
+                <div className="grid grid-cols-[30px,auto] gap-3 items-center">
+                  <div className="icon text-3xl">
+                    📄
+                  </div>
+                  <div className="content">
+                    <p className="text-black  rounded-md overflow-hidden line-clamp-1">
 
-                    {file.file_name}</p>
-                  <div className="actions  flex space-x-5">
-                    <button
-                      onClick={() => {
-                        downloadFileMutation.mutate(file);
-                      }}
-                      title="download"
-                      className="flex items-center text-green-600"
-                    >
-                      <CloudDownload className="text-green-500 w-4 h-4 mr-1" />
-                      Download
-                    </button>
+                      {file.file_name}</p>
+                    <div className="actions  flex space-x-5">
+                      <button
+                        onClick={() => {
+                          downloadFileMutation.mutate(file);
+                        }}
+                        title="download"
+                        className="flex items-center text-green-600"
+                      >
+                        <CloudDownload className="text-green-500 w-4 h-4 mr-1" />
+                        Download
+                      </button>
 
-                    <DeleteAttachments
-                      attachmentId={file.id}
-                      onSuccess={() => setRefreshCount((prev) => prev + 1)}
-                      taskId={taskId}
-                    />
+                      <DeleteAttachments
+                        attachmentId={file.id}
+                        onSuccess={() => setRefreshCount((prev) => prev + 1)}
+                        taskId={taskId}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))
-        ) : (
-          <p>No attachments found.</p>
-        )}
+            ))
+          ) : (
+            <p>No attachments found.</p>
+          )}
+        </div>
       </div>
+
       <div className="mt-2 space-y-2"></div>
       <div className="mt-4">
         <div {...getRootProps()} className="hidden">
