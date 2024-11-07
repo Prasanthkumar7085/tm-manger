@@ -19,6 +19,7 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { Badge } from "../ui/badge";
+import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
 
 export const taskColumns = ({ setDel }: any) => {
   const navigate = useNavigate();
@@ -73,24 +74,13 @@ export const taskColumns = ({ setDel }: any) => {
       maxWidth: "50px",
       minWidth: "50px",
     },
-    // {
-    //   accessorFn: (row: any) => row.project_title,
-    //   id: "project_title",
-    //   cell: (info: any) => (
-    //     <span className="capitalize">{info.getValue()}</span>
-    //   ),
-    //   width: "150px",
-    //   maxWidth: "150px",
-    //   minWidth: "150px",
-    //   header: () => <span>Project</span>,
-    //   footer: (props: any) => props.column.id,
-    // },
     {
       accessorFn: (row: any) => row.project_title,
       id: "project_title",
       cell: (info: any) => {
         const title = info.getValue();
-        const project_logo_url = info.row.original.project_logo_url ||"/favicon.png";
+        const project_logo_url =
+          info.row.original.project_logo_url || "/favicon.png";
         return (
           <div
             style={{
@@ -104,7 +94,12 @@ export const taskColumns = ({ setDel }: any) => {
               <img
                 src={project_logo_url}
                 alt="project logo"
-                style={{ width: "24px", height: "24px", marginRight: "8px", borderRadius:"50%",}}
+                style={{
+                  width: "24px",
+                  height: "24px",
+                  marginRight: "8px",
+                  borderRadius: "50%",
+                }}
               />
             )}
             <span className="capitalize">{title ? title : "-"}</span>
@@ -138,13 +133,13 @@ export const taskColumns = ({ setDel }: any) => {
     {
       accessorFn: (row: any) =>
         row.assignees.map((assignee: any) => {
-           return assignee.user_profile_pic_url ? (
+          return assignee.user_profile_pic_url ? (
             <img
               src={assignee.user_profile_pic_url}
               className="profile-pic"
               style={{
                 marginRight: "5px",
-                borderRadius: "50%", 
+                borderRadius: "50%",
                 width: "30px",
                 height: "30px",
               }}
@@ -163,35 +158,6 @@ export const taskColumns = ({ setDel }: any) => {
       header: () => <span>Assigned User</span>,
       footer: (props: any) => props.column.id,
     },
-    // {
-    //   accessorFn: (row: any) =>
-    //     row.assignees.map((assignee: any) => {
-    //       const profilePic = assignee.user_profile_pic || "/favicon.png";
-    //       return (
-    //         <img
-    //           src={profilePic}
-    //           className="profile-pic"
-    //           style={{
-    //             marginRight: "5px",
-    //             borderRadius: "50%",
-    //             width: "30px",
-    //             height: "30px",
-    //           }}
-    //         />
-    //       );
-    //     }),
-    //   id: "assignees",
-    //   cell: (info: any) => (
-    //     <div style={{ display: "flex", justifyContent: "flex-start" }}>
-    //       {info.getValue()}
-    //     </div>
-    //   ),
-    //   width: "280px",
-    //   maxWidth: "280px",
-    //   minWidth: "280px",
-    //   header: () => <span>Assigned User</span>,
-    //   footer: (props: any) => props.column.id,
-    // },
     {
       accessorFn: (row: any) => row.status,
       id: "status",
@@ -243,7 +209,6 @@ export const taskColumns = ({ setDel }: any) => {
       header: () => <span>Status</span>,
       footer: (props: any) => props.column.id,
     },
-
     {
       accessorFn: (row: any) => row.priority,
       id: "priority",
@@ -253,9 +218,17 @@ export const taskColumns = ({ setDel }: any) => {
           taskPriorityConstants.find(
             (item: any) => item.value === priorityValue
           )?.value || "-";
+        const ArrowIcon =
+          priorityValue === "HIGH"
+            ? ArrowUp
+            : priorityValue === "MEDIUM"
+              ? ArrowRight
+              : priorityValue === "LOW"
+                ? ArrowDown
+                : null;
 
         return (
-          <span className="capitalize">
+          <span className="capitalize flex items-center gap-1">
             <Badge
               style={{
                 backgroundColor:
@@ -263,6 +236,7 @@ export const taskColumns = ({ setDel }: any) => {
                 color: colorObjectForStatus[priorityLabel] || "black",
               }}
             >
+              {ArrowIcon && <ArrowIcon style={{ marginRight: "4px" }} />}
               {priorityLabel}
             </Badge>
           </span>

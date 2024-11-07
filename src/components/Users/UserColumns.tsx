@@ -18,9 +18,27 @@ export const userColumns = [
     accessorFn: (row: any) => row.fname,
     id: "fname",
     cell: (info: any) => {
-      let title = info.getValue();
+      const title = info.getValue();
+      const profilePicUrl = info.row.original.profile_pic_url;
       return (
-        <div style={{ textAlign: "left" }}>
+        <div style={{ display: "flex", alignItems: "center", textAlign: "left" }}>
+          {profilePicUrl ? (
+            <img 
+              src={profilePicUrl} 
+              alt="Profile" 
+              style={{ width: 30, height: 30, borderRadius: "50%", marginRight: 8 }} 
+            />
+          ) : (
+            <div 
+              style={{
+                width: 30, 
+                height: 30, 
+                borderRadius: "50%", 
+                backgroundColor: "#ccc", 
+                marginRight: 8 
+              }}
+            />
+          )}
           <span className="capitalize">{title ? title : "-"}</span>
         </div>
       );
@@ -31,6 +49,7 @@ export const userColumns = [
     header: () => <span>First Name</span>,
     footer: (props: any) => props.column.id,
   },
+ 
   {
     accessorFn: (row: any) => row.lname,
     id: "lname",
