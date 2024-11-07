@@ -21,7 +21,6 @@ const ProjectDataTable = () => {
     queryFn: async () => {
       try {
         const response = await getAllProjectStats();
-        console.log(response, "response");
         if (response.success) {
           const dataWithSerials = addDataSerial(response?.data?.data);
           return dataWithSerials;
@@ -52,7 +51,7 @@ const ProjectDataTable = () => {
   // }, [searchString]);
   return (
     <div className="relative ">
-      <div className="justify-end">
+      <div className="flex justify-end">
         <SearchFilter
           searchString={searchString}
           setSearchString={setSearchString}
