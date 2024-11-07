@@ -12,7 +12,6 @@ import TagsComponent from "../Add/TagsComponent";
 import AssignedUsers from "../AssigneTasks";
 import UploadAttachments from "./Attachments";
 import PriorityStatus from "./PriorityStatus";
-import TopBar from "@/components/TopBar";
 import TaskStatus from "./TaskStatus";
 import TaskComments from "./Comments";
 
@@ -95,11 +94,142 @@ const TaskView = () => {
   };
 
   return (
-    <div className="flex flex-col space-x-4 items-start relative h-full overflow-auto">
+    <div className="relative overflow-y-auto">
       <div
-        id="task-comments"
-        className="w-full max-h-[700px] mt-4 overflow-hidden bg-white rounded-lg shadow-md relative"
+        id="task-details"
+        className=" w-full h-full bg-white rounded-lg shadow-md p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
       >
+        <div className="task-primary-details">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <div className="leftItem">
+              <h1
+                className="text-xl text-[#1B2459] font-medium overflow-hidden overflow-ellipsis whitespace-nowrap mb-1"
+                title={viewData?.title}
+              >
+                {viewData?.title ? capitalizeWords(viewData?.title) : "--"}
+              </h1>
+
+              <div className="description">
+                <p
+                  className="text-black  rounded-md overflow-hidden line-clamp-2"
+                  title={viewData?.description}
+                >
+                  {viewData?.description ? viewData.description : "--"}
+                </p>
+              </div>
+            </div>
+            <div className="rightItem">
+              <div className="flex justify-end space-x-3">
+                <TaskStatus
+                  taskId={taskId}
+                  setUpdateDetailsOfTask={setUpdateDetailsOfTask}
+                  selectedStatus={selectedStatus}
+                  setSelectedStatus={setSelectedStatus}
+                />
+                <Button
+                  type="button"
+                  variant="edit"
+                  size="DefaultButton"
+                  onClick={() => {
+                    router.navigate({
+                      to: `/tasks/${taskId}`,
+                    });
+                  }}
+                >
+                  <img
+                    src="/edit-icon.svg"
+                    alt="icon"
+                    className="w-3 h-3 mr-2"
+                  />
+                  Edit Task
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="focus-details mt-3">
+            <ul className="grid grid-cols-5">
+              <li>
+                <p className="text-[#666666] text-sm font-medium mb-1">
+                  Project
+                </p>
+                <p className="mt-0 text-black font-medium">
+                  {viewData?.project_title
+                    ? capitalizeWords(viewData?.project_title)
+                    : "--"}
+                </p>
+              </li>
+              <li>
+                <p className="text-[#666666] text-sm font-medium mb-1">
+                  Priority
+                </p>
+                <PriorityStatus
+                  taskId={taskId}
+                  setUpdatePriority={setUpdatePriority}
+                  selectedPriority={selectedPriority}
+                  setSelectedPriority={setSelectedPriority}
+                  viewData={viewData}
+                />
+              </li>
+
+              <li>
+                <p className="text-[#666666] text-sm font-medium mb-1">
+                  Due Date
+                </p>
+                <div className="inline-block px-3 py-[1px] border text-[#FF0021] bg-[#FFE0E480] text-md font-semibold rounded-sm">
+                  {dayjs(viewData?.due_date).format("MM/DD/YYYY")}
+                </div>
+              </li>
+              <li>
+                <div>
+                  <p className="text-[#666666] text-sm font-medium mb-1">
+                    Created Date
+                  </p>
+                </div>
+                <div>
+                  <p className="text-black font-medium">
+                    {dayjs(viewData?.created_at).format("MM/DD/YYYY")}
+                  </p>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <p className="text-[#666666] text-sm font-medium mb-1">
+                    Created By
+                  </p>
+                </div>
+                <div>
+                  <div className="created-person flex items-center space-x-3">
+                    <img
+                      src={
+                        viewData?.created_profile_pic_url ||
+                        "/profile-picture.png"
+                      }
+                      alt="User"
+                      className="object-contain w-6 h-6 rounded-full border"
+                    />
+                    <p className="font-medium text-black  text-md capitalize">
+                      {viewData?.created_name}
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <hr className="mt-2 mb-2" />
+          <div className="tags-and-upload-attachments grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <AssignedUsers viewTaskData={viewData} />
+            <TagsComponent
+              tagInput={tagInput}
+              setTagInput={setTagInput}
+              task={viewData}
+              setTask={setViewData}
+              errorMessages={errorMessages}
+              setErrorMessages={setErrorMessages}
+            />
+          </div>
+          <UploadAttachments />
+        </div>
+        <hr className="mt-2 mb-2" />
         <TaskComments taskId={taskId} />
       </div>
       <LoadingComponent loading={isLoading || loading} />
