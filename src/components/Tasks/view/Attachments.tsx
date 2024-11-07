@@ -10,6 +10,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import pdfIcon from "@/assets/pdf-icon.svg";
 import { useParams } from "@tanstack/react-router";
 import { CloudDownload, Loader2, UploadCloud, X } from "lucide-react";
+
 import { useState } from "react";
 import { useDropzone, FileRejection } from "react-dropzone";
 import { toast } from "sonner";
@@ -203,9 +204,9 @@ const UploadAttachments = () => {
 
   return (
     <div id="upload-attachments" className="mt-5">
-      <div className="flex justify-between items-center">
-        <h2 className="text-lg text-[#0D0D0D] font-medium">Attachments</h2>
-        <Button type="button" onClick={open} variant="add" size="DefaultButton">
+      <div className="flex items-center mb-3 space-x-4">
+        <h2 className="text-[1rem] text-slate-600 font-medium leading-3">Attachments</h2>
+        <Button type="button" onClick={open} variant="add" size="DefaultButton" className="h-[25px] px-3 bg-orange-400">
           {uploadingStatus.loading && (
             <div className="flex items-center">
               <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -215,43 +216,40 @@ const UploadAttachments = () => {
           Upload
         </Button>
       </div>
-      <div className="attachments-list mt-5 space-y-4">
+      <div className="attachments-list  flex overflow-x-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 space-x-2">
         {attachmentsData.length > 0 ? (
           attachmentsData.map((file: any) => (
             <div
               key={file.id}
-              className="each-attachment flex justify-between items-center"
+              className="each-attachment border min-w-[300px] mb-2 px-2 py-1 rounded-md"
             >
-              <div className="attachment-name flex space-x-4">
-                <span className="text-xl">
-                  {" "}
-                  {/* <img src={pdfIcon} alt="pdf" height={20} width={20} /> */}
+              <div className="grid grid-cols-[30px,auto] gap-3 items-center">
+                <div className="icon text-3xl">
                   📄
-                </span>
-                <div>
-                  <p className="name text-[#242634] font-medium text-sm leading-tight">
-                    {file.file_name}
-                  </p>
-                  {/* <p className="time mt-0">2m ago</p> */}
                 </div>
-              </div>
-              <div className="attachment-actions flex justify-center space-x-4">
-                {/* <p className="file-size border text-black font-semibold text-[10px] px-2 flex items-center rounded-sm border-slate-300"> */}
-                {/* {file?.file_size} */}
-                {/* </p> */}
-                <button
-                  onClick={() => {
-                    downloadFileMutation.mutate(file);
-                  }}
-                  title="download"
-                >
-                  <CloudDownload className="text-green-500 w-6 h-6" />
-                </button>
-                <DeleteAttachments
-                  attachmentId={file.id}
-                  onSuccess={() => setRefreshCount((prev) => prev + 1)}
-                  taskId={taskId}
-                />
+                <div className="content">
+                  <p className="text-black  rounded-md overflow-hidden line-clamp-1">
+
+                    {file.file_name}</p>
+                  <div className="actions  flex space-x-5">
+                    <button
+                      onClick={() => {
+                        downloadFileMutation.mutate(file);
+                      }}
+                      title="download"
+                      className="flex items-center text-green-600"
+                    >
+                      <CloudDownload className="text-green-500 w-4 h-4 mr-1" />
+                      Download
+                    </button>
+
+                    <DeleteAttachments
+                      attachmentId={file.id}
+                      onSuccess={() => setRefreshCount((prev) => prev + 1)}
+                      taskId={taskId}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           ))
