@@ -391,11 +391,11 @@ const AddTask = () => {
                                     opacity: selectedUsers.has(user.id) ? 1 : 0,
                                   }}
                                 />
-                                <div className="w-8 h-8 object-contain	 rounded-full border  bg-white">
+                                <div className="w-6 h-6 object-contain	 rounded-full border  bg-white">
                                   <img
                                     src={
                                       user?.user_profile_pic_url ||
-                                      "profile-picture.png"
+                                      "/profile-picture.png"
                                     }
                                   />
                                 </div>

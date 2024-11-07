@@ -125,7 +125,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
           const response = await getProjectMembersAPI(viewTaskData?.project_id);
           if (response.success) {
             const data = response.data?.data;
-            setUsers(data?.records || []);
+            setUsers(data?.members || []);
           } else {
             throw response;
           }
@@ -192,8 +192,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
     <div className="flex flex-col justify-between h-full w-full overflow-auto">
       <div>
         <div className="flex items-center">
-          <p className="text-[#666666] text-sm font-medium mr-5">Assigned To
-          </p>
+          <p className="text-[#666666] text-sm font-medium mr-5">Assigned To</p>
           <div className="flex items-center justify-end gap-4">
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
@@ -215,7 +214,9 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                           <CommandItem
                             key={user.id}
                             value={getFullName(user)}
-                            onSelect={() => toggleValue(user.user_id.toString())}
+                            onSelect={() =>
+                              toggleValue(user.user_id.toString())
+                            }
                             disabled={selectedMembers.some(
                               (m: any) => m.user_id == user.user_id
                             )}
@@ -230,6 +231,15 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                                   : "opacity-0"
                               )}
                             />
+
+                            <div className="w-6 h-6 object-contain	 rounded-full border  bg-white">
+                              <img
+                                src={
+                                  user?.created_profile_pic_url ||
+                                  "/profile-picture.png"
+                                }
+                              />
+                            </div>
                             <p className="capitalize">{getFullName(user)}</p>
                           </CommandItem>
                         ))}
@@ -294,7 +304,8 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                     )}
                   </div>
                   <div className="content">
-                    <p className="font-medium text-black pr-3 pl-1 whitespace-nowrap">{capitalize(getFullName(member))}
+                    <p className="font-medium text-black pr-3 pl-1 whitespace-nowrap">
+                      {capitalize(getFullName(member))}
                     </p>
                     <DeleteAssignes
                       assigneeId={member.task_assignee_id}
