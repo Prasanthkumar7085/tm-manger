@@ -3,7 +3,6 @@ import { Button } from "../ui/button";
 import { useNavigate } from "@tanstack/react-router";
 import viewButtonIcon from "@/assets/view.svg";
 import { useState } from "react";
-import DeleteDialog from "../core/deleteDialog";
 import { toast } from "sonner";
 import { deleteTaskAPI } from "@/lib/services/tasks";
 import {
@@ -12,13 +11,9 @@ import {
   taskPriorityConstants,
   taskStatusConstants,
 } from "@/lib/helpers/statusConstants";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
 import { Badge } from "../ui/badge";
+import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
+import DeleteDialog from "../core/deleteDialog";
 
 export const taskColumns = ({ setDel }: any) => {
   const navigate = useNavigate();
@@ -222,6 +217,14 @@ export const taskColumns = ({ setDel }: any) => {
           taskPriorityConstants.find(
             (item: any) => item.value === priorityValue
           )?.value || "-";
+        const ArrowIcon =
+          priorityValue === "HIGH"
+            ? ArrowUp
+            : priorityValue === "MEDIUM"
+              ? ArrowRight
+              : priorityValue === "LOW"
+                ? ArrowDown
+                : null;
 
         return (
           <>
@@ -233,6 +236,7 @@ export const taskColumns = ({ setDel }: any) => {
                 color: colorObjectForStatus[priorityLabel] || "black",
               }}
             >
+              {ArrowIcon && <ArrowIcon style={{ marginRight: "4px" }} />}
               {priorityLabel}
             </span>
           </>

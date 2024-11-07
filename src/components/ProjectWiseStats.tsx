@@ -2,11 +2,10 @@ import { errPopper } from "@/lib/helpers/errPopper";
 import { getAllProjectStats } from "@/lib/services/dashboard";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import TanStackTable from "./core/TanstackTable";
 import { projectWiseColumns } from "./ProjectWiseColumns";
 import { addDataSerial } from "@/lib/helpers/addSerial";
-import LoadingComponent from "./core/LoadingComponent";
 import Loading from "./core/Loading";
 import SearchFilter from "./core/CommonComponents/SearchFilter";
 

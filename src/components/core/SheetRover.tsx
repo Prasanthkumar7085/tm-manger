@@ -12,23 +12,16 @@ import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Loader2, LockKeyhole, X } from "lucide-react";
-const SheetRover = ({
+import { SheetRoverProps } from "@/lib/interfaces";
+ export const SheetRover = ({
   isOpen,
   userPasswordData,
   errors,
   loading,
   handleUpdateChangePassword,
   handleCancel,
-  resetUserPassword,
-}: {
-  userPasswordData: any;
-  errors: any;
-  loading: boolean;
-  isOpen: boolean;
-  handleCancel: () => void;
-  handleUpdateChangePassword: any;
-  resetUserPassword: () => void;
-}) => {
+  resetUserPassword, 
+}: SheetRoverProps) => {
   return (
     <Sheet open={isOpen}>
       <SheetContent className="bg-white">
@@ -94,4 +87,3 @@ const SheetRover = ({
   );
 };
 
-export default SheetRover;
