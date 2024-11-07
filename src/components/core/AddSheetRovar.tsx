@@ -6,7 +6,6 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
@@ -16,13 +15,13 @@ import {
   ChevronDown,
   ChevronUp,
   Loader2,
-  LockKeyhole,
   X,
 } from "lucide-react";
 import { Popover } from "@radix-ui/react-popover";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
-const AddSheetRover = ({
+import { AddSheetRoverProps } from "@/lib/interfaces";
+ export const AddSheetRover = ({
   isOpen,
   userData,
   isEditing,
@@ -37,24 +36,8 @@ const AddSheetRover = ({
   setUserTypeOpen,
   onChangeStatus,
   handleDrawerClose,
-  handleFormSubmit,
-}: {
-  userData: any;
-  isEditing: any;
-  errors: any;
-  userType: any;
-  userTypes: any;
-  userTypeOpen: any;
-  loading: boolean;
-  isOpen: boolean;
-  handleChangeEmail: any;
-  setUserTypeOpen: any;
-  handleChangePassword: any;
-  handleDrawerClose: () => void;
-  handleFormSubmit: () => void;
-  onChangeStatus: any;
-  handleInputChange: any;
-}) => {
+  handleFormSubmit,  
+}: AddSheetRoverProps)=> {
   return (
     <Sheet open={isOpen}>
       <SheetContent className="bg-white overflow-auto">
@@ -291,4 +274,3 @@ const AddSheetRover = ({
   );
 };
 
-export default AddSheetRover;

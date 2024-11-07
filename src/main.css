@@ -2,32 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
-@import 'tailwindcss/tailwind.css';
-
-
-body { @apply font-sans; }
-
-th{
-  background: #f3e5f5!important;
+body {
+  @apply font-sans;
 }
-td{
-  padding: 5px 10px!important;
-}
-.rs-picker input{
-background: rgb(248 250 252 / var(--tw-bg-opacity))!important;
+
+.rs-picker input {
+  background: rgb(248 250 252 / var(--tw-bg-opacity)) !important;
 }
 .rs-picker .rs-input-group-addon {
-background: rgb(185 28 28 / var(--tw-bg-opacity))!important;
-border-radius:50%;
-border: none;
+  background: rgb(185 28 28 / var(--tw-bg-opacity)) !important;
+  border-radius: 50%;
+  border: none;
   display: flex;
-  width: 25px!important;
+  width: 25px !important;
   height: 25px;
   align-items: center;
   justify-content: center;
-  padding: 0!important;
+  padding: 0 !important;
   color: #fff;
   font-size: 0.8rem;
   margin-top: 3px;
   margin-right: 5px;
+}
+.rs-picker-popup {
+  z-index: 999;
+}
+
+.stats-and-graph-chart .highcharts-title{
+  display:none;
+}
+table thead th:first-child,
+table tbody td:first-child{
+  position: sticky;
+  left: 0;
+}
+table thead th:last-child,
+table tbody td:last-child{
+  position: sticky;
+  right: 0;
 }

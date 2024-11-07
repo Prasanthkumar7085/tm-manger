@@ -133,58 +133,69 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
   };
 
   return (
-    <div className="mb-4">
-      <label className="block text-[#666666] text-sm font-medium mb-1">
-        Tags
-      </label>
+    <div>
+      <div className="border mt-2">
+        <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
+          <h3 className="leading-1 text-black text-[1.1em]">Tags</h3>
+          <div>
+            <div className="flex space-x-3 items-center bg-slate-50 border border-green-600 rounded-md pr-1">
+              <input
+                type="text"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleTagSubmit();
+                    e.preventDefault();
+                  }
+                }}
+                className="bg-slate-50 h-[25px] p-2 w-full rounded-md"
+                placeholder="Enter tag"
+              />
+              <Button
+                type="button"
+                variant="add"
+                size="DefaultButton"
+                onClick={handleTagSubmit}
+                className="h-[20px] bg-green-600 px-3"
+              >
+                Add
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="card-body">
+          <div className="max-h-[60px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 space-y-2 pt-3 pl-3 pr-3">
+            <div className="flex flex-wrap">
+              {task?.tags?.length > 0
+                ? task?.tags.map((tag: any, index: number) => (
+                  <div
+                    key={index}
+                    className="bg-[#00B8121A] text-[#00B812] text-[0.8em] font-medium  mr-2 mb-2 flex px-2 rounded-full"
+                  >
+                    {tag}
+                    <p
+                      className="ml-1 text-[#000000]   rotate-[45deg] font-medium cursor-pointer"
+                      onClick={() => handleTagDelete(tag)}
+                    >
+                      +
+                    </p>
+                  </div>
+                ))
+                : isTaskTagsLoading
+                  ? ""
+                  : ""}
+            </div>
+          </div>
 
-      <div className="flex space-x-3">
-        <input
-          type="text"
-          value={tagInput}
-          onChange={(e) => setTagInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleTagSubmit();
-              e.preventDefault();
-            }
-          }}
-          className="bg-slate-50 h-[35px] p-2 border w-full rounded-md"
-          placeholder="Enter tag"
-        />
-        <Button
-          type="button"
-          variant="add"
-          size="DefaultButton"
-          onClick={handleTagSubmit}
-        >
-          <span className="text-xl pr-2">+</span>
-          Add
-        </Button>
+        </div>
+
       </div>
+
       {errorMessages?.tags && (
         <p style={{ color: "red" }}>{errorMessages?.tags?.[0]}</p>
       )}
-      <div className="flex flex-wrap mt-2">
-        {task?.tags?.length > 0
-          ? task?.tags.map((tag: any, index: number) => (
-              <div
-                key={index}
-                className="bg-green-100 text-green-800 text-[0.8em] font-semibold mr-2 mb-2 flex px-2 rounded-full"
-              >
-                {tag}
-                <p
-                  className="ml-1 text-red-500 rotate-[45deg] cursor-pointer"
-                  onClick={() => handleTagDelete(tag)}
-                >
-                  +
-                </p>
-              </div>
-            ))
-          : isTaskTagsLoading
-            ? ""
-            : ""}
-      </div>
+
     </div>
   );
 };

@@ -46,7 +46,7 @@ const SortPopover = ({ selectedSort, setSelectedSort }: any) => {
           variant="outline"
           role="combobox"
           aria-expanded={sortPopoverOpen}
-          className="w-[200px] justify-between bg-white"
+          className="w-[200px] justify-between bg-[#F4F4F6] h-[35px] border-[#E2E2E2] rounded-[8px]"
         >
           {isSortSelected
             ? sortOptions.find((option) => option.value === selectedSort)?.label

@@ -147,7 +147,7 @@ const KanbanBoard: React.FC<any> = ({
           ref={provided.innerRef}
           className="flex flex-col rounded-md"
         >
-          <h2 className="bg-gray-100 px-4 h-[45px] leading-10 rounded-xl font-semibold text-[16px]">
+          <h2 className="bg-gray-100 px-4 h-[40px] leading-10 rounded-xl font-semibold text-[14px]">
             {
               taskStatusConstants.find((item: any) => item.value == columnName)
                 ?.label
@@ -206,13 +206,13 @@ const KanbanBoard: React.FC<any> = ({
                         </svg>
                       </div>
                       <p
-                        className="text-ellipsis overflow-hidden font-semibold text-[18px] capitalize text-[#000000]"
+                        className="text-ellipsis overflow-hidden font-medium text-md capitalize text-[#000000]"
                         title={task.task_title}
                       >
                         {task.task_title || "--"}
                       </p>
                       <p
-                        className="font-medium text-lg text-gray-600 max-h-15 max-w-[250px] overflow-hidden overflow-ellipsis whitespace-nowrap"
+                        className="font-medium text-sm text-gray-600 max-h-15 max-w-[250px] overflow-hidden overflow-ellipsis whitespace-nowrap"
                         title={task?.task_description}
                       >
                         {task?.task_description ? task.task_description : "--"}
@@ -257,7 +257,7 @@ const KanbanBoard: React.FC<any> = ({
           <Button
             disabled={projectDetails?.active ? false : true}
             title="Add Task"
-            className="bg-transparent border-dashed border-2 rounded-xl border-[#5A5A5A] text-black text-lg mt-2 hover:bg-transparent"
+            className="bg-transparent border-dashed border rounded-xl !border-[#5A5A5A] text-black text-md mt-2 hover:bg-transparent"
             onClick={() => {
               router.navigate({
                 to: "/tasks/add",
@@ -265,6 +265,7 @@ const KanbanBoard: React.FC<any> = ({
               });
             }}
           >
+            <span className="relative right-[5px]">+</span>
             Add New Task
           </Button>
         </div>

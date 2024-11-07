@@ -43,6 +43,9 @@ const StatsAndGraph = ({ selectedDate }: any) => {
   const inProgressData = trendData.map((item: any) => item.inprogress_count);
 
   const options = {
+    credits: {
+      enabled: false,
+    },
     chart: { type: "spline", height: 200, style: { borderRadius: "16px" } },
     title: {
       text: "Tasks",
@@ -97,12 +100,16 @@ const StatsAndGraph = ({ selectedDate }: any) => {
   return (
     <div className="relative">
       <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-sans font-medium text-gray-800">Tasks</h2>
         <DateRangeFilter
           dateValue={selectedDateRange}
           onChangeData={handleDateChange}
         />
       </div>
-      <HighchartsReact highcharts={Highcharts} options={options} />
+      <div className="stats-and-graph-chart">
+        <HighchartsReact highcharts={Highcharts} options={options} />
+      </div>
+
       {isFetching && (
         <div>
           <Loading loading />

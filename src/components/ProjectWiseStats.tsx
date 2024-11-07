@@ -2,27 +2,25 @@ import { errPopper } from "@/lib/helpers/errPopper";
 import { getAllProjectStats } from "@/lib/services/dashboard";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import TanStackTable from "./core/TanstackTable";
 import { projectWiseColumns } from "./ProjectWiseColumns";
 import { addDataSerial } from "@/lib/helpers/addSerial";
-import LoadingComponent from "./core/LoadingComponent";
 import Loading from "./core/Loading";
 import SearchFilter from "./core/CommonComponents/SearchFilter";
 
 const ProjectDataTable = () => {
   const searchParams = new URLSearchParams(location.search);
-  // const initialSearch = searchParams.get("search") || "project_title";
+  const initialSearch = searchParams.get("search");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  // const [searchString, setSearchString] = useState<any>(initialSearch);
+  const [searchString, setSearchString] = useState<any>(initialSearch);
   // const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const { isLoading, isError, error, data, isFetching } = useQuery({
-  queryKey: ["users"],
+    queryKey: ["users"],
     queryFn: async () => {
       try {
         const response = await getAllProjectStats();
-        console.log(response, "response");
         if (response.success) {
           const dataWithSerials = addDataSerial(response?.data?.data);
           return dataWithSerials;
@@ -40,11 +38,11 @@ const ProjectDataTable = () => {
   //   const handler = setTimeout(() => {
   //     setDebouncedSearch(searchString);
   //     if (
-  //       searchString   
+  //       searchString
   //     ) {
   //     getAllProjectStats()
   //     } else {
-  //     getAllProjectStats() 
+  //     getAllProjectStats()
   //     }
   //   }, 500);
   //   return () => {
@@ -52,13 +50,15 @@ const ProjectDataTable = () => {
   //   };
   // }, [searchString]);
   return (
-    <div className="relative">
-                {/* <SearchFilter
-                  searchString={searchString}
-                  setSearchString={setSearchString}
-                  title="Search By title"
-                /> */}
-              
+    <div className="relative ">
+      <div className="flex justify-end">
+        <SearchFilter
+          searchString={searchString}
+          setSearchString={setSearchString}
+          title="Search  Project Name"
+        />
+      </div>
+
       <div className="mt-5">
         <TanStackTable
           data={data}

@@ -143,7 +143,7 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
         const response = await getProjectMembersAPI(projectId);
         if (response.success) {
           const data = response.data?.data;
-          setSelectedMembers(data?.records);
+          setSelectedMembers(data?.members || []);
         } else {
           throw response;
         }

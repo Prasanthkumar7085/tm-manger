@@ -42,7 +42,7 @@ export const TasksSelectPriority: React.FC<StatusFilterProps> = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between  bg-slate-50 h-[35px] w-[170px] relative"
+          className="justify-between  bg-[#F4F4F6] h-[35px] w-[170px] relative text-[#00000099] font-normal text-sm border border-[#E2E2E2]"
         >
           {value
             ? taskPriorityConstants.find((item) => item.value === value)?.label

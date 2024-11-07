@@ -53,6 +53,7 @@ const AddTask = () => {
   const [errorMessages, setErrorMessages] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [users, setUsers] = useState<any[]>([]);
+
   const [selectedUsers, setSelectedUsers] = useState(new Set());
   const handleChange = (e: any) => {
     setTask({ ...task, [e.target.name]: e.target.value });
@@ -149,7 +150,8 @@ const AddTask = () => {
       const response = await getProjectMembersAPI(task?.project_id);
       if (response.success) {
         const data = response.data?.data;
-        setUsers(data?.records || []);
+
+        setUsers(data?.members || []);
       } else {
         setUsers([]);
       }
@@ -196,7 +198,7 @@ const AddTask = () => {
         <div className="grid grid-cols-2 gap-10">
           <div className="leftColumn space-y-5">
             <div className="form-item">
-              <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+              <label className="block text-[#383838] font-medium text-sm mb-1">
                 Select Project<span className="text-red-500">*</span>
               </label>
               <Popover open={openProjects} onOpenChange={setOpenProjects}>
@@ -206,7 +208,7 @@ const AddTask = () => {
                     role="combobox"
                     disabled={taskId ? true : false}
                     aria-expanded={openProjects}
-                    className="justify-between  bg-slate-50 h-[35px] w-[220px] relative"
+                    className="justify-between  bg-slate-50 h-[35px] w-[220px] relative text-[#00000099] font-normal text-md border border-[#E2E2E2]"
                   >
                     {task.project_id
                       ? projectsList.find((p: any) => p.id === task.project_id)
@@ -221,6 +223,7 @@ const AddTask = () => {
                           setTask((prev: any) => ({
                             ...prev,
                             project_id: null,
+                            users: [],
                           }));
                         }}
                       />
@@ -259,7 +262,7 @@ const AddTask = () => {
               )}
             </div>
             <div className="form-item">
-              <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+              <label className="block text-[#383838] font-medium text-sm mb-1">
                 Task Title<span className="text-red-500">*</span>
               </label>
               <input
@@ -275,7 +278,7 @@ const AddTask = () => {
               )}
             </div>
             <div className="form-item">
-              <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+              <label className="block text-[#383838] font-medium text-sm mb-1">
                 Description
               </label>
               <textarea
@@ -296,7 +299,7 @@ const AddTask = () => {
           <div className="rightColumn space-y-5">
             <div className="grid grid-cols-2 gap-5">
               <div className="form-item">
-                <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+                <label className="block text-[#383838] font-medium text-sm mb-1">
                   Due Date<span className="text-red-500">*</span>
                 </label>
                 <DatePicker
@@ -320,7 +323,7 @@ const AddTask = () => {
                 )}
               </div>
               <div className="form-item">
-                <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+                <label className="block text-[#383838] font-medium text-sm mb-1">
                   Priority Level
                 </label>
                 <select
@@ -356,20 +359,20 @@ const AddTask = () => {
             <div className="form-item">
               {!taskId && (
                 <div className="mb-4">
-                  <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
+                  <label className="block text-[#383838] font-medium text-sm mb-1">
                     Assign To
                   </label>
                   <Popover open={openUsers} onOpenChange={setOpenUsers}>
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
-                        className="justify-between  bg-slate-50 h-[35px] w-[220px] relative"
+                        className="justify-between  bg-slate-50 h-[35px] w-full relative text-[#00000099]"
                       >
                         Select Users
                         <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[200px] p-0 bg-white">
+                    <PopoverContent className="w-[500px] p-0 bg-white">
                       <Command>
                         <CommandInput placeholder="Search Users" />
                         <CommandList>
@@ -389,6 +392,14 @@ const AddTask = () => {
                                     opacity: selectedUsers.has(user.id) ? 1 : 0,
                                   }}
                                 />
+                                <div className="w-6 h-6 object-contain	 rounded-full border  bg-white">
+                                  <img
+                                    src={
+                                      user?.user_profile_pic_url ||
+                                      "/profile-picture.png"
+                                    }
+                                  />
+                                </div>
                                 <p className="capitalize">
                                   {user.fname} {user.lname}
                                 </p>
@@ -397,8 +408,11 @@ const AddTask = () => {
                           </CommandGroup>
                         </CommandList>
                       </Command>
-                      <div className="flex justify-end p-2">
-                        <Button onClick={handleConfirmSelection}>
+                      <div className="flex justify-end p-2 border-t">
+                        <Button
+                          className="bg-[#000000] text-white px-6 font-medium text-sm rounded-[4px]"
+                          onClick={handleConfirmSelection}
+                        >
                           Confirm
                         </Button>
                       </div>
@@ -481,7 +495,7 @@ const AddTask = () => {
         <div className="form-action-button flex justify-end mt-5">
           <Button
             type="button"
-            className="px-6 py-2 bg-red-500 text-white rounded-md mr-2"
+            className="bg-white border-transparent text-[#FF6000] text-md px-8 font-medium hover:bg-transparent hover:text-[#FF6000]"
             onClick={() => window.history.back()}
           >
             Cancel
@@ -489,7 +503,7 @@ const AddTask = () => {
 
           <Button
             type="submit"
-            className="px-6 py-2 bg-blue-600 text-white rounded-md"
+            className="bg-[#1B2459] text-white font-medium text-md hover:bg-[#1B2459] hover:text-white px-8"
           >
             {taskId ? "Update" : " Submit"}
           </Button>

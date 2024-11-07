@@ -18,9 +18,27 @@ export const userColumns = [
     accessorFn: (row: any) => row.fname,
     id: "fname",
     cell: (info: any) => {
-      let title = info.getValue();
+      const title = info.getValue();
+      const profilePicUrl = info.row.original.profile_pic_url||"profile-picture.png";
       return (
-        <div style={{ textAlign: "left" }}>
+        <div style={{ display: "flex", alignItems: "center", textAlign: "left" }}>
+          {profilePicUrl ? (
+            <img 
+              src={profilePicUrl} 
+              alt="Profile" 
+              style={{ width: 30, height: 30, borderRadius: "50%", marginRight: 8 }} 
+            />
+          ) : (
+            <div 
+              style={{
+                width: 30, 
+                height: 30, 
+                borderRadius: "50%", 
+                backgroundColor: "#ccc", 
+                marginRight: 8 
+              }}
+            />
+          )}
           <span className="capitalize">{title ? title : "-"}</span>
         </div>
       );
@@ -31,6 +49,7 @@ export const userColumns = [
     header: () => <span>First Name</span>,
     footer: (props: any) => props.column.id,
   },
+ 
   {
     accessorFn: (row: any) => row.lname,
     id: "lname",
@@ -55,9 +74,9 @@ export const userColumns = [
       let title = info.getValue();
       return <span>{title ? title : "-"}</span>;
     },
-    width: "200px",
-    maxWidth: "200px",
-    minWidth: "200px",
+    width: "250px",
+    maxWidth: "250px",
+    minWidth: "250px",
     header: () => <span>Email</span>,
     footer: (props: any) => props.column.id,
   },
@@ -72,9 +91,9 @@ export const userColumns = [
         </div>
       );
     },
-    width: "120px",
-    maxWidth: "120px",
-    minWidth: "120px",
+    width: "150px",
+    maxWidth: "150px",
+    minWidth: "150px",
     header: () => <span>Designation</span>,
     footer: (props: any) => props.column.id,
   },
@@ -89,9 +108,9 @@ export const userColumns = [
         </div>
       );
     },
-    width: "130px",
-    maxWidth: "130px",
-    minWidth: "130px",
+    width: "150px",
+    maxWidth: "150px",
+    minWidth: "150px",
     header: () => <span>Mobile Number</span>,
     footer: (props: any) => props.column.id,
   },
@@ -99,9 +118,9 @@ export const userColumns = [
   {
     accessorFn: (row: any) => row.user_type,
     id: "user_type",
-    width: "80px",
-    maxWidth: "80px",
-    minWidth: "80px",
+    width: "100px",
+    maxWidth: "100px",
+    minWidth: "100px",
     cell: (info: any) => {
       const userType = info.getValue();
       return (
@@ -238,6 +257,7 @@ export const userColumns = [
 
       return (
         <div
+          className="text-[12px]"
           style={{
             display: "flex",
             alignItems: "center",
@@ -249,7 +269,7 @@ export const userColumns = [
               color: isActive ? "#28A745" : "#A71D2A",
               background: isActive ? "#28A74533" : "#A71D2A33",
             }}
-            className="rounded-full cursor-pointer flex items-center py-0 px-3 min-w-[100px]"
+            className="rounded-full cursor-pointer flex items-center py-0 px-3 min-w-[90px]"
             onClick={togglePopover}
           >
             <span
@@ -261,7 +281,7 @@ export const userColumns = [
                 marginRight: "8px",
               }}
             ></span>
-            {isActive ? "Active" : "Inactive"}
+            <span>{isActive ? "Active" : "Inactive"}</span>
           </div>
           {isOpen && (
             <div
@@ -304,8 +324,8 @@ export const userColumns = [
         </div>
       );
     },
-    width: "100px",
-    maxWidth: "115px",
+    width: "150px",
+    maxWidth: "150px",
     minWidth: "150px",
     header: () => <span>Status</span>,
     footer: (props: any) => props.column.id,
