@@ -221,145 +221,146 @@ const TaskComments = ({ taskId }: any) => {
   return (
     <div className="flex flex-row">
       <div
-        style={{ height: "calc(100vh - 50px)" }}
-        className={`${openReplies?.open ? " w-[60%]" : "w-[100%]"}`}
+        style={{ height: "calc(100vh - 300px)" }}
+        className={`overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 ${openReplies?.open ? " w-[60%]" : "w-[100%]"}`}
       >
-        <div className="card-header flex justify-between px-4 py-2 items-center mb-4 sticky top-0 bg-white z-10">
-          <h3 className="text-lg font-medium">Comments</h3>
-          <button className="check-activity-button btn px-5 py-2 bg-[#28A74533] rounded-lg text-[#28A745] font-medium">
+        <div className="card-header flex justify-between  pr-2 items-center mb-4 sticky top-0 bg-white z-10">
+          <h3 className="text-black text-lg font-medium mr-5">Comments</h3>
+          <button className="check-activity-button btn px-3  bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[25px]">
             Check Activity
           </button>
         </div>
-        <div className="card-body px-4 flex flex-col h-[calc(100vh-300px)] overflow-y-auto">
+
+        <div className="card-body px-4 flex flex-col h-[calc(100vh-200px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
           <div
-            className="member-comments space-y-3 overflow-y-scroll flex-1 pr-3"
+            className="member-comments space-y-3  flex-1 pr-3"
             ref={commentsContainerRef}
           >
             {groupedComments?.length > 0
               ? groupedComments?.map((group: any, index: number) => {
-                  const formattedDate = format(new Date(group.date), "PPP");
-                  return (
-                    <div key={index} className="group space-y-3">
-                      <div className="my-4 text-center text-gray-500 text-xs">
-                        <span className="bg-white px-2">{formattedDate}</span>
-                      </div>
-                      {group.comments?.length > 0
-                        ? group.comments.map((comment: any) => {
-                            const isEdited =
-                              comment.updated_at &&
-                              comment.created_at !== comment.updated_at;
-                            return (
-                              <div
-                                key={comment.id}
-                                className={`each-member flex flex-col bg-[#FEF7FD] py-4 px-4 rounded-md w-[70%] ${IsUserCommentOrNot(comment) ? "ml-auto text-right" : "mr-auto text-left"}`}
-                              >
-                                <div className="flex justify-between items-center">
-                                  <div className="member-details flex items-center space-x-3">
-                                    <div className="member-profile-image">
-                                      <img
-                                        className="w-8 h-8 rounded-full"
-                                        src={
-                                          comment.user?.avatar ||
-                                          "https://i.pravatar.cc/150?img=5"
-                                        }
-                                        alt="Avatar"
-                                      />
-                                    </div>
-                                    <div className="member-name">
-                                      <span className="font-semibold">
-                                        {IsUserCommentOrNot(comment)
-                                          ? "You"
-                                          : comment.user?.name || "Unknown"}
-                                      </span>
-                                      <span className="text-[#67727E] font-normal text-sm pl-2">
-                                        {formatCommentTime(comment)}{" "}
-                                        {isEdited && (
-                                          <span className="text-xs text-gray-400">
-                                            (edited)
-                                          </span>
-                                        )}
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <DropdownMenu>
-                                    <DropdownMenuTrigger>
-                                      <button className="text-gray-500 hover:text-gray-800">
-                                        <DotsHorizontalIcon className="w-5 h-5" />
-                                      </button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                      align="end"
-                                      className="bg-white p-2 rounded-md shadow-lg"
-                                    >
-                                      <DropdownMenuItem
-                                        className={`cursor-pointer ${IsUserCommentOrNot(comment) ? "" : "hidden"}`}
-                                        onClick={() =>
-                                          handleDeleteComment(comment.id)
-                                        }
-                                      >
-                                        Delete
-                                      </DropdownMenuItem>
-                                      <DropdownMenuItem
-                                        className={`cursor-pointer ${IsUserCommentOrNot(comment) ? "" : "hidden"}`}
-                                        onClick={() =>
-                                          handleEditComment(
-                                            comment.id,
-                                            comment.message
-                                          )
-                                        }
-                                      >
-                                        Edit
-                                      </DropdownMenuItem>
-                                      <DropdownMenuItem
-                                        className="cursor-pointer"
-                                        onClick={() =>
-                                          handleReplyComment(comment.id)
-                                        }
-                                      >
-                                        Reply
-                                      </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                  </DropdownMenu>
+                const formattedDate = format(new Date(group.date), "PPP");
+                return (
+                  <div key={index} className="group space-y-3">
+                    <div className="my-4 text-center text-gray-500 text-xs">
+                      <span className="bg-white px-2">{formattedDate}</span>
+                    </div>
+                    {group.comments?.length > 0
+                      ? group.comments.map((comment: any) => {
+                        const isEdited =
+                          comment.updated_at &&
+                          comment.created_at !== comment.updated_at;
+                        return (
+                          <div
+                            key={comment.id}
+                            className={`each-member flex flex-col bg-[#FEF7FD] py-4 px-4 rounded-md w-[70%] ${IsUserCommentOrNot(comment) ? "ml-auto text-right" : "mr-auto text-left"}`}
+                          >
+                            <div className="flex justify-between items-center">
+                              <div className="member-details flex items-center space-x-3">
+                                <div className="member-profile-image">
+                                  <img
+                                    className="w-8 h-8 rounded-full"
+                                    src={
+                                      comment.user?.avatar ||
+                                      "https://i.pravatar.cc/150?img=5"
+                                    }
+                                    alt="Avatar"
+                                  />
                                 </div>
-                                <div className="person-message mt-2 text-slate-500 leading-snug">
-                                  {editingCommentId === comment.id ? (
-                                    <div className="flex flex-col">
-                                      <CKEditorComponent
-                                        editorData={commentText}
-                                        handleEditorChange={
-                                          handleTestDetailsChange
-                                        }
-                                      />
-                                      <div className="mt-3 flex justify-end space-x-3">
-                                        <button
-                                          className="text-gray-500"
-                                          onClick={handleCancelEdit}
-                                        >
-                                          Cancel
-                                        </button>
-                                        <button
-                                          className="text-[#28A745]"
-                                          onClick={handleSaveEdit}
-                                        >
-                                          Save
-                                        </button>
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    <p
-                                      dangerouslySetInnerHTML={{
-                                        __html: comment.message,
-                                      }}
-                                    />
-                                  )}
+                                <div className="member-name">
+                                  <span className="font-semibold">
+                                    {IsUserCommentOrNot(comment)
+                                      ? "You"
+                                      : comment.user?.name || "Unknown"}
+                                  </span>
+                                  <span className="text-[#67727E] font-normal text-sm pl-2">
+                                    {formatCommentTime(comment)}{" "}
+                                    {isEdited && (
+                                      <span className="text-xs text-gray-400">
+                                        (edited)
+                                      </span>
+                                    )}
+                                  </span>
                                 </div>
                               </div>
-                            );
-                          })
-                        : "Comments not found"}
-                    </div>
-                  );
-                })
+                              <DropdownMenu>
+                                <DropdownMenuTrigger>
+                                  <button className="text-gray-500 hover:text-gray-800">
+                                    <DotsHorizontalIcon className="w-5 h-5" />
+                                  </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  align="end"
+                                  className="bg-white p-2 rounded-md shadow-lg"
+                                >
+                                  <DropdownMenuItem
+                                    className={`cursor-pointer ${IsUserCommentOrNot(comment) ? "" : "hidden"}`}
+                                    onClick={() =>
+                                      handleDeleteComment(comment.id)
+                                    }
+                                  >
+                                    Delete
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    className={`cursor-pointer ${IsUserCommentOrNot(comment) ? "" : "hidden"}`}
+                                    onClick={() =>
+                                      handleEditComment(
+                                        comment.id,
+                                        comment.message
+                                      )
+                                    }
+                                  >
+                                    Edit
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    className="cursor-pointer"
+                                    onClick={() =>
+                                      handleReplyComment(comment.id)
+                                    }
+                                  >
+                                    Reply
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
+                            <div className="person-message mt-2 text-slate-500 leading-snug">
+                              {editingCommentId === comment.id ? (
+                                <div className="flex flex-col">
+                                  <CKEditorComponent
+                                    editorData={commentText}
+                                    handleEditorChange={
+                                      handleTestDetailsChange
+                                    }
+                                  />
+                                  <div className="mt-3 flex justify-end space-x-3">
+                                    <button
+                                      className="text-gray-500"
+                                      onClick={handleCancelEdit}
+                                    >
+                                      Cancel
+                                    </button>
+                                    <button
+                                      className="text-[#28A745]"
+                                      onClick={handleSaveEdit}
+                                    >
+                                      Save
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <p
+                                  dangerouslySetInnerHTML={{
+                                    __html: comment.message,
+                                  }}
+                                />
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })
+                      : "Comments not found"}
+                  </div>
+                );
+              })
               : "No comments found"}
           </div>
         </div>
