@@ -38,6 +38,10 @@ const TaskView = () => {
     label: string;
     value: string;
   }>();
+  const [openReplies, setOpenReplies] = useState<any>({
+    commentId: null,
+    open: false,
+  });
   const [selectedPriority, setSelectedPriority] = useState<any>();
   const [activityOpen, setActivityOpen] = useState(false);
   const [activityLogData, setActivityLogData] = useState<any>();
@@ -125,13 +129,23 @@ const TaskView = () => {
         style={{ height: "calc(100vh - 100px)" }}
       >
         <div className="task-primary-details">
-          <div className="heading-row flex justify-between items-center">
-            <h1
-              className="text-xl text-[#1B2459] font-medium overflow-hidden overflow-ellipsis whitespace-nowrap mb-1"
-              title={viewData?.title}
-            >
-              {viewData?.title ? capitalizeWords(viewData?.title) : "--"}
-            </h1>
+          <div className="heading-row flex justify-between items-center mb-3">
+            <div>
+              <h1
+                className="text-xl text-[#1B2459] font-medium overflow-hidden overflow-ellipsis whitespace-nowrap mb-1"
+                title={viewData?.title}
+              >
+                {viewData?.title ? capitalizeWords(viewData?.title) : "--"}
+              </h1>
+              <div className="description">
+                <p
+                  className="text-black  text-[.85rem] rounded-md overflow-hidden line-clamp-2"
+                  title={viewData?.description}
+                >
+                  {viewData?.description ? viewData.description : "--"}
+                </p>
+              </div>
+            </div>
             <div className="action-buttons flex space-x-2">
               <TaskStatus
                 taskId={taskId}
@@ -166,22 +180,12 @@ const TaskView = () => {
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-[70%,auto] gap-5">
             <div className="leftItem">
-              <div>
-                <div className="description mb-3">
-                  <p
-                    className="text-black  text-[.85rem] rounded-md overflow-hidden line-clamp-2"
-                    title={viewData?.description}
-                  >
-                    {viewData?.description ? viewData.description : "--"}
-                  </p>
-                </div>
-              </div>
               <UploadAttachments />
-
               <hr className="my-3" />
               <TaskComments taskId={taskId} />
             </div>
-            <div className="rightItem">
+            <div className={`rightItem transition-transform duration-300 ${openReplies.open ? "translate-x-full" : "translate-x-0"
+              }`}>
               <div className="focus-details border">
                 <div className="card-header border-b px-4 py-0 bg-gray-50">
                   <h3 className="leading-1 text-black  text-[1.1em]">

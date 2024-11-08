@@ -86,24 +86,22 @@ function SideMenu() {
               </Link>
             </li>
             <li>
-              {profileData?.user_type === "admin" && (
-                <Link to="/users">
-                  <div
-                    className={`flex items-center gap-3 px-4 py-3 text-gray-600 rounded-2xl ${
-                      isActive("/users")
-                        ? "bg-[#1B2459] text-white"
-                        : "hover:bg-blue-100"
-                    }`}
-                  >
-                    <img
-                      src={isActive("/users") ? usersWhiteIcon : usersBlackIcon}
-                      alt="dashboard"
-                      className="h-[23px] w-[23px]"
-                    />
-                    <span>Users</span>
-                  </div>
-                </Link>
-              )}
+              <Link to="/users">
+                <div
+                  className={`flex items-center gap-3 px-4 py-3 text-gray-600 rounded-2xl ${
+                    isActive("/users")
+                      ? "bg-[#1B2459] text-white"
+                      : "hover:bg-blue-100"
+                  }`}
+                >
+                  <img
+                    src={isActive("/users") ? usersWhiteIcon : usersBlackIcon}
+                    alt="dashboard"
+                    className="h-[23px] w-[23px]"
+                  />
+                  <span>Users</span>
+                </div>
+              </Link>
             </li>
           </ul>
         </div>

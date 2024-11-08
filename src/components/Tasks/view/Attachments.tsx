@@ -203,7 +203,7 @@ const UploadAttachments = () => {
   };
 
   return (
-    <div id="upload-attachments" className="mt-3 border">
+    <div id="upload-attachments" className="border">
       <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
         <h3 className="leading-1 text-black text-[1.1em]">Attachment</h3>
         <Button type="button" onClick={open} variant="add" size="DefaultButton" className="h-[25px] px-3 bg-orange-400">
@@ -222,7 +222,7 @@ const UploadAttachments = () => {
             attachmentsData.map((file: any) => (
               <div
                 key={file.id}
-                className="each-attachment border w-[250px] px-2 py-1 rounded-md"
+                className="each-attachment border w-[250px] px-2 py-1 rounded-md overflow-hidden"
               >
                 <div className="grid grid-cols-[30px,auto] gap-3 items-center">
                   <div className="icon text-3xl">

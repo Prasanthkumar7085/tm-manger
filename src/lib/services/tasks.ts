@@ -35,7 +35,7 @@ export const getAllPaginatedTasks = async ({
       priority: priority,
       project_id: project_id,
     };
-    return await $fetch.get("/tasks", queryParams);
+    return await $fetch.get("/tasks/all", queryParams);
   } catch (err) {
     throw err;
   }

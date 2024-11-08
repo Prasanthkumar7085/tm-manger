@@ -259,6 +259,11 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
                                 : "opacity-0"
                             )}
                           />
+                          <div className="w-6 h-6 object-contain	 rounded-full border  bg-white">
+                            <img
+                              src={user?.profile_pic || "/profile-picture.png"}
+                            />
+                          </div>
                           <p className="capitalize cursor-pointer">
                             {getFullName(user)}
                           </p>
