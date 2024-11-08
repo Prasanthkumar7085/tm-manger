@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { getSingleTaskAPI } from "@/lib/services/tasks";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { getSingleUserApi } from "@/lib/services/viewprofile";
 
 interface titleProps {
   title: string;
@@ -21,24 +22,26 @@ interface titleProps {
 }
 
 function TopBar() {
-  const [viewData, setViewData] = useState<any>();
   const location = useLocation();
+  const [viewData, setViewData] = useState<any>();
+  const { taskId } = useParams({ strict: false });
   const pathname = location.pathname;
   const currentNavItem = navBarConstants.find((item: titleProps) =>
     pathname.includes(item.path)
   );
   const searchParams = new URLSearchParams(location.search);
-
+  const userID = useSelector(
+    (state: any) => state.auth?.user?.user_details?.id
+  );
   const refernceId: any = useSelector((state: any) => state.auth.refId);
 
-  const { taskId } = useParams({ strict: false });
   const title = currentNavItem ? currentNavItem.title : null;
   const navigate = useNavigate({ from: "/" });
 
   const { isLoading, isError, error } = useQuery({
-    queryKey: ["getSingleTask", taskId],
+    queryKey: ["getSingleTask", userID],
     queryFn: async () => {
-      const response = await getSingleTaskAPI(taskId);
+      const response = await getSingleUserApi(userID);
       const taskData = response?.data?.data;
 
       try {
@@ -49,7 +52,7 @@ function TopBar() {
         throw err;
       }
     },
-    enabled: Boolean(taskId),
+    enabled: Boolean(userID),
   });
 
   return (
@@ -65,9 +68,7 @@ function TopBar() {
           <DropdownMenuTrigger className="flex gap-2 items-center hover:cursor-pointer">
             <Avatar>
               <AvatarImage
-                src={
-                  viewData?.created_profile_pic_url || "/profile-picture.png"
-                }
+                src={viewData?.profile_pic || "/profile-picture.png"}
                 alt="@shadcn"
               />
             </Avatar>
