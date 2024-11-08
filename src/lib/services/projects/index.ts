@@ -30,7 +30,7 @@ export const getAllPaginatedProjectss = async ({
       from_date,
       to_date,
     };
-    return await $fetch.get("/projects", queryParams);
+    return await $fetch.get("/projects/all", queryParams);
   } catch (err) {
     throw err;
   }

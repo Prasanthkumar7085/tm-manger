@@ -189,11 +189,23 @@ const AssignedUsers = ({ viewTaskData }: any) => {
     return `${firstInitial}${lastInitial}`.toUpperCase();
   };
   return (
-    <div className="flex flex-col justify-between w-full overflow-auto">
-      <div>
-        <div className="flex items-center">
-          <p className="text-[#666666] text-sm font-medium mr-5">Assigned To</p>
-          <div className="flex items-center justify-end gap-4">
+    <div className="assign-tasks mt-3 border">
+      <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
+        <h3 className="leading-1 text-black text-[1.1em]">Assigned To</h3>
+        <Button
+          onClick={() => {
+            router.navigate({
+              to: `/projects/view/${viewTaskData?.project_id}?tab=project_members`,
+            });
+          }}
+          className="bg-primary text-white hover:text-white py-1 px-3  h-[20px]"
+        >
+          Add Members
+        </Button>
+      </div>
+      <div className="card-body">
+        <div className="attachments-list max-h-[250px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 space-y-2 pt-3 pl-3 pr-3 mb-3">
+          <div className="">
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -212,6 +224,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                       {Array.isArray(users) &&
                         users.map((user: any) => (
                           <CommandItem
+                            className="cursor-pointer gap-x-2"
                             key={user.id}
                             value={getFullName(user)}
                             onSelect={() =>
@@ -248,6 +261,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                   </CommandList>
                   <div className="flex justify-end space-x-2 p-2 border-t">
                     <Button
+                      className="bg-white border-transparent px-6 text-[#000000] text-sm font-medium"
                       variant="outline"
                       size="sm"
                       onClick={() => setTempSelectedMember([])}
@@ -255,6 +269,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                       Clear
                     </Button>
                     <Button
+                      className="bg-[#000000] text-white px-6 font-medium text-sm rounded-[4px]"
                       size="sm"
                       variant="outline"
                       onClick={confirmSelection}
@@ -265,68 +280,57 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                 </Command>
               </PopoverContent>
             </Popover>
-            <Button
-              onClick={() => {
-                router.navigate({
-                  to: `/projects/view/${viewTaskData?.project_id}?tab=project_members`,
-                });
-              }}
-              className="bg-primary text-white hover:text-white py-1 px-3  h-[20px]"
-            >
-              Add members
-            </Button>
           </div>
-        </div>
 
-        {selectedMembers.length > 0 ? (
-          <div className="mt-2 flex items-center space-x-4  pb-[2px] overflow-x-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
-            {selectedMembers.map((member, index) => (
-              <>
-                <div className="each-person relative flex  border items-center space-x-2 rounded-l-full bg-slate-100 rounded-sm pr-5 pt-[2px] pb-[2px] pl-[2px]">
-                  <div className="profile-image">
-                    {member.download_url ? (
-                      <div className="flex items-center space-x-3">
-                        <div className="w-6 h-6 rounded-sm overflow-hidden border border-gray-200">
+          {selectedMembers.length > 0 ? (
+            <div className="mt-2 space-y-2  pb-[2px] overflow-x-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+              {selectedMembers.map((member, index) => (
+                <>
+                  <div
+                    className="each-person relative flex  border items-center space-x-2 rounded-l-full bg-slate-100 rounded-sm pr-5 pt-[2px] pb-[2px] pl-[2px]"
+                    key={index}
+                  >
+                    <div className="profile-image">
+                      {member.download_url ? (
+                        <div className="flex items-center space-x-3">
+                          <div className="w-6 h-6 rounded-sm overflow-hidden border border-gray-200">
+                            <img
+                              src={member.download_url}
+                              alt={`${getFullNames(member)}'s profile`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="w-6 h-6 rounded-full overflow-hidden border border-gray-200">
                           <img
-                            src={member.download_url}
-                            alt={`${getFullNames(member)}'s profile`}
-                            className="w-full h-full object-cover"
+                            src={"/profile-picture.png"}
+                            className="w-full h-full object-contain"
                           />
                         </div>
-                      </div>
-                    ) : (
-                      <div className="w-6 h-6 rounded-full overflow-hidden border border-gray-200">
-                        <img
-                          src={"/profile-picture.png"}
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                    )}
+                      )}
+                    </div>
+                    <div className="content">
+                      <p className="font-medium text-black pr-3 pl-1 whitespace-nowrap">
+                        {capitalize(getFullName(member))}
+                      </p>
+                      <DeleteAssignes
+                        assigneeId={member.task_assignee_id}
+                        onSuccess={() => {
+                          removeMember(member.user_id);
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div className="content">
-                    <p className="font-medium text-black pr-3 pl-1 whitespace-nowrap">
-                      {capitalize(getFullName(member))}
-                    </p>
-                    <DeleteAssignes
-                      assigneeId={member.task_assignee_id}
-                      onSuccess={() => {
-                        removeMember(member.user_id);
-                      }}
-                    />
-                  </div>
-                </div>
-              </>
-            ))}
-          </div>
-        ) : (
-          <div className="flex items-center justify-center mt-3">
-            <p>Task Not Assigned to any user</p>
-          </div>
-        )}
-
-        {/* {errorMessages.user_ids[0] && (
-          <p className="text-red-500">{errorMessages.user_ids[0]}</p>
-        )} */}
+                </>
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center mt-3">
+              <p>Task Not Assigned to any user</p>
+            </div>
+          )}
+        </div>
       </div>
       <LoadingComponent loading={loading} />
     </div>

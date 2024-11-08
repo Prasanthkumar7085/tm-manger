@@ -217,12 +217,12 @@ const UploadAttachments = () => {
         </Button>
       </div>
       <div className="card-body">
-        <div className="attachments-list max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 space-y-2 pt-3 pl-3 pr-3">
+        <div className="attachments-list flex max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 space-x-2 pt-3 pb-3 pl-3 pr-3">
           {attachmentsData.length > 0 ? (
             attachmentsData.map((file: any) => (
               <div
                 key={file.id}
-                className="each-attachment border min-w-[300px] mb-2 px-2 py-1 rounded-md"
+                className="each-attachment border w-[250px] px-2 py-1 rounded-md"
               >
                 <div className="grid grid-cols-[30px,auto] gap-3 items-center">
                   <div className="icon text-3xl">
@@ -260,8 +260,7 @@ const UploadAttachments = () => {
         </div>
       </div>
 
-      <div className="mt-2 space-y-2"></div>
-      <div className="mt-4">
+      <div >
         <div {...getRootProps()} className="hidden">
           <input {...getInputProps()} />
         </div>

@@ -15,12 +15,17 @@ import useUsersHook from "./useUsersHook";
 // Assuming TanStackTable is in the ui folder
 import { projectColumns } from "./ProjectColumns";
 import TanStackTable from "../core/TanstackTable";
+import { useSelector } from "react-redux";
+import { canAddTask } from "@/lib/helpers/loginHelpers";
 
 const Projects = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
   const searchParams = new URLSearchParams(location.search);
+  const user_type: any = useSelector(
+    (state: any) => state.auth.user.user_details?.user_type
+  );
 
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 12;
@@ -196,25 +201,27 @@ const Projects = () => {
                   setSelectedSort={setSelectedSort}
                 />
               </li>
+              {canAddTask(user_type) && (
+                <li>
+                  <Button
+                    variant="add"
+                    size="DefaultButton"
+                    className="font-normal"
+                    onClick={handleNavigation}
+                  >
+                    <span className="text-xl pr-2">+</span>
+                    Add Project
+                  </Button>
+                </li>
+              )}
               <li>
                 <Button
-                  variant="add"
-                  size="DefaultButton"
-                  className="font-normal"
-                  onClick={handleNavigation}
-                >
-                  <span className="text-xl pr-2">+</span>
-                  Add Project
-                </Button>
-              </li>
-              <li>
-                <Button
-                  className="text-white-500"
+                  className="text-white h-[35px]"
                   onClick={() =>
                     setViewMode(viewMode === "card" ? "table" : "card")
                   }
                 >
-                  Table View
+                  {viewMode === "card" ? "Table View" : "Card View"}
                 </Button>
               </li>
             </ul>

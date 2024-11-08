@@ -217,6 +217,7 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
   const handleDeleteUser = () => {
     removeMembers(removedUser);
   };
+
   return (
     <div className="relative">
       <div className="flex flex-col justify-start gap-4">
@@ -258,7 +259,9 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
                                 : "opacity-0"
                             )}
                           />
-                          <p className="capitalize">{getFullName(user)}</p>
+                          <p className="capitalize cursor-pointer">
+                            {getFullName(user)}
+                          </p>
                         </CommandItem>
                       ))}
                   </CommandGroup>
@@ -266,6 +269,7 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
                 </CommandList>
                 <div className="flex justify-end space-x-2 p-2 border-t">
                   <Button
+                    className="bg-white border-transparent px-6 text-[#000000] text-sm font-medium"
                     variant="outline"
                     size="sm"
                     onClick={() => setTempSelectedMember([])}
@@ -273,6 +277,7 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
                     Clear
                   </Button>
                   <Button
+                    className="bg-[#000000] text-white px-6 font-medium text-sm rounded-[4px]"
                     size="sm"
                     variant="outline"
                     title={
@@ -294,56 +299,78 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
         </div>
 
         {selectedMembers.length > 0 ? (
-          <div className="h-[300px] overflow-y-auto">
-            <table className="min-w-full border ">
-              <thead className="sticky top-0 bg-red-300">
-                <tr>
-                  <th className="border p-2">Sl.no</th>
-                  <th className="border p-2">Members</th>
-                  <th className="border p-2">Role</th>
-                  <th className="border p-2">Action</th>
-                </tr>
-              </thead>
-              <tbody className="text-center">
-                {selectedMembers.map((member: any, index: number) => (
-                  <tr key={member.id}>
-                    <td className="border p-2 capitalize">{index + 1}</td>
-                    <td className="border p-2 capitalize">
-                      {getFullName(member)}
-                    </td>
-                    <td className="border p-2">
-                      <select
-                        value={member.role}
-                        disabled={projectDetails?.active ? false : true}
-                        onChange={(e) =>
-                          changeRole(member.user_id, e.target.value)
-                        }
-                        className="border p-1 rounded"
-                      >
-                        {roleConstants.map((memberConstant) => (
-                          <option
-                            key={memberConstant.value}
-                            value={memberConstant.value}
-                          >
-                            {memberConstant.label}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="border p-2">
-                      <button
-                        type="button"
-                        disabled={projectDetails?.active ? false : true}
-                        className="text-red-500"
-                        onClick={() => removeMember(member)}
-                      >
-                        Remove
-                      </button>
-                    </td>
+          <div className="h-[300px]  ">
+            <div className="rounded-[10px] border border-gray-200 mt-4">
+              <table className="min-w-full ">
+                <thead className="sticky top-0 ">
+                  <tr>
+                    <th className=" p-2 bg-[#F5F5F5] font-normal text-[#00000099]">
+                      Sl.no
+                    </th>
+                    <th className=" p-2 !bg-[#F5F5F5] font-normal text-[#00000099]">
+                      Members
+                    </th>
+                    <th className=" p-2 !bg-[#F5F5F5] font-normal text-[#00000099]">
+                      Role
+                    </th>
+                    <th className=" p-2 !bg-[#F5F5F5] font-normal text-[#00000099]">
+                      Action
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="text-center">
+                  {selectedMembers.map((member: any, index: number) => (
+                    <tr key={member.id}>
+                      <td className=" p-2 capitalize">{index + 1}</td>
+                      <td className=" p-2 capitalize flex items-center gap-3">
+                        <img
+                          className="w-8 h-8 rounded-full"
+                          onError={(e: any) => {
+                            e.target.onerror = null;
+                            e.target.src = "/profile-picture.png";
+                          }}
+                          src={
+                            member.user_profile_pic_url ||
+                            "/profile-picture.png"
+                          }
+                          alt="Avatar"
+                        />
+                        {getFullName(member)}
+                      </td>
+                      <td className=" p-2">
+                        <select
+                          value={member.role}
+                          disabled={projectDetails?.active ? false : true}
+                          onChange={(e) =>
+                            changeRole(member.user_id, e.target.value)
+                          }
+                          className="border p-1 rounded"
+                        >
+                          {roleConstants.map((memberConstant) => (
+                            <option
+                              key={memberConstant.value}
+                              value={memberConstant.value}
+                            >
+                              {memberConstant.label}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="p-2">
+                        <button
+                          type="button"
+                          disabled={projectDetails?.active ? false : true}
+                          className="text-red-500"
+                          onClick={() => removeMember(member)}
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         ) : (
           <div

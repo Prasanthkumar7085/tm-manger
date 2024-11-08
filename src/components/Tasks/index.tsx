@@ -4,7 +4,7 @@ import { getAllPaginatedTasks } from "@/lib/services/tasks";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
 import { SelectTaskProjects } from "../core/CommonComponents/SelectTaskProjects";
 import { TasksSelectPriority } from "../core/CommonComponents/TasksSelectPriority";
@@ -15,12 +15,15 @@ import TanStackTable from "../core/TanstackTable";
 import { Button } from "../ui/button";
 import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
+import { canAddTask } from "@/lib/helpers/loginHelpers";
 
 const Tasks = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
-  const dispatch = useDispatch();
+  const user_type: any = useSelector(
+    (state: any) => state.auth.user.user_details?.user_type
+  );
 
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
@@ -165,11 +168,7 @@ const Tasks = () => {
   };
   return (
     <section id="tasks" className="relative">
-      <div>
-        {!isDashboard && (
-          <TotalCounts taksDataAfterSerial={taksDataAfterSerial} />
-        )}
-      </div>
+      <div>{!isDashboard && <TotalCounts refreshCount={del} />}</div>
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
           <div className="flex justify-end items-center">
@@ -181,7 +180,6 @@ const Tasks = () => {
                     setSelectedProject={setSelectedProject}
                   />
                 </li>
-
                 <li>
                   <TasksSelectPriority
                     value={selectedpriority}
@@ -207,17 +205,21 @@ const Tasks = () => {
                     onChangeData={handleDateChange}
                   />
                 </li>
-                <li>
-                  <Button
-                    className="font-normal text-sm"
-                    variant="add"
-                    size="DefaultButton"
-                    onClick={handleNavigation}
-                  >
-                    <span className="text-xl font-normal pr-2 text-md">+</span>
-                    Add Task
-                  </Button>
-                </li>
+                {canAddTask(user_type) && (
+                  <li>
+                    <Button
+                      className="font-normal text-sm"
+                      variant="add"
+                      size="DefaultButton"
+                      onClick={handleNavigation}
+                    >
+                      <span className="text-xl font-normal pr-2 text-md">
+                        +
+                      </span>
+                      Add Task
+                    </Button>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -232,10 +234,12 @@ const Tasks = () => {
                 columns={taskColumns({ setDel })}
                 paginationDetails={data?.data?.data?.pagination_info}
                 getData={getAllTasks}
+                loading={isLoading || isFetching}
                 removeSortingForColumnIds={[
                   "serial",
                   "actions",
                   "project_title",
+                  "assignees",
                 ]}
               />
             </div>

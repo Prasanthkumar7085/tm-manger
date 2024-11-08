@@ -23,7 +23,7 @@ const RepliedComments = ({
   const replyComments = () => {
     const filteredComments = groupedComments.map((group: any) => {
       return group.comments.filter(
-        (comment: any) => comment.reply_to === mainComment.id
+        (comment: any) => comment.replyTo === mainComment.id
       );
     });
     return filteredComments.flat();
@@ -49,11 +49,13 @@ const RepliedComments = ({
             <div className="member-details flex items-center space-x-3">
               <div className="member-profile-image">
                 <img
+                  title={mainComment?.firstName + " " + mainComment?.lastName}
                   className="w-8 h-8 rounded-full"
-                  src={
-                    mainComment.user?.avatar ||
-                    "https://i.pravatar.cc/150?img=5"
-                  }
+                  onError={(e: any) => {
+                    e.target.onerror = null;
+                    e.target.src = "/profile-picture.png";
+                  }}
+                  src={mainComment.profilePictureUrl || "/profile-picture.png"}
                   alt="Avatar"
                 />
               </div>
@@ -82,14 +84,14 @@ const RepliedComments = ({
       </div>
 
       <div className="mb-6 max-h-[300px] overflow-y-auto">
-        <div className="font-semibold text-lg text-gray-800 mb-2">Replies:</div>
+        <div className="font-medium text-md text-gray-800 my-2">Replies:</div>
 
         <div className="space-y-4">
           {replyComments()?.length > 0 ? (
             replyComments()?.map((reply: any) => {
               return (
                 <div
-                  className="flex flex-col bg-[#FEF7FD] py-4 px-4 rounded-md ml-auto text-left  "
+                  className="flex flex-col bg-[#FEF7FD] py-4 px-4 rounded-md ml-4 text-left  "
                   key={reply.id}
                 >
                   <div>
@@ -109,7 +111,8 @@ const RepliedComments = ({
                           <span className="font-semibold">
                             {IsUserCommentOrNot(reply)
                               ? "You"
-                              : reply.user?.name || "Unknown"}
+                              : reply?.firstName + " " + reply?.lastName ||
+                                "Unknown"}
                           </span>
                           <span className="text-[#67727E] font-normal text-sm pl-2">
                             {formatCommentTime(reply)}

@@ -227,7 +227,7 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
                     wordWrap: "break-word",
                   }}
                 >
-                  <div className="tooltipContent">{title}</div>
+                  <div className="tooltipContent">{title || "--"}</div>
                 </TooltipContent>
               )}
             </Tooltip>

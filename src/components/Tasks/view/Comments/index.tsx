@@ -35,8 +35,13 @@ const TaskComments = ({ taskId }: any) => {
     open: false,
   });
   const [replyText, setReplyText] = useState("");
+  const [editedComment, setEditedComment] = useState<string>("");
+
   const handleTestDetailsChange = (data: string) => {
     setCommentText(data);
+  };
+  const handleEditCommentChange = (data: string) => {
+    setEditedComment(data);
   };
   const handleReplyChange = (data: string) => {
     setReplyText(data);
@@ -75,13 +80,13 @@ const TaskComments = ({ taskId }: any) => {
   useEffect(() => {
     if (commentsData) {
       const sortedComments = [...commentsData].sort((a, b) => {
-        const dateA = new Date(a.created_at).getTime();
-        const dateB = new Date(b.created_at).getTime();
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
         return dateA - dateB;
       });
       const grouped: any = [];
       sortedComments.forEach((comment: any) => {
-        const commentDate = new Date(comment.created_at);
+        const commentDate = new Date(comment.createdAt);
         const formattedDate = format(commentDate, "yyyy-MM-dd");
         if (!grouped[formattedDate]) {
           grouped[formattedDate] = [];
@@ -92,6 +97,7 @@ const TaskComments = ({ taskId }: any) => {
         date,
         comments: grouped[date],
       }));
+      console.log(groupedArray, "groupedArray");
       setGroupedComments(groupedArray);
     }
   }, [commentsData]);
@@ -183,33 +189,34 @@ const TaskComments = ({ taskId }: any) => {
 
   const handleEditComment = (commentId: number, message: string) => {
     setEditingCommentId(commentId);
-    setCommentText(message);
+    setEditedComment(message);
   };
 
   const handleSaveEdit = () => {
-    if (!commentText.trim()) {
+    if (!editedComment.trim()) {
       toast.error("Comment cannot be empty");
       return;
     }
     updateMutation.mutate({
       comment_id: editingCommentId!,
-      message: commentText,
+      message: editedComment,
     });
   };
   const handleCancelEdit = () => {
     setEditingCommentId(null);
     setCommentText("");
+    setEditedComment("");
   };
   const handleReplyComment = (comment: any) => {
     setOpenReplies({ commentId: comment.id, open: true, comment: comment });
   };
   const IsUserCommentOrNot = (comment: any) => {
-    const isUserComment = comment.commented_by === userID;
+    const isUserComment = comment.commentedBy === userID;
     return isUserComment;
   };
   const formatCommentTime = (comment: any) => {
     const formattedDistance = formatDistanceToNow(
-      new Date(comment.created_at),
+      new Date(comment?.createdAt),
       {
         addSuffix: true,
       }
@@ -241,6 +248,7 @@ const TaskComments = ({ taskId }: any) => {
     let value = `${count} ${count == 1 ? " Reply" : " Repliies"}`;
     return [count, value];
   };
+
   useEffect(() => {
     if (commentsContainerRef.current) {
       commentsContainerRef.current.scrollTop =
@@ -255,9 +263,6 @@ const TaskComments = ({ taskId }: any) => {
       >
         <div className="card-header flex justify-between  pr-2 items-center mb-4 sticky top-0 bg-white z-10">
           <h3 className="text-black text-lg font-medium mr-5">Comments</h3>
-          <button className="check-activity-button btn px-3  bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[25px]">
-            Check Activity
-          </button>
         </div>
 
         <div className="card-body px-4 flex flex-col h-[calc(100vh-200px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
@@ -269,33 +274,44 @@ const TaskComments = ({ taskId }: any) => {
               ? groupedComments?.map((group: any, index: number) => {
                   const formattedDate = format(new Date(group.date), "PPP");
                   let filtersReplyComments = group.comments.filter(
-                    (comment: any) => comment.reply_to === null
+                    (comment: any) => comment.replyTo === null
                   );
 
                   return (
                     <div key={index} className="group space-y-3">
                       <div className="my-4 text-center text-gray-500 text-xs">
-                        <span className="bg-white px-2">{formattedDate}</span>
+                        <span className="bg-white px-2">
+                          {groupedComments?.length > 0 ? formattedDate : ""}
+                        </span>
                       </div>
                       {filtersReplyComments?.length > 0
                         ? filtersReplyComments.map((comment: any) => {
                             const isEdited =
-                              comment.updated_at &&
-                              comment.created_at !== comment.updated_at;
+                              comment.updatedAt &&
+                              comment.createdAt !== comment.updatedAt;
                             return (
                               <div
                                 key={comment.id}
-                                className={`each-member flex flex-col bg-[#FEF7FD] py-4 px-4 rounded-md ${IsUserCommentOrNot(comment) ? "ml-auto text-right" : "mr-auto text-left"}`}
+                                className={`each-member flex flex-col bg-[#FEF7FD] py-4 px-4 rounded-md `}
                               >
                                 <div className="flex justify-between items-center">
                                   <div className="member-details flex items-center space-x-3">
                                     <div className="member-profile-image">
                                       <img
+                                        title={
+                                          comment?.firstName +
+                                          " " +
+                                          comment?.lastName
+                                        }
                                         className="w-8 h-8 rounded-full"
                                         src={
-                                          comment.user?.avatar ||
-                                          "https://i.pravatar.cc/150?img=5"
+                                          comment.profilePictureUrl ||
+                                          "/profile-picture.png"
                                         }
+                                        onError={(e: any) => {
+                                          e.target.onerror = null;
+                                          e.target.src = "/profile-picture.png";
+                                        }}
                                         alt="Avatar"
                                       />
                                     </div>
@@ -303,7 +319,9 @@ const TaskComments = ({ taskId }: any) => {
                                       <span className="font-semibold">
                                         {IsUserCommentOrNot(comment)
                                           ? "You"
-                                          : comment.user?.name || "Unknown"}
+                                          : comment?.firstName +
+                                              " " +
+                                              comment?.lastName || "Unknown"}
                                       </span>
                                       <span className="text-[#67727E] font-normal text-sm pl-2">
                                         {formatCommentTime(comment)}{" "}
@@ -359,9 +377,9 @@ const TaskComments = ({ taskId }: any) => {
                                   {editingCommentId === comment.id ? (
                                     <div className="flex flex-col">
                                       <CKEditorComponent
-                                        editorData={commentText}
+                                        editorData={editedComment}
                                         handleEditorChange={
-                                          handleTestDetailsChange
+                                          handleEditCommentChange
                                         }
                                       />
                                       <div className="mt-3 flex justify-end space-x-3">
