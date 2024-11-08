@@ -100,17 +100,46 @@ const TaskView = () => {
         style={{ height: "calc(100vh - 100px)" }}
       >
         <div className="task-primary-details">
+          <div className="heading-row flex justify-between items-center">
+            <h1
+              className="text-xl text-[#1B2459] font-medium overflow-hidden overflow-ellipsis whitespace-nowrap mb-1"
+              title={viewData?.title}
+            >
+              {viewData?.title ? capitalizeWords(viewData?.title) : "--"}
+            </h1>
+            <div className="action-buttons flex space-x-2">
+              <TaskStatus
+                taskId={taskId}
+                setUpdateDetailsOfTask={setUpdateDetailsOfTask}
+                selectedStatus={selectedStatus}
+                setSelectedStatus={setSelectedStatus}
+              />
+              <Button
+                type="button"
+                variant="edit"
+                size="DefaultButton"
+                onClick={() => {
+                  router.navigate({
+                    to: `/tasks/${taskId}`,
+                  });
+                }}
+              >
+                <img
+                  src="/edit-icon.svg"
+                  alt="icon"
+                  className="w-3 h-3 mr-2 text-[10px]"
+                />
+                Edit Task
+              </Button>
+              <button className="check-activity-button btn px-3 text-[12px] bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[35px] leading-[15px] font-semibold">
+                Check Activity
+              </button>
+            </div>
+          </div>
           <div className="grid grid-cols-1 lg:grid-cols-[70%,auto] gap-5">
             <div className="leftItem">
               <div>
-                <h1
-                  className="text-xl text-[#1B2459] font-medium overflow-hidden overflow-ellipsis whitespace-nowrap mb-1"
-                  title={viewData?.title}
-                >
-                  {viewData?.title ? capitalizeWords(viewData?.title) : "--"}
-                </h1>
-
-                <div className="description mt-3 border p-2 rounded-sm mb-3">
+                <div className="description mb-3">
                   <p
                     className="text-black  text-[.85rem] rounded-md overflow-hidden line-clamp-2"
                     title={viewData?.description}
@@ -120,36 +149,13 @@ const TaskView = () => {
 
                 </div>
               </div>
-              <AssignedUsers viewTaskData={viewData} />
+              <UploadAttachments />
+
               <hr className="my-3" />
               <TaskComments taskId={taskId} />
             </div>
             <div className="rightItem">
-              <div className="action-buttons flex space-x-3">
-                <TaskStatus
-                  taskId={taskId}
-                  setUpdateDetailsOfTask={setUpdateDetailsOfTask}
-                  selectedStatus={selectedStatus}
-                  setSelectedStatus={setSelectedStatus}
-                />
-                <Button
-                  type="button"
-                  variant="edit"
-                  size="DefaultButton"
-                  onClick={() => {
-                    router.navigate({
-                      to: `/tasks/${taskId}`,
-                    });
-                  }}
-                >
-                  <img
-                    src="/edit-icon.svg"
-                    alt="icon"
-                    className="w-3 h-3 mr-2"
-                  />
-                  Edit Task
-                </Button>
-              </div>
+
               <div className="focus-details border">
                 <div className="card-header border-b px-4 py-0 bg-gray-50">
                   <h3 className="leading-1 text-black  text-[1.1em]">Details</h3>
@@ -211,7 +217,8 @@ const TaskView = () => {
                 </div>
 
               </div>
-              <UploadAttachments />
+              <AssignedUsers viewTaskData={viewData} />
+
               <TagsComponent
                 tagInput={tagInput}
                 setTagInput={setTagInput}

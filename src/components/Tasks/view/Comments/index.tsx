@@ -260,13 +260,6 @@ const TaskComments = ({ taskId }: any) => {
         style={{ height: "calc(100vh - 300px)" }}
         className={`overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 ${openReplies?.open ? " w-[60%]" : "w-[100%]"}`}
       >
-        <div className="card-header flex justify-between  pr-2 items-center mb-4 sticky top-0 bg-white z-10">
-          <h3 className="text-black text-lg font-medium mr-5">Comments</h3>
-          <button className="check-activity-button btn px-3 text-sm bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[25px]">
-            Check Activity
-          </button>
-        </div>
-
         <div className="card-body px-4 flex flex-col h-[calc(100vh-200px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
           <div
             className="member-comments space-y-3  flex-1 pr-3"
@@ -306,20 +299,58 @@ const TaskComments = ({ taskId }: any) => {
                                         alt="Avatar"
                                       />
                                     </div>
-                                    <div className="member-name">
-                                      <span className="font-semibold">
-                                        {IsUserCommentOrNot(comment)
-                                          ? "You"
-                                          : comment.user?.name || "Unknown"}
-                                      </span>
-                                      <span className="text-[#67727E] font-normal text-sm pl-2">
-                                        {formatCommentTime(comment)}{" "}
-                                        {isEdited && (
-                                          <span className="text-xs text-gray-400">
-                                            (edited)
-                                          </span>
-                                        )}
-                                      </span>
+                                    <div className="person-message mt-2 text-slate-500 leading-snug">
+                                      {editingCommentId === comment.id ? (
+                                        <div className="flex flex-col">
+                                          <CKEditorComponent
+                                            editorData={editedComment}
+                                            handleEditorChange={
+                                              handleEditCommentChange
+                                            }
+                                          />
+                                          <div className="mt-3 flex justify-end space-x-3">
+                                            <button
+                                              className="text-gray-500"
+                                              onClick={handleCancelEdit}
+                                            >
+                                              Cancel
+                                            </button>
+                                            <button
+                                              className="text-[#28A745]"
+                                              onClick={handleSaveEdit}
+                                            >
+                                              Save
+                                            </button>
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <p
+                                          dangerouslySetInnerHTML={{
+                                            __html: comment.message,
+                                          }}
+                                        />
+                                      )}
+
+                                      <p
+                                        className={`text-[#3368a1] font-normal text-sm cursor-pointer ${
+                                          getRepliesCount(
+                                            group.comments,
+                                            comment.id
+                                          )[0] === 0
+                                            ? "hidden"
+                                            : ""
+                                        }`}
+                                        onClick={() =>
+                                          handleReplyComment(comment)
+                                        }
+                                      >
+                                        {
+                                          getRepliesCount(
+                                            group.comments,
+                                            comment.id
+                                          )[1]
+                                        }{" "}
+                                      </p>
                                     </div>
                                   </div>
                                   <DropdownMenu>
@@ -366,9 +397,9 @@ const TaskComments = ({ taskId }: any) => {
                                   {editingCommentId === comment.id ? (
                                     <div className="flex flex-col">
                                       <CKEditorComponent
-                                        editorData={editedComment}
+                                        editorData={commentText}
                                         handleEditorChange={
-                                          handleEditCommentChange
+                                          handleTestDetailsChange
                                         }
                                       />
                                       <div className="mt-3 flex justify-end space-x-3">
