@@ -256,16 +256,14 @@ const TaskComments = ({ taskId }: any) => {
     }
   }, [groupedComments]);
   return (
-    <div className="flex flex-row border">
+    <div className="flex flex-row">
       <div
-        style={{ height: "calc(100vh - 300px)" }}
-        className={`overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 ${openReplies?.open ? " w-[60%]" : "w-[100%]"}`}
+        className={`border ${openReplies?.open ? " w-[60%]" : "w-[100%]"}`}
       >
         <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
           <h3 className="leading-1 text-black text-[1.1em]">Comments</h3>
         </div>
-
-        <div className="card-body px-4 flex flex-col h-[calc(100vh-200px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+        <div className="card-body px-4 flex flex-col h-comments overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
           <div
             className="member-comments space-y-3  flex-1 pr-3"
             ref={commentsContainerRef}
@@ -470,8 +468,7 @@ const TaskComments = ({ taskId }: any) => {
       </div>
       {openReplies?.open && (
         <div
-          style={{ height: "calc(100vh - 50px)" }}
-          className={`${openReplies?.open ? "w-[40%]" : ""}`}
+          className={`${openReplies?.open ? "w-[45%] ml-2" : ""}`}
         >
           <RepliedComments
             mainComment={openReplies?.comment}

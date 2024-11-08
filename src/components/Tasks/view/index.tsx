@@ -38,6 +38,10 @@ const TaskView = () => {
     label: string;
     value: string;
   }>();
+  const [openReplies, setOpenReplies] = useState<any>({
+    commentId: null,
+    open: false,
+  });
   const [selectedPriority, setSelectedPriority] = useState<any>();
   const [activityOpen, setActivityOpen] = useState(false);
   const [activityLogData, setActivityLogData] = useState<any>();
@@ -181,7 +185,8 @@ const TaskView = () => {
               <hr className="my-3" />
               <TaskComments taskId={taskId} />
             </div>
-            <div className="rightItem">
+            <div className={`rightItem transition-transform duration-300 ${openReplies.open ? "translate-x-full" : "translate-x-0"
+              }`}>
               <div className="focus-details border">
                 <div className="card-header border-b px-4 py-0 bg-gray-50">
                   <h3 className="leading-1 text-black  text-[1.1em]">
