@@ -106,7 +106,7 @@ const TanStackTable: FC<pageProps> = ({
           location.pathname.includes("dashboard")
             ? "h-[calc(100vh-480px)]"
             : location.pathname.includes("tasks")
-              ? "h-[calc(100vh-320px)]"
+              ? "h-[calc(100vh-290px)]"
               : "h-[calc(100vh-240px)]"
         }`}
       >

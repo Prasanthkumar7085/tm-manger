@@ -8,6 +8,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
+import tagIcon from "@/assets/tag- icon.svg";
 
 interface TagsComponentProps {
   tagInput: string;
@@ -166,7 +167,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
         </div>
         <div className="card-body">
           <div className="max-h-[60px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 space-y-2 pt-3 pl-3 pr-3">
-            <div className="flex flex-wrap">
+            {/* <div className="flex flex-wrap">
               {task?.tags?.length > 0
                 ? task?.tags.map((tag: any, index: number) => (
                     <div
@@ -185,7 +186,33 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
                 : isTaskTagsLoading
                   ? ""
                   : "No tags found"}
-            </div>
+            </div> */}
+            <div className="flex flex-wrap">
+  {task?.tags?.length > 0 ? (
+    task?.tags.map((tag: any, index: number) => (
+      <div
+        key={index}
+        className="bg-[#00B8121A] text-[#00B812] text-[0.8em] font-medium mr-2 mb-2 flex px-2 rounded-full"
+      >
+        {tag}
+        <p
+          className="ml-1 text-[#000000] rotate-[45deg] font-medium cursor-pointer"
+          onClick={() => handleTagDelete(tag)}
+        >
+          +
+        </p>
+      </div>
+    ))
+  ) : isTaskTagsLoading ? (
+    ""
+  ) : (
+    <div className="flex items-center justify-center  py-1 w-[200px] mx-auto">
+      <img src={tagIcon} alt="No tags" className="w-5 h-5 mr-1" /> 
+      <span className="text-center">No tags found</span>
+    </div>
+  )}
+</div>
+
           </div>
         </div>
       </div>
