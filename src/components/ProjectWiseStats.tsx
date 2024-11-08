@@ -54,13 +54,18 @@ const ProjectDataTable = () => {
   });
 
   return (
-    <div className="relative">
-      <div className="flex justify-end">
-        <SearchFilter
-          searchString={searchString}
-          setSearchString={setSearchString}
-          title="Search Project Name"
-        />
+    <div className="relative ">
+      <div className="flex justify-between items-start">
+        <h2 className="text-lg font-sans font-medium text-gray-800">
+          Tasks List
+        </h2>
+        <div>
+          <SearchFilter
+            searchString={searchString}
+            setSearchString={setSearchString}
+            title="Search Project Name"
+          />
+        </div>
       </div>
 
       <div className="mt-5">
