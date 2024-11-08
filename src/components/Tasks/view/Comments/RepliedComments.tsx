@@ -158,23 +158,21 @@ const RepliedComments = ({
       </div>
 
 
-      <div className="card-footer border-t bg-white sticky bottom-0 left-0 right-0  px-4 py-4  z-10 overflow-hidden">
-        <div className="text-area-group rounded-lg items-start space-x-3 grid grid-cols-[90%,auto]">
-          <div>
+      <div className="card-footer border-t bg-[#EEEEF8] sticky bottom-0 left-0 right-0  px-4 py-4  z-10 overflow-hidden">
+        <div className="ck-editor-send-button grid grid-cols-[auto,50px] space-x-3 items-end">
+          <div className="overflow-auto">
             <CKEditorComponent
               editorData={replyText}
               handleEditorChange={handleReplyChange}
             />
           </div>
-          <div>
-            <button className="rounded-md" onClick={handleAddReply}>
-              <img
-                src="/add-comment-arrow.svg"
-                alt="icon"
-                className="w-[30px] h-[30px]"
-              />
-            </button>
-          </div>
+          <button className="rounded-md" onClick={handleAddReply}>
+            <img
+              src="/add-comment-arrow.svg"
+              alt="icon"
+              className="w-8"
+            />
+          </button>
         </div>
       </div>
     </div>

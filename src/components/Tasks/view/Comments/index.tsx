@@ -431,17 +431,17 @@ const TaskComments = ({ taskId }: any) => {
               : "No comments found"}
           </div>
         </div>
-        <div className="card-footer border-t bg-white sticky bottom-0 left-0 right-0  px-4 py-4  z-10 overflow-hidden">
-          <div className="grid grid-cols-[50px,auto]">
+        <div className="card-footer border-t bg-[#EEEEF8] sticky bottom-0 left-0 right-0  px-4 py-4  z-10 overflow-hidden">
+          <div className="grid grid-cols-[40px,auto] space-x-3">
             <div className="profile-image">
               <img
-                className="shadow-lg rounded-full"
+                className="shadow-lg rounded-full w-[40px]"
                 src="/profile-avatar.png"
                 alt="User"
               />
             </div>
-            <div className="text-area-group rounded-lg items-start space-x-3 grid grid-cols-[90%,auto]">
-              <div>
+            <div className="ck-editor-send-button grid grid-cols-[auto,50px] space-x-3 items-end">
+              <div className="overflow-auto">
                 {taskId && (
                   <CKEditorComponent
                     editorData={commentText}
@@ -449,18 +449,15 @@ const TaskComments = ({ taskId }: any) => {
                   />
                 )}
               </div>
-              <div>
-                <button
-                  className="rounded-md pt-2 pr-2"
-                  onClick={handleAddComment}
-                >
-                  <img
-                    src="/add-comment-arrow.svg"
-                    alt="icon"
-                    className="w-[40px] h-[40px]"
-                  />
-                </button>
-              </div>
+              <button
+                onClick={handleAddComment}
+              >
+                <img
+                  src="/add-comment-arrow.svg"
+                  alt="icon"
+                  className="w-8"
+                />
+              </button>
             </div>
           </div>
         </div>
