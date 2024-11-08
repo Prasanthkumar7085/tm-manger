@@ -222,7 +222,7 @@ const UploadAttachments = () => {
             attachmentsData.map((file: any) => (
               <div
                 key={file.id}
-                className="each-attachment border w-[250px] px-2 py-1 rounded-md"
+                className="each-attachment border w-[250px] px-2 py-1 rounded-md overflow-hidden"
               >
                 <div className="grid grid-cols-[30px,auto] gap-3 items-center">
                   <div className="icon text-3xl">
