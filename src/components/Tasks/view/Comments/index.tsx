@@ -263,7 +263,7 @@ const TaskComments = ({ taskId }: any) => {
         <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
           <h3 className="leading-1 text-black text-[1.1em]">Comments</h3>
         </div>
-        <div className="card-body px-4 flex flex-col h-comments overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+        <div className="card-body pb-[5rem] px-4 flex flex-col h-comments overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
           <div
             className="member-comments space-y-3  flex-1 pr-3"
             ref={commentsContainerRef}
@@ -290,30 +290,30 @@ const TaskComments = ({ taskId }: any) => {
                         return (
                           <div
                             key={comment.id}
-                            className={`each-member flex flex-col bg-[#FEF7FD] py-4 px-4 rounded-md `}
+                            className={`each-member`}
                           >
-                            <div className="flex justify-between items-center">
-                              <div className="member-details flex items-center space-x-3">
-                                <div className="member-profile-image">
-                                  <img
-                                    title={
-                                      comment?.firstName +
-                                      " " +
-                                      comment?.lastName
-                                    }
-                                    className="w-8 h-8 rounded-full"
-                                    src={
-                                      comment.profilePictureUrl ||
-                                      "/profile-picture.png"
-                                    }
-                                    onError={(e: any) => {
-                                      e.target.onerror = null;
-                                      e.target.src = "/profile-picture.png";
-                                    }}
-                                    alt="Avatar"
-                                  />
-                                </div>
-                                <div className="member-name">
+                            <div className="flex space-x-4 justify-end">
+                              <div className="member-profile-image">
+                                <img
+                                  title={
+                                    comment?.firstName +
+                                    " " +
+                                    comment?.lastName
+                                  }
+                                  src={
+                                    comment.profilePictureUrl ||
+                                    "/profile-picture.png"
+                                  }
+                                  onError={(e: any) => {
+                                    e.target.onerror = null;
+                                    e.target.src = "/profile-picture.png";
+                                  }}
+                                  alt="Avatar"
+                                  className="w-10 h-10 rounded-full"
+                                />
+                              </div>
+                              <div className="card bg-[#EEEEF8] py-2 rounded-md shadow-sm relative pl-5 pr-5">
+                                <div className="member-name pr-10">
                                   <span className="font-semibold">
                                     {IsUserCommentOrNot(comment)
                                       ? "You"
@@ -321,7 +321,7 @@ const TaskComments = ({ taskId }: any) => {
                                       " " +
                                       comment?.lastName || "Unknown"}
                                   </span>
-                                  <span className="text-[#67727E] font-normal text-sm pl-2">
+                                  <span className="text-[#67727E] font-normal text-[.85em] pl-2">
                                     {formatCommentTime(comment)}{" "}
                                     {isEdited && (
                                       <span className="text-xs text-gray-400">
@@ -330,96 +330,98 @@ const TaskComments = ({ taskId }: any) => {
                                     )}
                                   </span>
                                 </div>
-                              </div>
-                              <DropdownMenu>
-                                <DropdownMenuTrigger>
-                                  <button className="text-gray-500 hover:text-gray-800">
-                                    <DotsHorizontalIcon className="w-5 h-5" />
-                                  </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                  align="end"
-                                  className="bg-white p-2 rounded-md shadow-lg"
-                                >
-                                  <DropdownMenuItem
-                                    className={`cursor-pointer ${IsUserCommentOrNot(comment) ? "" : "hidden"}`}
-                                    onClick={() =>
-                                      handleDeleteComment(comment.id)
-                                    }
-                                  >
-                                    Delete
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    className={`cursor-pointer ${IsUserCommentOrNot(comment) ? "" : "hidden"}`}
-                                    onClick={() =>
-                                      handleEditComment(
-                                        comment.id,
-                                        comment.message
-                                      )
-                                    }
-                                  >
-                                    Edit
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    className="cursor-pointer"
-                                    onClick={() =>
-                                      handleReplyComment(comment)
-                                    }
-                                  >
-                                    Reply
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </div>
-                            <div className="person-message mt-2 text-slate-500 leading-snug">
-                              {editingCommentId === comment.id ? (
-                                <div className="flex flex-col">
-                                  <CKEditorComponent
-                                    editorData={editedComment}
-                                    handleEditorChange={
-                                      handleEditCommentChange
-                                    }
-                                  />
-                                  <div className="mt-3 flex justify-end space-x-3">
-                                    <button
-                                      className="text-gray-500"
-                                      onClick={handleCancelEdit}
-                                    >
-                                      Cancel
-                                    </button>
-                                    <button
-                                      className="text-[#28A745]"
-                                      onClick={handleSaveEdit}
-                                    >
-                                      Save
-                                    </button>
-                                  </div>
-                                </div>
-                              ) : (
-                                <p
-                                  dangerouslySetInnerHTML={{
-                                    __html: comment.message,
-                                  }}
-                                />
-                              )}
+                                <div className="person-message mt-2 text-slate-500 leading-snug pr-10">
+                                  {editingCommentId === comment.id ? (
+                                    <div className="flex flex-col">
+                                      <CKEditorComponent
+                                        editorData={editedComment}
+                                        handleEditorChange={
+                                          handleEditCommentChange
+                                        }
+                                      />
+                                      <div className="mt-3 flex justify-end space-x-3">
+                                        <button
+                                          className="text-gray-500"
+                                          onClick={handleCancelEdit}
+                                        >
+                                          Cancel
+                                        </button>
+                                        <button
+                                          className="text-[#28A745]"
+                                          onClick={handleSaveEdit}
+                                        >
+                                          Save
+                                        </button>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <p
+                                      dangerouslySetInnerHTML={{
+                                        __html: comment.message,
+                                      }}
+                                    />
+                                  )}
 
-                              <p
-                                className={`text-[#3368a1] font-normal text-sm cursor-pointer ${getRepliesCount(
-                                  group.comments,
-                                  comment.id
-                                )[0] === 0
-                                  ? "hidden"
-                                  : ""
-                                  }`}
-                                onClick={() => handleReplyComment(comment)}
-                              >
-                                {
-                                  getRepliesCount(
-                                    group.comments,
-                                    comment.id
-                                  )[1]
-                                }{" "}
-                              </p>
+                                  <p
+                                    className={`text-[#3368a1] font-normal text-sm cursor-pointer ${getRepliesCount(
+                                      group.comments,
+                                      comment.id
+                                    )[0] === 0
+                                      ? "hidden"
+                                      : ""
+                                      }`}
+                                    onClick={() => handleReplyComment(comment)}
+                                  >
+                                    {
+                                      getRepliesCount(
+                                        group.comments,
+                                        comment.id
+                                      )[1]
+                                    }{" "}
+                                  </p>
+                                </div>
+                                <div className="more-options absolute top-2 right-3">
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger>
+                                      <button className="text-black">
+                                        <DotsHorizontalIcon className="w-5 h-5" />
+                                      </button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent
+                                      align="end"
+                                      className="bg-white p-2 rounded-md shadow-lg"
+                                    >
+                                      <DropdownMenuItem
+                                        className={`cursor-pointer ${IsUserCommentOrNot(comment) ? "" : "hidden"}`}
+                                        onClick={() =>
+                                          handleDeleteComment(comment.id)
+                                        }
+                                      >
+                                        Delete
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem
+                                        className={`cursor-pointer ${IsUserCommentOrNot(comment) ? "" : "hidden"}`}
+                                        onClick={() =>
+                                          handleEditComment(
+                                            comment.id,
+                                            comment.message
+                                          )
+                                        }
+                                      >
+                                        Edit
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem
+                                        className="cursor-pointer"
+                                        onClick={() =>
+                                          handleReplyComment(comment)
+                                        }
+                                      >
+                                        Reply
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         );
