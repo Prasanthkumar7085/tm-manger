@@ -120,7 +120,8 @@ const TaskView = () => {
 
                 </div>
               </div>
-              <AssignedUsers viewTaskData={viewData} />
+              <UploadAttachments />
+
               <hr className="my-3" />
               <TaskComments taskId={taskId} />
             </div>
@@ -211,7 +212,7 @@ const TaskView = () => {
                 </div>
 
               </div>
-              <UploadAttachments />
+<AssignedUsers viewTaskData={viewData} />
               <TagsComponent
                 tagInput={tagInput}
                 setTagInput={setTagInput}
