@@ -11,25 +11,49 @@ import {
 } from "./ui/dropdown-menu";
 import downArrowIcon from "@/assets/down-arrow.svg";
 import { useSelector } from "react-redux";
+import { getSingleTaskAPI } from "@/lib/services/tasks";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { getSingleUserApi } from "@/lib/services/viewprofile";
 
 interface titleProps {
   title: string;
   path: string;
 }
 
-function TopBar({ viewData }: any) {
+function TopBar() {
   const location = useLocation();
+  const [viewData, setViewData] = useState<any>();
+  const { taskId } = useParams({ strict: false });
   const pathname = location.pathname;
   const currentNavItem = navBarConstants.find((item: titleProps) =>
     pathname.includes(item.path)
   );
   const searchParams = new URLSearchParams(location.search);
-
+  const userID = useSelector(
+    (state: any) => state.auth?.user?.user_details?.id
+  );
   const refernceId: any = useSelector((state: any) => state.auth.refId);
 
-  const { taskId } = useParams({ strict: false });
   const title = currentNavItem ? currentNavItem.title : null;
   const navigate = useNavigate({ from: "/" });
+
+  const { isLoading, isError, error } = useQuery({
+    queryKey: ["getSingleTask", userID],
+    queryFn: async () => {
+      const response = await getSingleUserApi(userID);
+      const taskData = response?.data?.data;
+
+      try {
+        if (response?.status === 200 || response?.status === 201) {
+          setViewData(taskData);
+        }
+      } catch (err: any) {
+        throw err;
+      }
+    },
+    enabled: Boolean(userID),
+  });
 
   return (
     <div className="py-3 px-5 flex justify-between items-center bg-white border-b">
@@ -43,8 +67,10 @@ function TopBar({ viewData }: any) {
         <DropdownMenu>
           <DropdownMenuTrigger className="flex gap-2 items-center hover:cursor-pointer">
             <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>SB</AvatarFallback>
+              <AvatarImage
+                src={viewData?.profile_pic || "/profile-picture.png"}
+                alt="@shadcn"
+              />
             </Avatar>
             My Account
           </DropdownMenuTrigger>
