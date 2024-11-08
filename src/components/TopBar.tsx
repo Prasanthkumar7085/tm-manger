@@ -35,6 +35,12 @@ function TopBar() {
   );
   const refernceId: any = useSelector((state: any) => state.auth.refId);
 
+  const capitalize = (word: string) =>
+    word.charAt(0).toUpperCase() + word.slice(1);
+  const getFullName = (user: any) => {
+    return `${capitalize(user.fname)} ${capitalize(user.lname)}`;
+  };
+
   const title = currentNavItem ? currentNavItem.title : null;
   const navigate = useNavigate({ from: "/" });
 
@@ -69,10 +75,14 @@ function TopBar() {
             <Avatar>
               <AvatarImage
                 src={viewData?.profile_pic || "/profile-picture.png"}
-                alt="@shadcn"
+                alt="User avatar"
               />
+              <AvatarFallback>
+                {viewData?.fname?.charAt(0) || ""}
+                {viewData?.lname?.charAt(0) || ""}
+              </AvatarFallback>
             </Avatar>
-            My Account
+            <span>{viewData ? getFullName(viewData) : "Loading..."}</span>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white">
             <DropdownMenuItem
@@ -106,4 +116,5 @@ function TopBar() {
     </div>
   );
 }
+
 export default TopBar;
