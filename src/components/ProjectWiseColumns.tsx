@@ -25,6 +25,11 @@ export const projectWiseColumns = [
                 <img
                   src={downloadUrl}
                   alt="project logo"
+                  onError={(e: any) => {
+                    e.target.onerror = null;
+                    e.target.src =
+                      "https://via.placeholder.com/150?text=No preview";
+                  }}
                   className="w-[22px] h-[22px] rounded-full border bg-transparent"
                 />
               </div>
@@ -46,15 +51,13 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className=" block font-semibold">
-          {title ? title : "-"}
-        </span>
+        <span className=" block font-semibold">{title ? title : "-"}</span>
       );
     },
     width: "75px",
     maxWidth: "75px",
     minWidth: "75px",
-    header: () => <span >Todo</span>,
+    header: () => <span>Todo</span>,
     footer: (props: any) => props.column.id,
   },
   {
@@ -63,9 +66,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className=" block font-semibold">
-          {title ? title : "-"}
-        </span>
+        <span className=" block font-semibold">{title ? title : "-"}</span>
       );
     },
     width: "75px",
@@ -80,9 +81,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className=" block font-semibold">
-          {title ? title : "-"}
-        </span>
+        <span className=" block font-semibold">{title ? title : "-"}</span>
       );
     },
     width: "75px",
@@ -97,9 +96,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className=" block font-semibold">
-          {title ? title : "-"}
-        </span>
+        <span className=" block font-semibold">{title ? title : "-"}</span>
       );
     },
     width: "75px",
@@ -114,9 +111,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className=" block font-semibold">
-          {title ? title : "-"}
-        </span>
+        <span className=" block font-semibold">{title ? title : "-"}</span>
       );
     },
     width: "50px",
