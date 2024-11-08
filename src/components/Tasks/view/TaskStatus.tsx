@@ -1,5 +1,5 @@
 import { taskStatusConstants } from "@/lib/helpers/statusConstants";
-import { statusUpdateAPI } from "@/lib/services/tasks";
+import { getActivityLogsAPI, statusUpdateAPI } from "@/lib/services/tasks";
 import { useMutation } from "@tanstack/react-query";
 import React, { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";

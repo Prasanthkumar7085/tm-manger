@@ -47,6 +47,13 @@ export const getSingleTaskAPI = async (taskId: any) => {
     throw err;
   }
 };
+export const getActivityLogsAPI = async (taskId: any) => {
+  try {
+    return await $fetch.get(`/tasks/${taskId}/task-activities`);
+  } catch (err) {
+    throw err;
+  }
+};
 
 export const getTasksBasedTagsAPI = async (taskId: any) => {
   try {

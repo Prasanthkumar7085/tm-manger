@@ -2,7 +2,7 @@ import LoadingComponent from "@/components/core/LoadingComponent";
 import { Button } from "@/components/ui/button";
 import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
 import { taskStatusConstants } from "@/lib/helpers/statusConstants";
-import { getSingleTaskAPI } from "@/lib/services/tasks";
+import { getActivityLogsAPI, getSingleTaskAPI } from "@/lib/services/tasks";
 import { setRefId } from "@/redux/Modules/userlogin";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams, useRouter } from "@tanstack/react-router";
@@ -16,6 +16,7 @@ import UploadAttachments from "./Attachments";
 import PriorityStatus from "./PriorityStatus";
 import TaskStatus from "./TaskStatus";
 import TaskComments from "./Comments";
+import { ActivityDrawer } from "./ActivityDrawer";
 
 const TaskView = () => {
   const navigate = useNavigate();
@@ -38,8 +39,10 @@ const TaskView = () => {
     value: string;
   }>();
   const [selectedPriority, setSelectedPriority] = useState<any>();
+  const [activityOpen, setActivityOpen] = useState(false);
+  const [activityLogData, setActivityLogData] = useState<any>();
 
-  const { isLoading, isError, error, data } = useQuery({
+  const { isLoading, isError, error } = useQuery({
     queryKey: ["getSingleTask", taskId, updateDetailsOfTask],
     queryFn: async () => {
       const response = await getSingleTaskAPI(taskId);
@@ -55,6 +58,25 @@ const TaskView = () => {
           dispatch(setRefId(response.data?.data?.ref_id));
         } else {
           throw new Error("Failed to fetch task");
+        }
+      } catch (err: any) {
+        toast.error(err?.message || "Something went wrong");
+        throw err;
+      }
+    },
+    enabled: Boolean(taskId),
+  });
+  const { data } = useQuery({
+    queryKey: ["getActivityLogs", taskId, activityOpen],
+    queryFn: async () => {
+      const response = await getActivityLogsAPI(taskId);
+      const taskData = response?.data?.data;
+
+      try {
+        if (response?.status === 200 || response?.status === 201) {
+          setActivityLogData(taskData);
+        } else {
+          throw new Error("Failed to fetch Activity");
         }
       } catch (err: any) {
         toast.error(err?.message || "Something went wrong");
@@ -90,6 +112,9 @@ const TaskView = () => {
       }));
       return;
     }
+  };
+  const onActivityClick = () => {
+    setActivityOpen(true);
   };
 
   return (
@@ -131,7 +156,10 @@ const TaskView = () => {
                 />
                 Edit Task
               </Button>
-              <button className="check-activity-button btn px-3 text-[12px] bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[35px] leading-[15px] font-semibold">
+              <button
+                className="check-activity-button btn px-3 text-[12px] bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[35px] leading-[15px] font-semibold"
+                onClick={onActivityClick}
+              >
                 Check Activity
               </button>
             </div>
@@ -253,6 +281,14 @@ const TaskView = () => {
                 errorMessages={errorMessages}
                 setErrorMessages={setErrorMessages}
               />
+              {setActivityOpen && (
+                <ActivityDrawer
+                  setActivityOpen={setActivityOpen}
+                  activityOpen={activityOpen}
+                  id={taskId}
+                  activityLogData={activityLogData}
+                />
+              )}
             </div>
           </div>
         </div>

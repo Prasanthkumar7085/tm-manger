@@ -8,6 +8,24 @@ export const statusConstants = [
     label: "In-Active",
   },
 ];
+export const activityStatus: any = [
+  {
+    value: "TODO",
+    label: "Todo",
+  },
+  {
+    value: "IN_PROGRESS",
+    label: "In Progress",
+  },
+  {
+    value: "COMPLETED",
+    label: "Completed",
+  },
+  {
+    value: "OVER_DUE",
+    label: "Over Due",
+  },
+];
 
 export const taskStatusConstants: any = [
   {

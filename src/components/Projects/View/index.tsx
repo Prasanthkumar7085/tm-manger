@@ -245,7 +245,23 @@ const ProjectView = () => {
           </div>
           <div>
             <h2 className="text-sm text-[#666666]">Created By</h2>
-            <p className="text-sm text-[#000000]">{"Member"}</p>
+            <div className="created-person flex items-center space-x-3">
+              <img
+                src={
+                  projectDetails?.created_profile_pic_url ||
+                  "/profile-picture.png"
+                }
+                onError={(e: any) => {
+                  e.target.onerror = null;
+                  e.target.src = "/profile-picture.png";
+                }}
+                alt="User"
+                className="object-contain w-6 h-6 rounded-full border"
+              />
+              <p className="text-sm text-[#000000]">
+                {projectDetails?.created_name}
+              </p>
+            </div>
           </div>
         </div>
       </div>
