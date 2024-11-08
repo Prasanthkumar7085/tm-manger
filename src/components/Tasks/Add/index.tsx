@@ -53,7 +53,8 @@ const AddTask = () => {
   const [errorMessages, setErrorMessages] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [users, setUsers] = useState<any[]>([]);
-
+  const [selectedProjectLogo, setSelectedProjectLogo] =
+    React.useState<any>(null);
   const [selectedUsers, setSelectedUsers] = useState(new Set());
   const handleChange = (e: any) => {
     setTask({ ...task, [e.target.name]: e.target.value });
@@ -63,8 +64,10 @@ const AddTask = () => {
     setTask((prev: any) => ({
       ...prev,
       project_id: project.id ? project.id : "",
+      users: [],
     }));
     setOpenProjects(false);
+    setSelectedProjectLogo(project.logo_url || "/favicon.png");
   };
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -104,7 +107,7 @@ const AddTask = () => {
       setLoading(false);
     },
   });
-  // to get the single task
+
   const {
     isLoading: isTaskLoading,
     isError: isTaskError,
@@ -122,6 +125,7 @@ const AddTask = () => {
             description: taskData?.description || "-",
           };
           setTask(data);
+          setSelectedProjectLogo(taskData.project_logo || "/favicon.png");
         } else {
           throw new Error("Failed to fetch task");
         }
@@ -133,7 +137,6 @@ const AddTask = () => {
     enabled: Boolean(taskId),
   });
 
-  //to get the projects
   const { isLoading, isError, error, data, isFetching } = useQuery({
     queryKey: ["projects"],
     queryFn: async () => {
@@ -208,8 +211,20 @@ const AddTask = () => {
                     role="combobox"
                     disabled={taskId ? true : false}
                     aria-expanded={openProjects}
-                    className="justify-between  bg-slate-50 h-[35px] w-[220px] relative text-[#00000099] font-normal text-md border border-[#E2E2E2]"
+                    className="justify-between  bg-slate-50 h-[35px] w-[400px] relative text-[#00000099] font-normal text-md border border-[#E2E2E2]"
                   >
+                    {task.project_id && selectedProjectLogo && (
+                      <img
+                        src={selectedProjectLogo || "/favicon.png"}
+                        alt={` logo`}
+                        onError={(e: any) => {
+                          e.target.onerror = null;
+                          e.target.src =
+                            "https://via.placeholder.com/150?text=No preview";
+                        }}
+                        className="mr-2 h-6 w-6 rounded-full object-cover"
+                      />
+                    )}
                     {task.project_id
                       ? projectsList.find((p: any) => p.id === task.project_id)
                           ?.title
@@ -225,12 +240,13 @@ const AddTask = () => {
                             project_id: null,
                             users: [],
                           }));
+                          setSelectedProjectLogo(null);
                         }}
                       />
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0 bg-white">
+                <PopoverContent className="w-[400px] p-0 bg-white">
                   <Command>
                     <CommandInput placeholder="Search Projects" />
                     <CommandList>
@@ -242,6 +258,18 @@ const AddTask = () => {
                             onSelect={() => handleProjectSelect(project)}
                             className="text-ellipsis overflow-hidden"
                           >
+                            {(project.logo_url || "/favicon.png") && (
+                              <img
+                                src={project.logo_url || "/favicon.png"}
+                                alt={`${project.title} logo`}
+                                className="mr-2 h-6 w-6 rounded-full object-cover"
+                                onError={(e: any) => {
+                                  e.target.onerror = null;
+                                  e.target.src =
+                                    "https://via.placeholder.com/150?text=No preview";
+                                }}
+                              />
+                            )}
                             <Check
                               className="mr-2 h-4 w-4"
                               style={{

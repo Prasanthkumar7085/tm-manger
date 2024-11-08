@@ -1,25 +1,49 @@
-import dayjs from "dayjs";
-import { Button } from "../ui/button";
-import { useNavigate } from "@tanstack/react-router";
 import viewButtonIcon from "@/assets/view.svg";
-import { useState } from "react";
-import { toast } from "sonner";
-import { deleteTaskAPI } from "@/lib/services/tasks";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   bgColorObjectForStatus,
   colorObjectForStatus,
   taskPriorityConstants,
   taskStatusConstants,
 } from "@/lib/helpers/statusConstants";
-import { Badge } from "../ui/badge";
+import { deleteTaskAPI } from "@/lib/services/tasks";
+import { useNavigate } from "@tanstack/react-router";
+import dayjs from "dayjs";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import DeleteDialog from "../core/deleteDialog";
+import { Button } from "../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export const taskColumns = ({ setDel }: any) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const getColorFromInitials = (initials: string) => {
+    const colors = [
+      "bg-red-200",
+      "bg-green-200",
+      "bg-blue-200",
+      "bg-yellow-200",
+      "bg-purple-200",
+      "bg-pink-200",
+      "bg-indigo-200",
+      "bg-teal-200",
+      "bg-orange-200",
+      "bg-cyan-200",
+      "bg-amber-200",
+      "bg-lime-200",
+      "bg-emerald-200",
+      "bg-fuchsia-200",
+      "bg-rose-200",
+    ];
+
+    const index = initials.charCodeAt(0) % colors.length;
+    return colors[index];
+  };
 
   const deleteTask = async () => {
     try {
@@ -85,6 +109,11 @@ export const taskColumns = ({ setDel }: any) => {
                   src={project_logo_url}
                   alt="project logo"
                   className="w-[22px] h-[22px] rounded-full border bg-transparent"
+                  onError={(e: any) => {
+                    e.target.onerror = null;
+                    e.target.src =
+                      "https://via.placeholder.com/150?text=No preview";
+                  }}
                 />
               </div>
             )}
@@ -124,23 +153,92 @@ export const taskColumns = ({ setDel }: any) => {
       footer: (props: any) => props.column.id,
     },
     {
-      accessorFn: (row: any) =>
-        row.assignees.map((assignee: any) => {
-          return assignee.user_profile_pic_url ? (
-            <img
-              src={assignee.user_profile_pic_url}
-              className="profile-pic w-[26px] h-[26px] rounded-full mr-1"
-            />
-          ) : null;
-        }),
+      accessorFn: (row: any) => row.assignees,
       id: "assignees",
-      cell: (info: any) => (
-        <>
-          <div className="assign-users flex items-center">
-            {info.getValue()}
+      cell: (info: any) => {
+        const [showPopover, setShowPopover] = useState(false);
+
+        return (
+          <div className="flex justify-start mt-3 -space-x-2">
+            {info
+              .getValue()
+              .slice(0, 5)
+              .map((assignee: any) => {
+                const initials =
+                  assignee.user_first_name[0] + assignee.user_last_name[0];
+                const backgroundColor = getColorFromInitials(initials);
+
+                return (
+                  <Avatar
+                    key={assignee.user_id}
+                    title={
+                      assignee.user_first_name + " " + assignee.user_last_name
+                    }
+                    className={`w-8 h-8 ${backgroundColor}`}
+                  >
+                    <AvatarImage
+                      src={assignee.user_profile_pic_url}
+                      alt={assignee.name}
+                      title={
+                        assignee.user_first_name + " " + assignee.user_last_name
+                      }
+                    />
+                    <AvatarFallback>{initials}</AvatarFallback>
+                  </Avatar>
+                );
+              })}
+            {info.getValue().length > 5 && (
+              <Popover open={showPopover} onOpenChange={setShowPopover}>
+                <PopoverTrigger asChild>
+                  <div className="flex items-center justify-center w-8 h-8 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold cursor-pointer hover:bg-gray-300">
+                    +{info.getValue().length - 5}
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent className="p-2 w-48 max-w-xs bg-white border border-gray-300 rounded-lg shadow-lg">
+                  <div className="space-y-2">
+                    {info.getValue().map((assignee: any) => (
+                      <div
+                        key={assignee.user_id}
+                        className="flex items-center space-x-2"
+                      >
+                        <Avatar
+                          key={assignee.user_id}
+                          title={
+                            assignee.user_first_name +
+                            " " +
+                            assignee.user_last_name
+                          }
+                          className={`w-8 h-8 ${getColorFromInitials(
+                            assignee.user_first_name[0] +
+                              assignee.user_last_name[0]
+                          )}`}
+                        >
+                          <AvatarImage
+                            src={assignee.user_profile_pic_url}
+                            alt={assignee.name}
+                            title={
+                              assignee.user_first_name +
+                              " " +
+                              assignee.user_last_name
+                            }
+                          />
+                          <AvatarFallback>
+                            {assignee.user_first_name[0] +
+                              assignee.user_last_name[0]}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span>
+                          {assignee.user_first_name} {assignee.user_last_name}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
           </div>
-        </>
-      ),
+        );
+      },
       width: "150px",
       maxWidth: "150px",
       minWidth: "150px",
@@ -236,7 +334,12 @@ export const taskColumns = ({ setDel }: any) => {
                 color: colorObjectForStatus[priorityLabel] || "black",
               }}
             >
-              {ArrowIcon && <ArrowIcon style={{ marginRight: "4px" }} className="!w-[16px] !h-[16px]" />}
+              {ArrowIcon && (
+                <ArrowIcon
+                  style={{ marginRight: "4px" }}
+                  className="!w-[16px] !h-[16px]"
+                />
+              )}
               {priorityLabel}
             </span>
           </>

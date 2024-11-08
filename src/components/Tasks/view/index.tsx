@@ -146,7 +146,6 @@ const TaskView = () => {
                   >
                     {viewData?.description ? viewData.description : "--"}
                   </p>
-
                 </div>
               </div>
               <UploadAttachments />
@@ -155,21 +154,38 @@ const TaskView = () => {
               <TaskComments taskId={taskId} />
             </div>
             <div className="rightItem">
-
               <div className="focus-details border">
                 <div className="card-header border-b px-4 py-0 bg-gray-50">
-                  <h3 className="leading-1 text-black  text-[1.1em]">Details</h3>
+                  <h3 className="leading-1 text-black  text-[1.1em]">
+                    Details
+                  </h3>
                 </div>
                 <div className="card-body py-3 px-4">
                   <ul className="space-y-3">
                     <li className="grid grid-cols-[150px,auto]">
-                      <p className="text-[#666666] text-sm font-medium mb-1">Project</p>
-                      <p className="mt-0 text-black font-medium">{viewData?.project_title
-                        ? capitalizeWords(viewData?.project_title)
-                        : "--"}</p>
+                      <p className="text-[#666666] text-sm font-medium mb-1">
+                        Project
+                      </p>
+                      <p className="mt-0 text-black font-medium flex items-center">
+                        <img
+                          src={viewData?.project_logo || "/favicon.png"}
+                          alt={` logo`}
+                          onError={(e: any) => {
+                            e.target.onerror = null;
+                            e.target.src =
+                              "https://via.placeholder.com/150?text=No preview";
+                          }}
+                          className="mr-2 h-6 w-6 rounded-full object-cover"
+                        />
+                        {viewData?.project_title
+                          ? capitalizeWords(viewData?.project_title)
+                          : "--"}
+                      </p>
                     </li>
                     <li className="grid grid-cols-[150px,auto]">
-                      <p className="text-[#666666] text-sm font-medium mb-1">Priority</p>
+                      <p className="text-[#666666] text-sm font-medium mb-1">
+                        Priority
+                      </p>
                       <PriorityStatus
                         taskId={taskId}
                         setUpdatePriority={setUpdatePriority}
@@ -179,14 +195,18 @@ const TaskView = () => {
                       />
                     </li>
                     <li className="grid grid-cols-[150px,auto]">
-                      <p className="text-[#666666] text-sm font-medium mb-1">Due Date</p>
+                      <p className="text-[#666666] text-sm font-medium mb-1">
+                        Due Date
+                      </p>
                       <div className="inline-block px-3 py-[1px] text-[#FF0021] bg-[#FFE0E480] text-md font-semibold rounded-sm">
                         {dayjs(viewData?.due_date).format("MM/DD/YYYY")}
                       </div>
                     </li>
                     <li className="grid grid-cols-[150px,auto]">
                       <div>
-                        <p className="text-[#666666] text-sm font-medium mb-1">Created Date</p>
+                        <p className="text-[#666666] text-sm font-medium mb-1">
+                          Created Date
+                        </p>
                       </div>
                       <div>
                         <p className="text-black font-medium">
@@ -196,14 +216,21 @@ const TaskView = () => {
                     </li>
                     <li className="grid grid-cols-[150px,auto]">
                       <div>
-                        <p className="text-[#666666] text-sm font-medium mb-1">Created By</p>
+                        <p className="text-[#666666] text-sm font-medium mb-1">
+                          Created By
+                        </p>
                       </div>
                       <div>
                         <div className="created-person flex items-center space-x-3">
                           <img
                             src={
-                              viewData?.created_profile_pic_url || "/profile-picture.png"
+                              viewData?.created_profile_pic_url ||
+                              "/profile-picture.png"
                             }
+                            onError={(e: any) => {
+                              e.target.onerror = null;
+                              e.target.src = "/profile-picture.png";
+                            }}
                             alt="User"
                             className="object-contain w-6 h-6 rounded-full border"
                           />
@@ -215,7 +242,6 @@ const TaskView = () => {
                     </li>
                   </ul>
                 </div>
-
               </div>
               <AssignedUsers viewTaskData={viewData} />
 
@@ -227,8 +253,6 @@ const TaskView = () => {
                 errorMessages={errorMessages}
                 setErrorMessages={setErrorMessages}
               />
-
-
             </div>
           </div>
         </div>
