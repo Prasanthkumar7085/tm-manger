@@ -95,60 +95,60 @@ const DashBoard = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-4 bg-red-100 rounded-lg text-center shadow-sm">
-              <div className="flex justify-center items-center mb-4">
+            <div className="p-4 bg-[#FFE2E5] rounded-xl text-left shadow-sm">
+              <div className="flex justify-left items-center mb-6">
                 <img
                   src={dahboardProjectIcon}
                   alt="Projects icon"
                   className="h-[33px] w-[33px]"
                 />
               </div>
-              <h1 className="text-3xl font-semibold text-gray-800">
+              <h1 className="text-2xl font-medium text-[#151D48]">
                 <CountUp end={projectsCount} duration={2.5} />
               </h1>
-              <p className="text-sm text-gray-600">Projects</p>
+              <p className="text-md font-normal text-[#425166]">Projects</p>
             </div>
 
-            <div className="p-4 bg-yellow-100 rounded-lg text-center shadow-sm">
-              <div className="flex justify-center items-center mb-4">
+            <div className="p-4 bg-[#FFF4DE] rounded-xl text-left shadow-sm">
+              <div className="flex justify-left items-center mb-6">
                 <img
                   src={dahboardTaskIcon}
                   alt="Tasks icon"
                   className="h-[33px] w-[33px]"
                 />
               </div>
-              <h1 className="text-3xl font-semibold text-gray-800">
+              <h1 className="text-2xl font-medium text-[#151D48]">
                 <CountUp end={tasksCount} duration={2.5} />
               </h1>
-              <p className="text-sm text-gray-600">Tasks</p>
+              <p className="text-md text-[#425166] font-normal">Tasks</p>
             </div>
 
-            <div className="p-4 bg-purple-100 rounded-lg text-center shadow-sm">
-              <div className="flex justify-center items-center mb-4">
+            <div className="p-4 bg-[#F3E8FF] rounded-xl text-left shadow-sm">
+              <div className="flex justify-left items-center mb-6">
                 <img
                   src={dashboardUsersIcon}
                   alt="Users icon"
                   className="h-[33px] w-[33px]"
                 />
               </div>
-              <h1 className="text-3xl font-semibold text-gray-800">
+              <h1 className="text-2xl font-medium text-[#151D48]">
                 <CountUp end={usersCount} duration={2.5} />
               </h1>
-              <p className="text-sm text-gray-600">Users</p>
+              <p className="text-md text-[#425166] font-normal">Users</p>
             </div>
 
-            <div className="p-4 bg-green-100 rounded-lg text-center shadow-sm">
-              <div className="flex justify-center items-center mb-4">
+            <div className="p-4 bg-[#DCFCE7] rounded-xl text-left shadow-sm">
+              <div className="flex justify-left items-center mb-6">
                 <img
                   src={dashboardActiveTaskIcon}
                   alt="Active Tasks icon"
                   className="h-[33px] w-[33px]"
                 />
               </div>
-              <h1 className="text-3xl font-semibold text-gray-800">
+              <h1 className="text-2xl font-medium text-[#151D48]">
                 <CountUp end={activeUsersCount} duration={2.5} />
               </h1>
-              <p className="text-sm text-gray-600">Active Tasks</p>
+              <p className="text-md text-[#425166] font-normal">Active Tasks</p>
             </div>
           </div>
         </Card>
@@ -158,33 +158,33 @@ const DashBoard = () => {
       </div>
 
       <div className="card-container bg-white shadow-md rounded-lg border p-3 mt-3 ">
-        <div className="tasks-navbar flex justify-between items-center">
+        {/* <div className="tasks-navbar flex justify-between items-center">
           <h2 className="text-lg font-sans font-medium text-gray-800">
             Tasks List
           </h2>
           <div className="filters">
             <ul className="flex justify-end space-x-3">
               <li>
-                {/* <SelectTaskProjects
+                <SelectTaskProjects
                   selectedProject={selectedProject}
                   setSelectedProject={setSelectedProject}
-                /> */}
+                />
               </li>
               <li>
-                {/* <SelectTaskProjects
+                <SelectTaskProjects
                   selectedProject={selectedProject}
                   setSelectedProject={setSelectedProject}
-                /> */}
+                />
               </li>
               <li>
-                {/* <SelectTaskProjects
+                <SelectTaskProjects
                   selectedProject={selectedProject}
                   setSelectedProject={setSelectedProject}
-                /> */}
+                />
               </li>
             </ul>
           </div>
-        </div>
+        </div> */}
         <ProjectDataTable />
       </div>
     </div>

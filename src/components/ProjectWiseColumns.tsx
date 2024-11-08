@@ -4,9 +4,9 @@ export const projectWiseColumns = [
     id: "serial",
     header: () => <span>S.No</span>,
     footer: (props: any) => props.column.id,
-    width: "60px",
-    maxWidth: "60px",
-    minWidth: "60px",
+    width: "35px",
+    maxWidth: "35px",
+    minWidth: "35px",
     enableSorging: false,
     cell: (props: any) => <>{props.getValue()}</>,
   },
@@ -46,7 +46,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className="text-center block font-semibold">
+        <span className=" block font-semibold">
           {title ? title : "-"}
         </span>
       );
@@ -54,7 +54,7 @@ export const projectWiseColumns = [
     width: "75px",
     maxWidth: "75px",
     minWidth: "75px",
-    header: () => <span>Todo</span>,
+    header: () => <span >Todo</span>,
     footer: (props: any) => props.column.id,
   },
   {
@@ -63,7 +63,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className="text-center block font-semibold">
+        <span className=" block font-semibold">
           {title ? title : "-"}
         </span>
       );
@@ -80,7 +80,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className="text-center block font-semibold">
+        <span className=" block font-semibold">
           {title ? title : "-"}
         </span>
       );
@@ -97,7 +97,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className="text-center block font-semibold">
+        <span className=" block font-semibold">
           {title ? title : "-"}
         </span>
       );
@@ -114,7 +114,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className="text-center block font-semibold">
+        <span className=" block font-semibold">
           {title ? title : "-"}
         </span>
       );
