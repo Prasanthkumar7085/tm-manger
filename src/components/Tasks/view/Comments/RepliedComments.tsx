@@ -83,7 +83,7 @@ const RepliedComments = ({
         </div>
       </div>
 
-      <div className="mb-6 max-h-[300px] overflow-y-auto">
+      <div className="mb-6 min-h-[500px] overflow-y-auto">
         <div className="font-medium text-md text-gray-800 my-2">Replies:</div>
 
         <div className="space-y-4">
@@ -112,7 +112,7 @@ const RepliedComments = ({
                             {IsUserCommentOrNot(reply)
                               ? "You"
                               : reply?.firstName + " " + reply?.lastName ||
-                                "Unknown"}
+                              "Unknown"}
                           </span>
                           <span className="text-[#67727E] font-normal text-sm pl-2">
                             {formatCommentTime(reply)}
@@ -157,7 +157,7 @@ const RepliedComments = ({
         </div>
       </div>
 
-      <div className="sticky bottom-2 left-0 right-0 bg-white px-4 py-6 z-10 overflow-hidden">
+      <div className="sticky bottom-2 left-0 right-0 bg-white px-2 py-3 z-10 overflow-hidden">
         <div className="flex justify-between items-center">
           <div className="font-semibold text-lg text-gray-800 mb-2">
             Add Your Reply:
