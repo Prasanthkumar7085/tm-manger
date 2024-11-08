@@ -80,13 +80,13 @@ const TaskComments = ({ taskId }: any) => {
   useEffect(() => {
     if (commentsData) {
       const sortedComments = [...commentsData].sort((a, b) => {
-        const dateA = new Date(a.created_at).getTime();
-        const dateB = new Date(b.created_at).getTime();
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
         return dateA - dateB;
       });
       const grouped: any = [];
       sortedComments.forEach((comment: any) => {
-        const commentDate = new Date(comment.created_at);
+        const commentDate = new Date(comment.createdAt);
         const formattedDate = format(commentDate, "yyyy-MM-dd");
         if (!grouped[formattedDate]) {
           grouped[formattedDate] = [];
@@ -97,6 +97,7 @@ const TaskComments = ({ taskId }: any) => {
         date,
         comments: grouped[date],
       }));
+      console.log(groupedArray, "groupedArray");
       setGroupedComments(groupedArray);
     }
   }, [commentsData]);
@@ -210,12 +211,12 @@ const TaskComments = ({ taskId }: any) => {
     setOpenReplies({ commentId: comment.id, open: true, comment: comment });
   };
   const IsUserCommentOrNot = (comment: any) => {
-    const isUserComment = comment.commented_by === userID;
+    const isUserComment = comment.commentedBy === userID;
     return isUserComment;
   };
   const formatCommentTime = (comment: any) => {
     const formattedDistance = formatDistanceToNow(
-      new Date(comment.created_at),
+      new Date(comment?.createdAt),
       {
         addSuffix: true,
       }
@@ -273,7 +274,7 @@ const TaskComments = ({ taskId }: any) => {
               ? groupedComments?.map((group: any, index: number) => {
                   const formattedDate = format(new Date(group.date), "PPP");
                   let filtersReplyComments = group.comments.filter(
-                    (comment: any) => comment.reply_to === null
+                    (comment: any) => comment.replyTo === null
                   );
 
                   return (
@@ -286,8 +287,8 @@ const TaskComments = ({ taskId }: any) => {
                       {filtersReplyComments?.length > 0
                         ? filtersReplyComments.map((comment: any) => {
                             const isEdited =
-                              comment.updated_at &&
-                              comment.created_at !== comment.updated_at;
+                              comment.updatedAt &&
+                              comment.createdAt !== comment.updatedAt;
                             return (
                               <div
                                 key={comment.id}
@@ -297,11 +298,20 @@ const TaskComments = ({ taskId }: any) => {
                                   <div className="member-details flex items-center space-x-3">
                                     <div className="member-profile-image">
                                       <img
+                                        title={
+                                          comment?.firstName +
+                                          " " +
+                                          comment?.lastName
+                                        }
                                         className="w-8 h-8 rounded-full"
                                         src={
-                                          comment.user?.avatar ||
-                                          "https://i.pravatar.cc/150?img=5"
+                                          comment.profilePictureUrl ||
+                                          "/profile-picture.png"
                                         }
+                                        onError={(e: any) => {
+                                          e.target.onerror = null;
+                                          e.target.src = "/profile-picture.png";
+                                        }}
                                         alt="Avatar"
                                       />
                                     </div>
@@ -309,7 +319,9 @@ const TaskComments = ({ taskId }: any) => {
                                       <span className="font-semibold">
                                         {IsUserCommentOrNot(comment)
                                           ? "You"
-                                          : comment.user?.name || "Unknown"}
+                                          : comment?.firstName +
+                                              " " +
+                                              comment?.lastName || "Unknown"}
                                       </span>
                                       <span className="text-[#67727E] font-normal text-sm pl-2">
                                         {formatCommentTime(comment)}{" "}

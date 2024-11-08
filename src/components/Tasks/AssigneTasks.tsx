@@ -202,12 +202,10 @@ const AssignedUsers = ({ viewTaskData }: any) => {
         >
           Add Members
         </Button>
-
       </div>
       <div className="card-body">
         <div className="attachments-list max-h-[250px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 space-y-2 pt-3 pl-3 pr-3 mb-3">
           <div className="">
-
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -284,12 +282,14 @@ const AssignedUsers = ({ viewTaskData }: any) => {
             </Popover>
           </div>
 
-
           {selectedMembers.length > 0 ? (
             <div className="mt-2 space-y-2  pb-[2px] overflow-x-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
               {selectedMembers.map((member, index) => (
                 <>
-                  <div className="each-person relative flex  border items-center space-x-2 rounded-l-full bg-slate-100 rounded-sm pr-5 pt-[2px] pb-[2px] pl-[2px]">
+                  <div
+                    className="each-person relative flex  border items-center space-x-2 rounded-l-full bg-slate-100 rounded-sm pr-5 pt-[2px] pb-[2px] pl-[2px]"
+                    key={index}
+                  >
                     <div className="profile-image">
                       {member.download_url ? (
                         <div className="flex items-center space-x-3">
@@ -331,8 +331,6 @@ const AssignedUsers = ({ viewTaskData }: any) => {
             </div>
           )}
         </div>
-
-
       </div>
       <LoadingComponent loading={loading} />
     </div>

@@ -214,7 +214,7 @@ const Projects = () => {
                     setViewMode(viewMode === "card" ? "table" : "card")
                   }
                 >
-                  Table View
+                  {viewMode === "card" ? "Table View" : "Card View"}
                 </Button>
               </li>
             </ul>
