@@ -2,22 +2,24 @@ import { errPopper } from "@/lib/helpers/errPopper";
 import { getAllProjectStats } from "@/lib/services/dashboard";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TanStackTable from "./core/TanstackTable";
 import { projectWiseColumns } from "./ProjectWiseColumns";
 import { addDataSerial } from "@/lib/helpers/addSerial";
 import Loading from "./core/Loading";
 import SearchFilter from "./core/CommonComponents/SearchFilter";
+import LoadingComponent from "./core/LoadingComponent";
 
 const ProjectDataTable = () => {
   const searchParams = new URLSearchParams(location.search);
   const initialSearch = searchParams.get("search");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [searchString, setSearchString] = useState<any>(initialSearch);
-  // const [debouncedSearch, setDebouncedSearch] = useState(searchString);
+  const [searchString, setSearchString] = useState<any>(initialSearch || "");
+  const [debouncedSearch, setDebouncedSearch] = useState(searchString);
+
   const { isLoading, isError, error, data, isFetching } = useQuery({
-    queryKey: ["users"],
+    queryKey: ["projects"],
     queryFn: async () => {
       try {
         const response = await getAllProjectStats();
@@ -34,35 +36,37 @@ const ProjectDataTable = () => {
       }
     },
   });
-  // useEffect(() => {
-  //   const handler = setTimeout(() => {
-  //     setDebouncedSearch(searchString);
-  //     if (
-  //       searchString
-  //     ) {
-  //     getAllProjectStats()
-  //     } else {
-  //     getAllProjectStats()
-  //     }
-  //   }, 500);
-  //   return () => {
-  //     clearTimeout(handler);
-  //   };
-  // }, [searchString]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchString);
+    }, 500);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchString]);
+
+  const filteredData = data?.filter((project: any) => {
+    if (!debouncedSearch) return true;
+    return project.project_title
+      .toLowerCase()
+      .includes(debouncedSearch.toLowerCase());
+  });
+
   return (
-    <div className="relative ">
+    <div className="relative">
       <div className="flex justify-end">
         <SearchFilter
           searchString={searchString}
           setSearchString={setSearchString}
-          title="Search  Project Name"
+          title="Search Project Name"
         />
       </div>
 
       <div className="mt-5">
         <TanStackTable
-          data={data}
-          columns={[...projectWiseColumns]}
+          data={filteredData}
+          columns={projectWiseColumns}
           loading={isLoading || isFetching || loading}
           paginationDetails={0}
           getData={getAllProjectStats}
@@ -77,7 +81,7 @@ const ProjectDataTable = () => {
           ]}
         />
       </div>
-      <Loading loading={isLoading || isFetching || loading} />
+      <LoadingComponent loading={isLoading || isFetching || loading} />
     </div>
   );
 };

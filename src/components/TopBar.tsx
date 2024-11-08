@@ -11,13 +11,17 @@ import {
 } from "./ui/dropdown-menu";
 import downArrowIcon from "@/assets/down-arrow.svg";
 import { useSelector } from "react-redux";
+import { getSingleTaskAPI } from "@/lib/services/tasks";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 interface titleProps {
   title: string;
   path: string;
 }
 
-function TopBar({ viewData }: any) {
+function TopBar() {
+  const [viewData, setViewData] = useState<any>();
   const location = useLocation();
   const pathname = location.pathname;
   const currentNavItem = navBarConstants.find((item: titleProps) =>
@@ -31,6 +35,23 @@ function TopBar({ viewData }: any) {
   const title = currentNavItem ? currentNavItem.title : null;
   const navigate = useNavigate({ from: "/" });
 
+  const { isLoading, isError, error } = useQuery({
+    queryKey: ["getSingleTask", taskId],
+    queryFn: async () => {
+      const response = await getSingleTaskAPI(taskId);
+      const taskData = response?.data?.data;
+
+      try {
+        if (response?.status === 200 || response?.status === 201) {
+          setViewData(taskData);
+        }
+      } catch (err: any) {
+        throw err;
+      }
+    },
+    enabled: Boolean(taskId),
+  });
+
   return (
     <div className="py-3 px-5 flex justify-between items-center bg-white border-b">
       <span className="ml-2 text-lg font-semibold flex">
@@ -43,8 +64,12 @@ function TopBar({ viewData }: any) {
         <DropdownMenu>
           <DropdownMenuTrigger className="flex gap-2 items-center hover:cursor-pointer">
             <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>SB</AvatarFallback>
+              <AvatarImage
+                src={
+                  viewData?.created_profile_pic_url || "/profile-picture.png"
+                }
+                alt="@shadcn"
+              />
             </Avatar>
             My Account
           </DropdownMenuTrigger>
