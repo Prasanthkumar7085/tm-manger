@@ -169,33 +169,30 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
             <div className="flex flex-wrap">
               {task?.tags?.length > 0
                 ? task?.tags.map((tag: any, index: number) => (
-                  <div
-                    key={index}
-                    className="bg-[#00B8121A] text-[#00B812] text-[0.8em] font-medium  mr-2 mb-2 flex px-2 rounded-full"
-                  >
-                    {tag}
-                    <p
-                      className="ml-1 text-[#000000]   rotate-[45deg] font-medium cursor-pointer"
-                      onClick={() => handleTagDelete(tag)}
+                    <div
+                      key={index}
+                      className="bg-[#00B8121A] text-[#00B812] text-[0.8em] font-medium  mr-2 mb-2 flex px-2 rounded-full"
                     >
-                      +
-                    </p>
-                  </div>
-                ))
+                      {tag}
+                      <p
+                        className="ml-1 text-[#000000]   rotate-[45deg] font-medium cursor-pointer"
+                        onClick={() => handleTagDelete(tag)}
+                      >
+                        +
+                      </p>
+                    </div>
+                  ))
                 : isTaskTagsLoading
                   ? ""
-                  : ""}
+                  : "No tags found"}
             </div>
           </div>
-
         </div>
-
       </div>
 
       {errorMessages?.tags && (
         <p style={{ color: "red" }}>{errorMessages?.tags?.[0]}</p>
       )}
-
     </div>
   );
 };

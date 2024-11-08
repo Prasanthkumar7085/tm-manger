@@ -35,8 +35,13 @@ const TaskComments = ({ taskId }: any) => {
     open: false,
   });
   const [replyText, setReplyText] = useState("");
+  const [editedComment, setEditedComment] = useState<string>("");
+
   const handleTestDetailsChange = (data: string) => {
     setCommentText(data);
+  };
+  const handleEditCommentChange = (data: string) => {
+    setEditedComment(data);
   };
   const handleReplyChange = (data: string) => {
     setReplyText(data);
@@ -183,22 +188,23 @@ const TaskComments = ({ taskId }: any) => {
 
   const handleEditComment = (commentId: number, message: string) => {
     setEditingCommentId(commentId);
-    setCommentText(message);
+    setEditedComment(message);
   };
 
   const handleSaveEdit = () => {
-    if (!commentText.trim()) {
+    if (!editedComment.trim()) {
       toast.error("Comment cannot be empty");
       return;
     }
     updateMutation.mutate({
       comment_id: editingCommentId!,
-      message: commentText,
+      message: editedComment,
     });
   };
   const handleCancelEdit = () => {
     setEditingCommentId(null);
     setCommentText("");
+    setEditedComment("");
   };
   const handleReplyComment = (comment: any) => {
     setOpenReplies({ commentId: comment.id, open: true, comment: comment });
@@ -241,6 +247,7 @@ const TaskComments = ({ taskId }: any) => {
     let value = `${count} ${count == 1 ? " Reply" : " Repliies"}`;
     return [count, value];
   };
+
   useEffect(() => {
     if (commentsContainerRef.current) {
       commentsContainerRef.current.scrollTop =
@@ -359,9 +366,9 @@ const TaskComments = ({ taskId }: any) => {
                                   {editingCommentId === comment.id ? (
                                     <div className="flex flex-col">
                                       <CKEditorComponent
-                                        editorData={commentText}
+                                        editorData={editedComment}
                                         handleEditorChange={
-                                          handleTestDetailsChange
+                                          handleEditCommentChange
                                         }
                                       />
                                       <div className="mt-3 flex justify-end space-x-3">
