@@ -125,7 +125,7 @@ const AddTask = () => {
             description: taskData?.description || "-",
           };
           setTask(data);
-          setSelectedProjectLogo(taskData.project_logo || "/favicon.png");
+          setSelectedProjectLogo(taskData.project_logo_url || "/favicon.png");
         } else {
           throw new Error("Failed to fetch task");
         }
