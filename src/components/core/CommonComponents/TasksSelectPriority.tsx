@@ -44,6 +44,22 @@ export const TasksSelectPriority: React.FC<StatusFilterProps> = ({
           aria-expanded={open}
           className="justify-between  bg-[#F4F4F6] h-[35px] w-[170px] relative text-[#00000099] font-normal text-sm border border-[#E2E2E2]"
         >
+          {value ? (
+            <span
+              style={{
+                width: "10px",
+                height: "10px",
+                borderRadius: "50%",
+                backgroundColor: taskPriorityConstants.find(
+                  (item) => item.value === value
+                )?.color,
+                display: "inline-block",
+                marginRight: "8px",
+              }}
+            ></span>
+          ) : (
+            ""
+          )}
           {value
             ? taskPriorityConstants.find((item) => item.value === value)?.label
             : "Select Priortity"}
@@ -74,7 +90,7 @@ export const TasksSelectPriority: React.FC<StatusFilterProps> = ({
                     setOpen(false);
                   }}
                 >
-                   <span
+                  <span
                     style={{
                       width: "10px",
                       height: "10px",

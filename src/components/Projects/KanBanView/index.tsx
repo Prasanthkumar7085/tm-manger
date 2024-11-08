@@ -228,6 +228,11 @@ const KanbanBoard: React.FC<any> = ({
                           return (
                             <Avatar
                               key={assignee.user_id}
+                              title={
+                                assignee.user_first_name +
+                                " " +
+                                assignee.user_last_name
+                              }
                               className={`w-8 h-8 ${backgroundColor}`}
                             >
                               <AvatarImage

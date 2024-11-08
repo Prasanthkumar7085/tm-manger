@@ -168,11 +168,7 @@ const Tasks = () => {
   };
   return (
     <section id="tasks" className="relative">
-      <div>
-        {!isDashboard && (
-          <TotalCounts taksDataAfterSerial={taksDataAfterSerial} />
-        )}
-      </div>
+      <div>{!isDashboard && <TotalCounts refreshCount={del} />}</div>
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
           <div className="flex justify-end items-center">
@@ -184,7 +180,6 @@ const Tasks = () => {
                     setSelectedProject={setSelectedProject}
                   />
                 </li>
-
                 <li>
                   <TasksSelectPriority
                     value={selectedpriority}
@@ -239,10 +234,12 @@ const Tasks = () => {
                 columns={taskColumns({ setDel })}
                 paginationDetails={data?.data?.data?.pagination_info}
                 getData={getAllTasks}
+                loading={isLoading || isFetching}
                 removeSortingForColumnIds={[
                   "serial",
                   "actions",
                   "project_title",
+                  "assignees",
                 ]}
               />
             </div>

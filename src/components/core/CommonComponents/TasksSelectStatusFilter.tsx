@@ -43,6 +43,22 @@ export const TasksSelectStatusFilter: React.FC<StatusFilterProps> = ({
           aria-expanded={open}
           className="justify-between  bg-[#F4F4F6] h-[35px] w-[150px] relative text-[#00000099] font-normal text-sm border border-[#E2E2E2]"
         >
+          {value ? (
+            <span
+              style={{
+                width: "10px",
+                height: "10px",
+                borderRadius: "50%",
+                backgroundColor: taskStatusConstants.find(
+                  (item: any) => item.value === value
+                )?.color,
+                display: "inline-block",
+                marginRight: "8px",
+              }}
+            ></span>
+          ) : (
+            ""
+          )}
           {value
             ? taskStatusConstants.find((item: any) => item.value === value)
                 ?.label
@@ -67,7 +83,7 @@ export const TasksSelectStatusFilter: React.FC<StatusFilterProps> = ({
             <CommandGroup>
               {taskStatusConstants.map((status: any) => (
                 <CommandItem
-                className="cursor-pointer"
+                  className="cursor-pointer"
                   key={status.value}
                   value={status.value}
                   onSelect={(currentValue) => {
@@ -75,7 +91,7 @@ export const TasksSelectStatusFilter: React.FC<StatusFilterProps> = ({
                     setOpen(false);
                   }}
                 >
-                   <span
+                  <span
                     style={{
                       width: "10px",
                       height: "10px",
