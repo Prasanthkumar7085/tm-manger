@@ -38,6 +38,7 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
   const { pathname } = useLocation();
 
   const [selectedMembers, setSelectedMembers] = useState<any>([]);
+  console.log(selectedMembers, "selectedMembers");
   const [loading, setLoading] = useState(false);
   const [errorMessages, setErrorMessages] = useState({});
   const [open, setOpen] = useState<boolean>(false);
@@ -236,12 +237,22 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
                 onClick={() => setTempSelectedMember([])}
               >
                 <div className="flex items-center gap-x-1">
-                <img src={memberIcon} alt="No tags" className="w-5 h-5 mr-1" />
-                <p>Select Members</p>
+                  <img
+                    src={memberIcon}
+                    alt="No tags"
+                    className="w-5 h-5 mr-1"
+                  />
+                  <p>Select Members</p>
                 </div>
                 <div>
-               
-                <span> <img src={selectDropIcon} alt="No tags" className="w-5 h-5 mr-1" /> </span>
+                  <span>
+                    {" "}
+                    <img
+                      src={selectDropIcon}
+                      alt="No tags"
+                      className="w-5 h-5 mr-1"
+                    />{" "}
+                  </span>
                 </div>
               </Button>
             </PopoverTrigger>

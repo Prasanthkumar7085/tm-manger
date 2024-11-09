@@ -33,6 +33,7 @@ import {
   roleConstants,
 } from "@/lib/helpers/statusConstants";
 import { ProjectPayload } from "@/lib/interfaces";
+import { a } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 
 const AddProject = () => {
   const navigate = useNavigate();
@@ -45,9 +46,7 @@ const AddProject = () => {
   });
   const [errorMessages, setErrorMessages] = useState<any>({});
   const [invalidErrors, setInvalidErrors] = useState<any>();
-  const [selectedMembers, setSelectedMembers] = useState<
-    { user_id: number; role: string }[]
-  >([]);
+  const [selectedMembers, setSelectedMembers] = useState<any>([]);
   const [open, setOpen] = useState(false);
   const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -127,6 +126,8 @@ const AddProject = () => {
     );
   };
   const confirmSelection = () => {
+    console.log(tempSelectedMember, "tempSelectedMember");
+    console.log(selectedMembers, "selectedMembers");
     const newMembers = tempSelectedMember
       ?.map((memberValue: string) => {
         const member = users.find(
@@ -134,26 +135,26 @@ const AddProject = () => {
         );
         return (
           member &&
-          !selectedMembers.some((m) => m.user_id === member.id) && {
+          !selectedMembers.some((m: any) => m.user_id === member.id) && {
             user_id: member.id,
             role: "USER",
           }
         );
       })
       .filter(Boolean);
-    setSelectedMembers((prev) => [...prev, ...newMembers]);
+    setSelectedMembers((prev: any) => [...prev, ...newMembers]);
     setTempSelectedMember([]);
     setOpen(false);
   };
   const removeMember = (userId: number) => {
     setSelectedMembers(
-      selectedMembers.filter((member) => member.user_id !== userId)
+      selectedMembers.filter((member: any) => member.user_id !== userId)
     );
   };
 
   const changeRole = (userId: number, role: string) => {
-    setSelectedMembers((prev) =>
-      prev.map((member) =>
+    setSelectedMembers((prev: any) =>
+      prev.map((member: any) =>
         member.user_id === userId ? { ...member, role } : member
       )
     );
@@ -280,7 +281,13 @@ const AddProject = () => {
                                     : "opacity-0"
                                 )}
                               />
-                              <div>{/* <img src={user?.} /> */}</div>
+                              <div className="w-6 h-6 object-contain	mr-2 rounded-full border  bg-white">
+                                <img
+                                  src={
+                                    user?.profile_pic || "/profile-picture.png"
+                                  }
+                                />
+                              </div>
                               <span className="cursor-pointer">
                                 {getFullName(user)}
                               </span>
@@ -327,9 +334,22 @@ const AddProject = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {selectedMembers.map((member) => (
+                      {selectedMembers.map((member: any) => (
                         <tr key={member.user_id} className="text-left">
-                          <td className=" !px-3 !py-2 capitalize text-[#000000CC]">
+                          <td className=" !px-3 !py-2 capitalize  flex justify-left items-center gap-3 text-[#000000CC]">
+                            <img
+                              className="w-8 h-8 rounded-full"
+                              onError={(e: any) => {
+                                e.target.onerror = null;
+                                e.target.src = "/profile-picture.png";
+                              }}
+                              src={
+                                users.find(
+                                  (user: any) => user.id === member.user_id
+                                )?.profile_pic || "/profile-picture.png"
+                              }
+                              alt="Avatar"
+                            />
                             {getFullName(
                               users.find(
                                 (user: any) => user.id === member.user_id
