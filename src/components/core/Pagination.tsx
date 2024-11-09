@@ -119,7 +119,7 @@ const Pagination = ({
           value={selectedValue?.toString()}
           onValueChange={handleRowChange}
         >
-          <SelectTrigger className="w-[120px]">
+          <SelectTrigger className="w-[120px] py-0 h-[30px]">
             <SelectValue placeholder="Items per page" />
           </SelectTrigger>
           <SelectContent className="w-[120px] bg-white pointer">
@@ -127,7 +127,7 @@ const Pagination = ({
               <SelectItem
                 value={item.value?.toString()}
                 key={index}
-                className="cursor-pointer"
+                className="cursor-pointer "
               >
                 {item.title}
               </SelectItem>
@@ -145,7 +145,7 @@ const Pagination = ({
               value={pageValue}
               onChange={(e) => setPageValue(Number(e.target.value))}
               onKeyDown={onKeyDownInPageChange}
-              className="h-[30px] w-[40px] m-auto flex items-center text-center ml-2 bg-[#f5f5f5] focus:outline-none focus:ring-0 text-sm pl-1 pr-0"
+              className="h-[30px] w-[40px] m-auto flex items-center text-center py-0 ml-2 bg-[#f5f5f5] focus:outline-none focus:ring-0 text-sm pl-1 pr-0"
               placeholder="Page"
             />
           </div>
@@ -178,7 +178,7 @@ const Pagination = ({
                 <PaginationEllipsis />
               </PaginationItem>
             ) : (
-              <PaginationItem key={pageNumber}>
+              <PaginationItem  key={pageNumber}>
                 <PaginationLink
                   href="#"
                   isActive={pageNumber === currentPage}
@@ -186,6 +186,9 @@ const Pagination = ({
                     e.preventDefault();
                     handlePageChange(pageNumber);
                   }}
+                  className={`w-[30px] h-[30px] hover:no-underline ${
+                    pageNumber === currentPage ? 'bg-[#F0F1F6] text-black rounded-full w-[30px] h-[30px]' : 'bg-transperant text-black'
+                  }`}
                 >
                   {pageNumber}
                 </PaginationLink>

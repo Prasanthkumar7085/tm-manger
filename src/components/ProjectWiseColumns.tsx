@@ -8,7 +8,7 @@ export const projectWiseColumns = [
     maxWidth: "35px",
     minWidth: "35px",
     enableSorging: false,
-    cell: (props: any) => <>{props.getValue()}</>,
+    cell: ({ row }: any) => <>{row.index + 1}</>,
   },
   {
     accessorFn: (row: any) => row.project_title,

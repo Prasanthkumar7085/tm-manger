@@ -106,7 +106,7 @@ const TanStackTable: FC<pageProps> = ({
           location.pathname.includes("dashboard")
             ? "h-[calc(100vh-480px)]"
             : location.pathname.includes("tasks")
-              ? "h-[calc(100vh-320px)]"
+              ? "h-[calc(100vh-290px)]"
               : "h-[calc(100vh-240px)]"
         }`}
       >
@@ -155,6 +155,14 @@ const TanStackTable: FC<pageProps> = ({
                                     height={15}
                                     width={15}
                                     alt="Asc"
+                                    style={{
+                                      display:
+                                        removeSortingForColumnIds?.includes(
+                                          header.id
+                                        ) || header.colSpan == 2
+                                          ? "none"
+                                          : "",
+                                    }}
                                   />
                                 ),
                                 desc: (
@@ -163,6 +171,14 @@ const TanStackTable: FC<pageProps> = ({
                                     height={15}
                                     width={15}
                                     alt="Desc"
+                                    style={{
+                                      display:
+                                        removeSortingForColumnIds?.includes(
+                                          header.id
+                                        ) || header.colSpan == 2
+                                          ? "none"
+                                          : "",
+                                    }}
                                   />
                                 ),
                               }[header.column.getIsSorted() as string] ?? (
@@ -171,6 +187,14 @@ const TanStackTable: FC<pageProps> = ({
                                   height={15}
                                   width={15}
                                   alt="No Sort"
+                                  style={{
+                                    display:
+                                      removeSortingForColumnIds?.includes(
+                                        header.id
+                                      ) || header.colSpan == 2
+                                        ? "none"
+                                        : "",
+                                  }}
                                 />
                               )}
                             </div>

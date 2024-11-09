@@ -41,3 +41,18 @@ table tbody td:last-child{
   position: sticky;
   right: 0;
 }
+#users table thead th:nth-child(2),
+#users table tbody td:nth-child(2){
+  position: sticky;
+  left: 50px;
+}
+#users table thead th:nth-child(3),
+#users table tbody td:nth-child(3){
+  position: sticky;
+  left: 200px;
+}
+#users table thead th:nth-last-child(2),
+#users table tbody td:nth-last-child(2){
+  position: sticky;
+  right: 100px;
+}

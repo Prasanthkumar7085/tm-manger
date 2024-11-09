@@ -420,7 +420,7 @@ const AddTask = () => {
                                     opacity: selectedUsers.has(user.id) ? 1 : 0,
                                   }}
                                 />
-                                <div className="w-6 h-6 object-contain	 rounded-full border  bg-white">
+                                <div className="w-6 h-6 object-contain	mr-2 rounded-full border  bg-white">
                                   <img
                                     src={
                                       user?.user_profile_pic_url ||
@@ -438,7 +438,7 @@ const AddTask = () => {
                       </Command>
                       <div className="flex justify-end p-2 border-t">
                         <Button
-                          className="bg-[#000000] text-white px-6 font-medium text-sm rounded-[4px]"
+                          className="bg-[#000000] text-white px-6 font-medium text-sm rounded-[4px] hover:bg-[#000000]"
                           onClick={handleConfirmSelection}
                         >
                           Confirm
@@ -448,32 +448,32 @@ const AddTask = () => {
                   </Popover>
                   {task.users?.length > 0 ? (
                     <div>
-                      <label className="block text-gray-700 font-bold mb-2 mt-4">
+                      <label className="block text-[#383838] font-medium text-sm mb-1 mt-4">
                         Assigned Users
                       </label>
 
-                      <div className="overflow-auto max-h-40">
-                        <table className="min-w-full bg-white border border-gray-300">
+                      <div className="overflow-auto max-h-40 rounded-[10px] border border-gray-200">
+                        <table className="min-w-full">
                           <thead className="bg-gray-200 sticky top-0">
                             <tr>
-                              <th className="border px-4 py-2">S.No.</th>
-                              <th className="border px-4 py-2">Name</th>
-                              <th className="border px-4 py-2">Actions</th>
+                              <th className=" p-2 bg-[#F5F5F5] text-left font-normal text-[#00000099]">S.No.</th>
+                              <th className=" p-2 bg-[#F5F5F5] text-left font-normal text-[#00000099]">Name</th>
+                              <th className=" p-2 bg-[#F5F5F5] text-left font-normal text-[#00000099]">Actions</th>
                             </tr>
                           </thead>
                           <tbody>
                             {task.users.map((user: any, index: number) => (
-                              <tr key={user.id} className="hover:bg-gray-100">
-                                <td className="border px-4 py-2">
+                              <tr key={user.id} >
+                                <td className=" px-4 py-2">
                                   {index + 1}
                                 </td>
-                                <td className="border px-4 py-2 capitalize">
+                                <td className=" px-4 py-2 capitalize">
                                   {user.fname} {user.lname}
                                 </td>
 
-                                <td className="border px-4 py-2">
+                                <td className=" px-4 py-2">
                                   <button
-                                    className="text-red-500 hover:underline"
+                                    className="text-red-500 "
                                     onClick={() => handleUserRemove(user.id)}
                                   >
                                     Remove

@@ -17,6 +17,7 @@ const ProjectDataTable = () => {
   const [loading, setLoading] = useState(false);
   const [searchString, setSearchString] = useState<any>(initialSearch || "");
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
+  const [filteredData, setFilteredData] = useState<any[]>([]); // New state for filtered data
 
   const { isLoading, isError, error, data, isFetching } = useQuery({
     queryKey: ["projects"],
@@ -24,8 +25,7 @@ const ProjectDataTable = () => {
       try {
         const response = await getAllProjectStats();
         if (response.success) {
-          const dataWithSerials = addDataSerial(response?.data?.data);
-          return dataWithSerials;
+          return response?.data?.data;
         } else {
           throw new Error("Failed to fetch project details");
         }
@@ -37,24 +37,32 @@ const ProjectDataTable = () => {
     },
   });
 
+  const filterDataBySearch = (data: any[], searchTerm: string) => {
+    if (!searchTerm) return data;
+    return data.filter((project) =>
+      project.project_title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
     }, 500);
+
     return () => {
       clearTimeout(handler);
     };
   }, [searchString]);
 
-  const filteredData = data?.filter((project: any) => {
-    if (!debouncedSearch) return true;
-    return project.project_title
-      .toLowerCase()
-      .includes(debouncedSearch.toLowerCase());
-  });
+  useEffect(() => {
+    if (data) {
+      const filtered = filterDataBySearch(data, debouncedSearch);
+      setFilteredData(filtered);
+    }
+  }, [debouncedSearch, data]);
 
   return (
-    <div className="relative ">
+    <div className="relative">
       <div className="flex justify-between items-start">
         <h2 className="text-lg font-sans font-medium text-gray-800">
           Tasks List
@@ -70,7 +78,7 @@ const ProjectDataTable = () => {
 
       <div className="mt-5">
         <TanStackTable
-          data={filteredData}
+          data={filteredData} // Use the filtered data here
           columns={projectWiseColumns}
           loading={isLoading || isFetching || loading}
           paginationDetails={0}
