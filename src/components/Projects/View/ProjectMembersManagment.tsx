@@ -10,6 +10,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation, useParams, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
+import memberIcon from "@/assets/members.svg";
+import selectDropIcon from "@/assets/select-dropdown.svg";
 import {
   Popover,
   PopoverContent,
@@ -230,16 +232,23 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className="w-[200px]"
+                className="w-[220px] flex items-center justify-between px-2 bg-[#F4F4F6] border-[#E2E2E2] rounded-[8px] text-[#00000099]"
                 onClick={() => setTempSelectedMember([])}
               >
-                Select Members
+                <div className="flex items-center gap-x-1">
+                <img src={memberIcon} alt="No tags" className="w-5 h-5 mr-1" />
+                <p>Select Members</p>
+                </div>
+                <div>
+               
+                <span> <img src={selectDropIcon} alt="No tags" className="w-5 h-5 mr-1" /> </span>
+                </div>
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0 bg-white border z-[99999]">
+            <PopoverContent className="w-[250px] p-0 bg-white border rounded-sm z-[99999]">
               <Command>
                 <CommandInput placeholder="Search Members" />
-                <CommandList className="max-h-[200px] z-[99999]">
+                <CommandList className="max-h-[220px] z-[99999]">
                   <CommandGroup>
                     {Array.isArray(users) &&
                       users.map((user: any) => (
@@ -259,6 +268,11 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
                                 : "opacity-0"
                             )}
                           />
+                          <div className="w-6 h-6 object-contain	mr-2 rounded-full border  bg-white">
+                            <img
+                              src={user?.profile_pic || "/profile-picture.png"}
+                            />
+                          </div>
                           <p className="capitalize cursor-pointer">
                             {getFullName(user)}
                           </p>
@@ -299,30 +313,30 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
         </div>
 
         {selectedMembers.length > 0 ? (
-          <div className="h-[300px]  ">
-            <div className="rounded-[10px] border border-gray-200 mt-4">
+          <div className="h-[300px] overflow-y-auto">
+            <div className="rounded-[10px] border border-gray-200">
               <table className="min-w-full ">
-                <thead className="sticky top-0 ">
+                <thead className="sticky top-0 z-[999]">
                   <tr>
-                    <th className=" p-2 bg-[#F5F5F5] font-normal text-[#00000099]">
+                    <th className=" p-2 bg-[#F5F5F5] text-left font-normal text-[#00000099]">
                       Sl.no
                     </th>
-                    <th className=" p-2 !bg-[#F5F5F5] font-normal text-[#00000099]">
+                    <th className=" p-2 !bg-[#F5F5F5] text-left font-normal text-[#00000099]">
                       Members
                     </th>
-                    <th className=" p-2 !bg-[#F5F5F5] font-normal text-[#00000099]">
+                    <th className=" p-2 !bg-[#F5F5F5] text-left font-normal text-[#00000099]">
                       Role
                     </th>
-                    <th className=" p-2 !bg-[#F5F5F5] font-normal text-[#00000099]">
+                    <th className=" p-2 !bg-[#F5F5F5] text-left font-normal text-[#00000099]">
                       Action
                     </th>
                   </tr>
                 </thead>
-                <tbody className="text-center">
+                <tbody className="text-left ">
                   {selectedMembers.map((member: any, index: number) => (
                     <tr key={member.id}>
                       <td className=" p-2 capitalize">{index + 1}</td>
-                      <td className=" p-2 capitalize flex items-center gap-3">
+                      <td className=" p-2 capitalize flex justify-left items-center gap-3">
                         <img
                           className="w-8 h-8 rounded-full"
                           onError={(e: any) => {

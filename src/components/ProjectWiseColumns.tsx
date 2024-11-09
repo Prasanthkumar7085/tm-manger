@@ -4,11 +4,11 @@ export const projectWiseColumns = [
     id: "serial",
     header: () => <span>S.No</span>,
     footer: (props: any) => props.column.id,
-    width: "60px",
-    maxWidth: "60px",
-    minWidth: "60px",
+    width: "35px",
+    maxWidth: "35px",
+    minWidth: "35px",
     enableSorging: false,
-    cell: (props: any) => <>{props.getValue()}</>,
+    cell: ({ row }: any) => <>{row.index + 1}</>,
   },
   {
     accessorFn: (row: any) => row.project_title,
@@ -25,6 +25,11 @@ export const projectWiseColumns = [
                 <img
                   src={downloadUrl}
                   alt="project logo"
+                  onError={(e: any) => {
+                    e.target.onerror = null;
+                    e.target.src =
+                      "https://via.placeholder.com/150?text=No preview";
+                  }}
                   className="w-[22px] h-[22px] rounded-full border bg-transparent"
                 />
               </div>
@@ -46,9 +51,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className="text-center block font-semibold">
-          {title ? title : "-"}
-        </span>
+        <span className=" block font-semibold">{title ? title : "-"}</span>
       );
     },
     width: "75px",
@@ -63,9 +66,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className="text-center block font-semibold">
-          {title ? title : "-"}
-        </span>
+        <span className=" block font-semibold">{title ? title : "-"}</span>
       );
     },
     width: "75px",
@@ -80,9 +81,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className="text-center block font-semibold">
-          {title ? title : "-"}
-        </span>
+        <span className=" block font-semibold">{title ? title : "-"}</span>
       );
     },
     width: "75px",
@@ -97,9 +96,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className="text-center block font-semibold">
-          {title ? title : "-"}
-        </span>
+        <span className=" block font-semibold">{title ? title : "-"}</span>
       );
     },
     width: "75px",
@@ -114,9 +111,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className="text-center block font-semibold">
-          {title ? title : "-"}
-        </span>
+        <span className=" block font-semibold">{title ? title : "-"}</span>
       );
     },
     width: "50px",

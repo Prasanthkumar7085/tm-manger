@@ -112,7 +112,7 @@ const Tasks = () => {
 
   const taksDataAfterSerial =
     addSerial(
-      data?.data?.data?.records,
+      data?.data?.data?.data,
       data?.data?.data?.pagination_info?.current_page,
       data?.data?.data?.pagination_info?.page_size
     ) || [];

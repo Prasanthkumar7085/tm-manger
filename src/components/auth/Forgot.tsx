@@ -54,28 +54,25 @@ function ForgotComponent() {
   };
 
   return (
-    <section id="authentication" className="forgot-page relative h-screen flex items-center">
+    <section
+      id="authentication"
+      className="forgot-page relative h-screen flex items-center"
+    >
       <div className="company-logo absolute top-7 left-7">
-        <img
-          src={LogoPath}
-          alt="logo"
-          className="w-[200px] mx-auto"
-        />
+        <img src={LogoPath} alt="logo" className="w-[200px] mx-auto" />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 items-center">
         <div className="left-part">
-          <img
-            src={loginBackground}
-            alt="logo"
-            className="w-[75%] mx-auto"
-          />
+          <img src={loginBackground} alt="logo" className="w-[75%] mx-auto" />
         </div>
         <div className="right-part m-auto">
           <div className="login-card w-[420px] shadow-2xl border p-6 rounded-xl">
             <div className="top mb-7">
               <h1 className="text-xl font-semibold mb-2">Forgot Password</h1>
               <p className="leading-tight text-md">
-                Enter your email address and we’ll send you a <br /> recovery link.</p>
+                Enter your email address and we’ll send you a <br /> recovery
+                link.
+              </p>
             </div>
 
             <form className="w-full" onSubmit={handleSubmit}>
@@ -99,7 +96,6 @@ function ForgotComponent() {
                 )}
               </div>
 
-
               <div className="mt-10">
                 <Button
                   type="submit"
@@ -112,18 +108,19 @@ function ForgotComponent() {
                   )}
                 </Button>
               </div>
-              <Button
-                type="button"
-                onClick={handleBack}
-                className="text-center font-semibold m-auto flex justify-center text-sm text-slate-500"
-              >
-                Back to <span className="text-[#BF1B39] pl-1">Login</span>
-              </Button>
+              <div className="flex justify-end">
+                <Button
+                  type="button"
+                  onClick={handleBack}
+                  className="font-medium  text-sm text-black bg-transparent hover:bg-transparent hover:text-black"
+                >
+                  Back to Login
+                </Button>
+              </div>
             </form>
           </div>
         </div>
       </div>
-
     </section>
   );
 }

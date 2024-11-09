@@ -19,6 +19,7 @@ const RepliedComments = ({
   setOpenReplies,
   groupedComments,
   handleDeleteComment,
+  profileData,
 }: any) => {
   const replyComments = () => {
     const filteredComments = groupedComments.map((group: any) => {
@@ -29,151 +30,139 @@ const RepliedComments = ({
     return filteredComments.flat();
   };
   return (
-    <div className="px-2 bg-white rounded-lg shadow-md w-full max-h-[500px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
-      <div className="flex items-center justify-between sticky top-0 bg-white z-10 py-2">
-        <p>Replies</p>
+    <div className="bg-white border">
+      <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
+        <h3 className="leading-1 text-black text-[1.1em]">Replies</h3>
         <Button
           variant="outline"
           onClick={() => {
             setOpenReplies({ commentId: null, open: false });
           }}
-          className="text-center font-semibold text-lg text-slate-500 border-none"
+          className=" p-0 text-center font-semibold text-lg text-slate-500 border-none"
         >
           <X />
         </Button>
       </div>
-
-      <div className="flex flex-col bg-[#FEF7FD] py-4 px-4 rounded-md ml-auto text-left ">
-        <div>
-          <div className="flex justify-between items-center">
-            <div className="member-details flex items-center space-x-3">
-              <div className="member-profile-image">
-                <img
-                  title={mainComment?.firstName + " " + mainComment?.lastName}
-                  className="w-8 h-8 rounded-full"
-                  onError={(e: any) => {
-                    e.target.onerror = null;
-                    e.target.src = "/profile-picture.png";
+      <div className="card-body flex flex-col h-comments overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+        <div className="flex space-x-4  my-3 px-4">
+          <div className="member-profile-image">
+            <img
+              title={mainComment?.firstName + " " + mainComment?.lastName}
+              className="w-10 h-10 rounded-full"
+              onError={(e: any) => {
+                e.target.onerror = null;
+                e.target.src = "/profile-picture.png";
+              }}
+              src={mainComment.profilePictureUrl || "/profile-picture.png"}
+              alt="Avatar"
+            />
+          </div>
+          <div className="card bg-[#EEEEF8] py-2 rounded-md shadow-sm relative pl-5 pr-5">
+            <div className="member-name">
+              <span className="font-semibold">
+                {IsUserCommentOrNot(mainComment)
+                  ? "You"
+                  : mainComment.user?.name || "Unknown"}
+              </span>
+              <span className="text-[#67727E] font-normal text-sm pl-2">
+                {formatCommentTime(mainComment)}
+              </span>
+            </div>
+            <div className="person-message mt-2 text-slate-500 leading-snug">
+              <div className="flex flex-col">
+                <p
+                  dangerouslySetInnerHTML={{
+                    __html: mainComment.message,
                   }}
-                  src={mainComment.profilePictureUrl || "/profile-picture.png"}
-                  alt="Avatar"
                 />
-              </div>
-              <div className="member-name">
-                <span className="font-semibold">
-                  {IsUserCommentOrNot(mainComment)
-                    ? "You"
-                    : mainComment.user?.name || "Unknown"}
-                </span>
-                <span className="text-[#67727E] font-normal text-sm pl-2">
-                  {formatCommentTime(mainComment)}
-                </span>
               </div>
             </div>
           </div>
         </div>
-        <div className="person-message mt-2 text-slate-500 leading-snug">
-          <div className="flex flex-col">
-            <p
-              dangerouslySetInnerHTML={{
-                __html: mainComment.message,
-              }}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="mb-6 max-h-[300px] overflow-y-auto">
-        <div className="font-medium text-md text-gray-800 my-2">Replies:</div>
-
-        <div className="space-y-4">
-          {replyComments()?.length > 0 ? (
-            replyComments()?.map((reply: any) => {
-              return (
-                <div
-                  className="flex flex-col bg-[#FEF7FD] py-4 px-4 rounded-md ml-4 text-left  "
-                  key={reply.id}
-                >
-                  <div>
-                    <div className="flex justify-between items-center">
-                      <div className="member-details flex items-center space-x-3">
-                        <div className="member-profile-image">
-                          <img
-                            className="w-8 h-8 rounded-full"
-                            src={
-                              reply.user?.avatar ||
-                              "https://i.pravatar.cc/150?img=5"
-                            }
-                            alt="Avatar"
-                          />
-                        </div>
-                        <div className="member-name">
+        <div className="overflow-y-auto pl-4 pr-3 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+          <div className="font-medium text-md text-gray-800 my-2">Replies</div>
+          <div className="space-y-4">
+            {replyComments()?.length > 0 ? (
+              replyComments()?.map((reply: any) => {
+                console.log(reply, "ljljds");
+                return (
+                  <div key={reply.id}>
+                    <div className="flex space-x-4 justify-end">
+                      <div className="member-profile-image">
+                        <img
+                          className="w-10 h-10 rounded-full"
+                          src={
+                            reply.user?.avatar ||
+                            "https://i.pravatar.cc/150?img=5"
+                          }
+                          alt="Avatar"
+                        />
+                      </div>
+                      <div className="card bg-red-100 py-2 rounded-md shadow-sm relative pl-5 pr-5">
+                        <div className="member-name pr-10">
                           <span className="font-semibold">
                             {IsUserCommentOrNot(reply)
                               ? "You"
                               : reply?.firstName + " " + reply?.lastName ||
                                 "Unknown"}
                           </span>
-                          <span className="text-[#67727E] font-normal text-sm pl-2">
+                          <span className="text-[#67727E] font-normal text-[.85em] pl-2">
                             {formatCommentTime(reply)}
                           </span>
                         </div>
+                        <div className="person-message mt-2 text-slate-500 leading-snug pr-10">
+                          <div className="flex flex-col">
+                            <p
+                              dangerouslySetInnerHTML={{
+                                __html: reply.message,
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="more-options absolute top-2 right-3">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger>
+                              <button className="text-gray-500 hover:text-gray-800">
+                                <DotsHorizontalIcon className="w-5 h-5" />
+                              </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              align="end"
+                              className="bg-white p-2 rounded-md shadow-lg"
+                            >
+                              <DropdownMenuItem
+                                className={`cursor-pointer ${IsUserCommentOrNot(reply) ? "" : "hidden"}`}
+                                onClick={() => handleDeleteComment(reply.id)}
+                              >
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
                       </div>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger>
-                          <button className="text-gray-500 hover:text-gray-800">
-                            <DotsHorizontalIcon className="w-5 h-5" />
-                          </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                          align="end"
-                          className="bg-white p-2 rounded-md shadow-lg"
-                        >
-                          <DropdownMenuItem
-                            className={`cursor-pointer ${IsUserCommentOrNot(reply) ? "" : "hidden"}`}
-                            onClick={() => handleDeleteComment(reply.id)}
-                          >
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
                     </div>
                   </div>
-                  <div className="person-message mt-2 text-slate-500 leading-snug">
-                    <div className="flex flex-col">
-                      <p
-                        dangerouslySetInnerHTML={{
-                          __html: reply.message,
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <div className="text-sm text-gray-500">No replies yet.</div>
-          )}
+                );
+              })
+            ) : (
+              <div className="text-sm text-gray-500">No replies yet.</div>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="sticky bottom-2 left-0 right-0 bg-white px-4 py-6 z-10 overflow-hidden">
-        <div className="flex justify-between items-center">
-          <div className="font-semibold text-lg text-gray-800 mb-2">
-            Add Your Reply:
-          </div>
-          <button className="rounded-md  pr-2" onClick={handleAddReply}>
-            <img
-              src="/add-comment-arrow.svg"
-              alt="icon"
-              className="w-[30px] h-[30px]"
+      <div className="card-footer border-t bg-[#EEEEF8] sticky bottom-0 left-0 right-0  px-4 py-4  z-10 overflow-hidden">
+        <div className="ck-editor-send-button grid grid-cols-[auto,50px] space-x-3 items-end">
+          <div className="overflow-auto">
+            <CKEditorComponent
+              editorData={replyText}
+              handleEditorChange={handleReplyChange}
             />
+          </div>
+          <button className="rounded-md" onClick={handleAddReply}>
+            <img src="/add-comment-arrow.svg" alt="icon" className="w-8" />
           </button>
         </div>
-        <CKEditorComponent
-          editorData={replyText}
-          handleEditorChange={handleReplyChange}
-        />
       </div>
     </div>
   );

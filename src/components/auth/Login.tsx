@@ -38,7 +38,7 @@ const LoginComponent = () => {
           });
           dispatch(setUserDetails(data));
           navigate({
-            to: user_details?.user_type === "admin" ? "/users" : "/dashboard",
+            to: "/dashboard",
           });
         } else if (response?.status === 422) {
           const errData = response?.data?.errData;

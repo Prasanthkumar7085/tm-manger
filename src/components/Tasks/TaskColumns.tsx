@@ -136,7 +136,7 @@ export const taskColumns = ({ setDel }: any) => {
         return (
           <>
             <div className="task capitalize flex justify-between">
-              <span className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[250px]">
+              <span className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
                 {title || "-"}
               </span>
               <span className="ml-2 text-[11px] font-semibold text-primary">
@@ -159,7 +159,7 @@ export const taskColumns = ({ setDel }: any) => {
         const [showPopover, setShowPopover] = useState(false);
 
         return (
-          <div className="flex justify-start mt-3 -space-x-2">
+          <div className="flex justify-start items-center -space-x-2">
             {info
               .getValue()
               .slice(0, 5)
@@ -174,7 +174,7 @@ export const taskColumns = ({ setDel }: any) => {
                     title={
                       assignee.user_first_name + " " + assignee.user_last_name
                     }
-                    className={`w-8 h-8 ${backgroundColor}`}
+                    className={`w-6 h-6 ${backgroundColor}`}
                   >
                     <AvatarImage
                       src={assignee.user_profile_pic_url}

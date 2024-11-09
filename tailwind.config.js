@@ -17,6 +17,9 @@ export default {
       boxShadow: {
         'all': '0px 0px 9px 0px rgba(0, 0, 0, 0.14)',
       },
+      height: {
+        'comments': 'calc(100vh - 520px)', // Custom height using calc()
+      },
     },
   },
   plugins: [

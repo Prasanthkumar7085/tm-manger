@@ -1,5 +1,5 @@
 import { taskStatusConstants } from "@/lib/helpers/statusConstants";
-import { statusUpdateAPI } from "@/lib/services/tasks";
+import { getActivityLogsAPI, statusUpdateAPI } from "@/lib/services/tasks";
 import { useMutation } from "@tanstack/react-query";
 import React, { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
@@ -13,11 +13,11 @@ function TaskStatus({
   taskId: string | any;
   setUpdateDetailsOfTask: any;
   selectedStatus:
-    | {
-        label: string;
-        value: string;
-      }
-    | any;
+  | {
+    label: string;
+    value: string;
+  }
+  | any;
   setSelectedStatus: any;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -79,12 +79,11 @@ function TaskStatus({
   }, []);
 
   return (
-    <div className="relative inline-block text-left pb-4" ref={dropdownRef}>
+    <div className="relative inline-block text-left" ref={dropdownRef}>
       <button
         disabled={loading}
         onClick={toggleDropdown}
-        className={`text-md px-2 h-[35px] border  font-normal rounded-[4px] flex items-center max-w-[140px] justify-between ${
-          selectedStatus?.value === "TODO"
+        className={`text-md px-2 h-[35px] border  font-normal rounded-[4px] flex items-center max-w-[140px] justify-between ${selectedStatus?.value === "TODO"
             ? "bg-white text-[#6F42C1] border-[#6F42C1]"
             : selectedStatus?.value === "IN_PROGRESS"
               ? "bg-white text-[#007BFF] border-[#007BFF]"
@@ -93,7 +92,7 @@ function TaskStatus({
                 : selectedStatus?.value === "COMPLETED"
                   ? "bg-white text-[#28A745] border-[#28A745]"
                   : "bg-white text-[#5FADFF] border-[#007BFF]"
-        }`}
+          }`}
       >
         <span>{selectedStatus?.label || "Default Status"}</span>
         <svg

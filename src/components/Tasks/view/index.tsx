@@ -2,7 +2,7 @@ import LoadingComponent from "@/components/core/LoadingComponent";
 import { Button } from "@/components/ui/button";
 import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
 import { taskStatusConstants } from "@/lib/helpers/statusConstants";
-import { getSingleTaskAPI } from "@/lib/services/tasks";
+import { getActivityLogsAPI, getSingleTaskAPI } from "@/lib/services/tasks";
 import { setRefId } from "@/redux/Modules/userlogin";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams, useRouter } from "@tanstack/react-router";
@@ -16,6 +16,7 @@ import UploadAttachments from "./Attachments";
 import PriorityStatus from "./PriorityStatus";
 import TaskStatus from "./TaskStatus";
 import TaskComments from "./Comments";
+import { ActivityDrawer } from "./ActivityDrawer";
 
 const TaskView = () => {
   const navigate = useNavigate();
@@ -37,9 +38,15 @@ const TaskView = () => {
     label: string;
     value: string;
   }>();
+  const [openReplies, setOpenReplies] = useState<any>({
+    commentId: null,
+    open: false,
+  });
   const [selectedPriority, setSelectedPriority] = useState<any>();
+  const [activityOpen, setActivityOpen] = useState(false);
+  const [activityLogData, setActivityLogData] = useState<any>();
 
-  const { isLoading, isError, error, data } = useQuery({
+  const { isLoading, isError, error } = useQuery({
     queryKey: ["getSingleTask", taskId, updateDetailsOfTask],
     queryFn: async () => {
       const response = await getSingleTaskAPI(taskId);
@@ -55,6 +62,25 @@ const TaskView = () => {
           dispatch(setRefId(response.data?.data?.ref_id));
         } else {
           throw new Error("Failed to fetch task");
+        }
+      } catch (err: any) {
+        toast.error(err?.message || "Something went wrong");
+        throw err;
+      }
+    },
+    enabled: Boolean(taskId),
+  });
+  const { data } = useQuery({
+    queryKey: ["getActivityLogs", taskId, activityOpen],
+    queryFn: async () => {
+      const response = await getActivityLogsAPI(taskId);
+      const taskData = response?.data?.data;
+
+      try {
+        if (response?.status === 200 || response?.status === 201) {
+          setActivityLogData(taskData);
+        } else {
+          throw new Error("Failed to fetch Activity");
         }
       } catch (err: any) {
         toast.error(err?.message || "Something went wrong");
@@ -91,6 +117,9 @@ const TaskView = () => {
       return;
     }
   };
+  const onActivityClick = () => {
+    setActivityOpen(true);
+  };
 
   return (
     <div className="relative overflow-y-auto">
@@ -100,13 +129,23 @@ const TaskView = () => {
         style={{ height: "calc(100vh - 100px)" }}
       >
         <div className="task-primary-details">
-          <div className="heading-row flex justify-between items-center">
-            <h1
-              className="text-xl text-[#1B2459] font-medium overflow-hidden overflow-ellipsis whitespace-nowrap mb-1"
-              title={viewData?.title}
-            >
-              {viewData?.title ? capitalizeWords(viewData?.title) : "--"}
-            </h1>
+          <div className="heading-row flex justify-between items-center mb-3">
+            <div>
+              <h1
+                className="text-xl text-[#1B2459] font-medium overflow-hidden overflow-ellipsis whitespace-nowrap mb-1"
+                title={viewData?.title}
+              >
+                {viewData?.title ? capitalizeWords(viewData?.title) : "--"}
+              </h1>
+              <div className="description">
+                <p
+                  className="text-black  text-[.85rem] rounded-md overflow-hidden line-clamp-2"
+                  title={viewData?.description}
+                >
+                  {viewData?.description ? viewData.description : "--"}
+                </p>
+              </div>
+            </div>
             <div className="action-buttons flex space-x-2">
               <TaskStatus
                 taskId={taskId}
@@ -131,29 +170,22 @@ const TaskView = () => {
                 />
                 Edit Task
               </Button>
-              <button className="check-activity-button btn px-3 text-[12px] bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[35px] leading-[15px] font-semibold">
+              <button
+                className="check-activity-button btn px-3 text-[12px] bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[35px] leading-[15px] font-semibold"
+                onClick={onActivityClick}
+              >
                 Check Activity
               </button>
             </div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-[70%,auto] gap-5">
             <div className="leftItem">
-              <div>
-                <div className="description mb-3">
-                  <p
-                    className="text-black  text-[.85rem] rounded-md overflow-hidden line-clamp-2"
-                    title={viewData?.description}
-                  >
-                    {viewData?.description ? viewData.description : "--"}
-                  </p>
-                </div>
-              </div>
               <UploadAttachments />
-
               <hr className="my-3" />
               <TaskComments taskId={taskId} />
             </div>
-            <div className="rightItem">
+            <div className={`rightItem transition-transform duration-300 ${openReplies.open ? "translate-x-full" : "translate-x-0"
+              }`}>
               <div className="focus-details border">
                 <div className="card-header border-b px-4 py-0 bg-gray-50">
                   <h3 className="leading-1 text-black  text-[1.1em]">
@@ -198,7 +230,7 @@ const TaskView = () => {
                       <p className="text-[#666666] text-sm font-medium mb-1">
                         Due Date
                       </p>
-                      <div className="inline-block px-3 py-[1px] text-[#FF0021] bg-[#FFE0E480] text-md font-semibold rounded-sm">
+                      <div className="inline-block  text-[#FF0021] text-md font-semibold rounded-sm">
                         {dayjs(viewData?.due_date).format("MM/DD/YYYY")}
                       </div>
                     </li>
@@ -253,6 +285,14 @@ const TaskView = () => {
                 errorMessages={errorMessages}
                 setErrorMessages={setErrorMessages}
               />
+              {setActivityOpen && (
+                <ActivityDrawer
+                  setActivityOpen={setActivityOpen}
+                  activityOpen={activityOpen}
+                  id={taskId}
+                  activityLogData={activityLogData}
+                />
+              )}
             </div>
           </div>
         </div>

@@ -24,7 +24,7 @@ function SideMenu() {
         <div>
           <ul className="space-y-3 text-gray-600">
             <li>
-              <Link to="/dashboard">
+              <Link to="/dashboard" className="no-underline hover:no-underline active:no-underline">
                 <div
                   className={`flex items-center gap-3 px-4 py-3 text-gray-600 rounded-2xl ${
                     isActive("/dashboard")
@@ -41,12 +41,12 @@ function SideMenu() {
                     alt="dashboard"
                     className="h-[23px] w-[23px]"
                   />
-                  <span>Dashboard</span>
+                  <span className="no-underline">Dashboard</span>
                 </div>
               </Link>
             </li>
             <li>
-              <Link to="/tasks">
+              <Link to="/tasks" className="no-underline hover:no-underline active:no-underline">
                 <div
                   className={`flex items-center gap-3 px-4 py-3 text-gray-600 rounded-2xl ${
                     isActive("/tasks")
@@ -59,12 +59,12 @@ function SideMenu() {
                     alt="dashboard"
                     className="h-[23px] w-[23px]"
                   />
-                  <span>Tasks</span>
+                  <span className="no-underline">Tasks</span>
                 </div>
               </Link>
             </li>
             <li>
-              <Link to="/projects">
+              <Link to="/projects" className="no-underline hover:no-underline active:no-underline">
                 <div
                   className={`flex items-center gap-3 px-4 py-3 text-gray-600 rounded-2xl ${
                     isActive("/projects")
@@ -81,29 +81,27 @@ function SideMenu() {
                     alt="projects"
                     className="h-[23px] w-[23px]"
                   />
-                  <span>Projects</span>
+                  <span className="no-underline">Projects</span>
                 </div>
               </Link>
             </li>
             <li>
-              {profileData?.user_type === "admin" && (
-                <Link to="/users">
-                  <div
-                    className={`flex items-center gap-3 px-4 py-3 text-gray-600 rounded-2xl ${
-                      isActive("/users")
-                        ? "bg-[#1B2459] text-white"
-                        : "hover:bg-blue-100"
-                    }`}
-                  >
-                    <img
-                      src={isActive("/users") ? usersWhiteIcon : usersBlackIcon}
-                      alt="dashboard"
-                      className="h-[23px] w-[23px]"
-                    />
-                    <span>Users</span>
-                  </div>
-                </Link>
-              )}
+              <Link to="/users" className="no-underline hover:no-underline active:no-underline">
+                <div
+                  className={`flex items-center gap-3 px-4 py-3 text-gray-600 rounded-2xl ${
+                    isActive("/users")
+                      ? "bg-[#1B2459] text-white"
+                      : "hover:bg-blue-100"
+                  }`}
+                >
+                  <img
+                    src={isActive("/users") ? usersWhiteIcon : usersBlackIcon}
+                    alt="dashboard"
+                    className="h-[23px] w-[23px]"
+                  />
+                  <span className="no-underline">Users</span>
+                </div>
+              </Link>
             </li>
           </ul>
         </div>

@@ -35,7 +35,7 @@ export const getAllPaginatedTasks = async ({
       priority: priority,
       project_id: project_id,
     };
-    return await $fetch.get("/tasks", queryParams);
+    return await $fetch.get("/tasks/all", queryParams);
   } catch (err) {
     throw err;
   }
@@ -43,6 +43,13 @@ export const getAllPaginatedTasks = async ({
 export const getSingleTaskAPI = async (taskId: any) => {
   try {
     return await $fetch.get(`/tasks/${taskId}`);
+  } catch (err) {
+    throw err;
+  }
+};
+export const getActivityLogsAPI = async (taskId: any) => {
+  try {
+    return await $fetch.get(`/tasks/${taskId}/task-activities`);
   } catch (err) {
     throw err;
   }

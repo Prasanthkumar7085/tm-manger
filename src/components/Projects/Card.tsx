@@ -205,7 +205,7 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
             </Tooltip>
           </TooltipProvider>
         </div>
-        <div className="m-h-[20px]">
+        <div className="h-[30px]">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
