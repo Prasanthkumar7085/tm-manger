@@ -39,7 +39,7 @@ const AddTask = () => {
     title: "",
     ref_id: "",
     description: "",
-    priority: "",
+    priority: "LOW",
     status: searchParams.get("status") || "TODO",
     due_date: "",
     tags: [],
@@ -456,17 +456,21 @@ const AddTask = () => {
                         <table className="min-w-full">
                           <thead className="bg-gray-200 sticky top-0">
                             <tr>
-                              <th className=" p-2 bg-[#F5F5F5] text-left font-normal text-[#00000099]">S.No.</th>
-                              <th className=" p-2 bg-[#F5F5F5] text-left font-normal text-[#00000099]">Name</th>
-                              <th className=" p-2 bg-[#F5F5F5] text-left font-normal text-[#00000099]">Actions</th>
+                              <th className=" p-2 bg-[#F5F5F5] text-left font-normal text-[#00000099]">
+                                S.No.
+                              </th>
+                              <th className=" p-2 bg-[#F5F5F5] text-left font-normal text-[#00000099]">
+                                Name
+                              </th>
+                              <th className=" p-2 bg-[#F5F5F5] text-left font-normal text-[#00000099]">
+                                Actions
+                              </th>
                             </tr>
                           </thead>
                           <tbody>
                             {task.users.map((user: any, index: number) => (
-                              <tr key={user.id} >
-                                <td className=" px-4 py-2">
-                                  {index + 1}
-                                </td>
+                              <tr key={user.id}>
+                                <td className=" px-4 py-2">{index + 1}</td>
                                 <td className=" px-4 py-2 capitalize">
                                   {user.fname} {user.lname}
                                 </td>

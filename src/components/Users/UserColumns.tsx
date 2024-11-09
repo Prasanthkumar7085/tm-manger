@@ -19,23 +19,31 @@ export const userColumns = [
     id: "fname",
     cell: (info: any) => {
       const title = info.getValue();
-      const profilePicUrl = info.row.original.profile_pic_url||"profile-picture.png";
+      const profilePicUrl =
+        info.row.original.profile_pic_url || "profile-picture.png";
       return (
-        <div style={{ display: "flex", alignItems: "center", textAlign: "left" }}>
+        <div
+          style={{ display: "flex", alignItems: "center", textAlign: "left" }}
+        >
           {profilePicUrl ? (
-            <img 
-              src={profilePicUrl} 
-              alt="Profile" 
-              style={{ width: 30, height: 30, borderRadius: "50%", marginRight: 8 }} 
+            <img
+              src={profilePicUrl}
+              alt="Profile"
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: "50%",
+                marginRight: 8,
+              }}
             />
           ) : (
-            <div 
+            <div
               style={{
-                width: 30, 
-                height: 30, 
-                borderRadius: "50%", 
-                backgroundColor: "#ccc", 
-                marginRight: 8 
+                width: 30,
+                height: 30,
+                borderRadius: "50%",
+                backgroundColor: "#ccc",
+                marginRight: 8,
               }}
             />
           )}
@@ -49,7 +57,7 @@ export const userColumns = [
     header: () => <span>First Name</span>,
     footer: (props: any) => props.column.id,
   },
- 
+
   {
     accessorFn: (row: any) => row.lname,
     id: "lname",
@@ -296,7 +304,7 @@ export const userColumns = [
                 border: "1px solid #ccc",
                 borderRadius: "4px",
                 boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-                zIndex: 100,
+                zIndex: "999999",
               }}
             >
               <div
@@ -304,6 +312,7 @@ export const userColumns = [
                   padding: "5px 10px",
                   cursor: "pointer",
                   color: "green",
+                  zIndex: "999999",
                 }}
                 onClick={() => updateUserStatus(true)}
               >

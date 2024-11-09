@@ -145,9 +145,9 @@ const KanbanBoard: React.FC<any> = ({
         <div
           {...provided.droppableProps}
           ref={provided.innerRef}
-          className="flex flex-col rounded-md"
+          className="flex flex-col rounded-md max-h-[500px] h-[500px] min-h-[500px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
         >
-          <h2 className="bg-gray-100 px-4 h-[40px] leading-10 rounded-xl font-semibold text-[14px]">
+          <h2 className="bg-gray-100 px-4 h-[40px] leading-10 rounded-xl font-semibold text-[14px] sticky top-0 z-10">
             {
               taskStatusConstants.find((item: any) => item.value == columnName)
                 ?.label
@@ -262,7 +262,7 @@ const KanbanBoard: React.FC<any> = ({
           <Button
             disabled={projectDetails?.active ? false : true}
             title="Add Task"
-            className="bg-transparent border-dashed border rounded-xl !border-[#5A5A5A] text-black text-md mt-2 hover:bg-transparent"
+            className="bg-transparent border-dashed border rounded-xl bg-white !border-[#5A5A5A] text-black text-md mt-2 hover:bg-transparent sticky bottom-10 z-10"
             onClick={() => {
               router.navigate({
                 to: "/tasks/add",
