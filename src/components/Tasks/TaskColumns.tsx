@@ -105,6 +105,12 @@ export const taskColumns = ({ setDel }: any) => {
         const title = info.getValue();
         const project_logo_url =
           info.row.original.project_logo_url || "/favicon.png";
+        const handleProjectsView = () => {
+          navigate({
+            to: `/projects/view/${info.row.original.project_id}`,
+          });
+        };
+
         return (
           <div className="project-title flex items-center gap-2">
             {project_logo_url && (
@@ -121,7 +127,12 @@ export const taskColumns = ({ setDel }: any) => {
                 />
               </div>
             )}
-            <span className="capitalize">{title ? title : "-"}</span>
+            <span
+              className="capitalize cursor-pointer text-black-500"
+              onClick={handleProjectsView}
+            >
+              {title ? title : "-"}
+            </span>
           </div>
         );
       },
@@ -137,17 +148,24 @@ export const taskColumns = ({ setDel }: any) => {
       cell: (info: any) => {
         const { ref_id, title } = info.getValue();
 
+        const handleView = (taskId: any) => {
+          navigate({
+            to: `/tasks/view/${taskId}`,
+          });
+        };
+
         return (
-          <>
-            <div className="task capitalize flex justify-between">
-              <span className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
-                {title || "-"}
-              </span>
-              <span className="ml-2 text-[11px] font-semibold text-primary">
-                [{ref_id}]
-              </span>
-            </div>
-          </>
+          <div
+            className="task capitalize flex justify-between cursor-pointer"
+            onClick={() => handleView(info.row.original.id)}
+          >
+            <span className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
+              {title || "-"}
+            </span>
+            <span className="ml-2 text-[11px] font-semibold text-primary">
+              [{ref_id}]
+            </span>
+          </div>
         );
       },
       width: "300px",
