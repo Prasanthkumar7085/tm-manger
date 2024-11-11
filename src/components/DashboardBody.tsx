@@ -42,11 +42,12 @@ const DashBoard = () => {
         from_date: formatDate(fromDate),
         to_date: formatDate(toDate),
       }),
-      getTotalTasksStats({
+
+      getTotalUsersStats({
         from_date: formatDate(fromDate),
         to_date: formatDate(toDate),
       }),
-      getTotalUsersStats({
+      getTotalTasksStats({
         from_date: formatDate(fromDate),
         to_date: formatDate(toDate),
       }),
