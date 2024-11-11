@@ -10,18 +10,12 @@ import {
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import {
-  Check,
-  ChevronDown,
-  ChevronUp,
-  Loader2,
-  X,
-} from "lucide-react";
+import { Check, ChevronDown, ChevronUp, Loader2, X } from "lucide-react";
 import { Popover } from "@radix-ui/react-popover";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
 import { AddSheetRoverProps } from "@/lib/interfaces";
- export const AddSheetRover = ({
+export const AddSheetRover = ({
   isOpen,
   userData,
   isEditing,
@@ -36,14 +30,16 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
   setUserTypeOpen,
   onChangeStatus,
   handleDrawerClose,
-  handleFormSubmit,  
-}: AddSheetRoverProps)=> {
+  handleFormSubmit,
+}: AddSheetRoverProps) => {
   return (
     <Sheet open={isOpen}>
       <SheetContent className="bg-white overflow-auto">
         <SheetHeader className="sticky bg-white top-0">
           <div className="custom-header  flex items-center justify-between">
-            <SheetTitle className="text-2xl text-normal">{isEditing ? "Edit User" : "Add User"}</SheetTitle>
+            <SheetTitle className="text-2xl text-normal">
+              {isEditing ? "Edit User" : "Add User"}
+            </SheetTitle>
             <Button
               variant="outline"
               onClick={handleDrawerClose}
@@ -76,7 +72,7 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
           </div>
           <div className="flex flex-col space-y-1">
             <Label
-               className="text-sm text-[#383838] font-medium"
+              className="text-sm text-[#383838] font-medium"
               htmlFor="lastname"
             >
               Last Name <span className="text-red-500">*</span>
@@ -122,7 +118,7 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
           </div>
           <div className="flex flex-col space-y-1">
             <Label
-               className="text-sm text-[#383838] font-medium"
+              className="text-sm text-[#383838] font-medium"
               htmlFor="email"
             >
               Email <span className="text-red-500">*</span>
@@ -162,7 +158,7 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
           )}
           <div className="flex flex-col space-y-1">
             <Label
-         className="text-sm text-[#383838] font-medium"
+              className="text-sm text-[#383838] font-medium"
               htmlFor="designation"
             >
               Designation
@@ -182,7 +178,7 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
           <div>
             <label
               htmlFor="panNumber"
-    className="text-sm text-[#383838] font-medium"
+              className="text-sm text-[#383838] font-medium"
             >
               User Type<span className="text-red-500">*</span>
             </label>
@@ -226,7 +222,7 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
                         onChangeStatus(type.value);
                         setUserTypeOpen(false);
                       }}
-                       className="w-full justify-start font-normal border-none bg-white text-[#343434] capitalize  hover:bg-[#f7f8fa] hover:text-[#343434]"
+                      className="w-full justify-start font-normal border-none bg-white text-[#343434] capitalize  hover:bg-[#f7f8fa] hover:text-[#343434]"
                     >
                       <Check
                         className={cn(
@@ -273,4 +269,3 @@ import { AddSheetRoverProps } from "@/lib/interfaces";
     </Sheet>
   );
 };
-

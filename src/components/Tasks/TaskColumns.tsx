@@ -7,7 +7,7 @@ import {
   taskStatusConstants,
 } from "@/lib/helpers/statusConstants";
 import { deleteTaskAPI } from "@/lib/services/tasks";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate} from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
 import { useState } from "react";
@@ -16,6 +16,7 @@ import DeleteDialog from "../core/deleteDialog";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { useSelector } from "react-redux";
+
 
 export const taskColumns = ({ setDel }: any) => {
   const navigate = useNavigate();
@@ -103,8 +104,13 @@ export const taskColumns = ({ setDel }: any) => {
       id: "project_title",
       cell: (info: any) => {
         const title = info.getValue();
-        const project_logo_url =
-          info.row.original.project_logo_url || "/favicon.png";
+        const project_logo_url = info.row.original.project_logo_url || "/favicon.png";
+        const handleProjectsView = () => {
+          navigate({
+            to: `/projects/view/${info.row.original.project_id}`,
+          });
+        };
+    
         return (
           <div className="project-title flex items-center gap-2">
             {project_logo_url && (
@@ -115,13 +121,17 @@ export const taskColumns = ({ setDel }: any) => {
                   className="w-[22px] h-[22px] rounded-full border bg-transparent"
                   onError={(e: any) => {
                     e.target.onerror = null;
-                    e.target.src =
-                      "https://via.placeholder.com/150?text=No preview";
+                    e.target.src = "https://via.placeholder.com/150?text=No preview";
                   }}
                 />
               </div>
             )}
-            <span className="capitalize">{title ? title : "-"}</span>
+            <span
+              className="capitalize cursor-pointer text-black-500"
+              onClick={handleProjectsView}
+            >
+              {title ? title : "-"}
+            </span>
           </div>
         );
       },
@@ -136,18 +146,25 @@ export const taskColumns = ({ setDel }: any) => {
       id: "title",
       cell: (info: any) => {
         const { ref_id, title } = info.getValue();
-
+        
+        const handleView = (taskId: any) => {
+          navigate({
+            to: `/tasks/view/${taskId}`,
+          });
+        };
+    
         return (
-          <>
-            <div className="task capitalize flex justify-between">
-              <span className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
-                {title || "-"}
-              </span>
-              <span className="ml-2 text-[11px] font-semibold text-primary">
-                [{ref_id}]
-              </span>
-            </div>
-          </>
+          <div
+            className="task capitalize flex justify-between cursor-pointer"
+            onClick={() => handleView(info.row.original.id)}
+          >
+            <span className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
+              {title || "-"}
+            </span>
+            <span className="ml-2 text-[11px] font-semibold text-primary">
+              [{ref_id}]
+            </span>
+          </div>
         );
       },
       width: "300px",
