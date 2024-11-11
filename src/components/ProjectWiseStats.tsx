@@ -17,7 +17,7 @@ const ProjectDataTable = () => {
   const [loading, setLoading] = useState(false);
   const [searchString, setSearchString] = useState<any>(initialSearch || "");
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
-  const [filteredData, setFilteredData] = useState<any[]>([]); // New state for filtered data
+  const [filteredData, setFilteredData] = useState<any[]>([]);
 
   const { isLoading, isError, error, data, isFetching } = useQuery({
     queryKey: ["projects"],
@@ -78,13 +78,12 @@ const ProjectDataTable = () => {
 
       <div className="mt-5">
         <TanStackTable
-          data={filteredData} // Use the filtered data here
+          data={filteredData}
           columns={projectWiseColumns}
           loading={isLoading || isFetching || loading}
           paginationDetails={0}
           getData={getAllProjectStats}
           removeSortingForColumnIds={[
-            "serial",
             "project_title",
             "task_todo_count",
             "task_inprogress_count",
