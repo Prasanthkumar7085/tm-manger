@@ -256,7 +256,7 @@ const ProjectCard = ({
               )}
             </Tooltip>
           </TooltipProvider>
-          <div>{project?.code}</div>
+          <div className="text-lg font-medium text-[#1B2459]">{project?.code}</div>
         </div>
 
         <div className="action-button mt-10">

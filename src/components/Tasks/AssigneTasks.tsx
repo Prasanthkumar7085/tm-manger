@@ -215,7 +215,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                       : true
                   }
                   variant="outline"
-                  className="py-1 px-3  h-[20px]"
+                  className="py-1 px-3  h-[30px]"
                   onClick={() => setTempSelectedMember([])}
                 >
                   <div className="flex items-center gap-x-1">

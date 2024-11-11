@@ -278,7 +278,7 @@ const TaskView = () => {
                             alt="User"
                             className="object-contain w-6 h-6 rounded-full border"
                           />
-                          <p className="font-medium text-black  text-md capitalize">
+                          <p className="font-medium text-black !ml-2  text-md capitalize">
                             {viewData?.created_name}
                           </p>
                         </div>

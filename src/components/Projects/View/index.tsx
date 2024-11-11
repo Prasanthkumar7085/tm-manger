@@ -266,7 +266,7 @@ const ProjectView = () => {
                 alt="User"
                 className="object-contain w-6 h-6 rounded-full border"
               />
-              <p className="text-sm text-[#000000]">
+              <p className="text-sm text-[#000000] !ml-1">
                 {projectDetails?.created_name}
               </p>
             </div>
