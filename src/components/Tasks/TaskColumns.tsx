@@ -411,7 +411,10 @@ export const taskColumns = ({ setDel }: any) => {
                 variant={"ghost"}
                 disabled={
                   profileData?.user_type === "admin" ||
-                  isAbleToAddOrEdit(info.row.original.assignees)
+                  isProjectMemberOrNot(
+                    info.row.original.assignees,
+                    profileData?.id
+                  )
                     ? false
                     : true
                 }
@@ -431,7 +434,10 @@ export const taskColumns = ({ setDel }: any) => {
                 title="Delete"
                 disabled={
                   profileData?.user_type === "admin" ||
-                  isAbleToAddOrEdit(info.row.original.assignees)
+                  isProjectMemberOrNot(
+                    info.row.original.assignees,
+                    profileData?.id
+                  )
                     ? false
                     : true
                 }

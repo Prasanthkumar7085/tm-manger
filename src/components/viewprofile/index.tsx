@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { fileUploadAPI, uploadToS3API } from "@/lib/services/projects";
 import { toast } from "sonner";
-import { Pencil, Loader } from "lucide-react"; // Import Loader icon
+import { Pencil, Loader } from "lucide-react";
 import { CirclePlus, Plus, UserRoundPlus, X } from "lucide-react";
 
 function ViewProfile() {
@@ -136,7 +136,9 @@ function ViewProfile() {
   return (
     <div className="w-[70%] m-auto">
       <div className=" rounded-xl bg-white mb-4 shadow-md">
-        <h1 className="text-xl border-b-2 px-4 py-2 font-medium text-[#475569]">Profile Information</h1>
+        <h1 className="text-xl border-b-2 px-4 py-2 font-medium text-[#475569]">
+          Profile Information
+        </h1>
         <div className="flex p-4 items-center gap-x-6 mb-4 pb-6 relative">
           <div>
             <input
@@ -185,13 +187,17 @@ function ViewProfile() {
             </label>
           </div>
           <div>
-            <h3 className="text-lg font-semibold">User Title</h3>
-            <p className="text-gray-600">Details about the user</p>
+            <h3 className="text-lg font-semibold">
+              {userData.fname}
+              {userData.lname}
+            </h3>
           </div>
         </div>
       </div>
       <div className="  rounded-lg bg-white shadow-md">
-        <h1 className="text-xl border-b-2 px-4 py-2 font-medium text-[#475569]">Personal Information</h1>
+        <h1 className="text-xl border-b-2 px-4 py-2 font-medium text-[#475569]">
+          Personal Information
+        </h1>
         <div className="grid p-4 grid-cols-1 md:grid-cols-2 gap-y-8 text-lg">
           <div>
             <h3 className="text-sm font-normal text-[#666666]">First Name</h3>
@@ -213,12 +219,10 @@ function ViewProfile() {
             </p>
           </div>
           <div>
-            <h3 className="text-sm font-normal text-[#666666]">
-              Phone Number
-            </h3>
+            <h3 className="text-sm font-normal text-[#666666]">Phone Number</h3>
 
             <p className="text-base font-medium text-[#000000]">
-              {userData.phone_number}
+              {userData.phone_number || "--"}
             </p>
           </div>
           <div>
@@ -330,7 +334,6 @@ function ViewProfile() {
     //     </div>
     //   </div>
     // </div>
-
   );
 }
 

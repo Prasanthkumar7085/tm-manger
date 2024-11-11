@@ -362,10 +362,8 @@ const AddTask = () => {
                 />
               )}
             </div>
-          
           </div>
           <div className="rightColumn space-y-5">
-         
             <div className="grid grid-cols-2 gap-5">
               <div className="form-item">
                 <label className="block text-[#383838] font-medium text-sm mb-1">
@@ -398,7 +396,7 @@ const AddTask = () => {
                   disabledDate={(date: any) =>
                     date < new Date().setHours(0, 0, 0, 0)
                   }
-                  style={{ width: "100%", height:"40px", }}
+                  style={{ width: "100%", height: "40px" }}
                 />
 
                 {errorMessages.due_date && (
@@ -425,7 +423,7 @@ const AddTask = () => {
                 )}
               </div>
             </div>
-          
+
             <div className="form-item">
               <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
                 Task Status
@@ -588,35 +586,32 @@ const AddTask = () => {
                 </div>
               )}
             </div>
-        
-            <div className="form-action-button flex justify-end mt-5">
-          <Button
-            type="button"
-            className="bg-white border-transparent text-[#FF6000] text-md px-8 font-medium hover:bg-transparent hover:text-[#FF6000]"
-            onClick={() => window.history.back()}
-          >
-            Cancel
-          </Button>
 
-          <Button
-            type="submit"
-            disabled={
-              profileData?.user_type === "admin" || isAbleToAddOrEdit()
-                ? false
-                : true
-            }
-            className="bg-[#1B2459] text-white font-medium text-md hover:bg-[#1B2459] hover:text-white px-8"
-          >
-            {taskId ? "Update" : " Submit"}
-          </Button>
-        </div>
+            <div className="form-action-button flex justify-end mt-5">
+              <Button
+                type="button"
+                className="bg-white border-transparent text-[#FF6000] text-md px-8 font-medium hover:bg-transparent hover:text-[#FF6000]"
+                onClick={() => window.history.back()}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                type="submit"
+                disabled={
+                  profileData?.user_type === "admin" || isAbleToAddOrEdit()
+                    ? false
+                    : true
+                }
+                className="bg-[#1B2459] text-white font-medium text-md hover:bg-[#1B2459] hover:text-white px-8"
+              >
+                {taskId ? "Update" : " Submit"}
+              </Button>
+            </div>
           </div>
         </div>
-   
       </form>
-      <LoadingComponent
-        loading={loading || isLoading || isTaskLoading || isUsersLoading}
-      />
+      <LoadingComponent loading={loading || isLoading || isTaskLoading} />
     </section>
   );
 };

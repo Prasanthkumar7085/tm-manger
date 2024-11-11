@@ -342,7 +342,7 @@ export const projectColumns = ({
                 title="Edit"
                 variant={"ghost"}
                 disabled={
-                  info.row.original?.active &&
+                  !info.row.original?.active ||
                   (profileData.user_type === "admin") == false
                 }
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
