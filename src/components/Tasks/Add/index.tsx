@@ -98,6 +98,8 @@ const AddTask = () => {
         setErrorMessages(response?.data?.errData || {});
       } else if (response?.status === 409) {
         setErrorMessages(response?.data?.errData || {});
+      } else {
+        toast.error(response?.data?.message || "Something went wrong");
       }
       setLoading(false);
     },
@@ -348,11 +350,25 @@ const AddTask = () => {
                 </label>
                 <DatePicker
                   name="due_date"
-                  onChange={(date: any) =>
-                    handleChange({
-                      target: { name: "due_date", value: date },
-                    })
-                  }
+                  onChange={(date: any) => {
+                    if (date) {
+                      const selectedDate = new Date(date);
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+
+                      if (
+                        selectedDate.setHours(0, 0, 0, 0) === today.getTime()
+                      ) {
+                        selectedDate.setHours(23, 59, 59, 999);
+                      } else {
+                        selectedDate.setHours(0, 0, 0, 0);
+                      }
+
+                      handleChange({
+                        target: { name: "due_date", value: selectedDate },
+                      });
+                    }
+                  }}
                   value={task.due_date ? new Date(task.due_date) : null}
                   placeholder="Select Due Date"
                   editable={false}
@@ -419,7 +435,7 @@ const AddTask = () => {
                         variant="outline"
                         className="justify-between  bg-slate-50 h-[40px] w-full relative text-[#00000099]"
                       >
-                        Select Users
+                        Assigned Users
                         <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
                       </Button>
                     </PopoverTrigger>

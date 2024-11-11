@@ -187,7 +187,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
           }}
           className="bg-primary text-white hover:text-white py-1 px-3  h-[20px]"
         >
-          Add Members
+          Invite to Project
         </Button>
       </div>
       <div className="card-body">
@@ -207,7 +207,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                     alt="No tags"
                     className="w-4 h-4 mr-1"
                   />
-                  <p>Select Members</p>
+                  <p>Select Assignes</p>
                 </div>
                 <div>
                   <span>

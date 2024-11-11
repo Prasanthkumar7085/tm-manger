@@ -21,6 +21,8 @@ const LoginComponent = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const [errors, setErrors] = useState<any>({});
+  const [invalidMessages, setInvalidMessages] = useState<any>();
+
   const navigate = useNavigate({ from: "/" });
 
   const { mutate, isError, error } = useMutation({
@@ -43,12 +45,16 @@ const LoginComponent = () => {
         } else if (response?.status === 422) {
           const errData = response?.data?.errData;
           setErrors(errData);
+        } else if (response?.status === 401) {
+          const inValid = response?.data?.message;
+
+          setInvalidMessages(inValid);
         } else {
           throw response;
         }
       } catch (errData) {
         console.error(errData);
-        errPopper(errData);
+        // errPopper(errData);
       } finally {
         setLoading(false);
       }
@@ -135,6 +141,9 @@ const LoginComponent = () => {
                   <p className="text-xs pt-1 text-red-600">
                     {errors?.password[0]}
                   </p>
+                )}
+                {invalidMessages && (
+                  <p className="text-xs pt-1 text-red-600">{invalidMessages}</p>
                 )}
               </div>
               <div className="flex justify-end">

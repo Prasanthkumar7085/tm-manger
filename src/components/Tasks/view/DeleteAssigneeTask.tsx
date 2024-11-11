@@ -55,7 +55,7 @@ const DeleteAssignes = ({
       <DeleteDialog
         openOrNot={deleteDialogOpen}
         onCancelClick={() => setDeleteDialogOpen(false)}
-        label="Are you sure you want to delete this Task Assignee?"
+        label="Are you sure you want to delete this  Assignee?"
         onOKClick={handleDeleteClick}
         deleteLoading={isPending}
       />

@@ -140,7 +140,10 @@ export const taskColumns = ({ setDel }: any) => {
         return (
           <>
             <div className="task capitalize flex justify-between">
-              <span className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
+              <span
+                title={title}
+                className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]"
+              >
                 {title || "-"}
               </span>
               <span className="ml-2 text-[11px] font-semibold text-primary">

@@ -40,7 +40,7 @@ export const ActivityDrawer = ({
         </Button>
       </SheetTrigger>
 
-      <SheetContent className="bg-white overflow-auto">
+      <SheetContent className="bg-white overflow-auto w-[60%] ">
         <SheetHeader>
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-semibold">Activity Logs</h3>
