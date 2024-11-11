@@ -16,6 +16,11 @@ import DeleteDialog from "../core/deleteDialog";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { useSelector } from "react-redux";
+import {
+  isMananger,
+  isProjectAdmin,
+  isProjectMemberOrNot,
+} from "@/lib/helpers/loginHelpers";
 
 export const taskColumns = ({ setDel }: any) => {
   const navigate = useNavigate();
@@ -85,6 +90,16 @@ export const taskColumns = ({ setDel }: any) => {
   const onClickOpen = (id: any) => {
     setOpen(true);
     setDeleteTaskId(id);
+  };
+
+  const isAbleToAddOrEdit = (users: any) => {
+    if (
+      (isMananger(users, profileData?.id, profileData?.user_type) ||
+        isProjectAdmin(users, profileData?.id, profileData?.user_type)) &&
+      isProjectMemberOrNot(users, profileData?.id)
+    ) {
+      return true;
+    }
   };
 
   return [
@@ -394,7 +409,12 @@ export const taskColumns = ({ setDel }: any) => {
               <Button
                 title="Edit"
                 variant={"ghost"}
-                disabled={profileData?.user_type == "user"}
+                disabled={
+                  profileData?.user_type === "admin" ||
+                  isAbleToAddOrEdit(info.row.original.assignees)
+                    ? false
+                    : true
+                }
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
                 onClick={() => handleEdit(info.row.original.id)}
               >
@@ -409,7 +429,12 @@ export const taskColumns = ({ setDel }: any) => {
             <li>
               <Button
                 title="Delete"
-                disabled={profileData?.user_type == "user"}
+                disabled={
+                  profileData?.user_type === "admin" ||
+                  isAbleToAddOrEdit(info.row.original.assignees)
+                    ? false
+                    : true
+                }
                 onClick={() => onClickOpen(info.row.original.id)}
                 variant={"ghost"}
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"

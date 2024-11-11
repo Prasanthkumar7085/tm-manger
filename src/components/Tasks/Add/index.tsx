@@ -21,20 +21,33 @@ import {
   updateTasksAPI,
 } from "@/lib/services/tasks";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useLocation, useNavigate, useParams } from "@tanstack/react-router";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useRouter,
+} from "@tanstack/react-router";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import React, { useState } from "react";
 import { DatePicker } from "rsuite";
 import { toast } from "sonner";
 import TagsComponent from "./TagsComponent";
+import { useSelector } from "react-redux";
+import {
+  isMananger,
+  isProjectAdmin,
+  isProjectMemberOrNot,
+} from "@/lib/helpers/loginHelpers";
 
 const AddTask = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const router = useRouter();
   const { taskId } = useParams({ strict: false });
   const searchParams = new URLSearchParams(location.search);
-
+  const profileData: any = useSelector(
+    (state: any) => state.auth.user.user_details
+  );
   const [task, setTask] = useState<any>({
     title: "",
     ref_id: "",
@@ -189,6 +202,16 @@ const AddTask = () => {
       ...prevTask,
       users: prevTask.users.filter((user: any) => user.id !== userId),
     }));
+  };
+
+  const isAbleToAddOrEdit = () => {
+    if (
+      (isMananger(users, profileData?.id, profileData?.user_type) ||
+        isProjectAdmin(users, profileData?.id, profileData?.user_type)) &&
+      isProjectMemberOrNot(users, profileData?.id)
+    ) {
+      return true;
+    }
   };
 
   return (
@@ -403,12 +426,36 @@ const AddTask = () => {
             <div className="form-item">
               {!taskId && (
                 <div className="mb-4">
-                  <label className="block text-[#383838] font-medium text-sm mb-1">
-                    Assign To
-                  </label>
+                  <div className="flex justify-between items-center mb-4">
+                    <label className="block text-[#383838] font-medium text-sm mb-1">
+                      Assign To
+                    </label>
+                    <Button
+                      disabled={
+                        profileData?.user_type === "admin" ||
+                        isAbleToAddOrEdit()
+                          ? false
+                          : true
+                      }
+                      onClick={() => {
+                        router.navigate({
+                          to: `/projects/view/${task?.project_id}?tab=project_members`,
+                        });
+                      }}
+                      className="bg-primary text-white hover:text-white py-1 px-3  h-[20px]"
+                    >
+                      Invite to Project
+                    </Button>
+                  </div>
                   <Popover open={openUsers} onOpenChange={setOpenUsers}>
                     <PopoverTrigger asChild>
                       <Button
+                        disabled={
+                          profileData?.user_type === "admin" ||
+                          isAbleToAddOrEdit()
+                            ? false
+                            : true
+                        }
                         variant="outline"
                         className="justify-between  bg-slate-50 h-[35px] w-full relative text-[#00000099]"
                       >
@@ -551,13 +598,20 @@ const AddTask = () => {
 
           <Button
             type="submit"
+            disabled={
+              profileData?.user_type === "admin" || isAbleToAddOrEdit()
+                ? false
+                : true
+            }
             className="bg-[#1B2459] text-white font-medium text-md hover:bg-[#1B2459] hover:text-white px-8"
           >
             {taskId ? "Update" : " Submit"}
           </Button>
         </div>
       </form>
-      <LoadingComponent loading={loading || isLoading || isTaskLoading} />
+      <LoadingComponent
+        loading={loading || isLoading || isTaskLoading || isUsersLoading}
+      />
     </section>
   );
 };

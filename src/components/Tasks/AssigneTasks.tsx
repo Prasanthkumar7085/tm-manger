@@ -23,6 +23,11 @@ import { toast } from "sonner";
 import LoadingComponent from "../core/LoadingComponent";
 import DeleteAssignes from "./view/DeleteAssigneeTask";
 import { useSelector } from "react-redux";
+import {
+  isMananger,
+  isProjectAdmin,
+  isProjectMemberOrNot,
+} from "@/lib/helpers/loginHelpers";
 
 const AssignedUsers = ({ viewTaskData }: any) => {
   const { taskId } = useParams({ strict: false });
@@ -158,7 +163,6 @@ const AssignedUsers = ({ viewTaskData }: any) => {
     setTempSelectedMember([]);
     setOpen(false);
     let allMembers = [...newMembers];
-    console.log(allMembers, "allMembers");
     let payload = allMembers.map((member: any) => {
       return { user_id: member.id };
     });
@@ -167,17 +171,26 @@ const AssignedUsers = ({ viewTaskData }: any) => {
       user_ids: payload,
     });
   };
-  const getInitials = (member: any) => {
-    const firstInitial = member.fname ? member.fname.charAt(0) : "";
-    const lastInitial = member.lname ? member.lname.charAt(0) : "";
-    return `${firstInitial}${lastInitial}`.toUpperCase();
+
+  const isAbleToAddOrEdit = () => {
+    if (
+      (isMananger(users, profileData?.id, profileData?.user_type) ||
+        isProjectAdmin(users, profileData?.id, profileData?.user_type)) &&
+      isProjectMemberOrNot(users, profileData?.id)
+    ) {
+      return true;
+    }
   };
   return (
     <div className="assign-tasks mt-3 border">
       <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
         <h3 className="leading-1 text-black text-[1.1em]">Assigned To</h3>
         <Button
-          disabled={profileData?.user_type === "admin" ? false : true}
+          disabled={
+            profileData?.user_type === "admin" || isAbleToAddOrEdit()
+              ? false
+              : true
+          }
           onClick={() => {
             router.navigate({
               to: `/projects/view/${viewTaskData?.project_id}?tab=project_members`,
@@ -194,7 +207,11 @@ const AssignedUsers = ({ viewTaskData }: any) => {
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button
-                  disabled={profileData?.user_type === "admin" ? false : true}
+                  disabled={
+                    profileData?.user_type === "admin" || isAbleToAddOrEdit()
+                      ? false
+                      : true
+                  }
                   variant="outline"
                   className="py-1 px-3  h-[20px]"
                   onClick={() => setTempSelectedMember([])}
@@ -305,6 +322,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                         onSuccess={() => {
                           removeMember(member.user_id);
                         }}
+                        isAbleToAddOrEdit={isAbleToAddOrEdit}
                       />
                     </div>
                   </div>

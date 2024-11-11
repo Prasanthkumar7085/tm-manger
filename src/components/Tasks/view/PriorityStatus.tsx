@@ -1,4 +1,5 @@
 import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
+import { isProjectMemberOrNot } from "@/lib/helpers/loginHelpers";
 import {
   taskPriorityConstants,
   taskStatusConstants,
@@ -15,6 +16,7 @@ function PriorityStatus({
   selectedPriority,
   setSelectedPriority,
   viewData,
+  assignedUsers,
 }: {
   taskId: string | any;
   setUpdatePriority: any;
@@ -26,6 +28,7 @@ function PriorityStatus({
     | any;
   setSelectedPriority: any;
   viewData: any;
+  assignedUsers: any;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -86,7 +89,11 @@ function PriorityStatus({
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
       <button
-        disabled={loading || profileData?.user_type === "user"}
+        disabled={
+          loading || isProjectMemberOrNot(assignedUsers, profileData?.id)
+            ? false
+            : true
+        }
         onClick={toggleDropdown}
         className={`border pl-4 rounded-lg flex items-center font-sans font-medium ${
           (selectedPriority?.value || viewData?.priority) === "HIGH"
@@ -116,6 +123,18 @@ function PriorityStatus({
                   onClick={() => selectPriority(priority)}
                   className="block px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-500 cursor-pointer"
                 >
+                  <span
+                    style={{
+                      width: "10px",
+                      height: "10px",
+                      borderRadius: "50%",
+                      backgroundColor: taskPriorityConstants.find(
+                        (item) => item.value === priority?.value
+                      )?.color,
+                      display: "inline-block",
+                      marginRight: "8px",
+                    }}
+                  ></span>
                   {priority?.label}
                 </li>
               )

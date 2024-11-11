@@ -10,9 +10,11 @@ import { useSelector } from "react-redux";
 const DeleteAssignes = ({
   assigneeId,
   onSuccess,
+  isAbleToAddOrEdit,
 }: {
   assigneeId: any;
   onSuccess: () => void;
+  isAbleToAddOrEdit: any;
 }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const profileData: any = useSelector(
@@ -43,7 +45,11 @@ const DeleteAssignes = ({
   return (
     <>
       <button
-        disabled={profileData?.user_type === "admin" ? false : true}
+        disabled={
+          profileData?.user_type === "admin" || isAbleToAddOrEdit()
+            ? false
+            : true
+        }
         onClick={() => setDeleteDialogOpen(true)}
         title="Delete Assignee"
         aria-label="Delete Assignee"
