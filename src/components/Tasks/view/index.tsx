@@ -179,7 +179,7 @@ const TaskView = () => {
                 Edit Task
               </Button>
               <button
-                className="check-activity-button btn px-3 text-[12px] bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[35px] leading-[15px] font-semibold"
+                className="check-activity-button btn px-3 text-[12px] bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[35px] leading-[15px] "
                 onClick={onActivityClick}
               >
                 Check Activity

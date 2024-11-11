@@ -249,7 +249,7 @@ const KanbanBoard: React.FC<any> = ({
           <Button
             disabled={projectDetails?.active ? false : true}
             title="Add Task"
-            className="bg-transparent border-dashed border rounded-xl bg-white !border-[#5A5A5A] text-black text-md mt-2 hover:bg-transparent sticky bottom-10 z-10"
+            className="bg-transparent border-dashed border rounded-xl bg-white !border-[#5A5A5A] text-black text-md mt-2 hover:bg-transparent sticky bottom-0 z-10"
             onClick={() => {
               router.navigate({
                 to: "/tasks/add",
