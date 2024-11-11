@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/button";
+import memberIcon from "@/assets/members.svg";
+import selectDropIcon from "@/assets/select-dropdown.svg";
 import {
   Command,
   CommandEmpty,
@@ -195,11 +197,28 @@ const AssignedUsers = ({ viewTaskData }: any) => {
               <PopoverTrigger asChild>
                 <Button
                   disabled={profileData?.user_type === "admin" ? false : true}
-                  variant="outline"
-                  className="py-1 px-3  h-[20px]"
+                  variant="outline" 
+                  className="py-1 px-3  h-[30px] text-sm"
                   onClick={() => setTempSelectedMember([])}
                 >
-                  Select Members
+                        <div className="flex items-center gap-x-1">
+                  <img
+                    src={memberIcon}
+                    alt="No tags"
+                    className="w-4 h-4 mr-1"
+                  />
+                  <p>Select Members</p>
+                </div>
+                <div>
+                  <span>
+                    {" "}
+                    <img
+                      src={selectDropIcon}
+                      alt="No tags"
+                      className="w-4 h-4 ml-2"
+                    />{" "}
+                  </span>
+                </div>
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-[200px] p-0 bg-white border z-[99999]">
