@@ -13,7 +13,13 @@ import { toast } from "sonner";
 import { updateProjectAPI } from "@/lib/services/projects";
 import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
 
-const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
+const ProjectCard = ({
+  project,
+  del,
+  setDel,
+  getAllProjects,
+  profileData,
+}: any) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isActive, setIsActive] = useState(project.active);
@@ -127,7 +133,11 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
                 borderRadius: "5px",
                 cursor: "pointer",
               }}
-              onClick={togglePopover}
+              onClick={(event) => {
+                if (profileData?.user_type === "admin") {
+                  togglePopover(event);
+                }
+              }}
             >
               <span
                 style={{
@@ -268,13 +278,21 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
             <li onClick={handleActionClick}>
               <img
                 src={"/table/edit.svg"}
-                title={project?.active ? "edit" : "Unable to edit"}
+                title={
+                  project?.active && profileData?.user_type === "admin"
+                    ? "edit"
+                    : "Unable to edit"
+                }
                 alt="edit"
                 height={16}
                 width={16}
-                className={project?.active ? "cursor-pointer" : `opacity-15`}
+                className={
+                  project?.active && profileData?.user_type === "admin"
+                    ? "cursor-pointer"
+                    : `opacity-15`
+                }
                 onClick={() => {
-                  if (project?.active) {
+                  if (project?.active && profileData?.user_type === "admin") {
                     navigate({
                       to: `/projects/${project.id}`,
                     });

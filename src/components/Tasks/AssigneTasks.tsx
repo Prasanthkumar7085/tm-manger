@@ -1,16 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useParams, useRouter } from "@tanstack/react-router";
-import React, { useState } from "react";
-import { toast } from "sonner";
-import { addAssignesAPI, getAssignesAPI } from "@/lib/services/tasks";
-import {
-  getAllMembers,
-  getProjectMembersAPI,
-} from "@/lib/services/projects/members";
-import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Check, X } from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -24,8 +12,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import DeleteAssignes from "./view/DeleteAssigneeTask";
+import { getProjectMembersAPI } from "@/lib/services/projects/members";
+import { addAssignesAPI, getAssignesAPI } from "@/lib/services/tasks";
+import { cn } from "@/lib/utils";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams, useRouter } from "@tanstack/react-router";
+import { Check } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import LoadingComponent from "../core/LoadingComponent";
+import DeleteAssignes from "./view/DeleteAssigneeTask";
+import { useSelector } from "react-redux";
 
 const AssignedUsers = ({ viewTaskData }: any) => {
   const { taskId } = useParams({ strict: false });
@@ -38,6 +35,9 @@ const AssignedUsers = ({ viewTaskData }: any) => {
   const [loading, setLoading] = useState(false);
   const [errorMessages, setErrorMessages] = useState({});
   const [updating, setUpdating] = useState<any>(0);
+  const profileData: any = useSelector(
+    (state: any) => state.auth.user.user_details
+  );
   const [selectedMembers, setSelectedMembers] = useState<
     {
       user_id: number;
@@ -99,22 +99,6 @@ const AssignedUsers = ({ viewTaskData }: any) => {
       setUpdating((prev: any) => prev + 1);
     },
   });
-
-  // const { isLoading: isUsersLoading } = useQuery({
-  //   queryKey: ["users", taskId],
-  //   queryFn: async () => {
-  //     const response = await getAllMembers();
-  //     if (response?.data?.data && Array.isArray(response.data.data)) {
-  //       let ActiveUsers = response.data.data.filter(
-  //         (user: any) => user?.active === true
-  //       );
-  //       setUsers(ActiveUsers);
-  //     } else {
-  //       setUsers([]);
-  //     }
-  //     return response;
-  //   },
-  // });
 
   const { isFetching: isMembersFetching, isLoading: isMembersLoading } =
     useQuery({
@@ -193,6 +177,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
       <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
         <h3 className="leading-1 text-black text-[1.1em]">Assigned To</h3>
         <Button
+          disabled={profileData?.user_type === "admin" ? false : true}
           onClick={() => {
             router.navigate({
               to: `/projects/view/${viewTaskData?.project_id}?tab=project_members`,
@@ -209,6 +194,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button
+                  disabled={profileData?.user_type === "admin" ? false : true}
                   variant="outline"
                   className="py-1 px-3  h-[20px]"
                   onClick={() => setTempSelectedMember([])}

@@ -19,6 +19,7 @@ import LoadingComponent from "./core/LoadingComponent";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 import ProjectDataTable from "./ProjectWiseStats";
 import { SelectTaskProjects } from "./core/CommonComponents/SelectTaskProjects";
+import { useSelector } from "react-redux";
 
 const formatDate = (date: any) => {
   return date.toISOString().split("T")[0];
@@ -27,7 +28,9 @@ const formatDate = (date: any) => {
 const DashBoard = () => {
   const [selectedDate, setSelectedDate] = useState([new Date(), new Date()]);
   const [selectedProject, setSelectedProject] = useState(null);
-
+  const profileData: any = useSelector(
+    (state: any) => state.auth.user.user_details
+  );
   useEffect(() => {
     const today = new Date();
     setSelectedDate([today, today]);
@@ -122,20 +125,22 @@ const DashBoard = () => {
               </h1>
               <p className="text-md text-[#425166] font-normal">Tasks</p>
             </div>
+            {profileData?.user_type !== "user" && (
+              <div className="p-4 bg-[#F3E8FF] rounded-xl text-left shadow-sm">
+                <div className="flex justify-left items-center mb-6">
+                  <img
+                    src={dashboardUsersIcon}
+                    alt="Users icon"
+                    className="h-[33px] w-[33px]"
+                  />
+                </div>
 
-            <div className="p-4 bg-[#F3E8FF] rounded-xl text-left shadow-sm">
-              <div className="flex justify-left items-center mb-6">
-                <img
-                  src={dashboardUsersIcon}
-                  alt="Users icon"
-                  className="h-[33px] w-[33px]"
-                />
+                <h1 className="text-2xl font-medium text-[#151D48]">
+                  <CountUp end={usersCount} duration={2.5} />
+                </h1>
+                <p className="text-md text-[#425166] font-normal">Users</p>
               </div>
-              <h1 className="text-2xl font-medium text-[#151D48]">
-                <CountUp end={usersCount} duration={2.5} />
-              </h1>
-              <p className="text-md text-[#425166] font-normal">Users</p>
-            </div>
+            )}
 
             <div className="p-4 bg-[#DCFCE7] rounded-xl text-left shadow-sm">
               <div className="flex justify-left items-center mb-6">

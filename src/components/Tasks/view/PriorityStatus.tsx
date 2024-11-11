@@ -6,6 +6,7 @@ import {
 import { priorityUpdateAPI, statusUpdateAPI } from "@/lib/services/tasks";
 import { useMutation } from "@tanstack/react-query";
 import React, { useState, useRef, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
 function PriorityStatus({
@@ -30,7 +31,9 @@ function PriorityStatus({
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(false);
   const toggleDropdown = () => setIsOpen(!isOpen);
-
+  const profileData: any = useSelector(
+    (state: any) => state.auth.user.user_details
+  );
   const selectPriority = (priority: any) => {
     setSelectedPriority(priority);
     setIsOpen(false);
@@ -83,7 +86,7 @@ function PriorityStatus({
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
       <button
-        disabled={loading}
+        disabled={loading || profileData?.user_type === "user"}
         onClick={toggleDropdown}
         className={`border pl-4 rounded-lg flex items-center font-sans font-medium ${
           (selectedPriority?.value || viewData?.priority) === "HIGH"

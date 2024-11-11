@@ -16,6 +16,7 @@ import { CameraIcon, Loader, X } from "lucide-react";
 import KanbanBoard from "../KanBanView";
 import ProjectMembersManagment from "./ProjectMembersManagment";
 import ProjectTasksCounts from "./ProjectTasksCounts";
+import { useSelector } from "react-redux";
 
 const ProjectView = () => {
   const { projectId } = useParams({ strict: false });
@@ -23,7 +24,9 @@ const ProjectView = () => {
   const queryClient = useQueryClient();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-
+  const profileData: any = useSelector(
+    (state: any) => state.auth.user.user_details
+  );
   const [projectDetails, setProjectDetails] = useState<any>({});
   const [projectStatsUpdate, setProjetStatsUpdate] = useState<number>(0);
   const [uploadingStatus, setUploadingStatus] = useState({
@@ -162,6 +165,7 @@ const ProjectView = () => {
                 </div>
               )}
               <button
+                disabled={profileData?.user_type === "user"}
                 onClick={handleRemoveFile}
                 className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border"
               >
@@ -188,6 +192,7 @@ const ProjectView = () => {
               </label>
               <input
                 id="file-upload"
+                disabled={profileData?.user_type === "user"}
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}

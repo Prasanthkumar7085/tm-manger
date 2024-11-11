@@ -17,6 +17,7 @@ import {
   Droppable,
   DropResult,
 } from "react-beautiful-dnd";
+import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
 type Task = {
@@ -71,7 +72,9 @@ const KanbanBoard: React.FC<any> = ({
   });
   const [loading, setLoading] = useState(false);
   const [callProjectTasks, setCallProjectTasks] = useState(0);
-
+  const profileData: any = useSelector(
+    (state: any) => state.auth.user.user_details
+  );
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
 
@@ -260,7 +263,11 @@ const KanbanBoard: React.FC<any> = ({
               ))}
           {provided.placeholder}
           <Button
-            disabled={projectDetails?.active ? false : true}
+            disabled={
+              projectDetails?.active && profileData?.user_type == "admin"
+                ? false
+                : true
+            }
             title="Add Task"
             className="bg-transparent border-dashed border rounded-xl bg-white !border-[#5A5A5A] text-black text-md mt-2 hover:bg-transparent sticky bottom-10 z-10"
             onClick={() => {

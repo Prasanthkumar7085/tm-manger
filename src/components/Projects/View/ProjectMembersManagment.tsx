@@ -1,3 +1,16 @@
+import memberIcon from "@/assets/members.svg";
+import selectDropIcon from "@/assets/select-dropdown.svg";
+import LoadingComponent from "@/components/core/LoadingComponent";
+import DeleteDialog from "@/components/core/deleteDialog";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { roleConstants } from "@/lib/helpers/statusConstants";
 import {
   addMembersAPI,
@@ -6,39 +19,27 @@ import {
   getProjectMembersAPI,
   updateMembersAPI,
 } from "@/lib/services/projects/members";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useLocation, useParams, useRouter } from "@tanstack/react-router";
-import { useState } from "react";
-import { toast } from "sonner";
-import memberIcon from "@/assets/members.svg";
-import selectDropIcon from "@/assets/select-dropdown.svg";
+import { cn } from "@/lib/utils";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@radix-ui/react-popover";
-import { Button } from "@/components/ui/button";
-import { ArrowBigLeft, Check, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandItem,
-  CommandGroup,
-  CommandEmpty,
-} from "@/components/ui/command";
-import LoadingComponent from "@/components/core/LoadingComponent";
-import DeleteDialog from "@/components/core/deleteDialog";
-import { Tooltip } from "@/components/ui/tooltip";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useLocation, useParams, useRouter } from "@tanstack/react-router";
+import { Check } from "lucide-react";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { toast } from "sonner";
 
 const ProjectMembersManagment = ({ projectDetails }: any) => {
   const { projectId } = useParams({ strict: false });
   const router = useRouter();
   const { pathname } = useLocation();
-
+  const profileData: any = useSelector(
+    (state: any) => state.auth.user.user_details
+  );
   const [selectedMembers, setSelectedMembers] = useState<any>([]);
-  console.log(selectedMembers, "selectedMembers");
   const [loading, setLoading] = useState(false);
   const [errorMessages, setErrorMessages] = useState({});
   const [open, setOpen] = useState<boolean>(false);
@@ -232,6 +233,7 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button
+                disabled={profileData?.user_type === "user"}
                 variant="outline"
                 className="w-[220px] flex items-center justify-between px-2 bg-[#F4F4F6] border-[#E2E2E2] rounded-[8px] text-[#00000099]"
                 onClick={() => setTempSelectedMember([])}
@@ -365,7 +367,12 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
                       <td className=" p-2">
                         <select
                           value={member.role}
-                          disabled={projectDetails?.active ? false : true}
+                          disabled={
+                            projectDetails?.active &&
+                            profileData?.user_type == "admin"
+                              ? false
+                              : true
+                          }
                           onChange={(e) =>
                             changeRole(member.user_id, e.target.value)
                           }
@@ -384,7 +391,12 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
                       <td className="p-2">
                         <button
                           type="button"
-                          disabled={projectDetails?.active ? false : true}
+                          disabled={
+                            projectDetails?.active &&
+                            profileData?.user_type == "admin"
+                              ? false
+                              : true
+                          }
                           className="text-red-500"
                           onClick={() => removeMember(member)}
                         >

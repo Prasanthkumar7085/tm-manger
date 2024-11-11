@@ -15,12 +15,16 @@ import { toast } from "sonner";
 import DeleteDialog from "../core/deleteDialog";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { useSelector } from "react-redux";
 
 export const taskColumns = ({ setDel }: any) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const profileData: any = useSelector(
+    (state: any) => state.auth.user.user_details
+  );
 
   const getColorFromInitials = (initials: string) => {
     const colors = [
@@ -372,6 +376,7 @@ export const taskColumns = ({ setDel }: any) => {
               <Button
                 title="Edit"
                 variant={"ghost"}
+                disabled={profileData?.user_type == "user"}
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
                 onClick={() => handleEdit(info.row.original.id)}
               >
@@ -386,6 +391,7 @@ export const taskColumns = ({ setDel }: any) => {
             <li>
               <Button
                 title="Delete"
+                disabled={profileData?.user_type == "user"}
                 onClick={() => onClickOpen(info.row.original.id)}
                 variant={"ghost"}
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"

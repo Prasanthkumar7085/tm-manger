@@ -24,7 +24,10 @@ function SideMenu() {
         <div>
           <ul className="space-y-3 text-gray-600">
             <li>
-              <Link to="/dashboard" className="no-underline hover:no-underline active:no-underline">
+              <Link
+                to="/dashboard"
+                className="no-underline hover:no-underline active:no-underline"
+              >
                 <div
                   className={`flex items-center gap-3 px-4 py-3 text-gray-600 rounded-2xl ${
                     isActive("/dashboard")
@@ -46,7 +49,10 @@ function SideMenu() {
               </Link>
             </li>
             <li>
-              <Link to="/tasks" className="no-underline hover:no-underline active:no-underline">
+              <Link
+                to="/tasks"
+                className="no-underline hover:no-underline active:no-underline"
+              >
                 <div
                   className={`flex items-center gap-3 px-4 py-3 text-gray-600 rounded-2xl ${
                     isActive("/tasks")
@@ -64,7 +70,10 @@ function SideMenu() {
               </Link>
             </li>
             <li>
-              <Link to="/projects" className="no-underline hover:no-underline active:no-underline">
+              <Link
+                to="/projects"
+                className="no-underline hover:no-underline active:no-underline"
+              >
                 <div
                   className={`flex items-center gap-3 px-4 py-3 text-gray-600 rounded-2xl ${
                     isActive("/projects")
@@ -85,24 +94,29 @@ function SideMenu() {
                 </div>
               </Link>
             </li>
-            <li>
-              <Link to="/users" className="no-underline hover:no-underline active:no-underline">
-                <div
-                  className={`flex items-center gap-3 px-4 py-3 text-gray-600 rounded-2xl ${
-                    isActive("/users")
-                      ? "bg-[#1B2459] text-white"
-                      : "hover:bg-blue-100"
-                  }`}
+            {profileData?.user_type !== "user" && (
+              <li>
+                <Link
+                  to="/users"
+                  className="no-underline hover:no-underline active:no-underline"
                 >
-                  <img
-                    src={isActive("/users") ? usersWhiteIcon : usersBlackIcon}
-                    alt="dashboard"
-                    className="h-[23px] w-[23px]"
-                  />
-                  <span className="no-underline">Users</span>
-                </div>
-              </Link>
-            </li>
+                  <div
+                    className={`flex items-center gap-3 px-4 py-3 text-gray-600 rounded-2xl ${
+                      isActive("/users")
+                        ? "bg-[#1B2459] text-white"
+                        : "hover:bg-blue-100"
+                    }`}
+                  >
+                    <img
+                      src={isActive("/users") ? usersWhiteIcon : usersBlackIcon}
+                      alt="dashboard"
+                      className="h-[23px] w-[23px]"
+                    />
+                    <span className="no-underline">Users</span>
+                  </div>
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </div>
