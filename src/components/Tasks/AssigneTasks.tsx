@@ -185,7 +185,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
           }}
           className="bg-primary text-white hover:text-white py-1 px-3  h-[20px]"
         >
-          Add Members
+          Invite to Project
         </Button>
       </div>
       <div className="card-body">
@@ -199,7 +199,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                   className="py-1 px-3  h-[20px]"
                   onClick={() => setTempSelectedMember([])}
                 >
-                  Select Members
+                  Select Assignes
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-[200px] p-0 bg-white border z-[99999]">
