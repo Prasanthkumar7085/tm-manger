@@ -13,6 +13,7 @@ import {
 } from "../ui/tooltip";
 import { deleteProjectAPI } from "@/lib/services/users";
 import { updateProjectAPI } from "@/lib/services/projects";
+import { useSelector } from "react-redux";
 
 interface ProjectColumnsProps {
   setDel: React.Dispatch<React.SetStateAction<number>>;
@@ -27,7 +28,9 @@ export const projectColumns = ({
   const navigate = useNavigate();
 
   const { projectId } = useParams({ strict: false });
-
+  const profileData: any = useSelector(
+    (state: any) => state.auth.user.user_details
+  );
   const popoverRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState<any>();
@@ -250,7 +253,11 @@ export const projectColumns = ({
                 borderRadius: "5px",
                 cursor: "pointer",
               }}
-              onClick={(e) => togglePopover(e, projectId)}
+              onClick={(e) => {
+                if (profileData.user_type === "admin") {
+                  togglePopover(e, projectId);
+                }
+              }}
             >
               <span
                 style={{
@@ -334,7 +341,10 @@ export const projectColumns = ({
               <Button
                 title="Edit"
                 variant={"ghost"}
-                disabled={info.row.original?.active == false}
+                disabled={
+                  info.row.original?.active &&
+                  (profileData.user_type === "admin") == false
+                }
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
                 onClick={() => handleEdit(info.row.original.id)}
               >
@@ -346,6 +356,7 @@ export const projectColumns = ({
                 title="Delete"
                 onClick={() => onClickOpen(info.row.original.id)}
                 variant={"ghost"}
+                disabled={(profileData.user_type === "admin") == false}
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
               >
                 <img

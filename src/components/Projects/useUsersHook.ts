@@ -20,9 +20,9 @@ const useUsersHook = () => {
     }
   };
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  // useEffect(() => {
+  //   fetchUsers();
+  // }, []);
 
   return {
     users,

@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams, useRouter } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import TagsComponent from "../Add/TagsComponent";
 import AssignedUsers from "../AssigneTasks";
@@ -30,6 +30,9 @@ const TaskView = () => {
   const [errorMessages, setErrorMessages] = useState();
   const [tagInput, setTagInput] = useState<any>("");
   const [updateDetailsOfTask, setUpdateDetailsOfTask] = useState<any>(0);
+  const profileData: any = useSelector(
+    (state: any) => state.auth.user.user_details
+  );
   const [updatePrority, setUpdatePriority] = useState<{
     label: string;
     value: string;
@@ -157,6 +160,7 @@ const TaskView = () => {
                 type="button"
                 variant="edit"
                 size="DefaultButton"
+                disabled={profileData?.user_type == "user"}
                 onClick={() => {
                   router.navigate({
                     to: `/tasks/${taskId}`,
@@ -184,8 +188,11 @@ const TaskView = () => {
               <hr className="my-3" />
               <TaskComments taskId={taskId} />
             </div>
-            <div className={`rightItem transition-transform duration-300 ${openReplies.open ? "translate-x-full" : "translate-x-0"
-              }`}>
+            <div
+              className={`rightItem transition-transform duration-300 ${
+                openReplies.open ? "translate-x-full" : "translate-x-0"
+              }`}
+            >
               <div className="focus-details border">
                 <div className="card-header border-b px-4 py-0 bg-gray-50">
                   <h3 className="leading-1 text-black  text-[1.1em]">

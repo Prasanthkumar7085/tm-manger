@@ -8,12 +8,18 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import DeleteProjects from "./DeleteProject";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { updateProjectAPI } from "@/lib/services/projects";
 import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
 
-const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
+const ProjectCard = ({
+  project,
+  del,
+  setDel,
+  getAllProjects,
+  profileData,
+}: any) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isActive, setIsActive] = useState(project.active);
@@ -74,6 +80,22 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
     e.stopPropagation();
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (popoverRef.current && !popoverRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
   return (
     <div
       className="shadow-sm border rounded-xl p-3 cursor-pointer bg-white"
@@ -111,7 +133,11 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
                 borderRadius: "5px",
                 cursor: "pointer",
               }}
-              onClick={togglePopover}
+              onClick={(event) => {
+                if (profileData?.user_type === "admin") {
+                  togglePopover(event);
+                }
+              }}
             >
               <span
                 style={{
@@ -252,13 +278,21 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
             <li onClick={handleActionClick}>
               <img
                 src={"/table/edit.svg"}
-                title={project?.active ? "edit" : "Unable to edit"}
+                title={
+                  project?.active && profileData?.user_type === "admin"
+                    ? "edit"
+                    : "Unable to edit"
+                }
                 alt="edit"
                 height={16}
                 width={16}
-                className={project?.active ? "cursor-pointer" : `opacity-15`}
+                className={
+                  project?.active && profileData?.user_type === "admin"
+                    ? "cursor-pointer"
+                    : `opacity-15`
+                }
                 onClick={() => {
-                  if (project?.active) {
+                  if (project?.active && profileData?.user_type === "admin") {
                     navigate({
                       to: `/projects/${project.id}`,
                     });

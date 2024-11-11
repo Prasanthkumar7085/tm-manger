@@ -65,7 +65,7 @@ const ProjectDataTable = () => {
     <div className="relative">
       <div className="flex justify-between items-start">
         <h2 className="text-lg font-sans font-medium text-gray-800">
-          Tasks List
+          Project Wise Stats
         </h2>
         <div>
           <SearchFilter

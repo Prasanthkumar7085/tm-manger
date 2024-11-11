@@ -1,26 +1,25 @@
 import CKEditorComponent from "@/components/core/CKEditor/CKEditorComponent";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
-import {
-  addCommentsAPI,
-  deleteCommentsAPI,
-  getCommentsForTaskAPI,
-  updateCommentsAPI,
-} from "@/lib/services/tasks";
-import { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
-import { formatDistanceToNow, format } from "date-fns";
+import LoadingComponent from "@/components/core/LoadingComponent";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import LoadingComponent from "@/components/core/LoadingComponent";
-import RepliedComments from "./RepliedComments";
-import { getAllMembers } from "@/lib/services/projects/members";
+import {
+  addCommentsAPI,
+  deleteCommentsAPI,
+  getCommentsForTaskAPI,
+  updateCommentsAPI,
+} from "@/lib/services/tasks";
 import { getSingleUserApi } from "@/lib/services/viewprofile";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { format, formatDistanceToNow } from "date-fns";
+import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { toast } from "sonner";
+import RepliedComments from "./RepliedComments";
 const TaskComments = ({ taskId }: any) => {
   const userID = useSelector(
     (state: any) => state.auth?.user?.user_details?.id
@@ -47,14 +46,6 @@ const TaskComments = ({ taskId }: any) => {
   const handleReplyChange = (data: string) => {
     setReplyText(data);
   };
-
-  const { isLoading: isUserLoading, data: usersData } = useQuery({
-    queryKey: ["getAllUsers", taskId],
-    queryFn: async () => {
-      const response = await getAllMembers();
-      return response?.data?.data;
-    },
-  });
 
   const {
     isLoading,

@@ -6,6 +6,7 @@ import DeleteDialog from "@/components/core/deleteDialog";
 import { deleteAssignesAPI } from "@/lib/services/tasks";
 import { useParams } from "@tanstack/react-router";
 import { X } from "lucide-react";
+import { useSelector } from "react-redux";
 const DeleteAssignes = ({
   assigneeId,
   onSuccess,
@@ -14,7 +15,9 @@ const DeleteAssignes = ({
   onSuccess: () => void;
 }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
+  const profileData: any = useSelector(
+    (state: any) => state.auth.user.user_details
+  );
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
       const response: any = await deleteAssignesAPI(assigneeId);
@@ -40,6 +43,7 @@ const DeleteAssignes = ({
   return (
     <>
       <button
+        disabled={profileData?.user_type === "admin" ? false : true}
         onClick={() => setDeleteDialogOpen(true)}
         title="Delete Assignee"
         aria-label="Delete Assignee"

@@ -26,7 +26,9 @@ const Projects = () => {
   const user_type: any = useSelector(
     (state: any) => state.auth.user.user_details?.user_type
   );
-
+  const profileData: any = useSelector(
+    (state: any) => state.auth.user.user_details
+  );
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 12;
   const orderBY = searchParams.get("order_by") || "";
@@ -55,7 +57,7 @@ const Projects = () => {
     order_by: selectedSort || orderBY,
   });
 
-  const [viewMode, setViewMode] = useState("card"); // New state for view toggle
+  const [viewMode, setViewMode] = useState("card");
 
   const { isLoading, isError, error, data, isFetching } = useQuery({
     queryKey: [
@@ -241,6 +243,7 @@ const Projects = () => {
                   del={del}
                   setDel={setDel}
                   getAllProjects={getAllProjects}
+                  profileData={profileData}
                 />
               ))
             )}

@@ -5,6 +5,7 @@ import { deleteProjectAPI } from "@/lib/services/users";
 import DeleteDialog from "../core/deleteDialog";
 import { useLocation } from "@tanstack/react-router";
 import { deleteProps } from "@/lib/interfaces";
+import { useSelector } from "react-redux";
 
 const DeleteProjects = ({
   del,
@@ -16,7 +17,9 @@ const DeleteProjects = ({
   const queryClient = useQueryClient();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-
+  const profileData: any = useSelector(
+    (state: any) => state.auth.user.user_details
+  );
   const { mutate, isPending } = useMutation({
     mutationFn: async (id: number) => {
       try {
@@ -44,11 +47,17 @@ const DeleteProjects = ({
 
   return (
     <>
-      <button onClick={() => setDeleteDialogOpen(true)} title="delete">
+      <button
+        disabled={profileData?.user_type === "admin" ? false : true}
+        onClick={() => setDeleteDialogOpen(true)}
+        title="delete"
+      >
         <img
           src={"/table/delete.svg"}
           alt="delete"
-          className="cursor-pointer"
+          className={
+            profileData?.user_type === "admin" ? "cursor-pointer" : `opacity-15`
+          }
           height={16}
           width={16}
         />
