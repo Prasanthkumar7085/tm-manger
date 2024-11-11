@@ -8,7 +8,14 @@ export const projectWiseColumns = [
     maxWidth: "35px",
     minWidth: "35px",
     enableSorging: false,
-    cell: ({ row }: any) => <>{row.index + 1}</>,
+    cell: ({ row, table }: any) => (
+      <span style={{ display: "flex", alignItems: "center" }}>
+        {(table
+          .getSortedRowModel()
+          ?.flatRows?.findIndex((flatRow: any) => flatRow.id === row.id) || 0) +
+          1}
+      </span>
+    ),
   },
   {
     accessorFn: (row: any) => row.project_title,
@@ -51,7 +58,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className=" block font-semibold">{title ? title : "-"}</span>
+        <span className=" block font-semibold">{title ? title : "0"}</span>
       );
     },
     width: "75px",
@@ -66,7 +73,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className=" block font-semibold">{title ? title : "-"}</span>
+        <span className=" block font-semibold">{title ? title : "0"}</span>
       );
     },
     width: "75px",
@@ -81,7 +88,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className=" block font-semibold">{title ? title : "-"}</span>
+        <span className=" block font-semibold">{title ? title : "0"}</span>
       );
     },
     width: "75px",
@@ -96,7 +103,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className=" block font-semibold">{title ? title : "-"}</span>
+        <span className=" block font-semibold">{title ? title : "0"}</span>
       );
     },
     width: "75px",
@@ -111,7 +118,7 @@ export const projectWiseColumns = [
     cell: (info: any) => {
       const title = info.getValue();
       return (
-        <span className=" block font-semibold">{title ? title : "-"}</span>
+        <span className=" block font-semibold">{title ? title : "0"}</span>
       );
     },
     width: "50px",

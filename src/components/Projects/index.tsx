@@ -17,6 +17,7 @@ import { projectColumns } from "./ProjectColumns";
 import TanStackTable from "../core/TanstackTable";
 import { useSelector } from "react-redux";
 import { canAddTask } from "@/lib/helpers/loginHelpers";
+import { Grid3x3, List } from "lucide-react";
 
 const Projects = () => {
   const navigate = useNavigate();
@@ -217,14 +218,21 @@ const Projects = () => {
                 </li>
               )}
               <li>
-                <Button
-                  className="text-white h-[35px]"
+                <button
+                  className="text-white h-[35px] flex items-center justify-center bg-black"
                   onClick={() =>
                     setViewMode(viewMode === "card" ? "table" : "card")
                   }
                 >
-                  {viewMode === "card" ? "Table View" : "Card View"}
-                </Button>
+                  <div className="flex">
+                    <List
+                      className={`mr-2 ${viewMode === "table" ? "text-white-500" : "text-gray-500"}`}
+                    />
+                    <Grid3x3
+                      className={`${viewMode === "card" ? "text-white-500" : "text-gray-500"}`}
+                    />
+                  </div>
+                </button>
               </li>
             </ul>
           </div>

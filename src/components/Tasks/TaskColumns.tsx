@@ -16,6 +16,11 @@ import DeleteDialog from "../core/deleteDialog";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { useSelector } from "react-redux";
+import {
+  isMananger,
+  isProjectAdmin,
+  isProjectMemberOrNot,
+} from "@/lib/helpers/loginHelpers";
 
 export const taskColumns = ({ setDel }: any) => {
   const navigate = useNavigate();
@@ -87,6 +92,16 @@ export const taskColumns = ({ setDel }: any) => {
     setDeleteTaskId(id);
   };
 
+  const isAbleToAddOrEdit = (users: any) => {
+    if (
+      (isMananger(users, profileData?.id, profileData?.user_type) ||
+        isProjectAdmin(users, profileData?.id, profileData?.user_type)) &&
+      isProjectMemberOrNot(users, profileData?.id)
+    ) {
+      return true;
+    }
+  };
+
   return [
     {
       accessorFn: (row: any) => row.serial,
@@ -105,6 +120,12 @@ export const taskColumns = ({ setDel }: any) => {
         const title = info.getValue();
         const project_logo_url =
           info.row.original.project_logo_url || "/favicon.png";
+        const handleProjectsView = () => {
+          navigate({
+            to: `/projects/view/${info.row.original.project_id}`,
+          });
+        };
+
         return (
           <div className="project-title flex items-center gap-2">
             {project_logo_url && (
@@ -121,7 +142,12 @@ export const taskColumns = ({ setDel }: any) => {
                 />
               </div>
             )}
-            <span className="capitalize">{title ? title : "-"}</span>
+            <span
+              className="capitalize cursor-pointer text-black-500"
+              onClick={handleProjectsView}
+            >
+              {title ? title : "-"}
+            </span>
           </div>
         );
       },
@@ -137,17 +163,24 @@ export const taskColumns = ({ setDel }: any) => {
       cell: (info: any) => {
         const { ref_id, title } = info.getValue();
 
+        const handleView = (taskId: any) => {
+          navigate({
+            to: `/tasks/view/${taskId}`,
+          });
+        };
+
         return (
-          <>
-            <div className="task capitalize flex justify-between">
-              <span className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
-                {title || "-"}
-              </span>
-              <span className="ml-2 text-[11px] font-semibold text-primary">
-                [{ref_id}]
-              </span>
-            </div>
-          </>
+          <div
+            className="task capitalize flex justify-between cursor-pointer"
+            onClick={() => handleView(info.row.original.id)}
+          >
+            <span className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
+              {title || "-"}
+            </span>
+            <span className="ml-2 text-[11px] font-semibold text-primary">
+              [{ref_id}]
+            </span>
+          </div>
         );
       },
       width: "300px",
@@ -376,7 +409,12 @@ export const taskColumns = ({ setDel }: any) => {
               <Button
                 title="Edit"
                 variant={"ghost"}
-                disabled={profileData?.user_type == "user"}
+                disabled={
+                  profileData?.user_type === "admin" ||
+                  isAbleToAddOrEdit(info.row.original.assignees)
+                    ? false
+                    : true
+                }
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
                 onClick={() => handleEdit(info.row.original.id)}
               >
@@ -391,7 +429,12 @@ export const taskColumns = ({ setDel }: any) => {
             <li>
               <Button
                 title="Delete"
-                disabled={profileData?.user_type == "user"}
+                disabled={
+                  profileData?.user_type === "admin" ||
+                  isAbleToAddOrEdit(info.row.original.assignees)
+                    ? false
+                    : true
+                }
                 onClick={() => onClickOpen(info.row.original.id)}
                 variant={"ghost"}
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"

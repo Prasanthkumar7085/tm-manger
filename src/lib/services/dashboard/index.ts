@@ -24,7 +24,7 @@ export const getTotalTasksStats = async (queryParams: any) => {
 };
 export const getTotalActiveStats = async (queryParams: any) => {
   try {
-    return await $fetch.get(`/stats/total-active-tasks`, queryParams);
+    return await $fetch.get(`/stats/total-tasks`, queryParams);
   } catch (err: any) {
     throw err;
   }
@@ -38,7 +38,7 @@ export const getTaskTrendsAPI = async (queryparams: any) => {
 };
 export const getAllProjectStats = async () => {
   try {
-    return await $fetch.get(`/projects/tasks-stats`,)
+    return await $fetch.get(`/projects/tasks-stats`);
   } catch (err: any) {
     throw err;
   }

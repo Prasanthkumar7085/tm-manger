@@ -136,7 +136,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
   return (
     <div>
       <div className="border mt-2">
-        <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
+        <div className="card-header border-b px-4 py-0 flex justify-between items-center gap-x-2 bg-gray-50">
           <h3 className="leading-1 text-black text-[1.1em]">Tags</h3>
           <div>
             <div className="flex space-x-3 items-center bg-slate-50 border border-green-600 rounded-md pr-1">
@@ -192,11 +192,11 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
     task?.tags.map((tag: any, index: number) => (
       <div
         key={index}
-        className="bg-[#00B8121A] text-[#00B812] text-[0.8em] font-medium mr-2 mb-2 flex px-2 rounded-full"
+        className="bg-[#00B8121A] text-[#00B812] text-sm font-medium mr-2 mb-2 flex px-3 py-1 rounded-full"
       >
         {tag}
         <p
-          className="ml-1 text-[#000000] rotate-[45deg] font-medium cursor-pointer"
+          className="ml-1 text-[#000000] rotate-[45deg] font-medium cursor-pointer !text-md"
           onClick={() => handleTagDelete(tag)}
         >
           +
