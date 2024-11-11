@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import DeleteProjects from "./DeleteProject";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { updateProjectAPI } from "@/lib/services/projects";
 import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
@@ -73,6 +73,22 @@ const ProjectCard = ({ project, del, setDel, getAllProjects }: any) => {
   const handleActionClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (popoverRef.current && !popoverRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   return (
     <div

@@ -90,10 +90,14 @@ const RepliedComments = ({
                     <div className="flex space-x-4 justify-end">
                       <div className="member-profile-image">
                         <img
+                          title={reply?.firstName + " " + reply?.lastName}
                           className="w-10 h-10 rounded-full"
+                          onError={(e: any) => {
+                            e.target.onerror = null;
+                            e.target.src = "/profile-picture.png";
+                          }}
                           src={
-                            reply.user?.avatar ||
-                            "https://i.pravatar.cc/150?img=5"
+                            reply.profilePictureUrl || "/profile-picture.png"
                           }
                           alt="Avatar"
                         />
