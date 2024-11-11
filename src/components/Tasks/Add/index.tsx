@@ -396,7 +396,7 @@ const AddTask = () => {
                         variant="outline"
                         className="justify-between  bg-slate-50 h-[35px] w-full relative text-[#00000099]"
                       >
-                        Select Users
+                        Assigned Users
                         <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
                       </Button>
                     </PopoverTrigger>
