@@ -147,7 +147,7 @@ export const userColumns = [
       let title = info.getValue();
       return (
         <div style={{ textAlign: "left" }}>
-          <span>{title ? title : "-"}</span>
+          <span>{title ? title : "0"}</span>
         </div>
       );
     },
@@ -164,7 +164,7 @@ export const userColumns = [
       let title = info.getValue();
       return (
         <div style={{ textAlign: "left" }}>
-          <span>{title ? title : "-"}</span>
+          <span>{title ? title : "0"}</span>
         </div>
       );
     },
@@ -181,7 +181,7 @@ export const userColumns = [
       let title = info.getValue();
       return (
         <div style={{ textAlign: "left" }}>
-          <span>{title ? title : "-"}</span>
+          <span>{title ? title : "0"}</span>
         </div>
       );
     },
@@ -198,7 +198,7 @@ export const userColumns = [
       let title = info.getValue();
       return (
         <div style={{ textAlign: "left" }}>
-          <span>{title ? title : "-"}</span>
+          <span>{title ? title : "0"}</span>
         </div>
       );
     },

@@ -3,6 +3,7 @@ import LoadingComponent from "@/components/core/LoadingComponent";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { isProjectMemberOrNot } from "@/lib/helpers/loginHelpers";
 import { taskStatusConstants } from "@/lib/helpers/statusConstants";
 import {
   getTasksBasedOnProjectAPI,
@@ -102,12 +103,18 @@ const KanbanBoard: React.FC<any> = ({
     } else {
       const destTasks = Array.from(tasks[destColumn]);
       destTasks.splice(destination.index, 0, movedTask);
-      setTasks((prev) => ({
-        ...prev,
-        [sourceColumn]: sourceTasks,
-        [destColumn]: destTasks,
-      }));
-      updateTaskStatus(destColumn, movedTask);
+      if (
+        (isProjectMemberOrNot(movedTask?.assignees, profileData?.id) &&
+          projectDetails?.active) ||
+        (profileData?.user_type == "admin" && projectDetails?.active)
+      ) {
+        setTasks((prev) => ({
+          ...prev,
+          [sourceColumn]: sourceTasks,
+          [destColumn]: destTasks,
+        }));
+        updateTaskStatus(destColumn, movedTask);
+      }
     }
   };
 
@@ -129,7 +136,6 @@ const KanbanBoard: React.FC<any> = ({
               categorizedTasks[task.task_status].push(task);
             }
           });
-          console.log(categorizedTasks, "categorizedTasks");
           setTasks(categorizedTasks);
         } else {
           throw new Error("Failed to fetch project task details");
@@ -184,30 +190,6 @@ const KanbanBoard: React.FC<any> = ({
                         });
                       }}
                     >
-                      <div className="cardBar mb-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="129"
-                          height="8"
-                          viewBox="0 0 129 8"
-                          fill="none"
-                        >
-                          <rect
-                            x="0.400391"
-                            width="60"
-                            height="8"
-                            rx="4"
-                            fill="#0AAAF4"
-                          />
-                          <rect
-                            x="68.4004"
-                            width="60"
-                            height="8"
-                            rx="4"
-                            fill="#F8BD1C"
-                          />
-                        </svg>
-                      </div>
                       <p
                         className="text-ellipsis overflow-hidden font-medium text-md capitalize text-[#000000]"
                         title={task.task_title}
@@ -263,11 +245,7 @@ const KanbanBoard: React.FC<any> = ({
               ))}
           {provided.placeholder}
           <Button
-            disabled={
-              projectDetails?.active && profileData?.user_type == "admin"
-                ? false
-                : true
-            }
+            disabled={projectDetails?.active ? false : true}
             title="Add Task"
             className="bg-transparent border-dashed border rounded-xl bg-white !border-[#5A5A5A] text-black text-md mt-2 hover:bg-transparent sticky bottom-10 z-10"
             onClick={() => {

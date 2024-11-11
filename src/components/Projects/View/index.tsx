@@ -145,6 +145,9 @@ const ProjectView = () => {
 
   return (
     <div className="card-container shadow-md border p-5 rounded-lg bg-white">
+      {!projectDetails?.active && (
+        <p className="text-red-500">This project is currently inactive</p>
+      )}
       <div className="w-full flex  items-center ">
         <div className="mt-4 flex flex-col w-[10%] ">
           {previewUrl ? (
@@ -270,7 +273,6 @@ const ProjectView = () => {
           </div>
         </div>
       </div>
-
       <div className="mt-4">
         {openMembers || searchParams.get("tab") == "project_members" ? (
           <ProjectMembersManagment projectDetails={projectDetails} />
