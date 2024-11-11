@@ -1,5 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { IReportsFilters } from "@/lib/interfaces";
+import closeIcon from "@/assets/close iocn.svg";
+
 
 import { Search } from "lucide-react";
 
@@ -14,10 +16,19 @@ const SearchFilter: React.FC<IReportsFilters> = ({
       <Input
         placeholder={title}
         value={searchString}
-        type="search"
+        type="text"
         onChange={(e) => setSearchString(e.target.value)}
-        className="pl-8  bg-[#FFFFFF] border-[#E2E2E2] rounded-[8px] h-[35px] w-[220px] placeholder:text-[#00000099]"
+        className="pl-8  bg-[#FFFFFF] border-[#E2E2E2] rounded-[8px] h-[35px] w-[220px] placeholder:text-[#00000099] "
       />
+       {searchString && (
+        <button
+    onClick={() => setSearchString('')}
+    className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer"
+  >
+  {/* Replace with your close icon component */}
+  <img alt="icon" src={closeIcon} className="w-3 h-3 mr-1"/>
+  </button>
+      )}
     </div>
   );
 };
