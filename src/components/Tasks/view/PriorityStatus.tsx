@@ -90,7 +90,9 @@ function PriorityStatus({
     <div className="relative inline-block text-left" ref={dropdownRef}>
       <button
         disabled={
-          loading || isProjectMemberOrNot(assignedUsers, profileData?.id)
+          loading ||
+          isProjectMemberOrNot(assignedUsers, profileData?.id) ||
+          profileData?.user_type == "admin"
             ? false
             : true
         }

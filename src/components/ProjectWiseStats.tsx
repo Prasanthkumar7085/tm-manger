@@ -4,11 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 import TanStackTable from "./core/TanstackTable";
-import { projectWiseColumns } from "./ProjectWiseColumns";
 import { addDataSerial, addSerial } from "@/lib/helpers/addSerial";
 import Loading from "./core/Loading";
 import SearchFilter from "./core/CommonComponents/SearchFilter";
 import LoadingComponent from "./core/LoadingComponent";
+import ProjectWiseColumn from "./ProjectWiseColumns";
 
 const ProjectDataTable = () => {
   const searchParams = new URLSearchParams(location.search);
@@ -84,7 +84,7 @@ const ProjectDataTable = () => {
       <div className="mt-5">
         <TanStackTable
           data={filteredData}
-          columns={projectWiseColumns}
+          columns={ProjectWiseColumn()}
           loading={isLoading || isFetching || loading}
           paginationDetails={0}
           getData={getAllProjectStats}

@@ -114,6 +114,8 @@ const KanbanBoard: React.FC<any> = ({
           [destColumn]: destTasks,
         }));
         updateTaskStatus(destColumn, movedTask);
+      } else {
+        toast.error("You are unable to change task status.");
       }
     }
   };

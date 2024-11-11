@@ -18,9 +18,10 @@ import { useSelector } from "react-redux";
 import ProjectDataTable from "./ProjectWiseStats";
 import StatsAndGraph from "./StatsAndGraphs";
 import DatePickerField from "./core/DateRangePicker";
+import dayjs from "dayjs";
 
 const formatDate = (date: any) => {
-  return date.toISOString().split("T")[0];
+  return dayjs(date).format("YYYY-MM-DD");
 };
 
 const DashBoard = () => {
@@ -62,7 +63,7 @@ const DashBoard = () => {
 
   const { data, isLoading } = useQuery({
     queryKey: ["getTotalCounts", selectedDate],
-    queryFn: () => fetchCounts(selectedDate[0], selectedDate[1]),
+    queryFn: () => fetchCounts(dayjs(selectedDate[0]), dayjs(selectedDate[1])),
     enabled: !!selectedDate,
   });
 

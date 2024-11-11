@@ -47,20 +47,8 @@ const DeleteProjects = ({
 
   return (
     <>
-      <button
-        disabled={profileData?.user_type === "admin" ? false : true}
-        onClick={() => setDeleteDialogOpen(true)}
-        title="delete"
-      >
-        <img
-          src={"/table/delete.svg"}
-          alt="delete"
-          className={
-            profileData?.user_type === "admin" ? "cursor-pointer" : `opacity-15`
-          }
-          height={16}
-          width={16}
-        />
+      <button onClick={() => setDeleteDialogOpen(true)} title="delete">
+        <img src={"/table/delete.svg"} alt="delete" height={16} width={16} />
       </button>
 
       <DeleteDialog

@@ -341,10 +341,7 @@ export const projectColumns = ({
               <Button
                 title="Edit"
                 variant={"ghost"}
-                disabled={
-                  info.row.original?.active &&
-                  (profileData.user_type === "admin") == false
-                }
+                disabled={!info.row.original?.active}
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
                 onClick={() => handleEdit(info.row.original.id)}
               >
@@ -354,9 +351,9 @@ export const projectColumns = ({
             <li>
               <Button
                 title="Delete"
+                disabled={!info.row.original?.active}
                 onClick={() => onClickOpen(info.row.original.id)}
                 variant={"ghost"}
-                disabled={(profileData.user_type === "admin") == false}
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
               >
                 <img
