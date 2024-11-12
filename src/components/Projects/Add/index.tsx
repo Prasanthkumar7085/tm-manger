@@ -4,7 +4,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@radix-ui/react-popover";
-import { Check, X } from "lucide-react";
+import { Check, ChevronsUpDown, ChevronsUpDownIcon, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Command,
@@ -192,7 +192,7 @@ const AddProject = () => {
             </label>
             <Input
               id="title"
-              placeholder="Enter title"
+              placeholder="Enter Title"
               value={projectData.title}
               name="title"
               onChange={handleInputChange}
@@ -207,7 +207,7 @@ const AddProject = () => {
           </div>
           <div className="mb-4">
             <label className="block text-[#383838] font-medium text-sm mb-1">
-              Project code<span className="text-red-500">*</span>
+              Project Code<span className="text-red-500">*</span>
             </label>
             <Input
               id="code"
@@ -229,7 +229,7 @@ const AddProject = () => {
               Project Description
             </label>
             <Textarea
-              placeholder="Enter project description"
+              placeholder="Enter Project Description"
               id="description"
               value={projectData.description}
               name="description"
@@ -253,6 +253,7 @@ const AddProject = () => {
                     className="w-full text-left justify-start h-[40px] bg-[#F5F6FA] border border-[#CDCED2] rounded-[8px] text-[#00000066]"
                   >
                     Select Members
+                    <ChevronsUpDown className=" bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[400px] p-0 bg-white border rounded-[8px]">

@@ -179,7 +179,7 @@ const TaskView = () => {
                 Edit Task
               </Button>
               <button
-                className="check-activity-button btn px-3 text-[12px] bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[35px] leading-[15px] font-semibold"
+                className="check-activity-button btn px-3 text-[12px] bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[35px] leading-[15px] "
                 onClick={onActivityClick}
               >
                 Check Activity
@@ -278,7 +278,7 @@ const TaskView = () => {
                             alt="User"
                             className="object-contain w-6 h-6 rounded-full border"
                           />
-                          <p className="font-medium text-black  text-md capitalize">
+                          <p className="font-medium text-black !ml-2  text-md capitalize">
                             {viewData?.created_name}
                           </p>
                         </div>

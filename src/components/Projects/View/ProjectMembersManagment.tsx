@@ -354,7 +354,7 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
             <div className="rounded-[10px] border border-gray-200">
               <table className="min-w-full ">
                 <thead
-                  className={`sticky top-0 ${removeUserDialog ? "" : "z-[99]"}`}
+                  className={`sticky top-0 ${removeUserDialog ? "" : "z-[9]"}`}
                 >
                   <tr>
                     <th className=" p-2 bg-[#F5F5F5] text-left font-normal text-[#00000099]">

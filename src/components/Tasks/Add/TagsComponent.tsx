@@ -166,7 +166,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
           </div>
         </div>
         <div className="card-body">
-          <div className="max-h-[60px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 space-y-2 pt-3 pl-3 pr-3">
+          <div className="max-h-[120px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 space-y-2 pt-3 pl-3 pr-3">
             {/* <div className="flex flex-wrap">
               {task?.tags?.length > 0
                 ? task?.tags.map((tag: any, index: number) => (
@@ -188,31 +188,30 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
                   : "No tags found"}
             </div> */}
             <div className="flex flex-wrap">
-  {task?.tags?.length > 0 ? (
-    task?.tags.map((tag: any, index: number) => (
-      <div
-        key={index}
-        className="bg-[#00B8121A] text-[#00B812] text-sm font-medium mr-2 mb-2 flex px-3 py-1 rounded-full"
-      >
-        {tag}
-        <p
-          className="ml-1 text-[#000000] rotate-[45deg] font-medium cursor-pointer !text-md"
-          onClick={() => handleTagDelete(tag)}
-        >
-          +
-        </p>
-      </div>
-    ))
-  ) : isTaskTagsLoading ? (
-    ""
-  ) : (
-    <div className="flex items-center justify-center  py-1 w-[200px] mx-auto">
-      <img src={tagIcon} alt="No tags" className="w-5 h-5 mr-1" /> 
-      <span className="text-center">No tags found</span>
-    </div>
-  )}
-</div>
-
+              {task?.tags?.length > 0 ? (
+                task?.tags.map((tag: any, index: number) => (
+                  <div
+                    key={index}
+                    className="bg-[#00B8121A] text-[#00B812] text-md font-medium mr-2 mb-2 flex items-center px-2 py-0 border rounded-full"
+                  >
+                    {tag}
+                    <p
+                      className="ml-1 text-[#000000] rotate-[45deg] font-medium cursor-pointer !text-[1.1rem] leading-3"
+                      onClick={() => handleTagDelete(tag)}
+                    >
+                      +
+                    </p>
+                  </div>
+                ))
+              ) : isTaskTagsLoading ? (
+                ""
+              ) : (
+                <div className="flex items-center justify-center  py-1 w-[200px] mx-auto">
+                  <img src={tagIcon} alt="No tags" className="w-5 h-5 mr-1" />
+                  <span className="text-center">No tags found</span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

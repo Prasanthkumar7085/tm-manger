@@ -215,7 +215,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                       : true
                   }
                   variant="outline"
-                  className="py-1 px-3  h-[20px]"
+                  className="py-1 px-3  h-[30px]"
                   onClick={() => setTempSelectedMember([])}
                 >
                   <div className="flex items-center gap-x-1">
@@ -246,7 +246,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                       {Array.isArray(users) &&
                         users.map((user: any) => (
                           <CommandItem
-                            className="cursor-pointer gap-x-2"
+                            className="cursor-pointer gap-x-1"
                             key={user.id}
                             value={getFullName(user)}
                             onSelect={() =>

@@ -238,6 +238,7 @@ const AddTask = () => {
                     aria-expanded={openProjects}
                     className="justify-between  bg-slate-50 h-[40px] w-[400px] relative text-[#00000099] font-normal text-md border border-[#E2E2E2]"
                   >
+                    <div className="flex items-center">
                     {task.project_id && selectedProjectLogo && (
                       <img
                         src={selectedProjectLogo || "/favicon.png"}
@@ -254,6 +255,10 @@ const AddTask = () => {
                       ? projectsList.find((p: any) => p.id === task.project_id)
                           ?.title
                       : "Select Project"}
+                           </div>
+                           <div>
+
+                       
                     <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
                     {task.project_id && (
                       <X
@@ -268,7 +273,9 @@ const AddTask = () => {
                           setSelectedProjectLogo(null);
                         }}
                       />
+                     
                     )}
+                     </div>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[400px] p-0 bg-white">

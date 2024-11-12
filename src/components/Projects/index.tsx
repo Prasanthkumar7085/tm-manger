@@ -219,17 +219,17 @@ const Projects = () => {
               )}
               <li>
                 <button
-                  className="text-white h-[35px] flex items-center justify-center bg-white"
+                  className="text-white h-[35px] flex items-center justify-center bg-white border  px-3 rounded-md"
                   onClick={() =>
                     setViewMode(viewMode === "card" ? "table" : "card")
                   }
                 >
                   <div className="flex">
                     <List
-                      className={`mr-2 ${viewMode === "table" ? "text-black" : "text-gray-500"}`}
+                      className={`mr-2 ${viewMode === "table" ? "text-[#1B2459]" : "text-[#BF1B39] "}`}
                     />
                     <Grid3x3
-                      className={`${viewMode === "card" ? "text-black" : "text-gray-500"}`}
+                      className={`${viewMode === "card" ? "text-[#1B2459]" : "text-[#BF1B39]"}`}
                     />
                   </div>
                 </button>
