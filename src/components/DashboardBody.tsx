@@ -26,10 +26,11 @@ const formatDate = (date: any) => {
 };
 
 const DashBoard = () => {
-  const [selectedDate, setSelectedDate] = useState([
+  const [selectedDate, setSelectedDate] = useState<any>([
     startOfMonth(new Date()),
     endOfMonth(new Date()),
   ]);
+  const [dateValue, setDateValue] = useState<[Date, Date] | null>();
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
   );
@@ -68,13 +69,14 @@ const DashBoard = () => {
     enabled: !!selectedDate,
   });
 
-  const handleDateChange = (fromDate: any, toDate: any) => {
+  const handleDateChange = (fromDate: Date | null, toDate: Date | null) => {
     if (fromDate && toDate) {
       const [fromDateUTC, toDateUTC] = changeDateToUTC(fromDate, toDate);
+      setDateValue([fromDateUTC, toDateUTC]);
       setSelectedDate([fromDateUTC, toDateUTC]);
     } else {
-      const today = new Date();
-      setSelectedDate([startOfMonth(today), endOfMonth(today)]);
+      setDateValue(null);
+      setSelectedDate(null);
     }
   };
 
@@ -95,7 +97,7 @@ const DashBoard = () => {
             <h2 className="text-lg font-sans font-medium text-gray-800">
               Stats
             </h2>
-            <DateRangeFilter
+            <DatePickerField
               dateValue={selectedDate}
               onChangeData={handleDateChange}
             />

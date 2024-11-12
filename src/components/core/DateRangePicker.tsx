@@ -11,9 +11,10 @@ const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
       const date2 = dayjs(newDate[1]).format("YYYY-MM-DD");
       onChangeData(date1, date2);
     } else {
-      onChangeData(null, null);
+      onChangeData("", "");
     }
   };
+  console.log(updateDateValues, "values");
 
   return (
     <DateRangePicker
