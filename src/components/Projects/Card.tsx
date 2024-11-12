@@ -23,6 +23,7 @@ const ProjectCard = ({
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isActive, setIsActive] = useState(project.active);
+  console.log(isActive, "active");
   const popoverRef = useRef<HTMLDivElement>(null);
 
   const togglePopover = (e: any) => {
@@ -255,8 +256,11 @@ const ProjectCard = ({
                 </TooltipContent>
               )}
             </Tooltip>
-          </TooltipProvider> <br />
-          <div className="text-[0.85rem]  border font-medium text-red-600 bg-slate-100 inline-block rounded-md px-2 py-0 mt-2">{project?.code}</div>
+          </TooltipProvider>{" "}
+          <br />
+          <div className="text-[0.85rem]  border font-medium text-red-600 bg-slate-100 inline-block rounded-md px-2 py-0 mt-2">
+            {project?.code}
+          </div>
         </div>
 
         <div className="action-button mt-10">

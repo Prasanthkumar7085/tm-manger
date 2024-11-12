@@ -212,7 +212,6 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
                 </div>
               )}
             </div>
-
           </div>
         </div>
       </div>
