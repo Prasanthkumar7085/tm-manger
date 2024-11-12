@@ -255,8 +255,8 @@ const ProjectCard = ({
                 </TooltipContent>
               )}
             </Tooltip>
-          </TooltipProvider>
-          <div className="text-lg font-medium text-[#1B2459]">{project?.code}</div>
+          </TooltipProvider> <br />
+          <div className="text-[0.85rem]  border font-medium text-red-600 bg-slate-100 inline-block rounded-md px-2 py-0 mt-2">{project?.code}</div>
         </div>
 
         <div className="action-button mt-10">
