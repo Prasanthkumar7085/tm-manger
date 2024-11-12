@@ -188,31 +188,30 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
                   : "No tags found"}
             </div> */}
             <div className="flex flex-wrap">
-  {task?.tags?.length > 0 ? (
-    task?.tags.map((tag: any, index: number) => (
-      <div
-        key={index}
-        className="bg-[#00B8121A] text-[#00B812] text-sm font-medium mr-2 mb-2 flex px-3 py-1 rounded-full"
-      >
-        {tag}
-        <p
-          className="ml-1 text-[#000000] rotate-[45deg] font-medium cursor-pointer !text-md"
-          onClick={() => handleTagDelete(tag)}
-        >
-          +
-        </p>
-      </div>
-    ))
-  ) : isTaskTagsLoading ? (
-    ""
-  ) : (
-    <div className="flex items-center justify-center  py-1 w-[200px] mx-auto">
-      <img src={tagIcon} alt="No tags" className="w-5 h-5 mr-1" /> 
-      <span className="text-center">No tags found</span>
-    </div>
-  )}
-</div>
-
+              {task?.tags?.length > 0 ? (
+                task?.tags.map((tag: any, index: number) => (
+                  <div
+                    key={index}
+                    className="bg-[#00B8121A] text-[#00B812] text-sm font-medium mr-2 mb-2 flex px-3 py-1 rounded-full"
+                  >
+                    {tag}
+                    <p
+                      className="ml-1 text-[#000000] rotate-[45deg] font-medium cursor-pointer !text-md"
+                      onClick={() => handleTagDelete(tag)}
+                    >
+                      +
+                    </p>
+                  </div>
+                ))
+              ) : isTaskTagsLoading ? (
+                ""
+              ) : (
+                <div className="flex items-center justify-center  py-1 w-[200px] mx-auto">
+                  {/* <img src={tagIcon} alt="No tags" className="w-5 h-5 mr-1" /> 
+      <span className="text-center">No tags found</span> */}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -19,6 +19,7 @@ import ProjectDataTable from "./ProjectWiseStats";
 import StatsAndGraph from "./StatsAndGraphs";
 import DatePickerField from "./core/DateRangePicker";
 import dayjs from "dayjs";
+import DateRangeFilter from "./core/DateRangePicker";
 
 const formatDate = (date: any) => {
   return dayjs(date).format("YYYY-MM-DD");
@@ -94,7 +95,7 @@ const DashBoard = () => {
             <h2 className="text-lg font-sans font-medium text-gray-800">
               Stats
             </h2>
-            <DatePickerField
+            <DateRangeFilter
               dateValue={selectedDate}
               onChangeData={handleDateChange}
             />
