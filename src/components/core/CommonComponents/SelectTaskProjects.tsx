@@ -82,7 +82,7 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0 bg-white">
+      <PopoverContent className="w-[350px] p-0 bg-white">
         <Command>
           <CommandInput placeholder="Select Projects" />
           <CommandList>

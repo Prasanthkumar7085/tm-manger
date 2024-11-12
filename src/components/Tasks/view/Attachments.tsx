@@ -1,6 +1,7 @@
 import DeleteProjects from "@/components/Projects/DeleteProject";
 import { Button } from "@/components/ui/button";
 import { fileUploadAPI, uploadToS3API } from "@/lib/services/projects";
+import attachIcon from "@/assets/attachments-icon.svg";
 import {
   downloadAttachmentAPI,
   getAttachmentsAPI,
@@ -255,7 +256,10 @@ const UploadAttachments = () => {
               </div>
             ))
           ) : (
-            <p>No attachments found.</p>
+                  <div className="flex items-center justify-center  py-1 w-[200px] mx-auto">
+                  <img src={attachIcon} alt="No tags" className="w-5 h-5 mr-1" />
+                  <span className="text-center">No attachments found</span>
+                </div>
           )}
         </div>
       </div>
