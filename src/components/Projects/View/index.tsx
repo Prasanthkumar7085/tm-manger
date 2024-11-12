@@ -144,7 +144,10 @@ const ProjectView = () => {
   };
 
   return (
-    <div className="card-container shadow-md border p-5 rounded-lg bg-white">
+    <div className="card-container shadow-md border p-5 rounded-lg bg-white h-[calc(100vh-100px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+      {!projectDetails?.active && (
+        <p className="text-red-500">This project is currently inactive</p>
+      )}
       <div className="w-full flex  items-center ">
         <div className="mt-4 flex flex-col w-[10%] ">
           {previewUrl ? (
@@ -263,14 +266,13 @@ const ProjectView = () => {
                 alt="User"
                 className="object-contain w-6 h-6 rounded-full border"
               />
-              <p className="text-sm text-[#000000]">
+              <p className="text-sm text-[#000000] !ml-1">
                 {projectDetails?.created_name}
               </p>
             </div>
           </div>
         </div>
       </div>
-
       <div className="mt-4">
         {openMembers || searchParams.get("tab") == "project_members" ? (
           <ProjectMembersManagment projectDetails={projectDetails} />

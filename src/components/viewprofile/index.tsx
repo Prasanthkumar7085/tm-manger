@@ -5,18 +5,10 @@ import {
 } from "@/lib/services/viewprofile";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
 import { useSelector } from "react-redux";
 import { fileUploadAPI, uploadToS3API } from "@/lib/services/projects";
 import { toast } from "sonner";
-import { Pencil, Loader } from "lucide-react"; // Import Loader icon
+import { Pencil, Loader } from "lucide-react";
 import { CirclePlus, Plus, UserRoundPlus, X } from "lucide-react";
 
 function ViewProfile() {
@@ -142,80 +134,206 @@ function ViewProfile() {
   });
 
   return (
-    <Card className="flex flex-col md:flex-row items-center p-4 shadow-lg rounded-lg bg-white">
-      <CardHeader className="flex-none mb-4 md:mb-0 md:mr-4 relative">
-        <CardTitle className="text-xl font-semibold">
+    <div className="w-[70%] m-auto">
+      <div className=" rounded-xl bg-white mb-4 shadow-md">
+        <h1 className="text-xl border-b-2 px-4 py-2 font-medium text-[#475569]">
           Profile Information
-        </CardTitle>
-        <CardDescription className="text-gray-600">
-          Details about the user
-        </CardDescription>
-        <input
-          id="file-upload"
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="hidden"
-        />
-        <label htmlFor="file-upload" className="cursor-pointer relative">
-          {previewUrl ? (
-            <div className="relative">
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className="w-32 h-32 rounded-full object-cover border-2 border-gray-300 shadow"
-              />
-              {isUploading && (
-                <div className="absolute w-32 h-32 inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 rounded-full">
-                  <Loader className="text-white w-6 h-6 animate-spin" />
+        </h1>
+        <div className="flex p-4 items-center gap-x-6 mb-4 pb-6 relative">
+          <div>
+            <input
+              id="file-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <label htmlFor="file-upload" className="cursor-pointer relative">
+              {previewUrl ? (
+                <div className="relative">
+                  <img
+                    src={previewUrl}
+                    alt="Preview"
+                    className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 shadow"
+                  />
+                  {isUploading && (
+                    <div className="absolute w-24 h-24 inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 rounded-full">
+                      <Loader className="text-white w-6 h-6 animate-spin" />
+                    </div>
+                  )}
+                  {/* <button
+                    onClick={handleRemoveFile}
+                    className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border border-white"
+                  >
+                    <X className="text-white w-4 h-4" />
+                  </button> */}
                 </div>
+              ) : (
+                <img
+                  src={userData.profile_pic}
+                  alt="User Profile"
+                  className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 shadow"
+                />
               )}
-              <button
+              <span className="absolute bottom-[-10%] left-[40%] bg-[#1b2459] text-white rounded-full p-1">
+                <Pencil className="w-4 h-4" />
+              </span>
+              {/* <button
                 onClick={handleRemoveFile}
                 className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border border-white"
               >
                 <X className="text-white w-4 h-4" />
-              </button>
-            </div>
-          ) : (
-            <img
-              src={userData.profile_pic}
-              alt="User Profile"
-              className="w-32 h-32 rounded-full object-cover border-2 border-gray-300 shadow"
-            />
-          )}
-          <span className="absolute bottom-2 left-2 bg-blue-500 text-white rounded-full p-1">
-            <Pencil className="w-4 h-4" />
-          </span>
-          <button
-            onClick={handleRemoveFile}
-            className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border border-white"
-          >
-            <X className="text-white w-4 h-4" />
-          </button>
-        </label>
-      </CardHeader>
-      <CardContent className="flex flex-row items-center space-x-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg">
-          <p>
-            <strong>First Name:</strong> {userData.fname}
-          </p>
-          <p>
-            <strong>Last Name:</strong> {userData.lname}
-          </p>
-          <p>
-            <strong>Email:</strong> {userData.email}
-          </p>
-          <p>
-            <strong>Phone Number:</strong> {userData.phone_number}
-          </p>
-          <p>
-            <strong>User Type:</strong> {userType.user_type}
-          </p>
+              </button> */}
+            </label>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold">
+              {userData.fname}
+              {userData.lname}
+            </h3>
+          </div>
         </div>
-      </CardContent>
-      <CardFooter className="mt-4 md:mt-0"></CardFooter>
-    </Card>
+      </div>
+      <div className="  rounded-lg bg-white shadow-md">
+        <h1 className="text-xl border-b-2 px-4 py-2 font-medium text-[#475569]">
+          Personal Information
+        </h1>
+        <div className="grid p-4 grid-cols-1 md:grid-cols-2 gap-y-8 text-lg">
+          <div>
+            <h3 className="text-sm font-normal text-[#666666]">First Name</h3>
+            <p className="text-base font-medium text-[#000000]">
+              {userData.fname}
+            </p>
+          </div>
+          <div>
+            <h3 className="text-sm font-normal text-[#666666]">Last Name</h3>
+            <p className="text-base font-medium text-[#000000]">
+              {userData.lname}
+            </p>
+          </div>
+          <div>
+            <h3 className="text-sm font-normal text-[#666666]"> Email </h3>
+
+            <p className="text-base font-medium text-[#000000]">
+              {userData.email}
+            </p>
+          </div>
+          <div>
+            <h3 className="text-sm font-normal text-[#666666]">Phone Number</h3>
+
+            <p className="text-base font-medium text-[#000000]">
+              {userData.phone_number || "--"}
+            </p>
+          </div>
+          <div>
+            <h3 className="text-sm font-normal text-[#666666]">User Type</h3>
+            <p className="text-base font-medium text-[#000000]">
+              {userType.user_type}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    // type-1
+
+    // <div className="w-[90%] m-auto rounded-xl bg-white mb-4 shadow-md ">
+    //   <div>
+    //     <h1 className="text-xl border-b-2 px-4 py-2 font-medium text-[#475569]">
+    //       Profile Information
+    //     </h1>
+    //     <div className="grid grid-cols-[30%,70%] items-start ">
+    //       <div className="flex flex-col  p-4 items-center gap-y-6 relative ">
+    //         <div>
+    //           <input
+    //             id="file-upload"
+    //             type="file"
+    //             accept="image/*"
+    //             onChange={handleFileChange}
+    //             className="hidden"
+    //           />
+    //           <label htmlFor="file-upload" className="cursor-pointer relative">
+    //             {previewUrl ? (
+    //               <div className="relative">
+    //                 <img
+    //                   src={previewUrl}
+    //                   alt="Preview"
+    //                   className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 shadow"
+    //                 />
+    //                 {isUploading && (
+    //                   <div className="absolute w-24 h-24 inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 rounded-full">
+    //                     <Loader className="text-white w-6 h-6 animate-spin" />
+    //                   </div>
+    //                 )}
+    //                 {/* <button
+    //           onClick={handleRemoveFile}
+    //           className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border border-white"
+    //         >
+    //           <X className="text-white w-4 h-4" />
+    //         </button> */}
+    //               </div>
+    //             ) : (
+    //               <img
+    //                 src={userData.profile_pic}
+    //                 alt="User Profile"
+    //                 className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 shadow"
+    //               />
+    //             )}
+    //             <span className="absolute bottom-[-10%] left-[40%] bg-[#1b2459] text-white rounded-full p-1">
+    //               <Pencil className="w-4 h-4" />
+    //             </span>
+    //             {/* <button
+    //       onClick={handleRemoveFile}
+    //       className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border border-white"
+    //     >
+    //       <X className="text-white w-4 h-4" />
+    //     </button> */}
+    //           </label>
+    //         </div>
+    //         <div className="text-center">
+    //           <h3 className="text-lg font-semibold">User Title</h3>
+    //           <p className="text-gray-600">Details about the user</p>
+    //         </div>
+    //       </div>
+    //       <div className="grid p-4 grid-cols-1 md:grid-cols-2 gap-y-8 text-lg border-l-2 pl-8">
+    //         <div>
+    //           <h3 className="text-sm font-normal text-[#666666]">First Name</h3>
+    //           <p className="text-base font-medium text-[#000000]">
+    //             {userData.fname}
+    //           </p>
+    //         </div>
+    //         <div>
+    //           <h3 className="text-sm font-normal text-[#666666]">Last Name</h3>
+    //           <p className="text-base font-medium text-[#000000]">
+    //             {userData.lname}
+    //           </p>
+    //         </div>
+    //         <div>
+    //           <h3 className="text-sm font-normal text-[#666666]"> Email </h3>
+
+    //           <p className="text-base font-medium text-[#000000]">
+    //             {userData.email}
+    //           </p>
+    //         </div>
+    //         <div>
+    //           <h3 className="text-sm font-normal text-[#666666]">
+    //             Phone Number
+    //           </h3>
+
+    //           <p className="text-base font-medium text-[#000000]">
+    //             {userData.phone_number}
+    //           </p>
+    //         </div>
+    //         <div>
+    //           <h3 className="text-sm font-normal text-[#666666]">User Type</h3>
+    //           <p className="text-base font-medium text-[#000000]">
+    //             {userType.user_type}
+    //           </p>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </div>
+    // </div>
   );
 }
 

@@ -1,39 +1,40 @@
-import { Card } from "@/components/ui/card";
-import { useState, useEffect } from "react";
-import StatsAndGraph from "./StatsAndGraphs";
-import Tasks from "./Tasks";
-import DatePickerField from "./core/DateRangePicker";
+import dashboardActiveTaskIcon from "@/assets/dashboard-active-icon.svg";
 import dahboardProjectIcon from "@/assets/dashboard-project-icon.svg";
 import dahboardTaskIcon from "@/assets/dashboard-task-icon.svg";
 import dashboardUsersIcon from "@/assets/dashboard-users-icon.svg";
-import dashboardActiveTaskIcon from "@/assets/dashboard-active-icon.svg";
-import CountUp from "react-countup";
+import { Card } from "@/components/ui/card";
+import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 import {
-  getTotalProjectsStats,
-  getTotalUsersStats,
-  getTotalTasksStats,
   getTotalActiveStats,
+  getTotalProjectsStats,
+  getTotalTasksStats,
+  getTotalUsersStats,
 } from "@/lib/services/dashboard";
 import { useQuery } from "@tanstack/react-query";
-import LoadingComponent from "./core/LoadingComponent";
-import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
-import ProjectDataTable from "./ProjectWiseStats";
-import { SelectTaskProjects } from "./core/CommonComponents/SelectTaskProjects";
+import { endOfMonth, startOfMonth } from "date-fns";
+import { useEffect, useState } from "react";
+import CountUp from "react-countup";
 import { useSelector } from "react-redux";
+import ProjectDataTable from "./ProjectWiseStats";
+import StatsAndGraph from "./StatsAndGraphs";
+import DatePickerField from "./core/DateRangePicker";
+import dayjs from "dayjs";
 
 const formatDate = (date: any) => {
-  return date.toISOString().split("T")[0];
+  return dayjs(date).format("YYYY-MM-DD");
 };
 
 const DashBoard = () => {
-  const [selectedDate, setSelectedDate] = useState([new Date(), new Date()]);
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedDate, setSelectedDate] = useState([
+    startOfMonth(new Date()),
+    endOfMonth(new Date()),
+  ]);
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
   );
   useEffect(() => {
     const today = new Date();
-    setSelectedDate([today, today]);
+    setSelectedDate([startOfMonth(today), endOfMonth(today)]);
   }, []);
 
   const fetchCounts = async (fromDate: any, toDate: any) => {
@@ -42,17 +43,19 @@ const DashBoard = () => {
         from_date: formatDate(fromDate),
         to_date: formatDate(toDate),
       }),
-      getTotalTasksStats({
+
+      getTotalUsersStats({
         from_date: formatDate(fromDate),
         to_date: formatDate(toDate),
       }),
-      getTotalUsersStats({
+      getTotalTasksStats({
         from_date: formatDate(fromDate),
         to_date: formatDate(toDate),
       }),
       getTotalActiveStats({
         from_date: formatDate(fromDate),
         to_date: formatDate(toDate),
+        status: "IN_PROGRESS",
       }),
     ]);
     return results;
@@ -60,7 +63,7 @@ const DashBoard = () => {
 
   const { data, isLoading } = useQuery({
     queryKey: ["getTotalCounts", selectedDate],
-    queryFn: () => fetchCounts(selectedDate[0], selectedDate[1]),
+    queryFn: () => fetchCounts(dayjs(selectedDate[0]), dayjs(selectedDate[1])),
     enabled: !!selectedDate,
   });
 
@@ -70,7 +73,7 @@ const DashBoard = () => {
       setSelectedDate([fromDateUTC, toDateUTC]);
     } else {
       const today = new Date();
-      setSelectedDate([today, today]);
+      setSelectedDate([startOfMonth(today), endOfMonth(today)]);
     }
   };
 

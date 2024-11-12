@@ -8,13 +8,15 @@ import { useLocation, useNavigate } from "@tanstack/react-router";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 import LoadingComponent from "./core/LoadingComponent";
 import Loading from "./core/Loading";
+import { endOfMonth, startOfMonth } from "date-fns";
 
 const StatsAndGraph = ({ selectedDate }: any) => {
   const today = new Date();
 
-  const [selectedDateRange, setSelectedDateRange] = useState<
-    [Date, Date] | null
-  >([new Date(), new Date()]);
+  const [selectedDateRange, setSelectedDateRange] = useState<any>([
+    startOfMonth(new Date()),
+    endOfMonth(new Date()),
+  ]);
   const [dateValue, setDateValue] = useState<[Date, Date] | null>();
   const location = useLocation();
   const navigate = useNavigate();

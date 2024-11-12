@@ -2,7 +2,11 @@ import LoadingComponent from "@/components/core/LoadingComponent";
 import { Button } from "@/components/ui/button";
 import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
 import { taskStatusConstants } from "@/lib/helpers/statusConstants";
-import { getActivityLogsAPI, getSingleTaskAPI } from "@/lib/services/tasks";
+import {
+  getActivityLogsAPI,
+  getAssignesAPI,
+  getSingleTaskAPI,
+} from "@/lib/services/tasks";
 import { setRefId } from "@/redux/Modules/userlogin";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams, useRouter } from "@tanstack/react-router";
@@ -17,6 +21,7 @@ import PriorityStatus from "./PriorityStatus";
 import TaskStatus from "./TaskStatus";
 import TaskComments from "./Comments";
 import { ActivityDrawer } from "./ActivityDrawer";
+import { isMananger } from "@/lib/helpers/loginHelpers";
 
 const TaskView = () => {
   const navigate = useNavigate();
@@ -30,9 +35,7 @@ const TaskView = () => {
   const [errorMessages, setErrorMessages] = useState();
   const [tagInput, setTagInput] = useState<any>("");
   const [updateDetailsOfTask, setUpdateDetailsOfTask] = useState<any>(0);
-  const profileData: any = useSelector(
-    (state: any) => state.auth.user.user_details
-  );
+
   const [updatePrority, setUpdatePriority] = useState<{
     label: string;
     value: string;
@@ -73,6 +76,28 @@ const TaskView = () => {
     },
     enabled: Boolean(taskId),
   });
+
+  const {
+    isFetching,
+    isLoading: isLoadingAssignes,
+    data: assignedUsers,
+  } = useQuery({
+    queryKey: ["getAssignes", taskId],
+    queryFn: async () => {
+      try {
+        const response = await getAssignesAPI(taskId);
+        if (response.status === 200 || response?.status === 201) {
+          const data = response.data?.data;
+          return data || [];
+        }
+      } catch (error: any) {
+        console.error(error);
+        toast.error(error?.message || "Something went wrong");
+      }
+    },
+    enabled: Boolean(taskId),
+  });
+
   const { data } = useQuery({
     queryKey: ["getActivityLogs", taskId, activityOpen],
     queryFn: async () => {
@@ -99,27 +124,6 @@ const TaskView = () => {
     ? `${title.substring(0, 30)}...`
     : title;
 
-  const handleTagSubmit = () => {
-    const trimmedTag = tagsInput.trim();
-    if (!trimmedTag) {
-      setErrorMessages((prev: any) => ({
-        ...prev,
-        tags: ["Tag cannot be empty"],
-      }));
-      return;
-    }
-
-    const isTagAlreadyExists = tagsData?.some(
-      (tag: any) => tag.title.toLowerCase() === trimmedTag.toLowerCase()
-    );
-    if (isTagAlreadyExists) {
-      setErrorMessages((prev: any) => ({
-        ...prev,
-        tags: ["Tag already exists"],
-      }));
-      return;
-    }
-  };
   const onActivityClick = () => {
     setActivityOpen(true);
   };
@@ -155,12 +159,12 @@ const TaskView = () => {
                 setUpdateDetailsOfTask={setUpdateDetailsOfTask}
                 selectedStatus={selectedStatus}
                 setSelectedStatus={setSelectedStatus}
+                assignedUsers={assignedUsers}
               />
               <Button
                 type="button"
                 variant="edit"
                 size="DefaultButton"
-                disabled={profileData?.user_type == "user"}
                 onClick={() => {
                   router.navigate({
                     to: `/tasks/${taskId}`,
@@ -175,7 +179,7 @@ const TaskView = () => {
                 Edit Task
               </Button>
               <button
-                className="check-activity-button btn px-3 text-[12px] bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[35px] leading-[15px] font-semibold"
+                className="check-activity-button btn px-3 text-[12px] bg-[#28A74533] rounded-lg text-[#28A745] font-medium h-[35px] leading-[15px] "
                 onClick={onActivityClick}
               >
                 Check Activity
@@ -231,6 +235,7 @@ const TaskView = () => {
                         selectedPriority={selectedPriority}
                         setSelectedPriority={setSelectedPriority}
                         viewData={viewData}
+                        assignedUsers={assignedUsers}
                       />
                     </li>
                     <li className="grid grid-cols-[150px,auto]">
@@ -273,7 +278,7 @@ const TaskView = () => {
                             alt="User"
                             className="object-contain w-6 h-6 rounded-full border"
                           />
-                          <p className="font-medium text-black  text-md capitalize">
+                          <p className="font-medium text-black !ml-2  text-md capitalize">
                             {viewData?.created_name}
                           </p>
                         </div>

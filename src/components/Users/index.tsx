@@ -9,7 +9,7 @@ import {
   updateUsersAPI,
 } from "@/lib/services/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
+import { useLocation,useRouter } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import TanStackTable from "../core/TanstackTable";
 import { userColumns } from "./UserColumns";
@@ -25,7 +25,6 @@ import { SheetRover } from "../core/SheetRover";
 import DeleteDialog from "../core/deleteDialog";
 
 function UsersTable() {
-  const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -40,10 +39,10 @@ function UsersTable() {
   const [searchString, setSearchString] = useState(initialSearch);
   const [loading, setLoading] = useState(false);
   const [userTypeOpen, setUserTypeOpen] = useState(false);
-  const [errors, setErrors] = useState<any>({});
+  const [errors, setErrors] = useState({});
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
-  const [userType, setUserType] = useState<any>("");
+  const [userType, setUserType] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [deleteuserId, setDeleteUserId] = useState<any>();
@@ -312,7 +311,7 @@ function UsersTable() {
         password: userData.password || "",
         phone_number: userData.phone_number || "",
       });
-      setUserType(userType.user_type || "");
+      setUserType(userType.user_type ||"");
       setIsEditing(true);
       setSelectedId(user);
     } else {

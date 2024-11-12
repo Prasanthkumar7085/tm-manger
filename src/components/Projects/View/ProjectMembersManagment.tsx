@@ -11,6 +11,11 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import {
+  isMananger,
+  isProjectAdmin,
+  isProjectMemberOrNot,
+} from "@/lib/helpers/loginHelpers";
 import { roleConstants } from "@/lib/helpers/statusConstants";
 import {
   addMembersAPI,
@@ -222,6 +227,21 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
     removeMembers(removedUser);
   };
 
+  const isAbleToAddOrEdit = () => {
+    if (
+      (isMananger(selectedMembers, profileData?.id, profileData?.user_type) ||
+        isProjectAdmin(
+          selectedMembers,
+          profileData?.id,
+          profileData?.user_type
+        )) &&
+      isProjectMemberOrNot(selectedMembers, profileData?.id) &&
+      projectDetails?.active
+    ) {
+      return true;
+    }
+  };
+
   return (
     <div className="relative">
       <div className="flex flex-col justify-start gap-4">
@@ -233,7 +253,11 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button
-                disabled={profileData?.user_type === "user"}
+                disabled={
+                  profileData?.user_type === "admin" || isAbleToAddOrEdit()
+                    ? false
+                    : true
+                }
                 variant="outline"
                 className="w-[220px] flex items-center justify-between px-2 bg-[#F4F4F6] border-[#E2E2E2] rounded-[8px] text-[#00000099]"
                 onClick={() => setTempSelectedMember([])}
@@ -329,7 +353,9 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
           <div className="h-[300px] overflow-y-auto">
             <div className="rounded-[10px] border border-gray-200">
               <table className="min-w-full ">
-                <thead className="sticky top-0 z-[999]">
+                <thead
+                  className={`sticky top-0 ${removeUserDialog ? "" : "z-[9]"}`}
+                >
                   <tr>
                     <th className=" p-2 bg-[#F5F5F5] text-left font-normal text-[#00000099]">
                       Sl.no
@@ -368,8 +394,8 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
                         <select
                           value={member.role}
                           disabled={
-                            projectDetails?.active &&
-                            profileData?.user_type == "admin"
+                            profileData?.user_type === "admin" ||
+                            isAbleToAddOrEdit()
                               ? false
                               : true
                           }
@@ -392,8 +418,8 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
                         <button
                           type="button"
                           disabled={
-                            projectDetails?.active &&
-                            profileData?.user_type == "admin"
+                            profileData?.user_type === "admin" ||
+                            isAbleToAddOrEdit()
                               ? false
                               : true
                           }

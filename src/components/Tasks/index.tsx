@@ -205,21 +205,17 @@ const Tasks = () => {
                     onChangeData={handleDateChange}
                   />
                 </li>
-                {canAddTask(user_type) && (
-                  <li>
-                    <Button
-                      className="font-normal text-sm"
-                      variant="add"
-                      size="DefaultButton"
-                      onClick={handleNavigation}
-                    >
-                      <span className="text-xl font-normal pr-2 text-md">
-                        +
-                      </span>
-                      Add Task
-                    </Button>
-                  </li>
-                )}
+                <li>
+                  <Button
+                    className="font-normal text-sm"
+                    variant="add"
+                    size="DefaultButton"
+                    onClick={handleNavigation}
+                  >
+                    <span className="text-xl font-normal pr-2 text-md">+</span>
+                    Add Task
+                  </Button>
+                </li>
               </ul>
             </div>
           </div>

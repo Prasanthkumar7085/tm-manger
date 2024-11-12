@@ -134,9 +134,7 @@ const ProjectCard = ({
                 cursor: "pointer",
               }}
               onClick={(event) => {
-                if (profileData?.user_type === "admin") {
-                  togglePopover(event);
-                }
+                togglePopover(event);
               }}
             >
               <span
@@ -258,7 +256,7 @@ const ProjectCard = ({
               )}
             </Tooltip>
           </TooltipProvider>
-          <div>{project?.code}</div>
+          <div className="text-lg font-medium text-[#1B2459]">{project?.code}</div>
         </div>
 
         <div className="action-button mt-10">
@@ -278,21 +276,13 @@ const ProjectCard = ({
             <li onClick={handleActionClick}>
               <img
                 src={"/table/edit.svg"}
-                title={
-                  project?.active && profileData?.user_type === "admin"
-                    ? "edit"
-                    : "Unable to edit"
-                }
+                title={project?.active ? "edit" : "Unable to edit"}
                 alt="edit"
                 height={16}
                 width={16}
-                className={
-                  project?.active && profileData?.user_type === "admin"
-                    ? "cursor-pointer"
-                    : `opacity-15`
-                }
+                className={project?.active ? "cursor-pointer" : `opacity-15`}
                 onClick={() => {
-                  if (project?.active && profileData?.user_type === "admin") {
+                  if (project?.active) {
                     navigate({
                       to: `/projects/${project.id}`,
                     });
