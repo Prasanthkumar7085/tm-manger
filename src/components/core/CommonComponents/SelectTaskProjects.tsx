@@ -52,7 +52,7 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between bg-[#F4F4F6] h-[35px] w-[220px] relative text-[#00000099] font-normal text-sm border border-[#E2E2E2]"
+          className="flex justify-start bg-[#F4F4F6] h-[35px] w-[220px] relative text-[#00000099] font-normal text-sm pl-2 border border-[#E2E2E2]"
         >
           {selectedProjectLogo && selectedProject && (
             <img
@@ -66,23 +66,27 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
               className="mr-2 h-6 w-6 rounded-full object-cover"
             />
           )}
-          {selectedProject
-            ? data?.find((item: any) => item.id == selectedProject)?.title
-            : "Select Project"}
-          <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
-          {selectedProject && (
-            <X
-              className="mr-4 h-4 w-4 cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedProject("");
-                setSelectedProjectLogo("");
-              }}
-            />
-          )}
+          <div className="inputContent flex items-center">
+            <div className="content truncate w-[125px]">
+              {selectedProject
+                ? data?.find((item: any) => item.id == selectedProject)?.title
+                : "Select Project"}
+            </div>
+            <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
+            {selectedProject && (
+              <X
+                className="mr-4 h-4 w-4 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedProject("");
+                  setSelectedProjectLogo("");
+                }}
+              />
+            )}
+          </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0 bg-white">
+      <PopoverContent className="w-[300px] p-0 bg-white">
         <Command>
           <CommandInput placeholder="Select Projects" />
           <CommandList>
