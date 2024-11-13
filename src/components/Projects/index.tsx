@@ -12,7 +12,7 @@ import { StatusFilter } from "../core/StatusFilter";
 import { Button } from "../ui/button";
 import ProjectCard from "./Card";
 import useUsersHook from "./useUsersHook";
-// Assuming TanStackTable is in the ui folder
+
 import { projectColumns } from "./ProjectColumns";
 import TanStackTable from "../core/TanstackTable";
 import { useSelector } from "react-redux";
@@ -33,8 +33,11 @@ const Projects = () => {
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 12;
   const orderBY = searchParams.get("order_by") || "";
+
+  console.log(orderBY, "by");
   const initialSearch = searchParams.get("search") || "";
   const initialStatus = searchParams.get("status") || "";
+
   const initialStartDate = searchParams.get("start_date") || null;
   const initialEndDate = searchParams.get("end_date") || null;
 
@@ -49,13 +52,17 @@ const Projects = () => {
   );
   const [selectedDate, setSelectedDate] = useState<any>();
   const [selectedSort, setSelectedSort] = useState(orderBY);
+  const orderBy = searchParams.get("order_by")
+    ? searchParams.get("order_by")
+    : "";
+
   const [del, setDel] = useState<any>();
   const { users, loading: usersLoading, error: usersError } = useUsersHook();
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
-    order_by: selectedSort || orderBY,
+    order_by: selectedSort || orderBY || orderBy,
   });
 
   const [viewMode, setViewMode] = useState("card");
@@ -74,7 +81,7 @@ const Projects = () => {
       const response = await getAllPaginatedProjectss({
         pageIndex: pagination.pageIndex,
         pageSize: pagination.pageSize,
-        order_by: selectedSort,
+        order_by: pagination.order_by,
         search_string: debouncedSearch,
         projectId: selectedProject,
         status: selectedStatus,
@@ -85,7 +92,8 @@ const Projects = () => {
       const queryParams = {
         current_page: +pagination.pageIndex,
         page_size: +pagination.pageSize,
-        order_by: selectedSort ? selectedSort : undefined,
+        // order_by: selectedSort ? selectedSort : undefined,
+        order_by: pagination.order_by ? pagination.order_by : undefined,
         search: debouncedSearch || undefined,
         project_id: selectedProject || undefined,
         status: selectedStatus || undefined,
@@ -202,10 +210,12 @@ const Projects = () => {
                 />
               </li>
               <li>
-                <SortDropDown
-                  selectedSort={selectedSort}
-                  setSelectedSort={setSelectedSort}
-                />
+                {viewMode === "card" && (
+                  <SortDropDown
+                    selectedSort={selectedSort}
+                    setSelectedSort={setSelectedSort}
+                  />
+                )}
               </li>
               {canAddTask(user_type) && (
                 <li>
@@ -241,7 +251,9 @@ const Projects = () => {
           </div>
         </div>
       </div>
-      <div className={`mt-5 overflow-auto ${viewMode === "card" ? "h-[70vh]" : ""}`}>
+      <div
+        className={`mt-5 overflow-auto ${viewMode === "card" ? "h-[70vh]" : ""}`}
+      >
         {viewMode === "card" ? (
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 mt-3">
             {projectsData.length === 0 && !isLoading ? (
