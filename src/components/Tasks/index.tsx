@@ -1,8 +1,13 @@
 import { addSerial } from "@/lib/helpers/addSerial";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
-import { getAllPaginatedTasks } from "@/lib/services/tasks";
+import { getAllPaginatedTasks, getAssignesListAPI } from "@/lib/services/tasks";
 import { useQuery } from "@tanstack/react-query";
-import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useRouter,
+} from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
@@ -16,6 +21,23 @@ import { Button } from "../ui/button";
 import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
 import { canAddTask } from "@/lib/helpers/loginHelpers";
+import { toast } from "sonner";
+import {
+  getAllMembers,
+  getProjectMembersAPI,
+} from "@/lib/services/projects/members";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Check, Command } from "lucide-react";
+import {
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../ui/command";
+import memberIcon from "@/assets/members.svg";
+import selectDropIcon from "@/assets/select-dropdown.svg";
+import { cn } from "@/lib/utils";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -24,6 +46,8 @@ const Tasks = () => {
   const user_type: any = useSelector(
     (state: any) => state.auth.user.user_details?.user_type
   );
+  const { projectId } = useParams({ strict: false });
+  console.log(projectId, "id");
 
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
@@ -42,7 +66,13 @@ const Tasks = () => {
   const [selectedProject, setSelectedProject] = useState<any>(intialProject);
   const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
   const [dateValue, setDateValue] = useState<any>(null);
+  const [users, setUsers] = useState<any[]>([]);
+  console.log(users, "users");
+  const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
+
   const [del, setDel] = useState<any>(1);
+  const [selectedMembers, setSelectedMembers] = useState<any>([]);
   const [task, setTask] = useState<any>({
     title: "",
     ref_id: "",
@@ -119,7 +149,29 @@ const Tasks = () => {
   const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
+  const getFullName = (user: any) => {
+    return `${user?.fname || ""} ${user?.lname || ""}`;
+  };
 
+  const { isLoading: isUsersLoading } = useQuery({
+    queryKey: ["users", projectId],
+    queryFn: async () => {
+      const response = await getAllMembers();
+      if (response?.data?.data && Array.isArray(response.data.data)) {
+        let ActiveUsers = response.data.data.filter(
+          (user: any) => user?.active === true
+        );
+        let addTitles = response?.data?.data?.map((user: any) => ({
+          ...user,
+          title: getFullName(user),
+        }));
+        setUsers(ActiveUsers);
+      } else {
+        setUsers([]);
+      }
+      return response;
+    },
+  });
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
@@ -165,6 +217,41 @@ const Tasks = () => {
       setSelectedDate([]);
     }
   };
+  // const confirmSelection = () => {
+  //   const newMembers = tempSelectedMember
+  //     ?.map((memberValue: string) => {
+  //       const member = users.find(
+  //         (user: any) => user.id.toString() === memberValue
+  //       );
+  //       return (
+  //         member &&
+  //         !selectedMembers.some((m: any) => m.id === member.id) && {
+  //           id: member.id,
+  //           role: member?.user_type.toUpperCase(),
+  //           fname: member?.fname || "",
+  //           lname: member?.lname || "",
+  //           email: member?.email || "--",
+  //           phone_number: member?.phone_number || "--",
+  //         }
+  //       );
+  //     })
+
+  //     .filter(Boolean);
+  //   setSelectedMembers((prev: any) => [...prev, ...newMembers]);
+  //   setTempSelectedMember([]);
+  //   setOpen(false);
+  //   let allMembers = [...newMembers];
+  //   console.log(newMembers, "new");
+  // };
+
+  const toggleValue = (currentValue: string) => {
+    setTempSelectedMember((prev) =>
+      prev.includes(currentValue)
+        ? prev.filter((value) => value !== currentValue)
+        : [...prev, currentValue]
+    );
+  };
+
   return (
     <section id="tasks" className="relative">
       <div>{!isDashboard && <TotalCounts refreshCount={del} />}</div>
@@ -198,6 +285,117 @@ const Tasks = () => {
                     title="Search By Task name"
                   />
                 </li>
+                <li>
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        // disabled={
+                        //   profileData?.user_type === "admin" ||
+                        //   isAbleToAddOrEdit()
+                        //     ? false
+                        //     : true
+                        // }
+                        variant="outline"
+                        className="w-[220px] flex items-center justify-between px-2 bg-[#F4F4F6] border-[#E2E2E2] rounded-[8px] text-[#00000099]"
+                        onClick={() => setTempSelectedMember([])}
+                      >
+                        <div className="flex items-center gap-x-1">
+                          <img
+                            src={memberIcon}
+                            alt="No tags"
+                            className="w-5 h-5 mr-1"
+                          />
+                          <p>Select Members</p>
+                        </div>
+                        <div>
+                          <span>
+                            {" "}
+                            <img
+                              src={selectDropIcon}
+                              alt="No tags"
+                              className="w-5 h-5 mr-1"
+                            />{" "}
+                          </span>
+                        </div>
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[250px] p-0 bg-white border rounded-sm z-[99999]">
+                      <Command>
+                        <CommandInput placeholder="Search Members" />
+                        <CommandList className="max-h-[220px] z-[99999]">
+                          <CommandGroup>
+                            {Array.isArray(users) &&
+                              users.map((user: any) => (
+                                <CommandItem
+                                  key={user.id}
+                                  value={getFullName(user)}
+                                  onSelect={() =>
+                                    toggleValue(user.id.toString())
+                                  }
+                                  disabled={selectedMembers.some(
+                                    (m: any) => m.user_id == user.id
+                                  )}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      tempSelectedMember.includes(
+                                        user.id.toString()
+                                      )
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  <div className="w-6 h-6 object-contain	mr-2 rounded-full border  bg-white">
+                                    <img
+                                      src={
+                                        user?.profile_pic ||
+                                        "/profile-picture.png"
+                                      }
+                                    />
+                                  </div>
+                                  <p className="capitalize cursor-pointer">
+                                    {getFullName(user)}
+                                  </p>
+                                </CommandItem>
+                              ))}
+                          </CommandGroup>
+                          <CommandEmpty>No members found.</CommandEmpty>
+                        </CommandList>
+                        <div className="flex justify-end space-x-2 p-2 border-t">
+                          <Button
+                            className="bg-white border-transparent px-6 text-[#000000] text-sm font-medium"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setTempSelectedMember([])}
+                          >
+                            Clear
+                          </Button>
+                          <Button
+                            className="bg-[#000000] text-white px-6 font-medium text-sm rounded-[4px]"
+                            size="sm"
+                            variant="outline"
+                            // title={
+                            //   projectDetails?.active
+                            //     ? ""
+                            //     : "Project is not active"
+                            // }
+                            // disabled={
+                            //   projectDetails?.active &&
+                            //   tempSelectedMember.length > 0
+                            //     ? false
+                            //     : true
+                            // }
+                            // onClick={confirmSelection}
+                          >
+                            Confirm
+                          </Button>
+                        </div>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </li>
+
                 <li>
                   <DateRangeFilter
                     dateValue={dateValue}

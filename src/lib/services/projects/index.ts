@@ -42,6 +42,7 @@ export const addProjectAPI = async (payload: any) => {
     throw err;
   }
 };
+
 export const updateProjectAPI = async (projectId: any, payload: any) => {
   try {
     return await $fetch.put(`/projects/${projectId}`, payload);
