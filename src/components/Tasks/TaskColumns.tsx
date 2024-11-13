@@ -21,6 +21,7 @@ import {
   isProjectAdmin,
   isProjectMemberOrNot,
 } from "@/lib/helpers/loginHelpers";
+import { momentWithTimezone } from "@/lib/helpers/timeZone";
 
 export const taskColumns = ({ setDel }: any) => {
   const navigate = useNavigate();
@@ -174,7 +175,10 @@ export const taskColumns = ({ setDel }: any) => {
             className="task capitalize flex justify-between cursor-pointer"
             onClick={() => handleView(info.row.original.id)}
           >
-            <span className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
+            <span
+              title={title}
+              className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]"
+            >
               {title || "-"}
             </span>
             <span className="ml-2 text-[11px] font-semibold text-primary">
@@ -247,7 +251,7 @@ export const taskColumns = ({ setDel }: any) => {
                           }
                           className={`w-8 h-8 ${getColorFromInitials(
                             assignee.user_first_name[0] +
-                            assignee.user_last_name[0]
+                              assignee.user_last_name[0]
                           )}`}
                         >
                           <AvatarImage
@@ -287,7 +291,7 @@ export const taskColumns = ({ setDel }: any) => {
       id: "due_date",
       cell: (info: any) => {
         const date: string = info.getValue();
-        return <span>{date ? dayjs(date).format("MM-DD-YYYY") : "-"}</span>;
+        return <span>{date ? momentWithTimezone(date) : "-"}</span>;
       },
       width: "120px",
       maxWidth: "120px",
@@ -302,34 +306,36 @@ export const taskColumns = ({ setDel }: any) => {
         let title = info.getValue();
         return (
           <span
-            className={`rounded-full px-2 leading-1 ${info.getValue() === "OVER_DUE"
-              ? "text-[#A71D2A] bg-[#A71D2A33]"
-              : info.getValue() === "TODO"
-                ? "text-[#6F42C1] bg-[#EADEFF]"
-                : info.getValue() === "COMPLETED"
-                  ? "text-[#28A745] bg-[#28A74533]"
-                  : info.getValue() === "IN_PROGRESS"
-                    ? "text-[#007BFF] bg-[#007BFF33]"
-                    : "text-black"
-              }`}
+            className={`rounded-full px-2 leading-1 ${
+              info.getValue() === "OVER_DUE"
+                ? "text-[#A71D2A] bg-[#A71D2A33]"
+                : info.getValue() === "TODO"
+                  ? "text-[#6F42C1] bg-[#EADEFF]"
+                  : info.getValue() === "COMPLETED"
+                    ? "text-[#28A745] bg-[#28A74533]"
+                    : info.getValue() === "IN_PROGRESS"
+                      ? "text-[#007BFF] bg-[#007BFF33]"
+                      : "text-black"
+            }`}
           >
             <span
-              className={`dot w-2 h-2 inline-block mr-1 rounded-full ${info.getValue() === "OVER_DUE"
-                ? "bg-[#A71D2A]"
-                : info.getValue() === "TODO"
-                  ? "bg-[#6F42C1]"
-                  : info.getValue() === "COMPLETED"
-                    ? "bg-[#28A745]"
-                    : info.getValue() === "IN_PROGRESS"
-                      ? "bg-[#007BFF]"
-                      : "text-black"
-                }`}
+              className={`dot w-2 h-2 inline-block mr-1 rounded-full ${
+                info.getValue() === "OVER_DUE"
+                  ? "bg-[#A71D2A]"
+                  : info.getValue() === "TODO"
+                    ? "bg-[#6F42C1]"
+                    : info.getValue() === "COMPLETED"
+                      ? "bg-[#28A745]"
+                      : info.getValue() === "IN_PROGRESS"
+                        ? "bg-[#007BFF]"
+                        : "text-black"
+              }`}
             ></span>
             <span className="text-[12px] font-medium">
               {title
                 ? taskStatusConstants.find(
-                  (item: any) => item.value === info.getValue()
-                )?.label
+                    (item: any) => item.value === info.getValue()
+                  )?.label
                 : "-"}
             </span>
           </span>
@@ -409,10 +415,10 @@ export const taskColumns = ({ setDel }: any) => {
                 variant={"ghost"}
                 disabled={
                   profileData?.user_type === "admin" ||
-                    isProjectMemberOrNot(
-                      info.row.original.assignees,
-                      profileData?.id
-                    )
+                  isProjectMemberOrNot(
+                    info.row.original.assignees,
+                    profileData?.id
+                  )
                     ? false
                     : true
                 }
@@ -432,10 +438,10 @@ export const taskColumns = ({ setDel }: any) => {
                 title="Delete"
                 disabled={
                   profileData?.user_type === "admin" ||
-                    isProjectMemberOrNot(
-                      info.row.original.assignees,
-                      profileData?.id
-                    )
+                  isProjectMemberOrNot(
+                    info.row.original.assignees,
+                    profileData?.id
+                  )
                     ? false
                     : true
                 }

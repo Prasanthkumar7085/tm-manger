@@ -1,4 +1,9 @@
-import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
 import dashboardBlackIcon from "@/assets/dashboard-icon-black.svg";
 import dashboardWhiteIcon from "@/assets/dash-board-icon.svg";
 import tasksBlackIcon from "@/assets/tasks-icon.svg";
@@ -8,14 +13,31 @@ import usersWhiteIcon from "@/assets/users-white-icon.svg";
 import projectsBlackIcon from "@/assets/projects-icon.svg";
 import projectsWhiteIcon from "@/assets/projects-white-icon.svg";
 import { useSelector } from "react-redux";
+import { useState } from "react";
+
 function SideMenu() {
   const navigate = useNavigate();
+  const router = useRouter();
   const { pathname } = useLocation();
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
   );
+
+  const [isNavigating, setIsNavigating] = useState(false);
+
   const isActive = (href: string) => {
     return pathname.includes(href);
+  };
+
+  const handleNavigation = (to: string) => {
+    if (isNavigating) return;
+    setIsNavigating(true);
+
+    router.navigate({ to });
+
+    setTimeout(() => {
+      setIsNavigating(false);
+    }, 300);
   };
 
   return (
@@ -25,7 +47,7 @@ function SideMenu() {
           <ul className="space-y-3 text-gray-600">
             <li>
               <Link
-                to="/dashboard"
+                onClick={() => handleNavigation("/dashboard")}
                 className="no-underline hover:no-underline active:no-underline"
               >
                 <div
@@ -50,7 +72,7 @@ function SideMenu() {
             </li>
             <li>
               <Link
-                to="/tasks"
+                onClick={() => handleNavigation("/tasks")}
                 className="no-underline hover:no-underline active:no-underline"
               >
                 <div
@@ -62,7 +84,7 @@ function SideMenu() {
                 >
                   <img
                     src={isActive("/tasks") ? tasksWhiteIcon : tasksBlackIcon}
-                    alt="dashboard"
+                    alt="tasks"
                     className="h-[23px] w-[23px]"
                   />
                   <span className="no-underline">Tasks</span>
@@ -71,7 +93,7 @@ function SideMenu() {
             </li>
             <li>
               <Link
-                to="/projects"
+                onClick={() => handleNavigation("/projects")}
                 className="no-underline hover:no-underline active:no-underline"
               >
                 <div
@@ -97,7 +119,7 @@ function SideMenu() {
             {profileData?.user_type !== "user" && (
               <li>
                 <Link
-                  to="/users"
+                  onClick={() => handleNavigation("/users")}
                   className="no-underline hover:no-underline active:no-underline"
                 >
                   <div
@@ -109,7 +131,7 @@ function SideMenu() {
                   >
                     <img
                       src={isActive("/users") ? usersWhiteIcon : usersBlackIcon}
-                      alt="dashboard"
+                      alt="users"
                       className="h-[23px] w-[23px]"
                     />
                     <span className="no-underline">Users</span>

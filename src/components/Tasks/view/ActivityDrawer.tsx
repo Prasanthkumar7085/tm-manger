@@ -14,6 +14,7 @@ import {
 import { XIcon } from "lucide-react";
 import dayjs from "dayjs";
 import { useEffect } from "react";
+import { momentWithTimezone } from "@/lib/helpers/timeZone";
 
 interface ActivityDrawerProps {
   setActivityOpen: (open: boolean) => void;
@@ -72,7 +73,7 @@ export const ActivityDrawer = ({
                     {item.user_name}
                   </p>
                   <p className="text-xs text-gray-500">
-                    {dayjs(item.time).format("DD-MM-YYYY hh:mm A")}
+                    {momentWithTimezone(item.time, "DD-MM-YYYY hh:mm A")}
                   </p>
                 </div>
               </div>
