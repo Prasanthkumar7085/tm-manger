@@ -12,13 +12,11 @@ import { StatusFilter } from "../core/StatusFilter";
 import { Button } from "../ui/button";
 import ProjectCard from "./Card";
 import useUsersHook from "./useUsersHook";
-
 import { projectColumns } from "./ProjectColumns";
 import TanStackTable from "../core/TanstackTable";
 import { useSelector } from "react-redux";
 import { canAddTask } from "@/lib/helpers/loginHelpers";
 import { Grid3x3, List } from "lucide-react";
-
 const Projects = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,14 +31,10 @@ const Projects = () => {
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 12;
   const orderBY = searchParams.get("order_by") || "";
-
-  console.log(orderBY, "by");
   const initialSearch = searchParams.get("search") || "";
   const initialStatus = searchParams.get("status") || "";
-
   const initialStartDate = searchParams.get("start_date") || null;
   const initialEndDate = searchParams.get("end_date") || null;
-
   const [searchString, setSearchString] = useState(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedProject, setSelectedProject] = useState("");
@@ -55,16 +49,13 @@ const Projects = () => {
   const orderBy = searchParams.get("order_by")
     ? searchParams.get("order_by")
     : "";
-
   const [del, setDel] = useState<any>();
   const { users, loading: usersLoading, error: usersError } = useUsersHook();
-
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
     order_by: selectedSort || orderBY || orderBy,
   });
-
   const [viewMode, setViewMode] = useState("card");
 
   const { isLoading, isError, error, data, isFetching } = useQuery({
@@ -88,7 +79,6 @@ const Projects = () => {
         from_date: selectedDate?.length ? selectedDate[0] : null,
         to_date: selectedDate?.length ? selectedDate[1] : null,
       });
-
       const queryParams = {
         current_page: +pagination.pageIndex,
         page_size: +pagination.pageSize,
@@ -106,29 +96,24 @@ const Projects = () => {
           search: queryParams,
           replace: true,
         });
-
         return response;
       }
     },
   });
-
   const projectsData =
     addSerial(
       data?.data?.data?.records,
       data?.data?.data?.pagination_info?.current_page,
       data?.data?.data?.pagination_info?.page_size
     ) || [];
-
   const handleNavigation = () => {
     navigate({
       to: "/projects/add",
     });
   };
-
   const getAllProjects = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
-
   const capturePageNum = (value: number) => {
     getAllProjects({
       ...searchParams,
@@ -139,7 +124,6 @@ const Projects = () => {
       order_by: selectedSort || searchParams.get("order_by"),
     });
   };
-
   const captureRowPerItems = (value: number) => {
     getAllProjects({
       ...searchParams,
@@ -148,7 +132,6 @@ const Projects = () => {
       order_by: selectedSort || searchParams.get("order_by"),
     });
   };
-
   const handleDateChange = (fromDate: any, toDate: any) => {
     if (fromDate) {
       setDateValue(changeDateToUTC(fromDate, toDate));
@@ -158,14 +141,12 @@ const Projects = () => {
       setSelectedDate([]);
     }
   };
-
   const userOptions = Array.isArray(users)
     ? users.map((user: any) => ({
         value: user.id,
         label: `${user.fname} ${user.lname}`,
       }))
     : [];
-
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
@@ -187,7 +168,6 @@ const Projects = () => {
       clearTimeout(handler);
     };
   }, [searchString, selectedSort, selectedStatus, dateValue]);
-
   let colums = projectColumns({ setDel, getAllProjects, projectsData });
   return (
     <section id="projects-container" className="relative">
