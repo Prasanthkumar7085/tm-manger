@@ -62,7 +62,8 @@ const RepliedComments = ({
               <span className="font-semibold">
                 {IsUserCommentOrNot(mainComment)
                   ? "You"
-                  : mainComment.user?.name || "Unknown"}
+                  : mainComment?.firstName + " " + mainComment?.lastName ||
+                    "Unknown"}
               </span>
               <span className="text-[#67727E] font-normal text-sm pl-2">
                 {formatCommentTime(mainComment)}
