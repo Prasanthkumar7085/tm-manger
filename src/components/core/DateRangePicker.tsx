@@ -3,12 +3,13 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { predefinedRanges } from "./CommonComponents/DatePickerRanges";
 import "rsuite/dist/rsuite.css";
+import { convertToLabUTC } from "@/lib/helpers/timeZone";
 
 const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
   const updateDateValues = (newDate: any) => {
     if (newDate) {
-      const date1 = dayjs(newDate[0]).format("YYYY-MM-DD");
-      const date2 = dayjs(newDate[1]).format("YYYY-MM-DD");
+      const date1 = convertToLabUTC(newDate[0]);
+      const date2 = convertToLabUTC(newDate[1], true);
       onChangeData(date1, date2);
     } else {
       onChangeData("", "");
@@ -17,7 +18,7 @@ const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
 
   return (
     <DateRangePicker
-    className="!bg-[#F4F4F6] border border-[#E2E2E2] rounded-[8px] placeholder:text-[#00000066]"
+      className="!bg-[#F4F4F6] border border-[#E2E2E2] rounded-[8px] placeholder:text-[#00000066]"
       editable={false}
       placeholder={"Select Date"}
       placement="bottomEnd"
@@ -25,6 +26,7 @@ const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
       value={dateValue}
       onChange={updateDateValues}
       showHeader={false}
+      cleanable={true}
     />
   );
 };

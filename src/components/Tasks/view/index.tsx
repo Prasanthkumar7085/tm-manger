@@ -20,8 +20,10 @@ import UploadAttachments from "./Attachments";
 import PriorityStatus from "./PriorityStatus";
 import TaskStatus from "./TaskStatus";
 import TaskComments from "./Comments";
-import { ActivityDrawer } from "./ActivityDrawer";
+// import { ActivityDrawer } from "./ActivityDrawer";
 import { isMananger } from "@/lib/helpers/loginHelpers";
+import { momentWithTimezone } from "@/lib/helpers/timeZone";
+import { ActivityDrawer } from "./ActivityDrawer";
 
 const TaskView = () => {
   const navigate = useNavigate();
@@ -243,7 +245,7 @@ const TaskView = () => {
                         Due Date
                       </p>
                       <div className="inline-block  text-[#FF0021] text-md font-semibold rounded-sm">
-                        {dayjs(viewData?.due_date).format("MM/DD/YYYY")}
+                        {momentWithTimezone(viewData?.due_date, "MM/DD/YYYY")}
                       </div>
                     </li>
                     <li className="grid grid-cols-[150px,auto]">
@@ -254,7 +256,10 @@ const TaskView = () => {
                       </div>
                       <div>
                         <p className="text-black font-medium">
-                          {dayjs(viewData?.created_at).format("MM/DD/YYYY")}
+                          {momentWithTimezone(
+                            viewData?.created_at,
+                            "MM/DD/YYYY"
+                          )}
                         </p>
                       </div>
                     </li>

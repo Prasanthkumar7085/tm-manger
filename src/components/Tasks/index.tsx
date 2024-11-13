@@ -97,16 +97,15 @@ const Tasks = () => {
         priority: selectedpriority || undefined,
       };
 
-      {
-        location.pathname == "/dashboard"
-          ? ""
-          : router.navigate({
-              to: "/tasks",
-              search: queryParams,
-            });
-      }
+      if (response?.status == 200) {
+        router.navigate({
+          to: "/tasks",
+          search: queryParams,
+          replace: true,
+        });
 
-      return response;
+        return response;
+      }
     },
   });
 

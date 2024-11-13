@@ -21,6 +21,7 @@ import {
   isProjectAdmin,
   isProjectMemberOrNot,
 } from "@/lib/helpers/loginHelpers";
+import { momentWithTimezone } from "@/lib/helpers/timeZone";
 
 export const taskColumns = ({ setDel }: any) => {
   const navigate = useNavigate();
@@ -174,7 +175,10 @@ export const taskColumns = ({ setDel }: any) => {
             className="task capitalize flex justify-between cursor-pointer"
             onClick={() => handleView(info.row.original.id)}
           >
-            <span className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
+            <span
+              title={title}
+              className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]"
+            >
               {title || "-"}
             </span>
             <span className="ml-2 text-[11px] font-semibold text-primary">
@@ -183,9 +187,9 @@ export const taskColumns = ({ setDel }: any) => {
           </div>
         );
       },
-      width: "300px",
-      maxWidth: "300px",
-      minWidth: "300px",
+      width: "350px",
+      maxWidth: "350px",
+      minWidth: "350px",
       header: () => <span>Tasks</span>,
       footer: (props: any) => props.column.id,
     },
@@ -287,7 +291,7 @@ export const taskColumns = ({ setDel }: any) => {
       id: "due_date",
       cell: (info: any) => {
         const date: string = info.getValue();
-        return <span>{date ? dayjs(date).format("MM-DD-YYYY") : "-"}</span>;
+        return <span>{date ? momentWithTimezone(date) : "-"}</span>;
       },
       width: "120px",
       maxWidth: "120px",

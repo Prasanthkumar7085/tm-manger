@@ -17,6 +17,7 @@ import KanbanBoard from "../KanBanView";
 import ProjectMembersManagment from "./ProjectMembersManagment";
 import ProjectTasksCounts from "./ProjectTasksCounts";
 import { useSelector } from "react-redux";
+import { momentWithTimezone } from "@/lib/helpers/timeZone";
 
 const ProjectView = () => {
   const { projectId } = useParams({ strict: false });
@@ -248,7 +249,7 @@ const ProjectView = () => {
           <div>
             <h2 className="text-sm text-[#666666]">Created At</h2>
             <p className="text-sm text-[#038847] font-[600]">
-              {dayjs(projectDetails?.created_at).format("MM-DD-YYYY")}
+              {momentWithTimezone(projectDetails?.created_at, "MM-DD-YYYY")}
             </p>
           </div>
           <div>
