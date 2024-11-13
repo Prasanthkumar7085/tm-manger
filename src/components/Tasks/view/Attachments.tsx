@@ -207,7 +207,13 @@ const UploadAttachments = () => {
     <div id="upload-attachments" className="border">
       <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
         <h3 className="leading-1 text-black text-[1.1em]">Attachment</h3>
-        <Button type="button" onClick={open} variant="add" size="DefaultButton" className="h-[25px] px-3 bg-orange-400">
+        <Button
+          type="button"
+          onClick={open}
+          variant="add"
+          size="DefaultButton"
+          className="h-[25px] px-3 bg-orange-400"
+        >
           {uploadingStatus.loading && (
             <div className="flex items-center">
               <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -226,13 +232,14 @@ const UploadAttachments = () => {
                 className="each-attachment border w-[250px] px-2 py-1 rounded-md overflow-hidden"
               >
                 <div className="grid grid-cols-[30px,auto] gap-3 items-center">
-                  <div className="icon text-3xl">
-                    📄
-                  </div>
+                  <div className="icon text-3xl">📄</div>
                   <div className="content">
-                    <p className="text-black  rounded-md overflow-hidden line-clamp-1">
-
-                      {file.file_name}</p>
+                    <p
+                      title={file.file_name}
+                      className="text-black  rounded-md overflow-hidden line-clamp-1"
+                    >
+                      {file.file_name}
+                    </p>
                     <div className="actions  flex space-x-5">
                       <button
                         onClick={() => {
@@ -256,15 +263,15 @@ const UploadAttachments = () => {
               </div>
             ))
           ) : (
-                  <div className="flex items-center justify-center  py-1 w-[200px] mx-auto">
-                  <img src={attachIcon} alt="No tags" className="w-5 h-5 mr-1" />
-                  <span className="text-center">No attachments found</span>
-                </div>
+            <div className="flex items-center justify-center  py-1 w-[200px] mx-auto">
+              <img src={attachIcon} alt="No tags" className="w-5 h-5 mr-1" />
+              <span className="text-center">No attachments found</span>
+            </div>
           )}
         </div>
       </div>
 
-      <div >
+      <div>
         <div {...getRootProps()} className="hidden">
           <input {...getInputProps()} />
         </div>

@@ -1,15 +1,15 @@
 import { a } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 import { $fetch } from "../fetch";
 interface GetAllPaginatedUsersPropTypes {
-  pageIndex: number;
-  pageSize: number;
-  order_by: any;
-  search_string: any;
-  from_date: string;
-  to_date: string;
-  status: string;
-  priority: string;
-  project_id: any;
+  pageIndex?: number;
+  pageSize?: number;
+  order_by?: any;
+  search_string?: any;
+  from_date?: string;
+  to_date?: string;
+  status?: string;
+  priority?: string;
+  project_id?: any;
 }
 
 export const getAllPaginatedTasks = async ({
