@@ -106,10 +106,7 @@ export const getProjectWiseTasksAPI = async (projectId: any) => {
   }
 };
 
-export const updateProjectTaskStatusAPI = async (
-  taskID: string,
-  payload: any
-) => {
+export const updateProjectTaskStatusAPI = async (taskID: any, payload: any) => {
   try {
     return await $fetch.put(`/tasks/${taskID}/status`, payload);
   } catch (err: any) {

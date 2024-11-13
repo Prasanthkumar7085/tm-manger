@@ -28,10 +28,7 @@ export const ActivityDrawer = ({
   };
   return (
     <Dialog open={activityOpen} onOpenChange={setActivityOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[900px] bg-white">
+      <DialogContent className="sm:max-w-[1000px] h-[600px] bg-white">
         <DialogHeader>
           <div>
             <h3 className="text-xl font-semibold">Activity Logs</h3>
@@ -43,10 +40,11 @@ export const ActivityDrawer = ({
           </div>
         </DialogHeader>
         {activityLogData && activityLogData.length > 0 ? (
-          <div className="overflow-y-auto h-80">
+          <div className="overflow-y-auto ">
             <table className="min-w-full bg-white border rounded-lg shadow">
-              <thead>
+              <thead className="sticky top-0 z-[10]">
                 <tr className="bg-gray-200 border-b font-bold text-gray-700">
+                  <th className="p-3 text-left text-xs">Sl.no</th>
                   <th className="p-3 text-left text-xs">User</th>
                   <th className="p-3 text-left text-xs">Time</th>
                   <th className="p-3 text-left text-xs">Action</th>
@@ -56,6 +54,8 @@ export const ActivityDrawer = ({
               <tbody>
                 {activityLogData.map((item: any, index: number) => (
                   <tr key={index} className="border-b hover:bg-gray-50">
+                    <td className="p-3 text-xs text-gray-500">{index + 1}</td>
+
                     <td className="p-3 flex items-center space-x-3">
                       {item.user_name && (
                         <>
