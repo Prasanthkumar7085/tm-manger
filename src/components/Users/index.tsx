@@ -302,16 +302,16 @@ function UsersTable() {
 
   const handleDrawerOpen = (user?: any) => {
     if (user) {
-      setUserData({
-        id: userData.id || null,
-        fname: userData.fname || "",
-        lname: userData.lname || "",
-        email: userData.email || "",
-        designation: userData.designation || "",
-        password: userData.password || "",
-        phone_number: userData.phone_number || "",
-      });
-      setUserType(userType.user_type ||"");
+      // setUserData({
+      //   id: userData.id || null,
+      //   fname: userData.fname || "",
+      //   lname: userData.lname || "",
+      //   email: userData.email || "",
+      //   designation: userData.designation || "",
+      //   password: userData.password || "",
+      //   phone_number: userData.phone_number || "",
+      // });
+      // setUserType(userType.user_type ||"");
       setIsEditing(true);
       setSelectedId(user);
     } else {

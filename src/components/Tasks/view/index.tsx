@@ -20,9 +20,10 @@ import UploadAttachments from "./Attachments";
 import PriorityStatus from "./PriorityStatus";
 import TaskStatus from "./TaskStatus";
 import TaskComments from "./Comments";
-import { ActivityDrawer } from "./ActivityDrawer";
+// import { ActivityDrawer } from "./ActivityDrawer";
 import { isMananger } from "@/lib/helpers/loginHelpers";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
+import { ActivityDrawer } from "./ActivityDrawer";
 
 const TaskView = () => {
   const navigate = useNavigate();
