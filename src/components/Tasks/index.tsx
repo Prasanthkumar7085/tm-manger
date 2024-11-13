@@ -153,22 +153,11 @@ const Tasks = () => {
     return `${user?.fname || ""} ${user?.lname || ""}`;
   };
 
-  const { isLoading: isUsersLoading } = useQuery({
-    queryKey: ["users", projectId],
+  const { data: membersData, isLoading: membersLoading } = useQuery({
+    queryKey: ["members"],
     queryFn: async () => {
       const response = await getAllMembers();
-      if (response?.data?.data && Array.isArray(response.data.data)) {
-        let ActiveUsers = response.data.data.filter(
-          (user: any) => user?.active === true
-        );
-        let addTitles = response?.data?.data?.map((user: any) => ({
-          ...user,
-          title: getFullName(user),
-        }));
-        setUsers(ActiveUsers);
-      } else {
-        setUsers([]);
-      }
+      setUsers(data?.data?.data || []);
       return response;
     },
   });
@@ -217,32 +206,29 @@ const Tasks = () => {
       setSelectedDate([]);
     }
   };
-  // const confirmSelection = () => {
-  //   const newMembers = tempSelectedMember
-  //     ?.map((memberValue: string) => {
-  //       const member = users.find(
-  //         (user: any) => user.id.toString() === memberValue
-  //       );
-  //       return (
-  //         member &&
-  //         !selectedMembers.some((m: any) => m.id === member.id) && {
-  //           id: member.id,
-  //           role: member?.user_type.toUpperCase(),
-  //           fname: member?.fname || "",
-  //           lname: member?.lname || "",
-  //           email: member?.email || "--",
-  //           phone_number: member?.phone_number || "--",
-  //         }
-  //       );
-  //     })
 
-  //     .filter(Boolean);
-  //   setSelectedMembers((prev: any) => [...prev, ...newMembers]);
-  //   setTempSelectedMember([]);
-  //   setOpen(false);
-  //   let allMembers = [...newMembers];
-  //   console.log(newMembers, "new");
-  // };
+  const confirmSelection = () => {
+    const newMembers = tempSelectedMember
+      .map((memberId) => {
+        const member = users.find((user) => user.id.toString() === memberId);
+        return (
+          member &&
+          !selectedMembers.some((m: any) => m.id === member.id) && {
+            id: member.id,
+            fname: member.fname || "",
+            lname: member.lname || "",
+            email: member.email || "--",
+            phone_number: member.phone_number || "--",
+          }
+        );
+      })
+      .filter(Boolean);
+
+    setSelectedMembers((prev: any) => [...prev, ...newMembers]);
+
+    setTempSelectedMember([]);
+    setOpen(false);
+  };
 
   const toggleValue = (currentValue: string) => {
     setTempSelectedMember((prev) =>
@@ -289,32 +275,24 @@ const Tasks = () => {
                   <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                       <Button
-                        // disabled={
-                        //   profileData?.user_type === "admin" ||
-                        //   isAbleToAddOrEdit()
-                        //     ? false
-                        //     : true
-                        // }
                         variant="outline"
                         className="w-[220px] flex items-center justify-between px-2 bg-[#F4F4F6] border-[#E2E2E2] rounded-[8px] text-[#00000099]"
-                        onClick={() => setTempSelectedMember([])}
                       >
                         <div className="flex items-center gap-x-1">
                           <img
                             src={memberIcon}
-                            alt="No tags"
+                            alt="Select Members"
                             className="w-5 h-5 mr-1"
                           />
                           <p>Select Members</p>
                         </div>
                         <div>
                           <span>
-                            {" "}
                             <img
                               src={selectDropIcon}
-                              alt="No tags"
+                              alt="Dropdown Icon"
                               className="w-5 h-5 mr-1"
-                            />{" "}
+                            />
                           </span>
                         </div>
                       </Button>
@@ -325,7 +303,7 @@ const Tasks = () => {
                         <CommandList className="max-h-[220px] z-[99999]">
                           <CommandGroup>
                             {Array.isArray(users) &&
-                              users.map((user: any) => (
+                              users.map((user) => (
                                 <CommandItem
                                   key={user.id}
                                   value={getFullName(user)}
@@ -333,7 +311,7 @@ const Tasks = () => {
                                     toggleValue(user.id.toString())
                                   }
                                   disabled={selectedMembers.some(
-                                    (m: any) => m.user_id == user.id
+                                    (m: any) => m.id === user.id
                                   )}
                                 >
                                   <Check
@@ -346,12 +324,13 @@ const Tasks = () => {
                                         : "opacity-0"
                                     )}
                                   />
-                                  <div className="w-6 h-6 object-contain	mr-2 rounded-full border  bg-white">
+                                  <div className="w-6 h-6 object-contain mr-2 rounded-full border bg-white">
                                     <img
                                       src={
-                                        user?.profile_pic ||
+                                        user.profile_pic ||
                                         "/profile-picture.png"
                                       }
+                                      alt="User Avatar"
                                     />
                                   </div>
                                   <p className="capitalize cursor-pointer">
@@ -375,18 +354,7 @@ const Tasks = () => {
                             className="bg-[#000000] text-white px-6 font-medium text-sm rounded-[4px]"
                             size="sm"
                             variant="outline"
-                            // title={
-                            //   projectDetails?.active
-                            //     ? ""
-                            //     : "Project is not active"
-                            // }
-                            // disabled={
-                            //   projectDetails?.active &&
-                            //   tempSelectedMember.length > 0
-                            //     ? false
-                            //     : true
-                            // }
-                            // onClick={confirmSelection}
+                            onClick={confirmSelection}
                           >
                             Confirm
                           </Button>
