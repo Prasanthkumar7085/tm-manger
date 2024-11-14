@@ -14,6 +14,9 @@ import {
 import { deleteProjectAPI } from "@/lib/services/users";
 import { updateProjectAPI } from "@/lib/services/projects";
 import { useSelector } from "react-redux";
+import { getColorFromInitials } from "@/lib/constants/colorConstants";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 interface ProjectColumnsProps {
   setDel: React.Dispatch<React.SetStateAction<number>>;
@@ -224,6 +227,102 @@ export const projectColumns = ({
       maxWidth: "150px",
       minWidth: "150px",
     },
+
+    {
+      accessorFn: (row: any) => row.assignees,
+      id: "assignees",
+      cell: (info: any) => {
+        const [showPopover, setShowPopover] = useState(false);
+
+        return (
+          <div className="flex justify-start items-center -space-x-2">
+            {info
+              .getValue()
+              .slice(0, 5)
+              .map((assignee: any) => {
+                const initials =
+                  assignee.user_first_name[0]?.toUpperCase() +
+                  assignee.user_last_name[0]?.toUpperCase();
+                const backgroundColor = getColorFromInitials(initials);
+
+                return (
+                  <Avatar
+                    key={assignee.user_id}
+                    title={
+                      assignee.user_first_name + " " + assignee.user_last_name
+                    }
+                    className={`w-6 h-6 ${backgroundColor}`}
+                  >
+                    <AvatarImage
+                      src={assignee.user_profile_pic_url}
+                      alt={assignee.name}
+                      title={
+                        assignee.user_first_name + " " + assignee.user_last_name
+                      }
+                    />
+                    <AvatarFallback>{initials}</AvatarFallback>
+                  </Avatar>
+                );
+              })}
+            {info.getValue().length > 5 && (
+              <Popover open={showPopover} onOpenChange={setShowPopover}>
+                <PopoverTrigger asChild>
+                  <div className="flex items-center justify-center w-8 h-8 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold cursor-pointer hover:bg-gray-300">
+                    +{info.getValue().length - 5}
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent className="p-2 w-48 max-w-xs bg-white border border-gray-300 rounded-lg shadow-lg">
+                  <div className="space-y-2">
+                    {info.getValue().map((assignee: any) => (
+                      <div
+                        key={assignee.user_id}
+                        className="flex items-center space-x-2"
+                      >
+                        <Avatar
+                          key={assignee.user_id}
+                          title={
+                            assignee.user_first_name +
+                            " " +
+                            assignee.user_last_name
+                          }
+                          className={`w-8 h-8 ${getColorFromInitials(
+                            assignee.user_first_name[0] +
+                              assignee.user_last_name[0]
+                          )}`}
+                        >
+                          <AvatarImage
+                            src={assignee.user_profile_pic_url}
+                            alt={assignee.name}
+                            title={
+                              assignee.user_first_name +
+                              " " +
+                              assignee.user_last_name
+                            }
+                          />
+                          <AvatarFallback className="capitalize">
+                            {assignee.user_first_name[0].toUpperCase() +
+                              assignee.user_last_name[0].toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span>
+                          {assignee.user_first_name} {assignee.user_last_name}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
+          </div>
+        );
+      },
+      width: "150px",
+      maxWidth: "150px",
+      minWidth: "150px",
+      header: () => <span>Assigned User</span>,
+      footer: (props: any) => props.column.id,
+    },
+
     {
       accessorFn: (row: any) => row.active,
       id: "active",

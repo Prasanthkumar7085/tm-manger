@@ -132,21 +132,7 @@ const Projects = () => {
       order_by: selectedSort || searchParams.get("order_by"),
     });
   };
-  const handleDateChange = (fromDate: any, toDate: any) => {
-    if (fromDate) {
-      setDateValue(changeDateToUTC(fromDate, toDate));
-      setSelectedDate([fromDate, toDate]);
-    } else {
-      setDateValue([]);
-      setSelectedDate([]);
-    }
-  };
-  const userOptions = Array.isArray(users)
-    ? users.map((user: any) => ({
-        value: user.id,
-        label: `${user.fname} ${user.lname}`,
-      }))
-    : [];
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
@@ -168,7 +154,9 @@ const Projects = () => {
       clearTimeout(handler);
     };
   }, [searchString, selectedSort, selectedStatus, dateValue]);
+
   let colums = projectColumns({ setDel, getAllProjects, projectsData });
+
   return (
     <section id="projects-container" className="relative">
       <div className="tasks-navbar">
@@ -219,10 +207,10 @@ const Projects = () => {
                 >
                   <div className="flex">
                     <List
-                      className={`mr-2 ${viewMode === "table" ? "text-[#1B2459]" : "text-[#BF1B39] "}`}
+                      className={`mr-2 ${viewMode === "table" ? "text-[#BF1B39]" : "text-[#1B2459]"}`}
                     />
                     <Grid3x3
-                      className={`${viewMode === "card" ? "text-[#1B2459]" : "text-[#BF1B39]"}`}
+                      className={`${viewMode === "card" ? "text-[#BF1B39]" : "text-[#1B2459]"}`}
                     />
                   </div>
                 </button>
@@ -257,7 +245,12 @@ const Projects = () => {
             columns={colums}
             paginationDetails={data?.data?.data?.pagination_info}
             getData={getAllProjects}
-            removeSortingForColumnIds={["serial", "actions", "project_title"]}
+            removeSortingForColumnIds={[
+              "serial",
+              "actions",
+              "project_title",
+              "assignees",
+            ]}
           />
         )}
       </div>
