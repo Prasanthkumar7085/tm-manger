@@ -1,53 +1,28 @@
 import { addSerial } from "@/lib/helpers/addSerial";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
-import { getAllPaginatedTasks, getAssignesListAPI } from "@/lib/services/tasks";
 import { useQuery } from "@tanstack/react-query";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useRouter,
-} from "@tanstack/react-router";
+import { useLocation, useNavigate, useParams, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import SearchFilter from "../core/CommonComponents/SearchFilter";
-import { SelectTaskProjects } from "../core/CommonComponents/SelectTaskProjects";
-import { TasksSelectPriority } from "../core/CommonComponents/TasksSelectPriority";
-import { TasksSelectStatusFilter } from "../core/CommonComponents/TasksSelectStatusFilter";
-import DateRangeFilter from "../core/DateRangePicker";
-import LoadingComponent from "../core/LoadingComponent";
-import TanStackTable from "../core/TanstackTable";
-import { Button } from "../ui/button";
-import TotalCounts from "./Counts";
-import { taskColumns } from "./TaskColumns";
-import { canAddTask } from "@/lib/helpers/loginHelpers";
-import { toast } from "sonner";
-import {
-  getAllMembers,
-  getProjectMembersAPI,
-} from "@/lib/services/projects/members";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Check, Command } from "lucide-react";
-import {
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../ui/command";
-import memberIcon from "@/assets/members.svg";
-import selectDropIcon from "@/assets/select-dropdown.svg";
-import { cn } from "@/lib/utils";
-import UserSelectionPopover from "../core/MultipleUsersSelect";
+import {useSelector } from "react-redux";
+import { SelectTaskProjects } from "./core/CommonComponents/SelectTaskProjects";
+import { TasksSelectPriority } from "./core/CommonComponents/TasksSelectPriority";
+import { TasksSelectStatusFilter } from "./core/CommonComponents/TasksSelectStatusFilter";
+import SearchFilter from "./core/CommonComponents/SearchFilter";
+import DateRangeFilter from "./core/DateRangePicker";
+import { Button } from "./ui/button";
+import TanStackTable from "./core/TanstackTable";
+import { taskColumns } from "./Tasks/TaskColumns";
+import LoadingComponent from "./core/LoadingComponent";
+import { getAllPaginatedTasks } from "@/lib/services/tasksprojects";
 
-const Tasks = () => {
+const TasksProjects = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const router = useRouter();
+  const location = useLocation();
+  const { projectId } = useParams({ strict: false });
   const user_type: any = useSelector(
     (state: any) => state.auth.user.user_details?.user_type
   );
-  const { projectId } = useParams({ strict: false });
 
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
@@ -66,21 +41,24 @@ const Tasks = () => {
   const [selectedProject, setSelectedProject] = useState<any>(intialProject);
   const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
   const [dateValue, setDateValue] = useState<any>(null);
-  const [users, setUsers] = useState<any[]>([]);
-  const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
-  const [open, setOpen] = useState<boolean>(false);
   const [del, setDel] = useState<any>(1);
-  const [selectedMembers, setSelectedMembers] = useState<any>([]);
+  const [task, setTask] = useState<any>({
+    title: "",
+    ref_id: "",
+    description: "",
+    priority: "",
+    status: "",
+    due_date: "",
+    tags: [],
+    users: [],
+  });
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
     order_by: orderBY,
   });
-
-  const isDashboard = location.pathname === "/dashboard";
-
-  const { isLoading, isError, data, error, isFetching } = useQuery({
+  const { isLoading, isError, data, error, isFetching} = useQuery({
     queryKey: [
       "tasks",
       pagination,
@@ -90,10 +68,11 @@ const Tasks = () => {
       selectedStatus,
       selectedpriority,
       selectedProject,
-      selectedMembers,
+      projectId,
     ],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
+        
         pageIndex: pagination.pageIndex,
         pageSize: pagination.pageSize,
         order_by: pagination.order_by,
@@ -103,9 +82,8 @@ const Tasks = () => {
         project_id: selectedProject,
         from_date: selectedDate?.length ? selectedDate[0] : null,
         to_date: selectedDate?.length ? selectedDate[1] : null,
-        user_ids: selectedMembers.map((member: any) => member.id),
-      });
-      let queryParams: any = {
+    });
+      const queryParams = {
         current_page: +pagination.pageIndex,
         page_size: +pagination.pageSize,
         order_by: pagination.order_by ? pagination.order_by : undefined,
@@ -116,20 +94,13 @@ const Tasks = () => {
         project_id: selectedProject || undefined,
         priority: selectedpriority || undefined,
       };
-      if (selectedMembers?.length) {
-        queryParams["user_ids"] = selectedMembers.map(
-          (member: any) => member.id
-        );
-      }
-      if (response?.status == 200) {
+       {
         router.navigate({
-          to: "/tasks",
-          search: queryParams,
-          replace: true,
-        });
-
-        return response;
+         to: `/projects/view//${projectId}`,
+        search: queryParams,
+      });
       }
+      return response;
     },
   });
 
@@ -140,22 +111,9 @@ const Tasks = () => {
       data?.data?.data?.pagination_info?.page_size
     ) || [];
 
-  const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
-    setPagination({ pageIndex, pageSize, order_by });
+  const getAllTasks = async ({ pageIndex, pageSize, order_by}: any) => {
+    setPagination({ pageIndex, pageSize, order_by});
   };
-  const getFullName = (user: any) => {
-    return `${user?.fname || ""} ${user?.lname || ""}`;
-  };
-
-  const { data: usersData, isLoading: membersLoading } = useQuery({
-    queryKey: ["members"],
-    queryFn: async () => {
-      const response = await getAllMembers();
-      const data = response?.data;
-      setUsers(data?.data?.data || []);
-      return response?.data?.data;
-    },
-  });
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -182,18 +140,15 @@ const Tasks = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [
-    searchString,
-    selectedStatus,
-    selectedpriority,
-    selectedProject,
-    selectedMembers,
-  ]);
+  }, [searchString, selectedStatus, selectedpriority, selectedProject]);
 
   const handleNavigation = () => {
     navigate({
       to: "/tasks/add",
     });
+  };
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchString(event.target.value);
   };
 
   const handleDateChange = (fromDate: any, toDate: any) => {
@@ -205,14 +160,8 @@ const Tasks = () => {
       setSelectedDate([]);
     }
   };
-
-  const handleSelectMembers = (selectedMembers: any) => {
-    setSelectedMembers(selectedMembers);
-  };
-
   return (
     <section id="tasks" className="relative">
-      <div>{!isDashboard && <TotalCounts refreshCount={del} />}</div>
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
           <div className="flex justify-end items-center">
@@ -236,18 +185,6 @@ const Tasks = () => {
                     setValue={setSelectedStatus}
                   />
                 </li>
-
-                <li>
-                  <UserSelectionPopover
-                    usersData={usersData}
-                    getFullName={getFullName}
-                    memberIcon={memberIcon}
-                    selectDropIcon={selectDropIcon}
-                    selectedMembers={selectedMembers}
-                    setSelectedMembers={setSelectedMembers}
-                    onSelectMembers={handleSelectMembers}
-                  />
-                </li>
                 <li>
                   <SearchFilter
                     searchString={searchString}
@@ -261,7 +198,7 @@ const Tasks = () => {
                     onChangeData={handleDateChange}
                   />
                 </li>
-                {/* <li>
+                <li>
                   <Button
                     className="font-normal text-sm"
                     variant="add"
@@ -271,7 +208,7 @@ const Tasks = () => {
                     <span className="text-xl font-normal pr-2 text-md">+</span>
                     Add Task
                   </Button>
-                </li> */}
+                </li>
               </ul>
             </div>
           </div>
@@ -286,22 +223,21 @@ const Tasks = () => {
                 columns={taskColumns({ setDel })}
                 paginationDetails={data?.data?.data?.pagination_info}
                 getData={getAllTasks}
-                loading={isLoading || isFetching}
+                // loading={isLoading || isFetching}
                 removeSortingForColumnIds={[
                   "serial",
                   "actions",
                   "project_title",
                   "assignees",
-                   "status"
                 ]}
               />
             </div>
           )}
         </div>
+        <LoadingComponent loading={isLoading || isFetching} />
       </div>
-      <LoadingComponent loading={isLoading || isFetching} />
     </section>
   );
 };
 
-export default Tasks;
+export default TasksProjects;
