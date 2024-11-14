@@ -1,8 +1,13 @@
 import { addSerial } from "@/lib/helpers/addSerial";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
-import { getAllPaginatedTasks } from "@/lib/services/tasks";
+import { getAllPaginatedTasks, getAssignesListAPI } from "@/lib/services/tasks";
 import { useQuery } from "@tanstack/react-query";
-import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useRouter,
+} from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
@@ -16,6 +21,24 @@ import { Button } from "../ui/button";
 import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
 import { canAddTask } from "@/lib/helpers/loginHelpers";
+import { toast } from "sonner";
+import {
+  getAllMembers,
+  getProjectMembersAPI,
+} from "@/lib/services/projects/members";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Check, Command } from "lucide-react";
+import {
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../ui/command";
+import memberIcon from "@/assets/members.svg";
+import selectDropIcon from "@/assets/select-dropdown.svg";
+import { cn } from "@/lib/utils";
+import UserSelectionPopover from "../core/MultipleUsersSelect";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -24,6 +47,8 @@ const Tasks = () => {
   const user_type: any = useSelector(
     (state: any) => state.auth.user.user_details?.user_type
   );
+  const { projectId } = useParams({ strict: false });
+  console.log(projectId, "id");
 
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
@@ -42,7 +67,13 @@ const Tasks = () => {
   const [selectedProject, setSelectedProject] = useState<any>(intialProject);
   const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
   const [dateValue, setDateValue] = useState<any>(null);
+  const [users, setUsers] = useState<any[]>([]);
+  console.log(users, "users");
+  const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
+
   const [del, setDel] = useState<any>(1);
+  const [selectedMembers, setSelectedMembers] = useState<any>([]);
   const [task, setTask] = useState<any>({
     title: "",
     ref_id: "",
@@ -119,6 +150,19 @@ const Tasks = () => {
   const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
+  const getFullName = (user: any) => {
+    return `${user?.fname || ""} ${user?.lname || ""}`;
+  };
+
+  const { data: usersData, isLoading: membersLoading } = useQuery({
+    queryKey: ["members"],
+    queryFn: async () => {
+      const response = await getAllMembers();
+      const data = response?.data;
+      setUsers(data?.data?.data || []);
+      return response?.data?.data;
+    },
+  });
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -165,6 +209,38 @@ const Tasks = () => {
       setSelectedDate([]);
     }
   };
+
+  const confirmSelection = () => {
+    const newMembers = tempSelectedMember
+      .map((memberId) => {
+        const member = users.find((user) => user.id.toString() === memberId);
+        return (
+          member &&
+          !selectedMembers.some((m: any) => m.id === member.id) && {
+            id: member.id,
+            fname: member.fname || "",
+            lname: member.lname || "",
+            email: member.email || "--",
+            phone_number: member.phone_number || "--",
+          }
+        );
+      })
+      .filter(Boolean);
+
+    setSelectedMembers((prev: any) => [...prev, ...newMembers]);
+
+    setTempSelectedMember([]);
+    setOpen(false);
+  };
+
+  const toggleValue = (currentValue: string) => {
+    setTempSelectedMember((prev) =>
+      prev.includes(currentValue)
+        ? prev.filter((value) => value !== currentValue)
+        : [...prev, currentValue]
+    );
+  };
+
   return (
     <section id="tasks" className="relative">
       <div>{!isDashboard && <TotalCounts refreshCount={del} />}</div>
@@ -198,6 +274,15 @@ const Tasks = () => {
                     title="Search By Task name"
                   />
                 </li>
+                <li>
+                  <UserSelectionPopover
+                    usersData={usersData}
+                    getFullName={getFullName}
+                    memberIcon={memberIcon}
+                    selectDropIcon={selectDropIcon}
+                  />
+                </li>
+
                 <li>
                   <DateRangeFilter
                     dateValue={dateValue}

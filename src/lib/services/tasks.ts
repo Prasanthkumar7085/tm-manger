@@ -40,6 +40,13 @@ export const getAllPaginatedTasks = async ({
     throw err;
   }
 };
+export const getAssignesListAPI = async () => {
+  try {
+    return await $fetch.get("/tasks/all");
+  } catch (err: any) {
+    throw err;
+  }
+};
 export const getSingleTaskAPI = async (taskId: any) => {
   try {
     return await $fetch.get(`/tasks/${taskId}`);
