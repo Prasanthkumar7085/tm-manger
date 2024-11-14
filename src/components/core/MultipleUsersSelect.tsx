@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
+import { getColorFromInitials } from "@/lib/constants/colorConstants";
+import { Check, X } from "lucide-react";
+import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   Command,
   CommandEmpty,
@@ -14,7 +17,6 @@ import {
   CommandItem,
   CommandList,
 } from "../ui/command";
-import { Check, X } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 interface User {
@@ -57,13 +59,11 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
       tempSelectedMember.includes(user.id.toString())
     );
     setSelectedMembers(selectedUsers);
-    setTempSelectedMember([]);
     setOpen(false);
     onSelectMembers(selectedUsers);
   };
 
   const displayUsers = selectedMembers.slice(0, 2);
-  const extraUsersCount = selectedMembers.length - displayUsers.length;
 
   return (
     <TooltipProvider>
@@ -71,7 +71,7 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className="w-[220px] flex items-center justify-between px-2 bg-[#F4F4F6] border-[#E2E2E2] rounded-[8px] text-[#00000099]"
+            className="w-[220px] h-[35px] flex items-center justify-between px-2 bg-[#F4F4F6] border-[#E2E2E2] rounded-[8px] text-[#00000099]"
           >
             <div className="flex items-center gap-x-1">
               <img
@@ -80,47 +80,59 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
                 className="w-5 h-5 mr-1"
               />
             </div>
-            <div className="flex items-center gap-1 ml-2">
+            <div className="flex items-center gap-1">
               {selectedMembers.length === 0 ? (
                 <p>Select Assignees</p>
               ) : (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
+                  <div className="flex justify-start -space-x-1 mt-1">
+                    {selectedMembers?.slice(0, 5).map((user: any) => {
+                      const initials = user.fname[0] + user.lname[0];
+                      const backgroundColor = getColorFromInitials(initials);
+
+                      return (
+                        <Avatar
+                          key={user.id}
+                          title={getFullName(user)}
+                          className={`w-6 h-6 ${backgroundColor}`}
+                        >
+                          <AvatarImage
+                            src={user.profile_pic}
+                            alt={getFullName(user)}
+                            title={getFullName(user)}
+                          />
+                          <AvatarFallback>{initials}</AvatarFallback>
+                        </Avatar>
+                      );
+                    })}
+                    {selectedMembers?.length > 5 && (
+                      <div className="flex items-center justify-center w-6 h-6 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div className="flex items-center bg-[#F4F4F6] px-2 py-1 rounded-full text-sm text-[#00000099]">
+                              +{selectedMembers.length - 5}
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-white">
+                            <div>
+                              {selectedMembers.map((user) => (
+                                <p key={user.id}>{getFullName(user)}</p>
+                              ))}
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    )}
+                  </div>
+
                   <X
                     className="cursor-pointer text-red-700 w-4 h-4"
-                    onClick={() => setSelectedMembers([])}
+                    onClick={() => {
+                      setSelectedMembers([]);
+                      setTempSelectedMember([]);
+                      onSelectMembers([]);
+                    }}
                   />
-                  {selectedMembers.slice(0, 2).map((user) => (
-                    <Tooltip key={user.id}>
-                      <TooltipTrigger asChild>
-                        <div className="flex items-center bg-[#F4F4F6] px-2 py-1 rounded-full text-sm text-[#00000099]">
-                          <img
-                            src={user.profile_pic || "/profile-picture.png"}
-                            alt="User Avatar"
-                            className="w-5 h-5 rounded-full"
-                          />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{getFullName(user)}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
-                  {extraUsersCount > 0 && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="flex items-center bg-[#F4F4F6] px-2 py-1 rounded-full text-sm text-[#00000099]">
-                          +{extraUsersCount}
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <div>
-                          {selectedMembers.slice(2).map((user) => (
-                            <p key={user.id}>{getFullName(user)}</p>
-                          ))}
-                        </div>
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
                 </div>
               )}
             </div>
@@ -135,7 +147,7 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
         </PopoverTrigger>
         <PopoverContent className="w-[250px] p-0 bg-white border rounded-sm z-[99999]">
           <Command>
-            <CommandInput placeholder="Search Members" />
+            <CommandInput placeholder="Search Assignees" />
             <CommandList className="max-h-[220px] z-[99999]">
               <CommandGroup>
                 {Array.isArray(usersData) &&
@@ -144,7 +156,7 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
                       key={user.id}
                       value={getFullName(user)}
                       onSelect={() => toggleValue(user.id.toString())}
-                      disabled={selectedMembers.some((m) => m.id === user.id)}
+                      // disabled={selectedMembers.some((m) => m.id === user.id)}
                     >
                       <Check
                         className={`mr-2 h-4 w-4 ${
@@ -165,14 +177,17 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
                     </CommandItem>
                   ))}
               </CommandGroup>
-              <CommandEmpty>No members found.</CommandEmpty>
+              <CommandEmpty>No Assignees found.</CommandEmpty>
             </CommandList>
             <div className="flex justify-end space-x-2 p-2 border-t">
               <Button
                 className="bg-white border-transparent px-6 text-[#000000] text-sm font-medium"
                 variant="outline"
                 size="sm"
-                onClick={() => setTempSelectedMember([])}
+                onClick={() => {
+                  setSelectedMembers([]);
+                  setTempSelectedMember([]);
+                }}
               >
                 Clear
               </Button>
