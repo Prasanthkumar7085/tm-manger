@@ -91,7 +91,6 @@ const TaskComments = ({ taskId }: any) => {
         date,
         comments: grouped[date],
       }));
-      console.log(groupedArray, "groupedArray");
       setGroupedComments(groupedArray);
     }
   }, [commentsData]);

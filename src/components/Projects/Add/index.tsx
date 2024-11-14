@@ -126,8 +126,6 @@ const AddProject = () => {
     );
   };
   const confirmSelection = () => {
-    console.log(tempSelectedMember, "tempSelectedMember");
-    console.log(selectedMembers, "selectedMembers");
     const newMembers = tempSelectedMember
       ?.map((memberValue: string) => {
         const member = users.find(
