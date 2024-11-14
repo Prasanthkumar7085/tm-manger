@@ -38,6 +38,7 @@ import {
 import memberIcon from "@/assets/members.svg";
 import selectDropIcon from "@/assets/select-dropdown.svg";
 import { cn } from "@/lib/utils";
+import UserSelectionPopover from "../core/MultipleUsersSelect";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -153,14 +154,16 @@ const Tasks = () => {
     return `${user?.fname || ""} ${user?.lname || ""}`;
   };
 
-  const { data: membersData, isLoading: membersLoading } = useQuery({
+  const { data: usersData, isLoading: membersLoading } = useQuery({
     queryKey: ["members"],
     queryFn: async () => {
       const response = await getAllMembers();
+      const data = response?.data;
       setUsers(data?.data?.data || []);
-      return response;
+      return response?.data?.data;
     },
   });
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
@@ -272,96 +275,12 @@ const Tasks = () => {
                   />
                 </li>
                 <li>
-                  <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="w-[220px] flex items-center justify-between px-2 bg-[#F4F4F6] border-[#E2E2E2] rounded-[8px] text-[#00000099]"
-                      >
-                        <div className="flex items-center gap-x-1">
-                          <img
-                            src={memberIcon}
-                            alt="Select Members"
-                            className="w-5 h-5 mr-1"
-                          />
-                          <p>Select Members</p>
-                        </div>
-                        <div>
-                          <span>
-                            <img
-                              src={selectDropIcon}
-                              alt="Dropdown Icon"
-                              className="w-5 h-5 mr-1"
-                            />
-                          </span>
-                        </div>
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[250px] p-0 bg-white border rounded-sm z-[99999]">
-                      <Command>
-                        <CommandInput placeholder="Search Members" />
-                        <CommandList className="max-h-[220px] z-[99999]">
-                          <CommandGroup>
-                            {Array.isArray(users) &&
-                              users.map((user) => (
-                                <CommandItem
-                                  key={user.id}
-                                  value={getFullName(user)}
-                                  onSelect={() =>
-                                    toggleValue(user.id.toString())
-                                  }
-                                  disabled={selectedMembers.some(
-                                    (m: any) => m.id === user.id
-                                  )}
-                                >
-                                  <Check
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      tempSelectedMember.includes(
-                                        user.id.toString()
-                                      )
-                                        ? "opacity-100"
-                                        : "opacity-0"
-                                    )}
-                                  />
-                                  <div className="w-6 h-6 object-contain mr-2 rounded-full border bg-white">
-                                    <img
-                                      src={
-                                        user.profile_pic ||
-                                        "/profile-picture.png"
-                                      }
-                                      alt="User Avatar"
-                                    />
-                                  </div>
-                                  <p className="capitalize cursor-pointer">
-                                    {getFullName(user)}
-                                  </p>
-                                </CommandItem>
-                              ))}
-                          </CommandGroup>
-                          <CommandEmpty>No members found.</CommandEmpty>
-                        </CommandList>
-                        <div className="flex justify-end space-x-2 p-2 border-t">
-                          <Button
-                            className="bg-white border-transparent px-6 text-[#000000] text-sm font-medium"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setTempSelectedMember([])}
-                          >
-                            Clear
-                          </Button>
-                          <Button
-                            className="bg-[#000000] text-white px-6 font-medium text-sm rounded-[4px]"
-                            size="sm"
-                            variant="outline"
-                            onClick={confirmSelection}
-                          >
-                            Confirm
-                          </Button>
-                        </div>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
+                  <UserSelectionPopover
+                    usersData={usersData}
+                    getFullName={getFullName}
+                    memberIcon={memberIcon}
+                    selectDropIcon={selectDropIcon}
+                  />
                 </li>
 
                 <li>
