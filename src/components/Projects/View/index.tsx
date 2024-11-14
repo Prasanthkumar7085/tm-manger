@@ -16,7 +16,6 @@ import {
 import { CameraIcon, Grid3x3, List, Loader, X } from "lucide-react";
 import { useSelector } from "react-redux";
 import KanbanBoard from "../KanBanView";
-import { projectColumns } from "../ProjectColumns";
 import ProjectTasksCounts from "./ProjectTasksCounts";
 
 const ProjectView = () => {
@@ -145,7 +144,6 @@ const ProjectView = () => {
     setSelectedFile(null);
     setPreviewUrl(null);
   };
-  let colums = projectColumns({ projectsData });
 
   return (
     <div className="card-container shadow-md border p-5 rounded-lg bg-white h-[calc(100vh-100px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
