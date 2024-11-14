@@ -26,10 +26,12 @@ export const ActivityDrawer = ({
   };
   return (
     <Dialog open={activityOpen} onOpenChange={setActivityOpen}>
-      <DialogContent className="sm:max-w-[1000px] h-[600px] bg-white">
+      <DialogContent className="p-0 sm:max-w-[1000px] bg-white">
         <DialogHeader>
-          <div>
-            <h3 className="text-xl font-semibold">Activity Logs</h3>
+          <div className="flex justify-between border-b-[#e7e7f7] border-b-[1.2px]">
+            <h3 className="py-2 px-4 text-[#273480] items-center flex text-base border-r-[1.2px] border-r-[#e7e7f7] font-medium">
+              Activity Logs
+            </h3>
             <Button
               variant="ghost"
               onClick={handleClose}
@@ -38,7 +40,7 @@ export const ActivityDrawer = ({
           </div>
         </DialogHeader>
         {activityLogData && activityLogData.length > 0 ? (
-          <div className="overflow-y-auto ">
+          <div className="overflow-y-auto w-[96%] m-auto mt-2 mb-6">
             <table className="min-w-full bg-white border rounded-lg shadow">
               <thead className="sticky top-0 z-[10]">
                 <tr className="bg-gray-200 border-b font-bold text-gray-700">

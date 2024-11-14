@@ -215,9 +215,9 @@ const Tasks = () => {
       <div>{!isDashboard && <TotalCounts refreshCount={del} />}</div>
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
-          <div className="flex justify-end items-center">
+          <div className="flex justify-end items-center ">
             <div className="filters">
-              <ul className="flex justify-end space-x-3">
+              <ul className="flex justify-end space-x-3 overflow-auto w-[100%]">
                 <li>
                   <SelectTaskProjects
                     selectedProject={selectedProject}
@@ -236,7 +236,6 @@ const Tasks = () => {
                     setValue={setSelectedStatus}
                   />
                 </li>
-
                 <li>
                   <UserSelectionPopover
                     usersData={usersData}
@@ -292,7 +291,7 @@ const Tasks = () => {
                   "actions",
                   "project_title",
                   "assignees",
-                   "status"
+                  "status",
                 ]}
               />
             </div>

@@ -273,7 +273,7 @@ const TaskComments = ({ taskId }: any) => {
         </div>
         <div
           ref={commentsContainerRef}
-          className="card-body pb-[5rem] px-4 flex flex-col h-comments overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
+          className="card-body pb-[5rem] px-4 h-[272px] flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
         >
           <div className="member-comments space-y-3  flex-1 pr-3">
             {groupedComments?.length > 0 ? (
