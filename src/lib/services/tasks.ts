@@ -11,6 +11,7 @@ interface GetAllPaginatedUsersPropTypes {
   priority?: string;
   project_id?: any;
   user_ids?: any;
+  is_archived: any;
 }
 
 export const getAllPaginatedTasks = async ({
@@ -24,6 +25,7 @@ export const getAllPaginatedTasks = async ({
   priority,
   project_id,
   user_ids,
+  is_archived,
 }: GetAllPaginatedUsersPropTypes) => {
   try {
     const queryParams = {
@@ -37,13 +39,14 @@ export const getAllPaginatedTasks = async ({
       priority: priority,
       project_id: project_id,
       user_ids: user_ids,
+      is_archived,
     };
     return await $fetch.get("/tasks/all", queryParams);
   } catch (err) {
     throw err;
   }
 };
-export const getAllArchiveTasks = async ({
+export const getAllArchivedTasks = async ({
   pageIndex,
   pageSize,
   order_by,
@@ -54,6 +57,7 @@ export const getAllArchiveTasks = async ({
   priority,
   project_id,
   user_ids,
+  is_archived,
 }: GetAllPaginatedUsersPropTypes) => {
   try {
     const queryParams = {
@@ -67,6 +71,7 @@ export const getAllArchiveTasks = async ({
       priority: priority,
       project_id: project_id,
       user_ids: user_ids,
+      is_archived,
     };
     return await $fetch.get("/tasks/all", queryParams);
   } catch (err) {

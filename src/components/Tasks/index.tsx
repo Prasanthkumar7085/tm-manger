@@ -44,6 +44,11 @@ const Tasks = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
+  const user_type: any = useSelector(
+    (state: any) => state.auth.user.user_details?.user_type
+  );
+  const { projectId } = useParams({ strict: false });
+
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 25;
@@ -54,7 +59,8 @@ const Tasks = () => {
   const initialStatus = searchParams.get("status") || "";
   const initialPrioritys = searchParams.get("priority") || "";
   const intialProject = searchParams.get("project_id") || "";
-  const intialUsers = searchParams.get("user_ids") || "";
+  const intialuserIds = searchParams.get("user_ids") || "";
+
   const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedDate, setSelectedDate] = useState<any>(new Date());
@@ -63,10 +69,11 @@ const Tasks = () => {
   const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
   const [dateValue, setDateValue] = useState<any>(null);
   const [users, setUsers] = useState<any[]>([]);
-
+  const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [del, setDel] = useState<any>(1);
-  const [selectedMembers, setSelectedMembers] = useState<any>(intialUsers);
+  const [selectedMembers, setSelectedMembers] = useState<any[]>([]);
+  const [isArchive, setIsArchive] = useState(false); // Track archive state
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
@@ -86,6 +93,7 @@ const Tasks = () => {
       selectedpriority,
       selectedProject,
       selectedMembers,
+      isArchive, // Add the archive state in the query
     ],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
@@ -99,8 +107,10 @@ const Tasks = () => {
         from_date: selectedDate?.length ? selectedDate[0] : null,
         to_date: selectedDate?.length ? selectedDate[1] : null,
         user_ids: selectedMembers.map((member: any) => member.id),
+        is_archived: isArchive, // Pass the archive state
       });
-      const queryParams = {
+
+      let queryParams: any = {
         current_page: +pagination.pageIndex,
         page_size: +pagination.pageSize,
         order_by: pagination.order_by ? pagination.order_by : undefined,
@@ -110,8 +120,13 @@ const Tasks = () => {
         status: selectedStatus || undefined,
         project_id: selectedProject || undefined,
         priority: selectedpriority || undefined,
-        user_ids: selectedMembers.map((member: any) => member.id),
+        is_archived: isArchive, // Add archive state to query params
       };
+      if (selectedMembers?.length) {
+        queryParams["user_ids"] = selectedMembers.map(
+          (member: any) => member.id
+        );
+      }
 
       if (response?.status == 200) {
         router.navigate({
@@ -135,6 +150,7 @@ const Tasks = () => {
   const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
+
   const getFullName = (user: any) => {
     return `${user?.fname || ""} ${user?.lname || ""}`;
   };
@@ -180,15 +196,13 @@ const Tasks = () => {
     selectedpriority,
     selectedProject,
     selectedMembers,
+    isArchive, // Include archive state in the effect
   ]);
 
   const handleNavigation = () => {
     navigate({
       to: "/tasks/add",
     });
-  };
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchString(event.target.value);
   };
 
   const handleDateChange = (fromDate: any, toDate: any) => {
@@ -231,13 +245,7 @@ const Tasks = () => {
                     setValue={setSelectedStatus}
                   />
                 </li>
-                <li>
-                  <SearchFilter
-                    searchString={searchString}
-                    setSearchString={setSearchString}
-                    title="Search By Task name"
-                  />
-                </li>
+
                 <li>
                   <UserSelectionPopover
                     usersData={usersData}
@@ -252,48 +260,54 @@ const Tasks = () => {
 
                 <li>
                   <DateRangeFilter
+                    selectedDate={selectedDate}
+                    setSelectedDate={handleDateChange}
                     dateValue={dateValue}
-                    onChangeData={handleDateChange}
+                    clearDate={false}
+                    key="date-range-filter"
                   />
+                </li>
+                <li className="space-x-4">
+                  {canAddTask(user_type) && (
+                    <Button variant="outline" onClick={handleNavigation}>
+                      Add Task
+                    </Button>
+                  )}
                 </li>
                 <li>
                   <Button
-                    className="font-normal text-sm"
-                    variant="add"
-                    size="DefaultButton"
-                    onClick={handleNavigation}
+                    variant="outline"
+                    onClick={() => setIsArchive(!isArchive)} // Toggle the archive state
                   >
-                    <span className="text-xl font-normal pr-2 text-md">+</span>
-                    Add Task
+                    {isArchive ? "Show Active Tasks" : "Show Archived Tasks"}
                   </Button>
                 </li>
               </ul>
             </div>
           </div>
         </div>
-        <div className="mt-3">
-          {isError ? (
-            <div>Error: {error.message}</div>
+
+        <div className="flex flex-col mt-4 space-y-5">
+          {isLoading || isFetching ? (
+            <LoadingComponent loading={isLoading || isFetching} />
           ) : (
-            <div>
-              <TanStackTable
-                data={taksDataAfterSerial}
-                columns={taskColumns({ setDel })}
-                paginationDetails={data?.data?.data?.pagination_info}
-                getData={getAllTasks}
-                loading={isLoading || isFetching}
-                removeSortingForColumnIds={[
-                  "serial",
-                  "actions",
-                  "project_title",
-                  "assignees",
-                ]}
-              />
-            </div>
+            <TanStackTable
+              data={taksDataAfterSerial}
+              columns={taskColumns({ setDel })}
+              paginationDetails={data?.data?.data?.pagination_info}
+              getData={getAllTasks}
+              loading={isLoading || isFetching}
+              removeSortingForColumnIds={[
+                "serial",
+                "actions",
+                "project_title",
+                "assignees",
+                "status",
+              ]}
+            />
           )}
         </div>
       </div>
-      <LoadingComponent loading={isLoading || isFetching} />
     </section>
   );
 };
