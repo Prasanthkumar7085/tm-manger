@@ -48,6 +48,7 @@ const Tasks = () => {
     (state: any) => state.auth.user.user_details?.user_type
   );
   const { projectId } = useParams({ strict: false });
+  console.log(projectId, "id");
 
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
@@ -59,6 +60,7 @@ const Tasks = () => {
   const initialStatus = searchParams.get("status") || "";
   const initialPrioritys = searchParams.get("priority") || "";
   const intialProject = searchParams.get("project_id") || "";
+  const intialUsers = searchParams.get("user_ids") || "";
   const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedDate, setSelectedDate] = useState<any>(new Date());
@@ -70,7 +72,17 @@ const Tasks = () => {
   const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [del, setDel] = useState<any>(1);
-  const [selectedMembers, setSelectedMembers] = useState<any>([]);
+  const [selectedMembers, setSelectedMembers] = useState<any>(intialUsers);
+  const [task, setTask] = useState<any>({
+    title: "",
+    ref_id: "",
+    description: "",
+    priority: "",
+    status: "",
+    due_date: "",
+    tags: [],
+    users: [],
+  });
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
@@ -105,7 +117,7 @@ const Tasks = () => {
         to_date: selectedDate?.length ? selectedDate[1] : null,
         user_ids: selectedMembers.map((member: any) => member.id),
       });
-      let queryParams: any = {
+      const queryParams = {
         current_page: +pagination.pageIndex,
         page_size: +pagination.pageSize,
         order_by: pagination.order_by ? pagination.order_by : undefined,
@@ -115,12 +127,9 @@ const Tasks = () => {
         status: selectedStatus || undefined,
         project_id: selectedProject || undefined,
         priority: selectedpriority || undefined,
+        user_ids: selectedMembers.map((member: any) => member.id),
       };
-      if (selectedMembers?.length) {
-        queryParams["user_ids"] = selectedMembers.map(
-          (member: any) => member.id
-        );
-      }
+
       if (response?.status == 200) {
         router.navigate({
           to: "/tasks",
@@ -195,6 +204,9 @@ const Tasks = () => {
       to: "/tasks/add",
     });
   };
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchString(event.target.value);
+  };
 
   const handleDateChange = (fromDate: any, toDate: any) => {
     if (fromDate) {
@@ -206,6 +218,36 @@ const Tasks = () => {
     }
   };
 
+  const confirmSelection = () => {
+    const newMembers = tempSelectedMember
+      .map((memberId) => {
+        const member = users.find((user) => user.id.toString() === memberId);
+        return (
+          member &&
+          !selectedMembers.some((m: any) => m.id === member.id) && {
+            id: member.id,
+            fname: member.fname || "",
+            lname: member.lname || "",
+            email: member.email || "--",
+            phone_number: member.phone_number || "--",
+          }
+        );
+      })
+      .filter(Boolean);
+
+    setSelectedMembers((prev: any) => [...prev, ...newMembers]);
+
+    setTempSelectedMember([]);
+    setOpen(false);
+  };
+
+  const toggleValue = (currentValue: string) => {
+    setTempSelectedMember((prev) =>
+      prev.includes(currentValue)
+        ? prev.filter((value) => value !== currentValue)
+        : [...prev, currentValue]
+    );
+  };
   const handleSelectMembers = (selectedMembers: any) => {
     setSelectedMembers(selectedMembers);
   };
@@ -236,7 +278,13 @@ const Tasks = () => {
                     setValue={setSelectedStatus}
                   />
                 </li>
-
+                <li>
+                  <SearchFilter
+                    searchString={searchString}
+                    setSearchString={setSearchString}
+                    title="Search By Task name"
+                  />
+                </li>
                 <li>
                   <UserSelectionPopover
                     usersData={usersData}
@@ -248,20 +296,14 @@ const Tasks = () => {
                     onSelectMembers={handleSelectMembers}
                   />
                 </li>
-                <li>
-                  <SearchFilter
-                    searchString={searchString}
-                    setSearchString={setSearchString}
-                    title="Search By Task name"
-                  />
-                </li>
+
                 <li>
                   <DateRangeFilter
                     dateValue={dateValue}
                     onChangeData={handleDateChange}
                   />
                 </li>
-                {/* <li>
+                <li>
                   <Button
                     className="font-normal text-sm"
                     variant="add"
@@ -271,7 +313,7 @@ const Tasks = () => {
                     <span className="text-xl font-normal pr-2 text-md">+</span>
                     Add Task
                   </Button>
-                </li> */}
+                </li>
               </ul>
             </div>
           </div>
@@ -292,7 +334,6 @@ const Tasks = () => {
                   "actions",
                   "project_title",
                   "assignees",
-                   "status"
                 ]}
               />
             </div>

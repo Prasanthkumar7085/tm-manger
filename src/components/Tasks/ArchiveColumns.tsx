@@ -23,7 +23,7 @@ import {
 } from "@/lib/helpers/loginHelpers";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
 
-export const taskColumns = ({ setDel, getAllTasks }: any) => {
+export const archiveColumns = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState("");
@@ -55,23 +55,23 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
     return colors[index];
   };
 
-  const deleteTask = async () => {
-    try {
-      setDeleteLoading(true);
-      const response = await archiveTaskAPI(deleteTaskId);
-      if (response?.status === 200 || response?.status === 201) {
-        onClickClose();
-        toast.success(response?.data?.message || "User Task Successfully");
-        setDel((prev: any) => prev + 1);
-        getAllTasks();
-      }
-    } catch (err: any) {
-      toast.error(err?.message || "Something went wrong");
-      console.error(err);
-    } finally {
-      setDeleteLoading(false);
-    }
-  };
+  //   const deleteTask = async () => {
+  //     try {
+  //       setDeleteLoading(true);
+  //       const response = await archiveTaskAPI(deleteTaskId);
+  //       if (response?.status === 200 || response?.status === 201) {
+  //         onClickClose();
+  //         toast.success(response?.data?.message || "User Task Successfully");
+  //         setDel((prev: any) => prev + 1);
+  //         getAllTasks();
+  //       }
+  //     } catch (err: any) {
+  //       toast.error(err?.message || "Something went wrong");
+  //       console.error(err);
+  //     } finally {
+  //       setDeleteLoading(false);
+  //     }
+  //   };
 
   const handleView = (taskId: any) => {
     navigate({
@@ -459,13 +459,13 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
               </Button>
             </li>
           </ul>
-          <DeleteDialog
+          {/* <DeleteDialog
             openOrNot={open}
             label="Are you sure you want to Archive this task?"
             onCancelClick={onClickClose}
             onOKClick={deleteTask}
             deleteLoading={deleteLoading}
-          />
+          /> */}
         </>
       ),
       header: () => <span>Actions</span>,
