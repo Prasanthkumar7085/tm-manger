@@ -1,23 +1,23 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation, useParams, useRouter } from "@tanstack/react-router";
-import dayjs from "dayjs";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import LoadingComponent from "@/components/core/LoadingComponent";
+import TasksProjects from "@/components/TasksProjects";
 import { Button } from "@/components/ui/button";
+import { momentWithTimezone } from "@/lib/helpers/timeZone";
 import {
   fileUploadAPI,
   uploadLogoAPI,
   uploadToS3API,
   viewProjectAPI,
 } from "@/lib/services/projects";
-import { CameraIcon, Loader, X } from "lucide-react";
-import KanbanBoard from "../KanBanView";
-import ProjectMembersManagment from "./ProjectMembersManagment";
-import ProjectTasksCounts from "./ProjectTasksCounts";
+import { CameraIcon, Grid3x3, List, Loader, X } from "lucide-react";
 import { useSelector } from "react-redux";
-import { momentWithTimezone } from "@/lib/helpers/timeZone";
+import KanbanBoard from "../KanBanView";
+import { projectColumns } from "../ProjectColumns";
+import ProjectTasksCounts from "./ProjectTasksCounts";
 
 const ProjectView = () => {
   const { projectId } = useParams({ strict: false });
@@ -29,6 +29,8 @@ const ProjectView = () => {
     (state: any) => state.auth.user.user_details
   );
   const [projectDetails, setProjectDetails] = useState<any>({});
+  const [projectsData, setProjectsData] = useState<any>({});
+  const [viewMode, setViewMode] = useState("card");
   const [projectStatsUpdate, setProjetStatsUpdate] = useState<number>(0);
   const [uploadingStatus, setUploadingStatus] = useState({
     startUploading: false,
@@ -143,6 +145,7 @@ const ProjectView = () => {
     setSelectedFile(null);
     setPreviewUrl(null);
   };
+  let colums = projectColumns({ projectsData });
 
   return (
     <div className="card-container shadow-md border p-5 rounded-lg bg-white h-[calc(100vh-100px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
@@ -224,6 +227,19 @@ const ProjectView = () => {
           </p>
         </div>
         <div className="flex flex-row items-center gap-4">
+          <button
+            className="text-white h-[35px] flex items-center justify-center bg-white border  px-3 rounded-md"
+            onClick={() => setViewMode(viewMode === "card" ? "table" : "card")}
+          >
+            <div className="flex">
+              <List
+                className={`mr-2 ${viewMode === "table" ? "text-[#1B2459]" : "text-[#BF1B39] "}`}
+              />
+              <Grid3x3
+                className={`${viewMode === "card" ? "text-[#1B2459]" : "text-[#BF1B39]"}`}
+              />
+            </div>
+          </button>
           <Button
             onClick={() => {
               if (openMembers || searchParams.get("tab") == "project_members") {
@@ -275,13 +291,28 @@ const ProjectView = () => {
         </div>
       </div>
       <div className="mt-4">
-        {openMembers || searchParams.get("tab") == "project_members" ? (
-          <ProjectMembersManagment projectDetails={projectDetails} />
-        ) : (
+        {/* {openMembers || searchParams.get("tab") == "project_members" ? (
+        //   <ProjectMembersManagment projectDetails={projectDetails} />
+        // ) : (
+        //   <KanbanBoard
+        //     projectDetails={projectDetails}
+        //     setProjetStatsUpdate={setProjetStatsUpdate}
+        //   />
+        // )}
+        // <TanStackTable
+        //     data={projectsData}
+        //     columns={colums}
+        //     paginationDetails={data?.data?.data?.pagination_info}
+        //     getData={getAllProjects}
+        //     removeSortingForColumnIds={["serial", "actions", "project_title"]}
+        //   /> */}
+        {viewMode === "card" ? (
           <KanbanBoard
             projectDetails={projectDetails}
             setProjetStatsUpdate={setProjetStatsUpdate}
           />
+        ) : (
+          <TasksProjects />
         )}
       </div>
       <LoadingComponent loading={isLoading || isFetching} />

@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -61,8 +59,14 @@ export const ActivityDrawer = ({
                         <>
                           <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200">
                             <img
-                              src={item.user_profile_pic_url}
+                              src={
+                                item.user_profile_pic_url ||
+                                "/profile-picture.png"
+                              }
                               alt={item.user_name}
+                              onError={(e) => {
+                                e.currentTarget.src = "/profile-picture.png";
+                              }}
                               className="object-cover w-full h-full"
                             />
                           </div>
