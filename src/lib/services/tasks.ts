@@ -1,4 +1,3 @@
-import { a } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 import { $fetch } from "../fetch";
 interface GetAllPaginatedUsersPropTypes {
   pageIndex?: number;

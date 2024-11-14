@@ -148,7 +148,7 @@ const TaskView = () => {
               </h1>
               <div className="description">
                 <p
-                  className="text-black  text-[.85rem] rounded-md overflow-hidden line-clamp-2"
+                  className="text-black  text-[.85rem] rounded-md  whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[800px]"
                   title={viewData?.description}
                 >
                   {viewData?.description ? viewData.description : "--"}

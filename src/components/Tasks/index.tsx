@@ -1,6 +1,9 @@
+import memberIcon from "@/assets/members.svg";
+import selectDropIcon from "@/assets/select-dropdown.svg";
 import { addSerial } from "@/lib/helpers/addSerial";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
-import { getAllPaginatedTasks, getAssignesListAPI } from "@/lib/services/tasks";
+import { getAllMembers } from "@/lib/services/projects/members";
+import { getAllPaginatedTasks } from "@/lib/services/tasks";
 import { useQuery } from "@tanstack/react-query";
 import {
   useLocation,
@@ -9,36 +12,17 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
 import { SelectTaskProjects } from "../core/CommonComponents/SelectTaskProjects";
 import { TasksSelectPriority } from "../core/CommonComponents/TasksSelectPriority";
 import { TasksSelectStatusFilter } from "../core/CommonComponents/TasksSelectStatusFilter";
 import DateRangeFilter from "../core/DateRangePicker";
 import LoadingComponent from "../core/LoadingComponent";
+import UserSelectionPopover from "../core/MultipleUsersSelect";
 import TanStackTable from "../core/TanstackTable";
-import { Button } from "../ui/button";
 import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
-import { canAddTask } from "@/lib/helpers/loginHelpers";
-import { toast } from "sonner";
-import {
-  getAllMembers,
-  getProjectMembersAPI,
-} from "@/lib/services/projects/members";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Check, Command } from "lucide-react";
-import {
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../ui/command";
-import memberIcon from "@/assets/members.svg";
-import selectDropIcon from "@/assets/select-dropdown.svg";
-import { cn } from "@/lib/utils";
-import UserSelectionPopover from "../core/MultipleUsersSelect";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -292,7 +276,7 @@ const Tasks = () => {
                   "actions",
                   "project_title",
                   "assignees",
-                   "status"
+                  "status",
                 ]}
               />
             </div>

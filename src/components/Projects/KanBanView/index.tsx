@@ -40,6 +40,12 @@ const KanbanBoard: React.FC<any> = ({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [callProjectTasks, setCallProjectTasks] = useState(0);
+  const [pagination, setPagination] = useState<any>({
+    TODO: {},
+    IN_PROGRESS: {},
+    OVER_DUE: {},
+    COMPLETED: {},
+  });
   const [tasks, setTasks] = useState<TaskColumn>({
     TODO: [],
     IN_PROGRESS: [],
@@ -65,16 +71,30 @@ const KanbanBoard: React.FC<any> = ({
     try {
       setIsFetching((prev: any) => ({ ...prev, [status]: true }));
       const response = await getTasksBasedOnProjectAPI(projectId, {
-        current_page: page,
+        page: page,
         page_size: 10,
         status,
         order_by: "created_at:asc",
       });
+
       let data = response?.data?.data;
-      if (response.data.status == 200) {
+      if (response.data.status === 200) {
+        const newTasks = data.records;
+        setPagination((prev: any) => ({
+          ...prev,
+          [status]: data.pagination,
+        }));
         setTasks((prev) => ({
           ...prev,
-          [status]: [...prev[status], ...data.records],
+          [status]: [
+            ...prev[status],
+            ...newTasks.filter(
+              (task: Task) =>
+                !prev[status].some(
+                  (existingTask) => existingTask.task_id === task.task_id
+                )
+            ),
+          ],
         }));
       }
     } catch (error) {
@@ -95,9 +115,14 @@ const KanbanBoard: React.FC<any> = ({
     event: React.UIEvent<HTMLDivElement>
   ) => {
     const bottom =
-      event.currentTarget.scrollHeight ===
-      event.currentTarget.scrollTop + event.currentTarget.clientHeight;
-    if (bottom && !isFetching[status]) {
+      event.currentTarget.scrollHeight <=
+      event.currentTarget.scrollTop + event.currentTarget.clientHeight + 50;
+
+    if (
+      bottom &&
+      !isFetching[status] &&
+      pagination[status]?.totalPages > page[status]
+    ) {
       setPage((prev: any) => {
         const nextPage = prev[status] + 1;
         fetchTasks(status, nextPage);
@@ -130,6 +155,7 @@ const KanbanBoard: React.FC<any> = ({
 
   const handleDragEnd = async (result: DropResult) => {
     const { source, destination } = result;
+
     if (!destination) return;
 
     if (
@@ -138,9 +164,16 @@ const KanbanBoard: React.FC<any> = ({
     ) {
       return;
     }
-    const draggedTask = tasks[source.droppableId][source.index];
 
+    const draggedTask = tasks[source.droppableId][source.index];
     const newStatus = destination.droppableId;
+
+    if (!projectDetails?.active) {
+      toast.error(
+        "You cannot change the status of this task because the project is not active."
+      );
+      return;
+    }
 
     const updatedTasks = { ...tasks };
     updatedTasks[source.droppableId].splice(source.index, 1);
@@ -150,11 +183,10 @@ const KanbanBoard: React.FC<any> = ({
       draggedTask
     );
 
-    setTasks(updatedTasks);
-
     try {
       await updateTaskStatus(draggedTask, newStatus);
       toast.success("Task status updated successfully.");
+      setTasks(updatedTasks);
     } catch (error) {
       toast.error("Failed to update task status.");
       setTasks((prev) => ({ ...prev }));
@@ -177,76 +209,65 @@ const KanbanBoard: React.FC<any> = ({
             }
           </h2>
 
-          {isFetching[columnName] ? (
-            <div className="flex flex-col space-y-3 border">
-              <Skeleton className="h-[105px] w-[250px] rounded-xl" />
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-[250px]" />
-                <Skeleton className="h-4 w-[200px]" />
-              </div>
-            </div>
-          ) : (
-            tasks[columnName].map((task: any, index: number) => (
-              <Draggable
-                key={task.task_id}
-                draggableId={String(task.task_id)}
-                index={index}
-              >
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    className="bg-[#EFF5FF] p-4 my-2 rounded-xl cursor-pointer hover:shadow-md transition-shadow"
-                    onClick={() =>
-                      router.navigate({ to: `/tasks/view/${task.task_id}` })
-                    }
+          {tasks[columnName].map((task: any, index: number) => (
+            <Draggable
+              key={task.task_id}
+              draggableId={String(task.task_id)}
+              index={index}
+            >
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                  className="bg-[#EFF5FF] p-4 my-2 rounded-xl cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() =>
+                    router.navigate({ to: `/tasks/view/${task.task_id}` })
+                  }
+                >
+                  <p
+                    className="text-ellipsis overflow-hidden font-medium text-md capitalize text-[#000000]"
+                    title={task.task_title}
                   >
-                    <p
-                      className="text-ellipsis overflow-hidden font-medium text-md capitalize text-[#000000]"
-                      title={task.task_title}
-                    >
-                      {task.task_title || "--"}
-                    </p>
-                    <p
-                      className="font-medium text-sm text-gray-600 max-h-15 max-w-[250px] overflow-hidden overflow-ellipsis whitespace-nowrap"
-                      title={task?.task_description}
-                    >
-                      {task?.task_description || "--"}
-                    </p>
-                    <div className="flex justify-start mt-3 -space-x-3">
-                      {task?.assignees?.slice(0, 5).map((assignee: any) => {
-                        const initials =
-                          assignee.user_first_name[0] +
-                          assignee.user_last_name[0];
-                        const backgroundColor = getColorFromInitials(initials);
+                    {task.task_title || "--"}
+                  </p>
+                  <p
+                    className="font-medium text-sm text-gray-600 max-h-15 max-w-[250px] overflow-hidden overflow-ellipsis whitespace-nowrap"
+                    title={task?.task_description}
+                  >
+                    {task?.task_description || "--"}
+                  </p>
+                  <div className="flex justify-start mt-3 -space-x-3">
+                    {task?.assignees?.slice(0, 5).map((assignee: any) => {
+                      const initials =
+                        assignee.user_first_name[0]?.toUpperCase() +
+                        assignee.user_last_name[0]?.toUpperCase();
+                      const backgroundColor = getColorFromInitials(initials);
 
-                        return (
-                          <Avatar
-                            key={assignee.user_id}
-                            title={`${assignee.user_first_name} ${assignee.user_last_name}`}
-                            className={`w-8 h-8 ${backgroundColor}`}
-                          >
-                            <AvatarImage
-                              src={assignee.user_profile_pic}
-                              alt={assignee.user_first_name}
-                            />
-                            <AvatarFallback>{initials}</AvatarFallback>
-                          </Avatar>
-                        );
-                      })}
-                      {task?.assignees?.length > 5 && (
-                        <div className="flex items-center justify-center w-8 h-8 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold">
-                          +{task.assignees.length - 5}
-                        </div>
-                      )}
-                    </div>
+                      return (
+                        <Avatar
+                          key={assignee.user_id}
+                          title={`${assignee.user_first_name} ${assignee.user_last_name}`}
+                          className={`w-8 h-8  capitalize ${backgroundColor}`}
+                        >
+                          <AvatarImage
+                            src={assignee.user_profile_pic}
+                            alt={assignee.user_first_name}
+                          />
+                          <AvatarFallback>{initials}</AvatarFallback>
+                        </Avatar>
+                      );
+                    })}
+                    {task?.assignees?.length > 5 && (
+                      <div className="flex items-center justify-center w-8 h-8 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold">
+                        +{task.assignees.length - 5}
+                      </div>
+                    )}
                   </div>
-                )}
-              </Draggable>
-            ))
-          )}
-
+                </div>
+              )}
+            </Draggable>
+          ))}
           {provided.placeholder}
           <Button
             disabled={!projectDetails?.active}
