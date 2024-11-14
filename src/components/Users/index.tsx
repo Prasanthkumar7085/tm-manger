@@ -44,6 +44,7 @@ function UsersTable() {
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [userType, setUserType] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
+  const [users,setUsers]=useState<any>({})
   const [open, setOpen] = useState(false);
   const [deleteuserId, setDeleteUserId] = useState<any>();
   const [isEditing, setIsEditing] = useState(false);
@@ -87,13 +88,13 @@ function UsersTable() {
         page_size: +pagination.pageSize,
         order_by: pagination.order_by ? pagination.order_by : undefined,
         search: debouncedSearch || undefined,
-        active: selectedStatus || undefined,
+        active: selectedStatus|| undefined,
       };
       router.navigate({
         to: "/users",
         search: queryParams,
       });
-
+      // setUsers( response?.data?.data?.records,)
       return response;
     },
   });
@@ -233,12 +234,10 @@ function UsersTable() {
     }
   };
 
-
-
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
-      if (searchString || selectedStatus) {
+      if (searchString||selectedStatus) {
         getAllUsers({
           pageIndex: 1,
           pageSize: pageSizeParam,
@@ -255,14 +254,16 @@ function UsersTable() {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString, selectedStatus]);
-
+  }, [searchString,selectedStatus]);
+  
   const usersData =
     addSerial(
       data?.data?.data?.records,
       data?.data?.data?.pagination_info?.current_page,
       data?.data?.data?.pagination_info?.page_size
     ) || [];
+
+  
 
   const handleFormSubmit = async () => {
     if (isEditing) {
@@ -492,6 +493,8 @@ function UsersTable() {
     },
   ];
 
+  console.log(selectedStatus,"status")
+
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       if (popoverRef.current && !popoverRef.current.contains(event.target)) {
@@ -507,6 +510,7 @@ function UsersTable() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
+ console.log(users,"stst")
   return (
     <section id="users" className="relative">
       <div className="card-container shadow-all border p-3 rounded-xl bg-white">

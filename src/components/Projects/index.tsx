@@ -169,6 +169,7 @@ const Projects = () => {
     };
   }, [searchString, selectedSort, selectedStatus, dateValue]);
   let colums = projectColumns({ setDel, getAllProjects, projectsData });
+  // console.log(selectedStatus,"ssd")
   return (
     <section id="projects-container" className="relative">
       <div className="tasks-navbar">

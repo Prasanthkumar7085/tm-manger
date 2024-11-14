@@ -22,6 +22,7 @@ import {
   isProjectMemberOrNot,
 } from "@/lib/helpers/loginHelpers";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
+import ArchiveDialog from "../core/archiveDialog";
 
 export const taskColumns = ({ setDel }: any) => {
   const navigate = useNavigate();
@@ -434,8 +435,8 @@ export const taskColumns = ({ setDel }: any) => {
               </Button>
             </li>
             <li>
-              <Button
-                title="Delete"
+               <Button
+                title="Archive"
                 disabled={
                   profileData?.user_type === "admin" ||
                   isProjectMemberOrNot(
@@ -450,17 +451,17 @@ export const taskColumns = ({ setDel }: any) => {
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
               >
                 <img
-                  src={"/table/delete.svg"}
-                  alt="delete"
+                  src={"/table/archive-icon.svg"}
+                  alt="archive"
                   height={18}
                   width={18}
                 />
               </Button>
             </li>
           </ul>
-          <DeleteDialog
+          <ArchiveDialog
             openOrNot={open}
-            label="Are you sure you want to Delete this task?"
+            label="Are you sure you want to archive this task?"
             onCancelClick={onClickClose}
             onOKClick={deleteTask}
             deleteLoading={deleteLoading}

@@ -264,6 +264,8 @@ export const userColumns = [
         };
       }, [isOpen]);
 
+      // console.log(isActive,"active")
+
       return (
         <div
           className="text-[12px]"

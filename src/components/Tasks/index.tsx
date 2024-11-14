@@ -196,6 +196,12 @@ const Tasks = () => {
       to: "/tasks/add",
     });
   };
+
+  // const handleNavigationTasks = () => {
+  //   navigate({
+  //     to: "/tasks/archive",
+  //   });
+  // };
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchString(event.target.value);
   };
@@ -300,6 +306,17 @@ const Tasks = () => {
                     Add Task
                   </Button>
                 </li>
+                {/* <li>
+                  <Button
+                    className="font-normal text-sm"
+                    variant="add"
+                    size="DefaultButton"
+                    onClick={handleNavigationTasks}
+                  >
+                    <span className="text-xl font-normal pr-2 text-md">+</span>
+                    Archive
+                  </Button>
+                </li> */}
               </ul>
             </div>
           </div>
