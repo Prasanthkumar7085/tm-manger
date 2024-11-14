@@ -44,12 +44,6 @@ const Tasks = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
-  const user_type: any = useSelector(
-    (state: any) => state.auth.user.user_details?.user_type
-  );
-  const { projectId } = useParams({ strict: false });
-  console.log(projectId, "id");
-
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 25;
@@ -69,21 +63,10 @@ const Tasks = () => {
   const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
   const [dateValue, setDateValue] = useState<any>(null);
   const [users, setUsers] = useState<any[]>([]);
-  const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
+
   const [open, setOpen] = useState<boolean>(false);
   const [del, setDel] = useState<any>(1);
   const [selectedMembers, setSelectedMembers] = useState<any>(intialUsers);
-  const [task, setTask] = useState<any>({
-    title: "",
-    ref_id: "",
-    description: "",
-    priority: "",
-    status: "",
-    due_date: "",
-    tags: [],
-    users: [],
-  });
-
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
@@ -218,36 +201,6 @@ const Tasks = () => {
     }
   };
 
-  const confirmSelection = () => {
-    const newMembers = tempSelectedMember
-      .map((memberId) => {
-        const member = users.find((user) => user.id.toString() === memberId);
-        return (
-          member &&
-          !selectedMembers.some((m: any) => m.id === member.id) && {
-            id: member.id,
-            fname: member.fname || "",
-            lname: member.lname || "",
-            email: member.email || "--",
-            phone_number: member.phone_number || "--",
-          }
-        );
-      })
-      .filter(Boolean);
-
-    setSelectedMembers((prev: any) => [...prev, ...newMembers]);
-
-    setTempSelectedMember([]);
-    setOpen(false);
-  };
-
-  const toggleValue = (currentValue: string) => {
-    setTempSelectedMember((prev) =>
-      prev.includes(currentValue)
-        ? prev.filter((value) => value !== currentValue)
-        : [...prev, currentValue]
-    );
-  };
   const handleSelectMembers = (selectedMembers: any) => {
     setSelectedMembers(selectedMembers);
   };
