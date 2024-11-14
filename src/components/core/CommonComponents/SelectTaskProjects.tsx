@@ -69,10 +69,10 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
           <div className="inputContent flex items-center">
             <div className="content truncate w-[125px]">
               {selectedProject
-                ? data?.find((item: any) => item.id == selectedProject)?.title
+                ? data?.find((item: any) => item.id === selectedProject)?.title
                 : "Select Project"}
             </div>
-            <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
+            <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2 bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
             {selectedProject && (
               <X
                 className="mr-4 h-4 w-4 cursor-pointer"
@@ -97,34 +97,36 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
             ) : (
               <CommandGroup>
                 {data?.length > 0
-                  ? data?.map((project: any) => (
-                      <CommandItem
-                        key={project.id}
-                        onSelect={() => handleSelect(project)}
-                      >
-                        {(project.logo_url || "/favicon.png") && (
-                          <img
-                            src={project.logo_url || "/favicon.png"}
-                            alt={`${project.title} logo`}
-                            className="mr-2 h-6 w-6 rounded-full object-cover"
-                            onError={(e: any) => {
-                              e.target.onerror = null;
-                              e.target.src =
-                                "https://via.placeholder.com/150?text=No preview";
-                            }}
-                          />
-                        )}
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            selectedProject === project.id
-                              ? "opacity-100"
-                              : "opacity-0"
+                  ? data?.map((project: any) =>
+                      project.id ? (
+                        <CommandItem
+                          key={project.id}
+                          onSelect={() => handleSelect(project)}
+                        >
+                          {(project.logo_url || "/favicon.png") && (
+                            <img
+                              src={project.logo_url || "/favicon.png"}
+                              alt={`${project.title} logo`}
+                              className="mr-2 h-6 w-6 rounded-full object-cover"
+                              onError={(e: any) => {
+                                e.target.onerror = null;
+                                e.target.src =
+                                  "https://via.placeholder.com/150?text=No preview";
+                              }}
+                            />
                           )}
-                        />
-                        {project.title}
-                      </CommandItem>
-                    ))
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              selectedProject === project.id
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {project.title}
+                        </CommandItem>
+                      ) : null
+                    )
                   : ""}
               </CommandGroup>
             )}

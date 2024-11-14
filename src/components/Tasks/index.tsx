@@ -23,6 +23,7 @@ import UserSelectionPopover from "../core/MultipleUsersSelect";
 import TanStackTable from "../core/TanstackTable";
 import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
+import { Button } from "../ui/button";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -43,6 +44,8 @@ const Tasks = () => {
   const initialStatus = searchParams.get("status") || "";
   const initialPrioritys = searchParams.get("priority") || "";
   const intialProject = searchParams.get("project_id") || "";
+  const intialuserIds = searchParams.get("user_ids") || "";
+
   const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedDate, setSelectedDate] = useState<any>(new Date());
@@ -54,8 +57,8 @@ const Tasks = () => {
   const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [del, setDel] = useState<any>(1);
-  const [selectedMembers, setSelectedMembers] = useState<any>([]);
-
+  const [selectedMembers, setSelectedMembers] = useState<any[]>([]);
+  const [isArchive, setIsArchive] = useState(false); // Track archive state
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
@@ -75,6 +78,7 @@ const Tasks = () => {
       selectedpriority,
       selectedProject,
       selectedMembers,
+      isArchive, // Add the archive state in the query
     ],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
@@ -88,7 +92,9 @@ const Tasks = () => {
         from_date: selectedDate?.length ? selectedDate[0] : null,
         to_date: selectedDate?.length ? selectedDate[1] : null,
         user_ids: selectedMembers.map((member: any) => member.id),
+        is_archived: isArchive, // Pass the archive state
       });
+
       let queryParams: any = {
         current_page: +pagination.pageIndex,
         page_size: +pagination.pageSize,
@@ -99,12 +105,14 @@ const Tasks = () => {
         status: selectedStatus || undefined,
         project_id: selectedProject || undefined,
         priority: selectedpriority || undefined,
+        is_archived: isArchive, // Add archive state to query params
       };
       if (selectedMembers?.length) {
         queryParams["user_ids"] = selectedMembers.map(
           (member: any) => member.id
         );
       }
+
       if (response?.status == 200) {
         router.navigate({
           to: "/tasks",
@@ -127,6 +135,7 @@ const Tasks = () => {
   const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
+
   const getFullName = (user: any) => {
     return `${user?.fname || ""} ${user?.lname || ""}`;
   };
@@ -172,6 +181,7 @@ const Tasks = () => {
     selectedpriority,
     selectedProject,
     selectedMembers,
+    isArchive, // Include archive state in the effect
   ]);
 
   const handleNavigation = () => {
@@ -220,7 +230,13 @@ const Tasks = () => {
                     setValue={setSelectedStatus}
                   />
                 </li>
-
+                <li>
+                  <SearchFilter
+                    searchString={searchString}
+                    setSearchString={setSearchString}
+                    title="Search By Task name"
+                  />
+                </li>
                 <li>
                   <UserSelectionPopover
                     usersData={usersData}
@@ -232,58 +248,50 @@ const Tasks = () => {
                     onSelectMembers={handleSelectMembers}
                   />
                 </li>
-                <li>
-                  <SearchFilter
-                    searchString={searchString}
-                    setSearchString={setSearchString}
-                    title="Search By Task name"
-                  />
-                </li>
+
                 <li>
                   <DateRangeFilter
+                    selectedDate={selectedDate}
+                    setSelectedDate={handleDateChange}
                     dateValue={dateValue}
-                    onChangeData={handleDateChange}
+                    clearDate={false}
+                    key="date-range-filter"
                   />
                 </li>
+
                 {/* <li>
                   <Button
-                    className="font-normal text-sm"
-                    variant="add"
-                    size="DefaultButton"
-                    onClick={handleNavigation}
+                    variant="outline"
+                    onClick={() => setIsArchive(!isArchive)} // Toggle the archive state
                   >
-                    <span className="text-xl font-normal pr-2 text-md">+</span>
-                    Add Task
+                    {isArchive ? "Show Active Tasks" : "Show Archived Tasks"}
                   </Button>
                 </li> */}
               </ul>
             </div>
           </div>
         </div>
-        <div className="mt-3">
-          {isError ? (
-            <div>Error: {error.message}</div>
-          ) : (
-            <div>
-              <TanStackTable
-                data={taksDataAfterSerial}
-                columns={taskColumns({ setDel })}
-                paginationDetails={data?.data?.data?.pagination_info}
-                getData={getAllTasks}
-                loading={isLoading || isFetching}
-                removeSortingForColumnIds={[
-                  "serial",
-                  "actions",
-                  "project_title",
-                  "assignees",
-                  "status",
-                ]}
-              />
-            </div>
-          )}
+
+        <div className="flex flex-col mt-4 space-y-5">
+          <div>
+            <TanStackTable
+              data={taksDataAfterSerial}
+              columns={taskColumns({ setDel })}
+              paginationDetails={data?.data?.data?.pagination_info}
+              getData={getAllTasks}
+              loading={isLoading || isFetching}
+              removeSortingForColumnIds={[
+                "serial",
+                "actions",
+                "project_title",
+                "assignees",
+                "status",
+              ]}
+            />
+          </div>
         </div>
       </div>
-      <LoadingComponent loading={isLoading || isFetching} />
+      <LoadingComponent loading={isLoading} />
     </section>
   );
 };

@@ -6,7 +6,7 @@ import {
   taskPriorityConstants,
   taskStatusConstants,
 } from "@/lib/helpers/statusConstants";
-import { deleteTaskAPI } from "@/lib/services/tasks";
+import { archiveTaskAPI, deleteTaskAPI } from "@/lib/services/tasks";
 import { useNavigate } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
@@ -24,7 +24,7 @@ import {
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
 import { getColorFromInitials } from "@/lib/constants/colorConstants";
 
-export const taskColumns = ({ setDel }: any) => {
+export const taskColumns = ({ setDel, getAllTasks }: any) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState("");
@@ -36,11 +36,12 @@ export const taskColumns = ({ setDel }: any) => {
   const deleteTask = async () => {
     try {
       setDeleteLoading(true);
-      const response = await deleteTaskAPI(deleteTaskId);
+      const response = await archiveTaskAPI(deleteTaskId);
       if (response?.status === 200 || response?.status === 201) {
         onClickClose();
         toast.success(response?.data?.message || "User Task Successfully");
         setDel((prev: any) => prev + 1);
+        getAllTasks();
       }
     } catch (err: any) {
       toast.error(err?.message || "Something went wrong");
@@ -184,7 +185,8 @@ export const taskColumns = ({ setDel }: any) => {
               .slice(0, 5)
               .map((assignee: any) => {
                 const initials =
-                  assignee.user_first_name[0] + assignee.user_last_name[0];
+                  assignee.user_first_name[0]?.toUpperCase() +
+                  assignee.user_last_name[0]?.toUpperCase();
                 const backgroundColor = getColorFromInitials(initials);
 
                 return (
@@ -438,7 +440,7 @@ export const taskColumns = ({ setDel }: any) => {
           </ul>
           <DeleteDialog
             openOrNot={open}
-            label="Are you sure you want to Delete this task?"
+            label="Are you sure you want to Archive this task?"
             onCancelClick={onClickClose}
             onOKClick={deleteTask}
             deleteLoading={deleteLoading}
