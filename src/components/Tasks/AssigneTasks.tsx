@@ -305,7 +305,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
           </div>
 
           {selectedMembers.length > 0 ? (
-            <div className="mt-2 space-y-2  pb-[2px] overflow-x-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+            <div className="h-[110px] mt-2 space-y-2  pb-[2px] overflow-x-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
               {selectedMembers.map((member, index) => (
                 <>
                   <div

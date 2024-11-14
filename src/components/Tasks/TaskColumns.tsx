@@ -39,9 +39,8 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
       const response = await archiveTaskAPI(deleteTaskId);
       if (response?.status === 200 || response?.status === 201) {
         onClickClose();
-        toast.success(response?.data?.message || "User Task Successfully");
+        toast.success(response?.data?.message);
         setDel((prev: any) => prev + 1);
-        getAllTasks();
       }
     } catch (err: any) {
       toast.error(err?.message || "Something went wrong");

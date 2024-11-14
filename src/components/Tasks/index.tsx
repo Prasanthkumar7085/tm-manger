@@ -23,7 +23,6 @@ import UserSelectionPopover from "../core/MultipleUsersSelect";
 import TanStackTable from "../core/TanstackTable";
 import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
-import { Button } from "../ui/button";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -58,7 +57,7 @@ const Tasks = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [del, setDel] = useState<any>(1);
   const [selectedMembers, setSelectedMembers] = useState<any[]>([]);
-  const [isArchive, setIsArchive] = useState(false); // Track archive state
+  const [isArchive, setIsArchive] = useState(false);
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
@@ -78,7 +77,7 @@ const Tasks = () => {
       selectedpriority,
       selectedProject,
       selectedMembers,
-      isArchive, // Add the archive state in the query
+      isArchive,
     ],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
@@ -91,8 +90,7 @@ const Tasks = () => {
         project_id: selectedProject,
         from_date: selectedDate?.length ? selectedDate[0] : null,
         to_date: selectedDate?.length ? selectedDate[1] : null,
-        user_ids: selectedMembers.map((member: any) => member.id),
-        is_archived: isArchive, // Pass the archive state
+        user_ids: selectedMembers.map((member: any) => member.id) || null,
       });
 
       let queryParams: any = {
@@ -105,7 +103,6 @@ const Tasks = () => {
         status: selectedStatus || undefined,
         project_id: selectedProject || undefined,
         priority: selectedpriority || undefined,
-        is_archived: isArchive, // Add archive state to query params
       };
       if (selectedMembers?.length) {
         queryParams["user_ids"] = selectedMembers.map(
@@ -117,7 +114,6 @@ const Tasks = () => {
         router.navigate({
           to: "/tasks",
           search: queryParams,
-          replace: true,
         });
 
         return response;
@@ -181,14 +177,8 @@ const Tasks = () => {
     selectedpriority,
     selectedProject,
     selectedMembers,
-    isArchive, // Include archive state in the effect
+    isArchive,
   ]);
-
-  const handleNavigation = () => {
-    navigate({
-      to: "/tasks/add",
-    });
-  };
 
   const handleDateChange = (fromDate: any, toDate: any) => {
     if (fromDate) {
@@ -209,9 +199,9 @@ const Tasks = () => {
       <div>{!isDashboard && <TotalCounts refreshCount={del} />}</div>
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
-          <div className="flex justify-end items-center">
+          <div className="flex justify-end items-center ">
             <div className="filters">
-              <ul className="flex justify-end space-x-3">
+              <ul className="flex justify-end space-x-3 overflow-auto w-[100%]">
                 <li>
                   <SelectTaskProjects
                     selectedProject={selectedProject}

@@ -71,7 +71,7 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className="w-[220px] h-[35px] flex items-center justify-between px-2 bg-[#F4F4F6] border-[#E2E2E2] rounded-[8px] text-[#00000099]"
+            className="w-[220px] h-[35px] grid grid-cols-[30px_150px_25px] items-center px-0 py-0 bg-[#F4F4F6] border-[#E2E2E2] rounded-[8px] text-[#00000099]"
           >
             <div className="flex items-center gap-x-1">
               <img
@@ -80,12 +80,12 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
                 className="w-5 h-5 mr-1"
               />
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 justify-start w-[100%]">
               {selectedMembers.length === 0 ? (
                 <p>Select Assignees</p>
               ) : (
-                <div className="flex items-center gap-1">
-                  <div className="flex justify-start -space-x-1 mt-1">
+                <div className="flex items-center gap-1 justify-between w-[96%]">
+                  <div className="flex justify-start -space-x-1">
                     {selectedMembers?.slice(0, 5).map((user: any) => {
                       const initials = user.fname[0] + user.lname[0];
                       const backgroundColor = getColorFromInitials(initials);
