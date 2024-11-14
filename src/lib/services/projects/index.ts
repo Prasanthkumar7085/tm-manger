@@ -91,9 +91,12 @@ export const uploadToS3API = async (url: string, file: File) => {
     throw err;
   }
 };
-export const getTasksBasedOnProjectAPI = async (projectId: any) => {
+export const getTasksBasedOnProjectAPI = async (
+  projectId: any,
+  queryParams: any
+) => {
   try {
-    return await $fetch.get(`/projects/${projectId}/tasks`);
+    return await $fetch.get(`/projects/${projectId}/tasks`, queryParams);
   } catch (err: any) {
     throw err;
   }
