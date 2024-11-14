@@ -1,5 +1,6 @@
 import CKEditorComponent from "@/components/core/CKEditor/CKEditorComponent";
 import LoadingComponent from "@/components/core/LoadingComponent";
+import commentsquare from "@/assets/message-square.svg";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +21,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import RepliedComments from "./RepliedComments";
+import { momentWithTimezone } from "@/lib/helpers/timeZone";
 const TaskComments = ({ taskId }: any) => {
   const userID = useSelector(
     (state: any) => state.auth?.user?.user_details?.id
@@ -276,9 +278,12 @@ const TaskComments = ({ taskId }: any) => {
           <div className="member-comments space-y-3  flex-1 pr-3">
             {groupedComments?.length > 0 ? (
               groupedComments?.map((group: any, index: number) => {
-                const formattedDate = format(new Date(group.date), "PPP");
                 let filtersReplyComments = group.comments.filter(
                   (comment: any) => comment.replyTo === null
+                );
+                const formattedDate = momentWithTimezone(
+                  group.date,
+                  "MMMM D, YYYY"
                 );
 
                 return (
@@ -437,7 +442,14 @@ const TaskComments = ({ taskId }: any) => {
                 );
               })
             ) : (
-              <div className="text-center">No comments found</div>
+              <div className="flex items-center justify-center  py-1 w-[200px] mx-auto mt-8">
+                <img
+                  src={commentsquare}
+                  alt="No tags"
+                  className="w-5 h-5 mr-1"
+                />
+                <span className="text-center">No comments found</span>
+              </div>
             )}
           </div>
         </div>
@@ -445,7 +457,7 @@ const TaskComments = ({ taskId }: any) => {
           <div className="grid grid-cols-[40px,auto] space-x-3">
             <div className="profile-image">
               <img
-                className="shadow-lg rounded-full w-[40px]"
+                className="shadow-lg rounded-full w-[40px] h-[40px]"
                 src={profileData?.profile_pic || "/profile-picture.png"}
                 alt="User"
               />

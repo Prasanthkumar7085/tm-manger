@@ -19,16 +19,18 @@ import ProjectDataTable from "./ProjectWiseStats";
 import StatsAndGraph from "./StatsAndGraphs";
 import DatePickerField from "./core/DateRangePicker";
 import dayjs from "dayjs";
+import DateRangeFilter from "./core/DateRangePicker";
 
 const formatDate = (date: any) => {
   return dayjs(date).format("YYYY-MM-DD");
 };
 
 const DashBoard = () => {
-  const [selectedDate, setSelectedDate] = useState([
+  const [selectedDate, setSelectedDate] = useState<any>([
     startOfMonth(new Date()),
     endOfMonth(new Date()),
   ]);
+  const [dateValue, setDateValue] = useState<[Date, Date] | null>();
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
   );
@@ -67,13 +69,14 @@ const DashBoard = () => {
     enabled: !!selectedDate,
   });
 
-  const handleDateChange = (fromDate: any, toDate: any) => {
+  const handleDateChange = (fromDate: Date | null, toDate: Date | null) => {
     if (fromDate && toDate) {
       const [fromDateUTC, toDateUTC] = changeDateToUTC(fromDate, toDate);
+      setDateValue([fromDateUTC, toDateUTC]);
       setSelectedDate([fromDateUTC, toDateUTC]);
     } else {
-      const today = new Date();
-      setSelectedDate([startOfMonth(today), endOfMonth(today)]);
+      setDateValue(null);
+      setSelectedDate(null);
     }
   };
 

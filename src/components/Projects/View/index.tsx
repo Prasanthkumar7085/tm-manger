@@ -18,11 +18,7 @@ import KanbanBoard from "../KanBanView";
 import ProjectMembersManagment from "./ProjectMembersManagment";
 import ProjectTasksCounts from "./ProjectTasksCounts";
 import { useSelector } from "react-redux";
-import ProjectCard from "../Card";
-import TanStackTable from "@/components/core/TanstackTable";
-import { getAllProjectStats } from "@/lib/services/dashboard";
-import { projectColumns } from "../ProjectColumns";
-import { addSerial } from "@/lib/helpers/addSerial";
+import { momentWithTimezone } from "@/lib/helpers/timeZone";
 import TasksProjects from "@/components/TasksProjects";
 
 const ProjectView = () => {
@@ -151,7 +147,7 @@ const ProjectView = () => {
     setSelectedFile(null);
     setPreviewUrl(null);
   };
-  let colums = projectColumns({ projectsData });
+
 
   return (
     <div className="card-container shadow-md border p-5 rounded-lg bg-white h-[calc(100vh-100px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
@@ -273,7 +269,7 @@ const ProjectView = () => {
           <div>
             <h2 className="text-sm text-[#666666]">Created At</h2>
             <p className="text-sm text-[#038847] font-[600]">
-              {dayjs(projectDetails?.created_at).format("MM-DD-YYYY")}
+              {momentWithTimezone(projectDetails?.created_at, "MM-DD-YYYY")}
             </p>
           </div>
           <div>

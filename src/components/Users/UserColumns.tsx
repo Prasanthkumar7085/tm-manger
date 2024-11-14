@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { updateUserStatueAPI } from "@/lib/services/users";
 import { toast } from "sonner";
+
 export const userColumns = [
   {
     accessorFn: (row: any) => row.serial,

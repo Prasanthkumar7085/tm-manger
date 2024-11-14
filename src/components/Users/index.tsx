@@ -78,7 +78,7 @@ function UsersTable() {
         pageIndex: pagination.pageIndex,
         pageSize: pagination.pageSize,
         order_by: pagination.order_by,
-        search: debouncedSearch || undefined,
+        search: debouncedSearch,
         active: selectedStatus,
       });
 
@@ -232,6 +232,8 @@ function UsersTable() {
       setLoading(false);
     }
   };
+
+
 
   useEffect(() => {
     const handler = setTimeout(() => {
