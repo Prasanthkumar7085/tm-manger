@@ -68,10 +68,8 @@ const Tasks = () => {
   const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
   const [dateValue, setDateValue] = useState<any>(null);
   const [users, setUsers] = useState<any[]>([]);
-  console.log(users, "users");
   const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(false);
-
   const [del, setDel] = useState<any>(1);
   const [selectedMembers, setSelectedMembers] = useState<any>([]);
   const [task, setTask] = useState<any>({
@@ -103,6 +101,7 @@ const Tasks = () => {
       selectedStatus,
       selectedpriority,
       selectedProject,
+      selectedMembers,
     ],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
@@ -115,6 +114,7 @@ const Tasks = () => {
         project_id: selectedProject,
         from_date: selectedDate?.length ? selectedDate[0] : null,
         to_date: selectedDate?.length ? selectedDate[1] : null,
+        user_ids: selectedMembers.map((member: any) => member.id),
       });
       const queryParams = {
         current_page: +pagination.pageIndex,
@@ -126,6 +126,7 @@ const Tasks = () => {
         status: selectedStatus || undefined,
         project_id: selectedProject || undefined,
         priority: selectedpriority || undefined,
+        user_ids: selectedMembers.map((member: any) => member.id),
       };
 
       if (response?.status == 200) {
@@ -189,7 +190,13 @@ const Tasks = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString, selectedStatus, selectedpriority, selectedProject]);
+  }, [
+    searchString,
+    selectedStatus,
+    selectedpriority,
+    selectedProject,
+    selectedMembers,
+  ]);
 
   const handleNavigation = () => {
     navigate({
@@ -240,6 +247,9 @@ const Tasks = () => {
         : [...prev, currentValue]
     );
   };
+  const handleSelectMembers = (selectedMembers: any) => {
+    setSelectedMembers(selectedMembers);
+  };
 
   return (
     <section id="tasks" className="relative">
@@ -280,6 +290,9 @@ const Tasks = () => {
                     getFullName={getFullName}
                     memberIcon={memberIcon}
                     selectDropIcon={selectDropIcon}
+                    selectedMembers={selectedMembers}
+                    setSelectedMembers={setSelectedMembers}
+                    onSelectMembers={handleSelectMembers}
                   />
                 </li>
 
