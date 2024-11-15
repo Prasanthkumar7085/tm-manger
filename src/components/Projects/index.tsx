@@ -156,7 +156,6 @@ const Projects = () => {
   }, [searchString, selectedSort, selectedStatus, dateValue]);
 
   let colums = projectColumns({ setDel, getAllProjects, projectsData });
-
   return (
     <section id="projects-container" className="relative">
       <div className="tasks-navbar">

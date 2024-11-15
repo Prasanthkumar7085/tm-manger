@@ -44,6 +44,7 @@ function UsersTable() {
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [userType, setUserType] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
+  const [users,setUsers]=useState<any>({})
   const [open, setOpen] = useState(false);
   const [deleteuserId, setDeleteUserId] = useState<any>();
   const [isEditing, setIsEditing] = useState(false);
@@ -87,7 +88,7 @@ function UsersTable() {
         page_size: +pagination.pageSize,
         order_by: pagination.order_by ? pagination.order_by : undefined,
         search: debouncedSearch || undefined,
-        active: selectedStatus || undefined,
+        active: selectedStatus|| undefined,
       };
       router.navigate({
         to: "/users",
@@ -240,7 +241,7 @@ function UsersTable() {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
-      if (searchString || selectedStatus) {
+      if (searchString||selectedStatus) {
         getAllUsers({
           pageIndex: 1,
           pageSize: pageSizeParam,
@@ -374,16 +375,34 @@ function UsersTable() {
     setErrors({});
   };
 
-  const handleInputChange = (e: any) => {
-    let { name, value } = e.target;
-    const updatedValue = value
-      .replace(/[^\w\s]/g, "")
-      .replace(/^\s+/g, "")
-      .replace(/\s{2,}/g, " ");
-    setUserData({
-      ...userData,
-      [name]: updatedValue,
-    });
+  // const handleInputChange = (e: any) => {
+  //   let { name, value } = e.target;
+  //   const updatedValue = value
+  //     .replace(/[^\w\s]/g, "")
+  //     .replace(/^\s+/g, "")
+  //     .replace(/\s{2,}/g, " ");
+  //   setUserData({
+  //     ...userData,
+  //     [name]: updatedValue,
+  //   });
+  // };
+  const handleInputChange = (e:any) => {
+    const { name, value } = e.target;
+    if ((name === "fname" || name === "lname") && !/^[a-zA-Z\s]*$/.test(value)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+      }));
+      return;
+    }
+  
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: [],
+    }));
+    setUserData((prevData:any) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleChangeEmail = (e: any) => {
@@ -489,6 +508,8 @@ function UsersTable() {
     },
   ];
 
+  console.log(selectedStatus,"status")
+
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       if (popoverRef.current && !popoverRef.current.contains(event.target)) {
@@ -504,6 +525,7 @@ function UsersTable() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
+ console.log(users,"stst")
   return (
     <section id="users" className="relative">
       <div className="card-container shadow-all border p-3 rounded-xl bg-white">

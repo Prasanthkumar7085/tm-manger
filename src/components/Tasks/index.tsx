@@ -59,9 +59,7 @@ const Tasks = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [del, setDel] = useState<any>(1);
   const [selectedMembers, setSelectedMembers] = useState<any[]>([]);
-  const [isArchive, setIsArchive] = useState(
-    intialisArchived === "true" ? true : false
-  );
+  const [isArchive, setIsArchive] = useState(false);
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
@@ -290,9 +288,9 @@ const Tasks = () => {
             <TanStackTable
               data={data?.[0]?.length > 0 ? data?.[0] : []}
               columns={
-                searchParams.get("isArchived") == "true"
-                  ? archivetaskColumns({ setDel })
-                  : taskColumns({ setDel })
+                isArchive || searchParams.get("isArchived") == "true"
+                  ? archivetaskColumns({ setDel, isArchive })
+                  : taskColumns({ setDel, isArchive })
               }
               paginationDetails={data?.[1]}
               getData={getAllTasks}
