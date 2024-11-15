@@ -63,8 +63,6 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
     onSelectMembers(selectedUsers);
   };
 
-  const displayUsers = selectedMembers.slice(0, 2);
-
   return (
     <TooltipProvider>
       <Popover open={open} onOpenChange={setOpen}>

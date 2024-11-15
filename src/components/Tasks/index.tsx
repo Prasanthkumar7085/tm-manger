@@ -41,7 +41,7 @@ const Tasks = () => {
   const orderBY = searchParams.get("order_by")
     ? searchParams.get("order_by")
     : "";
-  const initialSearch = searchParams.get("search") || "";
+  const initialSearch = searchParams.get("search_string") || "";
   const initialStatus = searchParams.get("status") || "";
   const initialPrioritys = searchParams.get("priority") || "";
   const intialProject = searchParams.get("project_id") || "";

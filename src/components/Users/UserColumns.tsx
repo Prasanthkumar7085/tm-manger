@@ -276,8 +276,6 @@ export const userColumns = [
         };
       }, [isOpen]);
 
-      // console.log(isActive,"active")
-
       return (
         <div
           className="text-[12px]"
@@ -310,7 +308,7 @@ export const userColumns = [
             <div
               ref={popoverRef}
               style={{
-                position:"absolute",
+                position: "absolute",
                 top: "100%",
                 left: "0",
                 marginTop: "5px",
@@ -327,7 +325,7 @@ export const userColumns = [
                   padding: "5px 10px",
                   cursor: "pointer",
                   color: "green",
-                   zIndex: "999999",
+                  zIndex: "999999",
                 }}
                 onClick={() => updateUserStatus(true)}
               >
