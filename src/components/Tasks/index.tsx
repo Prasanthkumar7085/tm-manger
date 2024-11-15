@@ -157,8 +157,7 @@ const Tasks = () => {
         searchString ||
         selectedStatus ||
         selectedpriority ||
-        selectedProject ||
-        isArchive
+        selectedProject
       ) {
         getAllTasks({
           pageIndex: 1,
@@ -182,7 +181,6 @@ const Tasks = () => {
     selectedpriority,
     selectedProject,
     selectedMembers,
-    isArchive,
   ]);
 
   const handleDateChange = (fromDate: any, toDate: any) => {
