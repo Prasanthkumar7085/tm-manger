@@ -461,7 +461,7 @@ const TaskComments = ({ taskId }: any) => {
                 alt="User"
               />
             </div>
-            <div className="ck-editor-send-button grid grid-cols-[auto,50px] space-x-3 items-end">
+            <div className="ck-editor-send-button grid grid-cols-[auto,50px] space-x-3 items-end ">
               <div className="overflow-auto">
                 {taskId && (
                   <CKEditorComponent

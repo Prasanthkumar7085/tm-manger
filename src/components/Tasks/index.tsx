@@ -81,6 +81,7 @@ const Tasks = () => {
       selectedpriority,
       selectedProject,
       selectedMembers,
+      isArchive,
     ],
 
     queryFn: async () => {
@@ -95,7 +96,7 @@ const Tasks = () => {
         from_date: selectedDate?.length ? selectedDate[0] : null,
         to_date: selectedDate?.length ? selectedDate[1] : null,
         user_ids: selectedMembers?.map((member: any) => member.id) || null,
-        is_archived: searchParams.get("isArchived") || false,
+        is_archived: isArchive ? "true" : "false",
       });
 
       let queryParams: any = {
@@ -108,7 +109,7 @@ const Tasks = () => {
         status: selectedStatus || undefined,
         project_id: selectedProject || undefined,
         priority: selectedpriority || undefined,
-        isArchived: searchParams.get("isArchived") || "false",
+        isArchived: isArchive ? "true" : "false",
       };
       if (selectedMembers?.length > 0) {
         queryParams["user_ids"] = selectedMembers.map(
@@ -157,7 +158,8 @@ const Tasks = () => {
         searchString ||
         selectedStatus ||
         selectedpriority ||
-        selectedProject
+        selectedProject ||
+        isArchive
       ) {
         getAllTasks({
           pageIndex: 1,
@@ -181,6 +183,7 @@ const Tasks = () => {
     selectedpriority,
     selectedProject,
     selectedMembers,
+    isArchive,
   ]);
 
   const handleDateChange = (fromDate: any, toDate: any) => {
@@ -199,12 +202,16 @@ const Tasks = () => {
 
   return (
     <section id="tasks" className="relative">
-      <div>{!isDashboard && <TotalCounts refreshCount={del} />}</div>
+      <div>
+        {!isDashboard && (
+          <TotalCounts refreshCount={del} isArchive={isArchive} />
+        )}
+      </div>
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
-          <div className="flex justify-end items-center ">
-            <div className="filters">
-              <ul className="flex justify-end space-x-3 overflow-auto w-[100%]">
+          <div className="flex items-center">
+            <div className="filters w-[100%]">
+              <ul className="flex justify-start space-x-3 overflow-auto w-[100%] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
                 <li>
                   <SelectTaskProjects
                     selectedProject={selectedProject}
@@ -224,13 +231,6 @@ const Tasks = () => {
                   />
                 </li>
                 <li>
-                  <SearchFilter
-                    searchString={searchString}
-                    setSearchString={setSearchString}
-                    title="Search By Task name"
-                  />
-                </li>
-                <li>
                   <UserSelectionPopover
                     usersData={usersData}
                     getFullName={getFullName}
@@ -244,22 +244,42 @@ const Tasks = () => {
 
                 <li>
                   <DateRangeFilter
-                    selectedDate={selectedDate}
-                    setSelectedDate={handleDateChange}
                     dateValue={dateValue}
-                    clearDate={false}
-                    key="date-range-filter"
+                    onChangeData={handleDateChange}
+                  />
+                </li>
+                <li>
+                  <SearchFilter
+                    searchString={searchString}
+                    setSearchString={setSearchString}
+                    title="Search By Task name"
                   />
                 </li>
 
-                {/* <li>
+                <li>
                   <Button
-                    variant="outline"
-                    onClick={() => setIsArchive(!isArchive)} // Toggle the archive state
+                    title={`${isArchive || searchParams.get("isArchived") === "true" ? "Show Active Tasks" : "Show Archived Tasks"}`}
+                    className={`font-normal text-sm flex items-center space-x-2 ${
+                      isArchive || searchParams.get("isArchived") === "true"
+                        ? "bg-primary hover:bg-primary text-white"
+                        : "bg-gray-200 hover:bg-gray-200"
+                    } max-w-[100px] overflow-hidden truncate`}
+                    size="sm"
+                    onClick={() => setIsArchive(!isArchive)}
                   >
-                    {isArchive ? "Show Active Tasks" : "Show Archived Tasks"}
+                    <img
+                      src={"/archive.svg"}
+                      alt="archive"
+                      height={18}
+                      width={18}
+                    />
+                    <span className="truncate">
+                      {isArchive || searchParams.get("isArchived") === "true"
+                        ? " Active Tasks"
+                        : " Archived Tasks"}
+                    </span>
                   </Button>
-                </li> */}
+                </li>
               </ul>
             </div>
           </div>

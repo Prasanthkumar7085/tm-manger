@@ -41,9 +41,9 @@ export const TasksSelectStatusFilter: React.FC<StatusFilterProps> = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between  bg-[#F4F4F6] h-[35px] w-[175px] relative text-[#00000099] font-normal text-sm border border-[#E2E2E2]"
+          className="justify-between  bg-[#F4F4F6] h-[35px] w-[135px] relative text-[#00000099] font-normal text-sm border border-[#E2E2E2]"
         >
-          <div>
+          <div className="max-w-[80px] overflow-hidden overflow-ellipsis whitespace-nowrap">
             {value ? (
               <span
                 style={{

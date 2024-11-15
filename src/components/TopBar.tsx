@@ -102,27 +102,6 @@ function TopBar() {
               <span className="text-xl font-normal pr-2 text-md">+</span>
               Add Task
             </Button>
-            <Button
-              className="font-normal text-sm"
-              variant="add"
-              size="DefaultButton"
-              onClick={() => {
-                setArchiveTasks(!archiveTasks);
-                let queryParams = {
-                  ...location.search,
-                  isArchived: archiveTasks ? "false" : "true",
-                  current_page: 1,
-                };
-                router.navigate({
-                  to: "/tasks",
-                  search: queryParams,
-                });
-              }}
-            >
-              {searchParams.get("isArchived") == "true"
-                ? "View Tasks"
-                : "Archive Tasks"}
-            </Button>
           </div>
         )}
         <DropdownMenu>
