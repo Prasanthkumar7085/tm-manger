@@ -6,7 +6,7 @@ import {
   taskPriorityConstants,
   taskStatusConstants,
 } from "@/lib/helpers/statusConstants";
-import { deleteTaskAPI } from "@/lib/services/tasks";
+import { archiveTaskAPI, deleteTaskAPI } from "@/lib/services/tasks";
 import { useNavigate } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
@@ -22,9 +22,10 @@ import {
   isProjectMemberOrNot,
 } from "@/lib/helpers/loginHelpers";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
+import { getColorFromInitials } from "@/lib/constants/colorConstants";
 import ArchiveDialog from "../core/archiveDialog";
 
-export const taskColumns = ({ setDel }: any) => {
+export const taskColumns = ({ setDel, getAllTasks }: any) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState("");
@@ -33,36 +34,13 @@ export const taskColumns = ({ setDel }: any) => {
     (state: any) => state.auth.user.user_details
   );
 
-  const getColorFromInitials = (initials: string) => {
-    const colors = [
-      "bg-red-200",
-      "bg-green-200",
-      "bg-blue-200",
-      "bg-yellow-200",
-      "bg-purple-200",
-      "bg-pink-200",
-      "bg-indigo-200",
-      "bg-teal-200",
-      "bg-orange-200",
-      "bg-cyan-200",
-      "bg-amber-200",
-      "bg-lime-200",
-      "bg-emerald-200",
-      "bg-fuchsia-200",
-      "bg-rose-200",
-    ];
-
-    const index = initials.charCodeAt(0) % colors.length;
-    return colors[index];
-  };
-
   const deleteTask = async () => {
     try {
       setDeleteLoading(true);
-      const response = await deleteTaskAPI(deleteTaskId);
+      const response = await archiveTaskAPI(deleteTaskId);
       if (response?.status === 200 || response?.status === 201) {
         onClickClose();
-        toast.success(response?.data?.message || "User Task Successfully");
+        toast.success(response?.data?.message);
         setDel((prev: any) => prev + 1);
       }
     } catch (err: any) {
@@ -207,7 +185,8 @@ export const taskColumns = ({ setDel }: any) => {
               .slice(0, 5)
               .map((assignee: any) => {
                 const initials =
-                  assignee.user_first_name[0] + assignee.user_last_name[0];
+                  assignee.user_first_name[0]?.toUpperCase() +
+                  assignee.user_last_name[0]?.toUpperCase();
                 const backgroundColor = getColorFromInitials(initials);
 
                 return (
@@ -461,7 +440,7 @@ export const taskColumns = ({ setDel }: any) => {
           </ul>
           <ArchiveDialog
             openOrNot={open}
-            label="Are you sure you want to archive this task?"
+            label="Are you sure you want to Archive this task?"
             onCancelClick={onClickClose}
             onOKClick={deleteTask}
             deleteLoading={deleteLoading}

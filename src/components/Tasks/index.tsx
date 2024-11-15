@@ -1,6 +1,9 @@
+import memberIcon from "@/assets/members.svg";
+import selectDropIcon from "@/assets/select-dropdown.svg";
 import { addSerial } from "@/lib/helpers/addSerial";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
-import { getAllPaginatedTasks, getAssignesListAPI } from "@/lib/services/tasks";
+import { getAllMembers } from "@/lib/services/projects/members";
+import { getAllPaginatedTasks } from "@/lib/services/tasks";
 import { useQuery } from "@tanstack/react-query";
 import {
   useLocation,
@@ -9,36 +12,17 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
 import { SelectTaskProjects } from "../core/CommonComponents/SelectTaskProjects";
 import { TasksSelectPriority } from "../core/CommonComponents/TasksSelectPriority";
 import { TasksSelectStatusFilter } from "../core/CommonComponents/TasksSelectStatusFilter";
 import DateRangeFilter from "../core/DateRangePicker";
 import LoadingComponent from "../core/LoadingComponent";
+import UserSelectionPopover from "../core/MultipleUsersSelect";
 import TanStackTable from "../core/TanstackTable";
-import { Button } from "../ui/button";
 import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
-import { canAddTask } from "@/lib/helpers/loginHelpers";
-import { toast } from "sonner";
-import {
-  getAllMembers,
-  getProjectMembersAPI,
-} from "@/lib/services/projects/members";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Check, Command } from "lucide-react";
-import {
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../ui/command";
-import memberIcon from "@/assets/members.svg";
-import selectDropIcon from "@/assets/select-dropdown.svg";
-import { cn } from "@/lib/utils";
-import UserSelectionPopover from "../core/MultipleUsersSelect";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -48,7 +32,6 @@ const Tasks = () => {
     (state: any) => state.auth.user.user_details?.user_type
   );
   const { projectId } = useParams({ strict: false });
-  console.log(projectId, "id");
 
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
@@ -60,6 +43,8 @@ const Tasks = () => {
   const initialStatus = searchParams.get("status") || "";
   const initialPrioritys = searchParams.get("priority") || "";
   const intialProject = searchParams.get("project_id") || "";
+  const intialuserIds = searchParams.get("user_ids") || "";
+
   const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedDate, setSelectedDate] = useState<any>(new Date());
@@ -68,23 +53,11 @@ const Tasks = () => {
   const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
   const [dateValue, setDateValue] = useState<any>(null);
   const [users, setUsers] = useState<any[]>([]);
-  console.log(users, "users");
   const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(false);
-
   const [del, setDel] = useState<any>(1);
-  const [selectedMembers, setSelectedMembers] = useState<any>([]);
-  const [task, setTask] = useState<any>({
-    title: "",
-    ref_id: "",
-    description: "",
-    priority: "",
-    status: "",
-    due_date: "",
-    tags: [],
-    users: [],
-  });
-
+  const [selectedMembers, setSelectedMembers] = useState<any[]>([]);
+  const [isArchive, setIsArchive] = useState(false);
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
@@ -103,6 +76,8 @@ const Tasks = () => {
       selectedStatus,
       selectedpriority,
       selectedProject,
+      selectedMembers,
+      isArchive,
     ],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
@@ -115,8 +90,10 @@ const Tasks = () => {
         project_id: selectedProject,
         from_date: selectedDate?.length ? selectedDate[0] : null,
         to_date: selectedDate?.length ? selectedDate[1] : null,
+        user_ids: selectedMembers.map((member: any) => member.id) || null,
       });
-      const queryParams = {
+
+      let queryParams: any = {
         current_page: +pagination.pageIndex,
         page_size: +pagination.pageSize,
         order_by: pagination.order_by ? pagination.order_by : undefined,
@@ -127,12 +104,16 @@ const Tasks = () => {
         project_id: selectedProject || undefined,
         priority: selectedpriority || undefined,
       };
+      if (selectedMembers?.length) {
+        queryParams["user_ids"] = selectedMembers.map(
+          (member: any) => member.id
+        );
+      }
 
       if (response?.status == 200) {
         router.navigate({
           to: "/tasks",
           search: queryParams,
-          replace: true,
         });
 
         return response;
@@ -150,6 +131,7 @@ const Tasks = () => {
   const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
+
   const getFullName = (user: any) => {
     return `${user?.fname || ""} ${user?.lname || ""}`;
   };
@@ -189,22 +171,14 @@ const Tasks = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString, selectedStatus, selectedpriority, selectedProject]);
-
-  const handleNavigation = () => {
-    navigate({
-      to: "/tasks/add",
-    });
-  };
-
-  // const handleNavigationTasks = () => {
-  //   navigate({
-  //     to: "/tasks/archive",
-  //   });
-  // };
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchString(event.target.value);
-  };
+  }, [
+    searchString,
+    selectedStatus,
+    selectedpriority,
+    selectedProject,
+    selectedMembers,
+    isArchive,
+  ]);
 
   const handleDateChange = (fromDate: any, toDate: any) => {
     if (fromDate) {
@@ -216,35 +190,8 @@ const Tasks = () => {
     }
   };
 
-  const confirmSelection = () => {
-    const newMembers = tempSelectedMember
-      .map((memberId) => {
-        const member = users.find((user) => user.id.toString() === memberId);
-        return (
-          member &&
-          !selectedMembers.some((m: any) => m.id === member.id) && {
-            id: member.id,
-            fname: member.fname || "",
-            lname: member.lname || "",
-            email: member.email || "--",
-            phone_number: member.phone_number || "--",
-          }
-        );
-      })
-      .filter(Boolean);
-
-    setSelectedMembers((prev: any) => [...prev, ...newMembers]);
-
-    setTempSelectedMember([]);
-    setOpen(false);
-  };
-
-  const toggleValue = (currentValue: string) => {
-    setTempSelectedMember((prev) =>
-      prev.includes(currentValue)
-        ? prev.filter((value) => value !== currentValue)
-        : [...prev, currentValue]
-    );
+  const handleSelectMembers = (selectedMembers: any) => {
+    setSelectedMembers(selectedMembers);
   };
 
   return (
@@ -252,9 +199,9 @@ const Tasks = () => {
       <div>{!isDashboard && <TotalCounts refreshCount={del} />}</div>
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
-          <div className="flex justify-end items-center">
+          <div className="flex justify-end items-center ">
             <div className="filters">
-              <ul className="flex justify-end space-x-3">
+              <ul className="flex justify-end space-x-3 overflow-auto w-[100%]">
                 <li>
                   <SelectTaskProjects
                     selectedProject={selectedProject}
@@ -286,65 +233,54 @@ const Tasks = () => {
                     getFullName={getFullName}
                     memberIcon={memberIcon}
                     selectDropIcon={selectDropIcon}
+                    selectedMembers={selectedMembers}
+                    setSelectedMembers={setSelectedMembers}
+                    onSelectMembers={handleSelectMembers}
                   />
                 </li>
 
                 <li>
                   <DateRangeFilter
+                    selectedDate={selectedDate}
+                    setSelectedDate={handleDateChange}
                     dateValue={dateValue}
-                    onChangeData={handleDateChange}
+                    clearDate={false}
+                    key="date-range-filter"
                   />
                 </li>
-                <li>
+                 {/* <li>
                   <Button
-                    className="font-normal text-sm"
-                    variant="add"
-                    size="DefaultButton"
-                    onClick={handleNavigation}
+                     variant="outline"
+                    onClick={() => setIsArchive(!isArchive)} // Toggle the archive state
                   >
-                    <span className="text-xl font-normal pr-2 text-md">+</span>
-                    Add Task
-                  </Button>
-                </li>
-                {/* <li>
-                  <Button
-                    className="font-normal text-sm"
-                    variant="add"
-                    size="DefaultButton"
-                    onClick={handleNavigationTasks}
-                  >
-                    <span className="text-xl font-normal pr-2 text-md">+</span>
-                    Archive
-                  </Button>
-                </li> */}
+                    {isArchive ? "Show Active Tasks" : "Show Archived Tasks"}
+                   </Button>
+                 </li> */}
               </ul>
             </div>
           </div>
         </div>
-        <div className="mt-3">
-          {isError ? (
-            <div>Error: {error.message}</div>
-          ) : (
-            <div>
-              <TanStackTable
-                data={taksDataAfterSerial}
-                columns={taskColumns({ setDel })}
-                paginationDetails={data?.data?.data?.pagination_info}
-                getData={getAllTasks}
-                loading={isLoading || isFetching}
-                removeSortingForColumnIds={[
-                  "serial",
-                  "actions",
-                  "project_title",
-                  "assignees",
-                   "status"
-                ]}
-              />
-            </div>
-          )}
+
+        <div className="flex flex-col mt-4 space-y-5">
+          <div>
+            <TanStackTable
+              data={taksDataAfterSerial}
+              columns={taskColumns({ setDel })}
+              paginationDetails={data?.data?.data?.pagination_info}
+              getData={getAllTasks}
+              loading={isLoading || isFetching}
+              removeSortingForColumnIds={[
+                "serial",
+                "actions",
+                "project_title",
+                "assignees",
+                "status",
+              ]}
+            />
+          </div>
         </div>
       </div>
-      <LoadingComponent loading={isLoading || isFetching} />
+      <LoadingComponent loading={isLoading} />
     </section>
   );
 };

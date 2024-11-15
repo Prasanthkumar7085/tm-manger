@@ -15,6 +15,7 @@ import { getSingleTaskAPI } from "@/lib/services/tasks";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { getSingleUserApi } from "@/lib/services/viewprofile";
+import { Button } from "./ui/button";
 
 interface titleProps {
   title: string;
@@ -61,6 +62,12 @@ function TopBar() {
     enabled: Boolean(userID),
   });
 
+  const handleNavigation = () => {
+    navigate({
+      to: "/tasks/add",
+    });
+  };
+
   return (
     <div className="py-3 px-5 flex justify-between items-center bg-white border-b">
       <span className="ml-2 text-lg font-semibold flex">
@@ -70,6 +77,17 @@ function TopBar() {
       </span>
 
       <div className="flex items-center gap-2">
+        {pathname == "/tasks" && !taskId && (
+          <Button
+            className="font-normal text-sm"
+            variant="add"
+            size="DefaultButton"
+            onClick={handleNavigation}
+          >
+            <span className="text-xl font-normal pr-2 text-md">+</span>
+            Add Task
+          </Button>
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger className="flex gap-2 items-center hover:cursor-pointer">
             <Avatar>

@@ -1,4 +1,3 @@
-import { a } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 import { $fetch } from "../fetch";
 interface GetAllPaginatedUsersPropTypes {
   pageIndex?: number;
@@ -10,6 +9,8 @@ interface GetAllPaginatedUsersPropTypes {
   status?: string;
   priority?: string;
   project_id?: any;
+  user_ids?: any;
+  is_archived?: any;
 }
 
 export const getAllPaginatedTasks = async ({
@@ -22,6 +23,8 @@ export const getAllPaginatedTasks = async ({
   status,
   priority,
   project_id,
+  user_ids,
+  is_archived,
 }: GetAllPaginatedUsersPropTypes) => {
   try {
     const queryParams = {
@@ -34,12 +37,47 @@ export const getAllPaginatedTasks = async ({
       status: status,
       priority: priority,
       project_id: project_id,
+      user_ids: user_ids,
+      is_archived,
     };
     return await $fetch.get("/tasks/all", queryParams);
   } catch (err) {
     throw err;
   }
 };
+export const getAllArchivedTasks = async ({
+  pageIndex,
+  pageSize,
+  order_by,
+  search_string,
+  from_date,
+  to_date,
+  status,
+  priority,
+  project_id,
+  user_ids,
+  is_archived,
+}: GetAllPaginatedUsersPropTypes) => {
+  try {
+    const queryParams = {
+      page: pageIndex,
+      page_size: pageSize,
+      order_by: order_by,
+      search_string: search_string,
+      from_date: from_date,
+      to_date: to_date,
+      status: status,
+      priority: priority,
+      project_id: project_id,
+      user_ids: user_ids,
+      is_archived,
+    };
+    return await $fetch.get("/tasks/all", queryParams);
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const getAssignesListAPI = async () => {
   try {
     return await $fetch.get("/tasks/all");
@@ -176,6 +214,13 @@ export const getDropDownForProjectsTasksAPI = async () => {
 export const deleteTaskAPI = async (id: string) => {
   try {
     return await $fetch.delete(`/tasks/${id}`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const archiveTaskAPI = async (id: string) => {
+  try {
+    return await $fetch.patch(`/tasks/${id}`);
   } catch (err: any) {
     throw err;
   }

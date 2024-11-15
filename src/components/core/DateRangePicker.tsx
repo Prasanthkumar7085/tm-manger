@@ -18,7 +18,7 @@ const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
 
   return (
     <DateRangePicker
-      className="!bg-[#F4F4F6] border border-[#E2E2E2] rounded-[8px] placeholder:text-[#00000066]"
+      className="!bg-[#F4F4F6] border border-[#E2E2E2] rounded-[8px] w-[220px] placeholder:text-[#00000066]"
       editable={false}
       placeholder={"Select Date"}
       placement="bottomEnd"
