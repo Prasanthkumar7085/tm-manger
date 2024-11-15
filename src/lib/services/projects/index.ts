@@ -42,6 +42,7 @@ export const addProjectAPI = async (payload: any) => {
     throw err;
   }
 };
+
 export const updateProjectAPI = async (projectId: any, payload: any) => {
   try {
     return await $fetch.put(`/projects/${projectId}`, payload);
@@ -90,9 +91,12 @@ export const uploadToS3API = async (url: string, file: File) => {
     throw err;
   }
 };
-export const getTasksBasedOnProjectAPI = async (projectId: any) => {
+export const getTasksBasedOnProjectAPI = async (
+  projectId: any,
+  queryParams: any
+) => {
   try {
-    return await $fetch.get(`/projects/${projectId}/tasks`);
+    return await $fetch.get(`/projects/${projectId}/tasks`, queryParams);
   } catch (err: any) {
     throw err;
   }
@@ -106,10 +110,7 @@ export const getProjectWiseTasksAPI = async (projectId: any) => {
   }
 };
 
-export const updateProjectTaskStatusAPI = async (
-  taskID: string,
-  payload: any
-) => {
+export const updateProjectTaskStatusAPI = async (taskID: any, payload: any) => {
   try {
     return await $fetch.put(`/tasks/${taskID}/status`, payload);
   } catch (err: any) {

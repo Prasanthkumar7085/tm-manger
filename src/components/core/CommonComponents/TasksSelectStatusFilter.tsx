@@ -41,43 +41,42 @@ export const TasksSelectStatusFilter: React.FC<StatusFilterProps> = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between  bg-[#F4F4F6] h-[35px] w-[150px] relative text-[#00000099] font-normal text-sm border border-[#E2E2E2]"
+          className="justify-between  bg-[#F4F4F6] h-[35px] w-[135px] relative text-[#00000099] font-normal text-sm border border-[#E2E2E2]"
         >
+          <div className="max-w-[80px] overflow-hidden overflow-ellipsis whitespace-nowrap">
+            {value ? (
+              <span
+                style={{
+                  width: "10px",
+                  height: "10px",
+                  borderRadius: "50%",
+                  backgroundColor: taskStatusConstants.find(
+                    (item: any) => item.value === value
+                  )?.color,
+                  display: "inline-block",
+                  marginRight: "8px",
+                }}
+              ></span>
+            ) : (
+              ""
+            )}
+            {value
+              ? taskStatusConstants.find((item: any) => item.value === value)
+                  ?.label
+              : "Select Status"}
+          </div>
           <div>
-          {value ? (
-            <span
-              style={{
-                width: "10px",
-                height: "10px",
-                borderRadius: "50%",
-                backgroundColor: taskStatusConstants.find(
-                  (item: any) => item.value === value
-                )?.color,
-                display: "inline-block",
-                marginRight: "8px",
-              }}
-            ></span>
-          ) : (
-            ""
-          )}
-          {value
-            ? taskStatusConstants.find((item: any) => item.value === value)
-                ?.label
-            : "Select Status"}
-             </div>
-             <div>
-          <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
-          {value && (
-            <X
-              className="mr-4 h-4 w-4 cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                setValue("");
-              }}
-            />
-
-          )}
-              </div>
+            <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
+            {value && (
+              <X
+                className="mr-4 h-4 w-4 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setValue("");
+                }}
+              />
+            )}
+          </div>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0 bg-white">
@@ -106,14 +105,13 @@ export const TasksSelectStatusFilter: React.FC<StatusFilterProps> = ({
                       marginRight: "8px",
                     }}
                   ></span>
-                     {status.label}
+                  {status.label}
                   <Check
                     className={cn(
                       "ml-2 h-4 w-4",
                       value === status.value ? "opacity-100" : "opacity-0"
                     )}
                   />
-               
                 </CommandItem>
               ))}
             </CommandGroup>

@@ -147,20 +147,6 @@ const DashBoard = () => {
                 <p className="text-md text-[#425166] font-normal">Users</p>
               </div>
             )}
-
-            <div className="p-4 bg-[#DCFCE7] rounded-xl text-left shadow-sm">
-              <div className="flex justify-left items-center mb-6">
-                <img
-                  src={dashboardActiveTaskIcon}
-                  alt="Active Tasks icon"
-                  className="h-[33px] w-[33px]"
-                />
-              </div>
-              <h1 className="text-2xl font-medium text-[#151D48]">
-                <CountUp end={activeUsersCount} duration={2.5} />
-              </h1>
-              <p className="text-md text-[#425166] font-normal">Active Tasks</p>
-            </div>
           </div>
         </Card>
         <Card className="p-4 h-[100%] bg-white shadow-lg rounded-lg">

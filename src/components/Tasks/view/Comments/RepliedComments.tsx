@@ -62,7 +62,8 @@ const RepliedComments = ({
               <span className="font-semibold">
                 {IsUserCommentOrNot(mainComment)
                   ? "You"
-                  : mainComment.user?.name || "Unknown"}
+                  : mainComment?.firstName + " " + mainComment?.lastName ||
+                    "Unknown"}
               </span>
               <span className="text-[#67727E] font-normal text-sm pl-2">
                 {formatCommentTime(mainComment)}
@@ -84,7 +85,6 @@ const RepliedComments = ({
           <div className="space-y-4">
             {replyComments()?.length > 0 ? (
               replyComments()?.map((reply: any) => {
-                console.log(reply, "ljljds");
                 return (
                   <div key={reply.id}>
                     <div className="flex space-x-4 justify-end">

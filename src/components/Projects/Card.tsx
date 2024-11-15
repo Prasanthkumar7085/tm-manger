@@ -12,6 +12,8 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { updateProjectAPI } from "@/lib/services/projects";
 import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
+import { getColorFromInitials } from "@/lib/constants/colorConstants";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const ProjectCard = ({
   project,
@@ -23,7 +25,6 @@ const ProjectCard = ({
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isActive, setIsActive] = useState(project.active);
-  console.log(isActive, "active");
   const popoverRef = useRef<HTMLDivElement>(null);
 
   const togglePopover = (e: any) => {
@@ -230,7 +231,7 @@ const ProjectCard = ({
             </Tooltip>
           </TooltipProvider>
         </div>
-        <div className="h-[30px]">
+        <div className="h-[30px] ">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -263,7 +264,36 @@ const ProjectCard = ({
           </div>
         </div>
 
-        <div className="action-button mt-10">
+        <div className="action-button mt-10 flex justify-between items-center">
+          <div className="flex justify-start -space-x-1">
+            {project?.assignees?.slice(0, 5).map((assignee: any) => {
+              const initials =
+                assignee.user_first_name[0]?.toUpperCase() +
+                assignee.user_last_name[0]?.toUpperCase();
+              const backgroundColor = getColorFromInitials(initials);
+
+              return (
+                <Avatar
+                  key={assignee.user_id}
+                  title={`${assignee.user_first_name} ${assignee.user_last_name}`}
+                  className={`w-6 h-6 ${backgroundColor}`}
+                >
+                  <AvatarImage
+                    src={assignee.user_profile_pic}
+                    alt={assignee.user_first_name}
+                  />
+                  <AvatarFallback className="capitalize">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+              );
+            })}
+            {project?.assignees?.length > 5 && (
+              <div className="flex items-center justify-center w-6 h-6 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold">
+                +{project.assignees.length - 5}
+              </div>
+            )}
+          </div>
           <ul className="flex justify-end space-x-5">
             <li className="cursor-pointer" onClick={handleActionClick}>
               <Eye

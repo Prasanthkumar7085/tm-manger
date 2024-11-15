@@ -6,7 +6,7 @@ import {
   taskPriorityConstants,
   taskStatusConstants,
 } from "@/lib/helpers/statusConstants";
-import { deleteTaskAPI } from "@/lib/services/tasks";
+import { archiveTaskAPI, deleteTaskAPI } from "@/lib/services/tasks";
 import { useNavigate } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
@@ -21,8 +21,9 @@ import {
   isProjectAdmin,
   isProjectMemberOrNot,
 } from "@/lib/helpers/loginHelpers";
-
-export const taskColumns = ({ setDel }: any) => {
+import { momentWithTimezone } from "@/lib/helpers/timeZone";
+import { getColorFromInitials } from "@/lib/constants/colorConstants";
+export const taskColumns = ({ setDel, isArchive }: any) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState("");
@@ -30,37 +31,13 @@ export const taskColumns = ({ setDel }: any) => {
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
   );
-
-  const getColorFromInitials = (initials: string) => {
-    const colors = [
-      "bg-red-200",
-      "bg-green-200",
-      "bg-blue-200",
-      "bg-yellow-200",
-      "bg-purple-200",
-      "bg-pink-200",
-      "bg-indigo-200",
-      "bg-teal-200",
-      "bg-orange-200",
-      "bg-cyan-200",
-      "bg-amber-200",
-      "bg-lime-200",
-      "bg-emerald-200",
-      "bg-fuchsia-200",
-      "bg-rose-200",
-    ];
-
-    const index = initials.charCodeAt(0) % colors.length;
-    return colors[index];
-  };
-
   const deleteTask = async () => {
     try {
       setDeleteLoading(true);
-      const response = await deleteTaskAPI(deleteTaskId);
+      const response = await archiveTaskAPI(deleteTaskId);
       if (response?.status === 200 || response?.status === 201) {
         onClickClose();
-        toast.success(response?.data?.message || "User Task Successfully");
+        toast.success(response?.data?.message);
         setDel((prev: any) => prev + 1);
       }
     } catch (err: any) {
@@ -70,28 +47,23 @@ export const taskColumns = ({ setDel }: any) => {
       setDeleteLoading(false);
     }
   };
-
   const handleView = (taskId: any) => {
     navigate({
       to: `/tasks/view/${taskId}`,
     });
   };
-
   const handleEdit = (taskId: any) => {
     navigate({
       to: `/tasks/${taskId}`,
     });
   };
-
   const onClickClose = () => {
     setOpen(false);
   };
-
   const onClickOpen = (id: any) => {
     setOpen(true);
     setDeleteTaskId(id);
   };
-
   const isAbleToAddOrEdit = (users: any) => {
     if (
       (isMananger(users, profileData?.id, profileData?.user_type) ||
@@ -101,7 +73,6 @@ export const taskColumns = ({ setDel }: any) => {
       return true;
     }
   };
-
   return [
     {
       accessorFn: (row: any) => row.serial,
@@ -125,7 +96,6 @@ export const taskColumns = ({ setDel }: any) => {
             to: `/projects/view/${info.row.original.project_id}`,
           });
         };
-
         return (
           <div className="project-title flex items-center gap-2">
             {project_logo_url && (
@@ -162,19 +132,20 @@ export const taskColumns = ({ setDel }: any) => {
       id: "title",
       cell: (info: any) => {
         const { ref_id, title } = info.getValue();
-
         const handleView = (taskId: any) => {
           navigate({
             to: `/tasks/view/${taskId}`,
           });
         };
-
         return (
           <div
             className="task capitalize flex justify-between cursor-pointer"
             onClick={() => handleView(info.row.original.id)}
           >
-            <span className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
+            <span
+              title={title}
+              className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]"
+            >
               {title || "-"}
             </span>
             <span className="ml-2 text-[11px] font-semibold text-primary">
@@ -194,7 +165,6 @@ export const taskColumns = ({ setDel }: any) => {
       id: "assignees",
       cell: (info: any) => {
         const [showPopover, setShowPopover] = useState(false);
-
         return (
           <div className="flex justify-start items-center -space-x-2">
             {info
@@ -202,14 +172,14 @@ export const taskColumns = ({ setDel }: any) => {
               .slice(0, 5)
               .map((assignee: any) => {
                 const initials =
-                  assignee.user_first_name[0] + assignee.user_last_name[0];
+                  assignee.user_first_name?.[0]?.toUpperCase() +
+                  assignee.user_last_name?.[0]?.toUpperCase();
                 const backgroundColor = getColorFromInitials(initials);
-
                 return (
                   <Avatar
                     key={assignee.user_id}
                     title={
-                      assignee.user_first_name + " " + assignee.user_last_name
+                      assignee?.user_first_name + " " + assignee.user_last_name
                     }
                     className={`w-6 h-6 ${backgroundColor}`}
                   >
@@ -247,7 +217,7 @@ export const taskColumns = ({ setDel }: any) => {
                           }
                           className={`w-8 h-8 ${getColorFromInitials(
                             assignee.user_first_name[0] +
-                            assignee.user_last_name[0]
+                              assignee.user_last_name[0]
                           )}`}
                         >
                           <AvatarImage
@@ -287,7 +257,7 @@ export const taskColumns = ({ setDel }: any) => {
       id: "due_date",
       cell: (info: any) => {
         const date: string = info.getValue();
-        return <span>{date ? dayjs(date).format("MM-DD-YYYY") : "-"}</span>;
+        return <span>{date ? momentWithTimezone(date) : "-"}</span>;
       },
       width: "120px",
       maxWidth: "120px",
@@ -302,34 +272,36 @@ export const taskColumns = ({ setDel }: any) => {
         let title = info.getValue();
         return (
           <span
-            className={`rounded-full px-2 leading-1 ${info.getValue() === "OVER_DUE"
-              ? "text-[#A71D2A] bg-[#A71D2A33]"
-              : info.getValue() === "TODO"
-                ? "text-[#6F42C1] bg-[#EADEFF]"
-                : info.getValue() === "COMPLETED"
-                  ? "text-[#28A745] bg-[#28A74533]"
-                  : info.getValue() === "IN_PROGRESS"
-                    ? "text-[#007BFF] bg-[#007BFF33]"
-                    : "text-black"
-              }`}
+            className={`rounded-full px-2 leading-1 ${
+              info.getValue() === "OVER_DUE"
+                ? "text-[#A71D2A] bg-[#A71D2A33]"
+                : info.getValue() === "TODO"
+                  ? "text-[#6F42C1] bg-[#EADEFF]"
+                  : info.getValue() === "COMPLETED"
+                    ? "text-[#28A745] bg-[#28A74533]"
+                    : info.getValue() === "IN_PROGRESS"
+                      ? "text-[#007BFF] bg-[#007BFF33]"
+                      : "text-black"
+            }`}
           >
             <span
-              className={`dot w-2 h-2 inline-block mr-1 rounded-full ${info.getValue() === "OVER_DUE"
-                ? "bg-[#A71D2A]"
-                : info.getValue() === "TODO"
-                  ? "bg-[#6F42C1]"
-                  : info.getValue() === "COMPLETED"
-                    ? "bg-[#28A745]"
-                    : info.getValue() === "IN_PROGRESS"
-                      ? "bg-[#007BFF]"
-                      : "text-black"
-                }`}
+              className={`dot w-2 h-2 inline-block mr-1 rounded-full ${
+                info.getValue() === "OVER_DUE"
+                  ? "bg-[#A71D2A]"
+                  : info.getValue() === "TODO"
+                    ? "bg-[#6F42C1]"
+                    : info.getValue() === "COMPLETED"
+                      ? "bg-[#28A745]"
+                      : info.getValue() === "IN_PROGRESS"
+                        ? "bg-[#007BFF]"
+                        : "text-black"
+              }`}
             ></span>
             <span className="text-[12px] font-medium">
               {title
                 ? taskStatusConstants.find(
-                  (item: any) => item.value === info.getValue()
-                )?.label
+                    (item: any) => item.value === info.getValue()
+                  )?.label
                 : "-"}
             </span>
           </span>
@@ -358,7 +330,6 @@ export const taskColumns = ({ setDel }: any) => {
               : priorityValue === "LOW"
                 ? ArrowDown
                 : null;
-
         return (
           <>
             <span
@@ -386,7 +357,6 @@ export const taskColumns = ({ setDel }: any) => {
       header: () => <span>Priority</span>,
       footer: (props: any) => props.column.id,
     },
-
     {
       accessorFn: (row: any) => row.actions,
       id: "actions",
@@ -409,10 +379,10 @@ export const taskColumns = ({ setDel }: any) => {
                 variant={"ghost"}
                 disabled={
                   profileData?.user_type === "admin" ||
-                    isProjectMemberOrNot(
-                      info.row.original.assignees,
-                      profileData?.id
-                    )
+                  isProjectMemberOrNot(
+                    info.row.original.assignees,
+                    profileData?.id
+                  )
                     ? false
                     : true
                 }
@@ -429,13 +399,13 @@ export const taskColumns = ({ setDel }: any) => {
             </li>
             <li>
               <Button
-                title="Delete"
+                title="archive"
                 disabled={
                   profileData?.user_type === "admin" ||
-                    isProjectMemberOrNot(
-                      info.row.original.assignees,
-                      profileData?.id
-                    )
+                  isProjectMemberOrNot(
+                    info.row.original.assignees,
+                    profileData?.id
+                  )
                     ? false
                     : true
                 }
@@ -444,8 +414,8 @@ export const taskColumns = ({ setDel }: any) => {
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
               >
                 <img
-                  src={"/table/delete.svg"}
-                  alt="delete"
+                  src={"/archive.svg"}
+                  alt="archive"
                   height={18}
                   width={18}
                 />
@@ -454,10 +424,11 @@ export const taskColumns = ({ setDel }: any) => {
           </ul>
           <DeleteDialog
             openOrNot={open}
-            label="Are you sure you want to Delete this task?"
+            label="Are you sure you want to Archive this task?"
             onCancelClick={onClickClose}
             onOKClick={deleteTask}
             deleteLoading={deleteLoading}
+            buttonLable="Yes! Archive"
           />
         </>
       ),

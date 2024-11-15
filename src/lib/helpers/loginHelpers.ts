@@ -34,13 +34,10 @@ export const isProjectAdmin = (
 };
 
 export const isProjectMemberOrNot = (project_members: any, user_id: string) => {
-  console.log(project_members, "project_members");
-  console.log(user_id, "user_id");
   if (project_members?.length > 0) {
     let member = project_members.find(
       (member: any) => member.user_id == user_id
     );
-    console.log(member, "member");
     return member ? true : false;
   }
 };

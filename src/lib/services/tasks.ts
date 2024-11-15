@@ -1,15 +1,16 @@
-import { a } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 import { $fetch } from "../fetch";
 interface GetAllPaginatedUsersPropTypes {
-  pageIndex: number;
-  pageSize: number;
-  order_by: any;
-  search_string: any;
-  from_date: string;
-  to_date: string;
-  status: string;
-  priority: string;
-  project_id: any;
+  pageIndex?: number;
+  pageSize?: number;
+  order_by?: any;
+  search_string?: any;
+  from_date?: string;
+  to_date?: string;
+  status?: string;
+  priority?: string;
+  project_id?: any;
+  user_ids?: any;
+  is_archived?: any;
 }
 
 export const getAllPaginatedTasks = async ({
@@ -22,6 +23,8 @@ export const getAllPaginatedTasks = async ({
   status,
   priority,
   project_id,
+  user_ids,
+  is_archived,
 }: GetAllPaginatedUsersPropTypes) => {
   try {
     const queryParams = {
@@ -34,9 +37,55 @@ export const getAllPaginatedTasks = async ({
       status: status,
       priority: priority,
       project_id: project_id,
+      user_ids: user_ids,
+      is_archived,
+    };
+    if (is_archived === "true" || is_archived === true) {
+      return await $fetch.get("/tasks/archives", queryParams);
+    } else {
+      return await $fetch.get("/tasks/all", queryParams);
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+export const getAllArchivedTasks = async ({
+  pageIndex,
+  pageSize,
+  order_by,
+  search_string,
+  from_date,
+  to_date,
+  status,
+  priority,
+  project_id,
+  user_ids,
+  is_archived,
+}: GetAllPaginatedUsersPropTypes) => {
+  try {
+    const queryParams = {
+      page: pageIndex,
+      page_size: pageSize,
+      order_by: order_by,
+      search_string: search_string,
+      from_date: from_date,
+      to_date: to_date,
+      status: status,
+      priority: priority,
+      project_id: project_id,
+      user_ids: user_ids,
+      is_archived,
     };
     return await $fetch.get("/tasks/all", queryParams);
   } catch (err) {
+    throw err;
+  }
+};
+
+export const getAssignesListAPI = async () => {
+  try {
+    return await $fetch.get("/tasks/all");
+  } catch (err: any) {
     throw err;
   }
 };
@@ -173,6 +222,20 @@ export const deleteTaskAPI = async (id: string) => {
     throw err;
   }
 };
+export const archiveTaskAPI = async (id: string) => {
+  try {
+    return await $fetch.patch(`/tasks/${id}/archive`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const unArchiveTaskAPI = async (id: string) => {
+  try {
+    return await $fetch.patch(`/tasks/${id}/restore`);
+  } catch (err: any) {
+    throw err;
+  }
+};
 export const addAttachmentsAPI = async (payload: any) => {
   try {
     return await $fetch.post(`/tasks/attachments`, payload);
@@ -234,6 +297,14 @@ export const downloadAttachmentAPI = async (payload: any) => {
 export const getTaskStatsCountsAPI = async () => {
   try {
     return await $fetch.get(`/tasks/tasks-stats`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+
+export const getTaskArchivedStatsCountsAPI = async () => {
+  try {
+    return await $fetch.get(`/tasks/archived-tasks-stats`);
   } catch (err: any) {
     throw err;
   }

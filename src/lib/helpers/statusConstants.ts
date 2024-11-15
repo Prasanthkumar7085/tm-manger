@@ -68,7 +68,7 @@ export const taskPriorityConstants = [
   },
 ];
 export const roleConstants = [
-  { value: "ADMIN", label: "Admin" },
+  { value: "ADMIN", label: "Lead" },
   // { value: "SUPER_ADMIN", label: "Super Admin" },
   { value: "MANAGER", label: "Manager" },
   { value: "USER", label: "User" },

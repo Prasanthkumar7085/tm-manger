@@ -144,6 +144,7 @@ const AddTask = () => {
         } else {
           throw new Error("Failed to fetch task");
         }
+        return response
       } catch (err: any) {
         toast.error(err?.message || "Something went wrong");
         throw err;
@@ -330,7 +331,7 @@ const AddTask = () => {
                 name="title"
                 value={task.title}
                 onChange={handleChange}
-                className="bg-slate-50 h-[40px] p-2 border w-full rounded-md"
+                className="bg-slate-50 h-[40px] p-2 border w-full rounded-md placeholder:text-[#00000080]"
                 placeholder="Enter Task Title"
               />
               {errorMessages.title && (
@@ -346,7 +347,7 @@ const AddTask = () => {
                 value={task.description == "-" ? "" : task.description}
                 onChange={handleChange}
                 rows={3}
-                className="w-full p-2 bg-slate-50 border rounded-md"
+                className="w-full p-2 bg-slate-50 border rounded-md placeholder:text-[#00000080]"
                 placeholder="Enter Task Description"
               ></textarea>
               {errorMessages.description && (
@@ -420,7 +421,7 @@ const AddTask = () => {
                   onChange={handleChange}
                   className="bg-slate-50 h-[40px] p-2 border w-full rounded-md"
                 >
-                  <option value="">Select priority</option>
+                  <option value="" className="text-[#00000080]">Select priority</option>
                   <option value="HIGH">High</option>
                   <option value="MEDIUM">Medium</option>
                   <option value="LOW">Low</option>
@@ -441,7 +442,7 @@ const AddTask = () => {
                 onChange={handleChange}
                 className="bg-slate-50 h-[40px] p-2 border w-full rounded-md"
               >
-                <option value="">Select Status</option>
+                <option value="" className="text-[#00000080]">Select Status</option>
                 <option value="TODO">Todo</option>
                 <option value="IN_PROGRESS">In Progress</option>
                 <option value="OVER_DUE">Overdue</option>

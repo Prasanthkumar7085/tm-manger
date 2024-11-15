@@ -146,8 +146,10 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    handleTagSubmit();
-                    e.preventDefault();
+                    if (!isTaskTagsLoading) {
+                      handleTagSubmit();
+                      e.preventDefault();
+                    }
                   }
                 }}
                 className="bg-slate-50 h-[25px] p-2 w-full rounded-md"
@@ -156,6 +158,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
               <Button
                 type="button"
                 variant="add"
+                disabled={isTaskTagsLoading}
                 size="DefaultButton"
                 onClick={handleTagSubmit}
                 className="h-[20px] bg-green-600 px-3"
@@ -197,7 +200,11 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
                     {tag}
                     <p
                       className="ml-1 text-[#000000] rotate-[45deg] font-medium cursor-pointer !text-[1.1rem] leading-3"
-                      onClick={() => handleTagDelete(tag)}
+                      onClick={() => {
+                        if (!isTaskTagsLoading) {
+                          handleTagDelete(tag);
+                        }
+                      }}
                     >
                       +
                     </p>

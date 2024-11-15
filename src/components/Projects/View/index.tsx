@@ -1,22 +1,23 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation, useParams, useRouter } from "@tanstack/react-router";
-import dayjs from "dayjs";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import LoadingComponent from "@/components/core/LoadingComponent";
+import TasksProjects from "@/components/TasksProjects";
 import { Button } from "@/components/ui/button";
+import { momentWithTimezone } from "@/lib/helpers/timeZone";
 import {
   fileUploadAPI,
   uploadLogoAPI,
   uploadToS3API,
   viewProjectAPI,
 } from "@/lib/services/projects";
-import { CameraIcon, Loader, X } from "lucide-react";
-import KanbanBoard from "../KanBanView";
-import ProjectMembersManagment from "./ProjectMembersManagment";
-import ProjectTasksCounts from "./ProjectTasksCounts";
+import { CameraIcon, Grid3x3, List, Loader, X } from "lucide-react";
 import { useSelector } from "react-redux";
+import KanbanBoard from "../KanBanView";
+import ProjectTasksCounts from "./ProjectTasksCounts";
+import ProjectMembersManagment from "./ProjectMembersManagment";
 
 const ProjectView = () => {
   const { projectId } = useParams({ strict: false });
@@ -28,6 +29,8 @@ const ProjectView = () => {
     (state: any) => state.auth.user.user_details
   );
   const [projectDetails, setProjectDetails] = useState<any>({});
+  const [projectsData, setProjectsData] = useState<any>({});
+  const [viewMode, setViewMode] = useState("card");
   const [projectStatsUpdate, setProjetStatsUpdate] = useState<number>(0);
   const [uploadingStatus, setUploadingStatus] = useState({
     startUploading: false,
@@ -223,6 +226,19 @@ const ProjectView = () => {
           </p>
         </div>
         <div className="flex flex-row items-center gap-4">
+          <button
+            className="text-white h-[35px] flex items-center justify-center bg-white border  px-3 rounded-md"
+            onClick={() => setViewMode(viewMode === "card" ? "table" : "card")}
+          >
+            <div className="flex">
+              <List
+                className={`mr-2 ${viewMode === "table" ? "text-[#BF1B39]" : "text-[#1B2459]"}`}
+              />
+              <Grid3x3
+                className={`${viewMode === "card" ? "text-[#BF1B39]" : "text-[#1B2459]"}`}
+              />
+            </div>
+          </button>
           <Button
             onClick={() => {
               if (openMembers || searchParams.get("tab") == "project_members") {
@@ -248,7 +264,7 @@ const ProjectView = () => {
           <div>
             <h2 className="text-sm text-[#666666]">Created At</h2>
             <p className="text-sm text-[#038847] font-[600]">
-              {dayjs(projectDetails?.created_at).format("MM-DD-YYYY")}
+              {momentWithTimezone(projectDetails?.created_at, "MM-DD-YYYY")}
             </p>
           </div>
           <div>
@@ -276,11 +292,13 @@ const ProjectView = () => {
       <div className="mt-4">
         {openMembers || searchParams.get("tab") == "project_members" ? (
           <ProjectMembersManagment projectDetails={projectDetails} />
-        ) : (
+        ) : viewMode === "card" ? (
           <KanbanBoard
             projectDetails={projectDetails}
             setProjetStatsUpdate={setProjetStatsUpdate}
           />
+        ) : (
+          <TasksProjects />
         )}
       </div>
       <LoadingComponent loading={isLoading || isFetching} />
