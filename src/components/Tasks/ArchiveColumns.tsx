@@ -6,7 +6,11 @@ import {
   taskPriorityConstants,
   taskStatusConstants,
 } from "@/lib/helpers/statusConstants";
-import { archiveTaskAPI, deleteTaskAPI } from "@/lib/services/tasks";
+import {
+  archiveTaskAPI,
+  deleteTaskAPI,
+  unArchiveTaskAPI,
+} from "@/lib/services/tasks";
 import { useNavigate } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
@@ -24,7 +28,7 @@ import {
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
 import { getColorFromInitials } from "@/lib/constants/colorConstants";
 
-export const taskColumns = ({ setDel, getAllTasks }: any) => {
+export const archivetaskColumns = ({ setDel }: any) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState("");
@@ -33,10 +37,10 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
     (state: any) => state.auth.user.user_details
   );
 
-  const deleteTask = async () => {
+  const restoreTask = async () => {
     try {
       setDeleteLoading(true);
-      const response = await archiveTaskAPI(deleteTaskId);
+      const response = await unArchiveTaskAPI(deleteTaskId);
       if (response?.status === 200 || response?.status === 201) {
         onClickClose();
         toast.success(response?.data?.message);
@@ -192,7 +196,7 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
                   <Avatar
                     key={assignee.user_id}
                     title={
-                      assignee?.user_first_name + " " + assignee.user_last_name
+                      assignee.user_first_name + " " + assignee.user_last_name
                     }
                     className={`w-6 h-6 ${backgroundColor}`}
                   >
@@ -380,40 +384,6 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
           <ul className="table-action-buttons flex space-x-2 items-center">
             <li>
               <Button
-                title="View"
-                variant={"ghost"}
-                className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
-                onClick={() => handleView(info.row.original.id)}
-              >
-                <img src={viewButtonIcon} alt="view" height={18} width={18} />
-              </Button>
-            </li>
-            <li>
-              <Button
-                title="Edit"
-                variant={"ghost"}
-                disabled={
-                  profileData?.user_type === "admin" ||
-                  isProjectMemberOrNot(
-                    info.row.original.assignees,
-                    profileData?.id
-                  )
-                    ? false
-                    : true
-                }
-                className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
-                onClick={() => handleEdit(info.row.original.id)}
-              >
-                <img
-                  src={"/table/edit.svg"}
-                  alt="view"
-                  height={18}
-                  width={18}
-                />
-              </Button>
-            </li>
-            <li>
-              <Button
                 title="archive"
                 disabled={
                   profileData?.user_type === "admin" ||
@@ -439,9 +409,9 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
           </ul>
           <DeleteDialog
             openOrNot={open}
-            label="Are you sure you want to Archive this task?"
+            label="Are you sure you want to restore this task?"
             onCancelClick={onClickClose}
-            onOKClick={deleteTask}
+            onOKClick={restoreTask}
             deleteLoading={deleteLoading}
           />
         </>

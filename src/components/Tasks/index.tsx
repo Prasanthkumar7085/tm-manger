@@ -23,6 +23,7 @@ import UserSelectionPopover from "../core/MultipleUsersSelect";
 import TanStackTable from "../core/TanstackTable";
 import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
+import { archivetaskColumns } from "./ArchiveColumns";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -44,6 +45,7 @@ const Tasks = () => {
   const initialPrioritys = searchParams.get("priority") || "";
   const intialProject = searchParams.get("project_id") || "";
   const intialuserIds = searchParams.get("user_ids") || "";
+  const intialisArchived = searchParams.get("isArchived") || "";
 
   const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
@@ -57,7 +59,9 @@ const Tasks = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [del, setDel] = useState<any>(1);
   const [selectedMembers, setSelectedMembers] = useState<any[]>([]);
-  const [isArchive, setIsArchive] = useState(false);
+  const [isArchive, setIsArchive] = useState(
+    intialisArchived === "true" ? true : false
+  );
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
@@ -77,7 +81,7 @@ const Tasks = () => {
       selectedpriority,
       selectedProject,
       selectedMembers,
-      isArchive,
+      intialisArchived,
     ],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
@@ -90,7 +94,8 @@ const Tasks = () => {
         project_id: selectedProject,
         from_date: selectedDate?.length ? selectedDate[0] : null,
         to_date: selectedDate?.length ? selectedDate[1] : null,
-        user_ids: selectedMembers.map((member: any) => member.id) || null,
+        user_ids: selectedMembers?.map((member: any) => member.id) || null,
+        is_archived: searchParams.get("isArchived") || false,
       });
 
       let queryParams: any = {
@@ -103,8 +108,9 @@ const Tasks = () => {
         status: selectedStatus || undefined,
         project_id: selectedProject || undefined,
         priority: selectedpriority || undefined,
+        isArchived: searchParams.get("isArchived") || "false",
       };
-      if (selectedMembers?.length) {
+      if (selectedMembers?.length > 0) {
         queryParams["user_ids"] = selectedMembers.map(
           (member: any) => member.id
         );
@@ -115,18 +121,16 @@ const Tasks = () => {
           to: "/tasks",
           search: queryParams,
         });
-
-        return response;
+        let responseAfterSerial: any =
+          addSerial(
+            response?.data?.data?.data,
+            response?.data?.data?.pagination_info?.current_page,
+            response?.data?.data?.pagination_info?.page_size
+          ) || [];
+        return [responseAfterSerial, response?.data?.data?.pagination_info];
       }
     },
   });
-
-  const taksDataAfterSerial =
-    addSerial(
-      data?.data?.data?.data,
-      data?.data?.data?.pagination_info?.current_page,
-      data?.data?.data?.pagination_info?.page_size
-    ) || [];
 
   const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
@@ -263,22 +267,30 @@ const Tasks = () => {
         </div>
 
         <div className="flex flex-col mt-4 space-y-5">
-          <div>
-            <TanStackTable
-              data={taksDataAfterSerial}
-              columns={taskColumns({ setDel })}
-              paginationDetails={data?.data?.data?.pagination_info}
-              getData={getAllTasks}
-              loading={isLoading || isFetching}
-              removeSortingForColumnIds={[
-                "serial",
-                "actions",
-                "project_title",
-                "assignees",
-                "status",
-              ]}
-            />
-          </div>
+          {data?.[0]?.length !== 0 ? (
+            <div>
+              <TanStackTable
+                data={data?.[0]}
+                columns={
+                  isArchive
+                    ? archivetaskColumns({ setDel })
+                    : taskColumns({ setDel })
+                }
+                paginationDetails={data?.[1]}
+                getData={getAllTasks}
+                loading={isLoading || isFetching}
+                removeSortingForColumnIds={[
+                  "serial",
+                  "actions",
+                  "project_title",
+                  "assignees",
+                  "status",
+                ]}
+              />
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       </div>
       <LoadingComponent loading={isLoading} />

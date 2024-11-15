@@ -20,10 +20,6 @@ const useUsersHook = () => {
     }
   };
 
-  // useEffect(() => {
-  //   fetchUsers();
-  // }, []);
-
   return {
     users,
     loading,

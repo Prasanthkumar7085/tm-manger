@@ -1,5 +1,10 @@
 import { navBarConstants } from "@/lib/helpers/navBarConstants";
-import { useLocation, useNavigate, useParams } from "@tanstack/react-router";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useRouter,
+} from "@tanstack/react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
@@ -16,6 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { getSingleUserApi } from "@/lib/services/viewprofile";
 import { Button } from "./ui/button";
+import Cookies from "js-cookie";
 
 interface titleProps {
   title: string;
@@ -24,13 +30,18 @@ interface titleProps {
 
 function TopBar() {
   const location = useLocation();
+  const router = useRouter();
   const [viewData, setViewData] = useState<any>();
   const { taskId } = useParams({ strict: false });
   const pathname = location.pathname;
+  const searchParams = new URLSearchParams(location.search);
   const currentNavItem = navBarConstants.find((item: titleProps) =>
     pathname.includes(item.path)
   );
-  const searchParams = new URLSearchParams(location.search);
+  const [archiveTasks, setArchiveTasks] = useState(false);
+
+  const intialisArchived = searchParams.get("isArchived") || "";
+
   const userID = useSelector(
     (state: any) => state.auth?.user?.user_details?.id
   );
@@ -68,6 +79,14 @@ function TopBar() {
     });
   };
 
+  const handleLogout = () => {
+    Cookies.remove("token");
+    Cookies.remove("user_type");
+    navigate({
+      to: `/`,
+    });
+  };
+
   return (
     <div className="py-3 px-5 flex justify-between items-center bg-white border-b">
       <span className="ml-2 text-lg font-semibold flex">
@@ -78,15 +97,35 @@ function TopBar() {
 
       <div className="flex items-center gap-2">
         {pathname == "/tasks" && !taskId && (
-          <Button
-            className="font-normal text-sm"
-            variant="add"
-            size="DefaultButton"
-            onClick={handleNavigation}
-          >
-            <span className="text-xl font-normal pr-2 text-md">+</span>
-            Add Task
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              className="font-normal text-sm"
+              variant="add"
+              size="DefaultButton"
+              onClick={handleNavigation}
+            >
+              <span className="text-xl font-normal pr-2 text-md">+</span>
+              Add Task
+            </Button>
+            {/* <Button
+              className="font-normal text-sm"
+              variant="add"
+              size="DefaultButton"
+              onClick={() => {
+                setArchiveTasks(!archiveTasks);
+                let queryParams = {
+                  ...location.search,
+                  isArchived: archiveTasks,
+                };
+                router.navigate({
+                  to: "/tasks",
+                  search: queryParams,
+                });
+              }}
+            >
+              Archive Tasks
+            </Button> */}
+          </div>
         )}
         <DropdownMenu>
           <DropdownMenuTrigger className="flex gap-2 items-center hover:cursor-pointer">
@@ -100,7 +139,13 @@ function TopBar() {
                 {viewData?.lname?.charAt(0) || ""}
               </AvatarFallback>
             </Avatar>
+
             <span>{viewData ? getFullName(viewData) : "Loading..."}</span>
+            <img
+              src={downArrowIcon}
+              alt="dashboard"
+              className="h-[13px] w-[13px]"
+            />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white">
             <DropdownMenuItem
@@ -113,23 +158,11 @@ function TopBar() {
             >
               View Profile
             </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => {
-                navigate({
-                  to: `/`,
-                });
-              }}
-            >
+            <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
               Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <img
-          src={downArrowIcon}
-          alt="dashboard"
-          className="h-[13px] w-[13px]"
-        />
       </div>
     </div>
   );
