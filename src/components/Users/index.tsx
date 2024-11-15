@@ -44,6 +44,7 @@ function UsersTable() {
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [userType, setUserType] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
+  const [users, setUsers] = useState<any>({});
   const [open, setOpen] = useState(false);
   const [deleteuserId, setDeleteUserId] = useState<any>();
   const [isEditing, setIsEditing] = useState(false);
@@ -374,16 +375,37 @@ function UsersTable() {
     setErrors({});
   };
 
+  // const handleInputChange = (e: any) => {
+  //   let { name, value } = e.target;
+  //   const updatedValue = value
+  //     .replace(/[^\w\s]/g, "")
+  //     .replace(/^\s+/g, "")
+  //     .replace(/\s{2,}/g, " ");
+  //   setUserData({
+  //     ...userData,
+  //     [name]: updatedValue,
+  //   });
+  // };
   const handleInputChange = (e: any) => {
-    let { name, value } = e.target;
-    const updatedValue = value
-      .replace(/[^\w\s]/g, "")
-      .replace(/^\s+/g, "")
-      .replace(/\s{2,}/g, " ");
-    setUserData({
-      ...userData,
-      [name]: updatedValue,
-    });
+    const { name, value } = e.target;
+    if (
+      (name === "fname" || name === "lname") &&
+      !/^[a-zA-Z\s]*$/.test(value)
+    ) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+      }));
+      return;
+    }
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: [],
+    }));
+    setUserData((prevData: any) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleChangeEmail = (e: any) => {

@@ -144,6 +144,7 @@ const AddTask = () => {
         } else {
           throw new Error("Failed to fetch task");
         }
+        return response
       } catch (err: any) {
         toast.error(err?.message || "Something went wrong");
         throw err;

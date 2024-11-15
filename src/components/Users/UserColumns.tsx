@@ -144,9 +144,9 @@ export const userColumns = [
   {
     accessorFn: (row: any) => row.counts,
     id: "counts",
-    width: "100px",
-    maxWidth: "100px",
-    minWidth: "100px",
+    width: "160px",
+    maxWidth: "160px",
+    minWidth: "160px",
     header: () => <span>Users Stats</span>,
     footer: (props: any) => props.column.id,
     columns: [

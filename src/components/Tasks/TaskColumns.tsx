@@ -23,8 +23,7 @@ import {
 } from "@/lib/helpers/loginHelpers";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
 import { getColorFromInitials } from "@/lib/constants/colorConstants";
-
-export const taskColumns = ({ setDel, getAllTasks }: any) => {
+export const taskColumns = ({ setDel, isArchive }: any) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState("");
@@ -32,7 +31,6 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
   );
-
   const deleteTask = async () => {
     try {
       setDeleteLoading(true);
@@ -49,28 +47,23 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
       setDeleteLoading(false);
     }
   };
-
   const handleView = (taskId: any) => {
     navigate({
       to: `/tasks/view/${taskId}`,
     });
   };
-
   const handleEdit = (taskId: any) => {
     navigate({
       to: `/tasks/${taskId}`,
     });
   };
-
   const onClickClose = () => {
     setOpen(false);
   };
-
   const onClickOpen = (id: any) => {
     setOpen(true);
     setDeleteTaskId(id);
   };
-
   const isAbleToAddOrEdit = (users: any) => {
     if (
       (isMananger(users, profileData?.id, profileData?.user_type) ||
@@ -80,7 +73,6 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
       return true;
     }
   };
-
   return [
     {
       accessorFn: (row: any) => row.serial,
@@ -104,7 +96,6 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
             to: `/projects/view/${info.row.original.project_id}`,
           });
         };
-
         return (
           <div className="project-title flex items-center gap-2">
             {project_logo_url && (
@@ -141,13 +132,11 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
       id: "title",
       cell: (info: any) => {
         const { ref_id, title } = info.getValue();
-
         const handleView = (taskId: any) => {
           navigate({
             to: `/tasks/view/${taskId}`,
           });
         };
-
         return (
           <div
             className="task capitalize flex justify-between cursor-pointer"
@@ -176,7 +165,6 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
       id: "assignees",
       cell: (info: any) => {
         const [showPopover, setShowPopover] = useState(false);
-
         return (
           <div className="flex justify-start items-center -space-x-2">
             {info
@@ -187,7 +175,6 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
                   assignee.user_first_name?.[0]?.toUpperCase() +
                   assignee.user_last_name?.[0]?.toUpperCase();
                 const backgroundColor = getColorFromInitials(initials);
-
                 return (
                   <Avatar
                     key={assignee.user_id}
@@ -343,7 +330,6 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
               : priorityValue === "LOW"
                 ? ArrowDown
                 : null;
-
         return (
           <>
             <span
@@ -371,7 +357,6 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
       header: () => <span>Priority</span>,
       footer: (props: any) => props.column.id,
     },
-
     {
       accessorFn: (row: any) => row.actions,
       id: "actions",
