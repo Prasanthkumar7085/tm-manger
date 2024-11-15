@@ -109,13 +109,13 @@ table tbody td:last-child{
   width: 350px!important;
   max-width: 350px!important;
 }
-#users table thead th:nth-child(9),
+/* #users table thead th:nth-child(9),
 #users table tbody td:nth-child(9){
   width: 120px!important;
   max-width: 120px!important;
   position: sticky;
   right: 130px;
-}
+} */
 
 
 #users table thead th:last-child,

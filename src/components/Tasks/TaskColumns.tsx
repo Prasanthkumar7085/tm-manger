@@ -307,9 +307,9 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
           </span>
         );
       },
-      width: "110px",
-      maxWidth: "110px",
-      minWidth: "110px",
+      width: "115px",
+      maxWidth: "115px",
+      minWidth: "115px",
       header: () => <span>Status</span>,
       footer: (props: any) => props.column.id,
     },
