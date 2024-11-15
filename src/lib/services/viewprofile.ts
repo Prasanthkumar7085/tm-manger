@@ -24,3 +24,13 @@ export const getSingleUserApi = async (userId: any) => {
     throw err;
   }
 };
+export const updateUserDetailsAPI = async (id: any, payload: any) => {
+  try {
+    return await $fetch.patch(`/users/${id}`, payload);
+  } catch (err) {
+    throw err;
+  }
+};
+
+
+

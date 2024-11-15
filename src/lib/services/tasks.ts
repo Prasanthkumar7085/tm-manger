@@ -40,7 +40,11 @@ export const getAllPaginatedTasks = async ({
       user_ids: user_ids,
       is_archived,
     };
-    return await $fetch.get("/tasks/all", queryParams);
+    if (is_archived === "true" || is_archived === true) {
+      return await $fetch.get("/tasks/archives", queryParams);
+    } else {
+      return await $fetch.get("/tasks/all", queryParams);
+    }
   } catch (err) {
     throw err;
   }
@@ -220,7 +224,14 @@ export const deleteTaskAPI = async (id: string) => {
 };
 export const archiveTaskAPI = async (id: string) => {
   try {
-    return await $fetch.patch(`/tasks/${id}`);
+    return await $fetch.patch(`/tasks/${id}/archive`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const unArchiveTaskAPI = async (id: string) => {
+  try {
+    return await $fetch.patch(`/tasks/${id}/restore`);
   } catch (err: any) {
     throw err;
   }
@@ -286,6 +297,14 @@ export const downloadAttachmentAPI = async (payload: any) => {
 export const getTaskStatsCountsAPI = async () => {
   try {
     return await $fetch.get(`/tasks/tasks-stats`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+
+export const getTaskArchivedStatsCountsAPI = async () => {
+  try {
+    return await $fetch.get(`/tasks/archived-tasks-stats`);
   } catch (err: any) {
     throw err;
   }

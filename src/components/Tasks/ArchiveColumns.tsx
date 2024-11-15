@@ -6,7 +6,11 @@ import {
   taskPriorityConstants,
   taskStatusConstants,
 } from "@/lib/helpers/statusConstants";
-import { archiveTaskAPI, deleteTaskAPI } from "@/lib/services/tasks";
+import {
+  archiveTaskAPI,
+  deleteTaskAPI,
+  unArchiveTaskAPI,
+} from "@/lib/services/tasks";
 import { useNavigate } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
@@ -23,7 +27,8 @@ import {
 } from "@/lib/helpers/loginHelpers";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
 import { getColorFromInitials } from "@/lib/constants/colorConstants";
-export const taskColumns = ({ setDel, getAllTasks }: any) => {
+
+export const archivetaskColumns = ({ setDel }: any) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState("");
@@ -31,10 +36,11 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
   );
-  const deleteTask = async () => {
+
+  const restoreTask = async () => {
     try {
       setDeleteLoading(true);
-      const response = await archiveTaskAPI(deleteTaskId);
+      const response = await unArchiveTaskAPI(deleteTaskId);
       if (response?.status === 200 || response?.status === 201) {
         onClickClose();
         toast.success(response?.data?.message);
@@ -47,23 +53,28 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
       setDeleteLoading(false);
     }
   };
+
   const handleView = (taskId: any) => {
     navigate({
       to: `/tasks/view/${taskId}`,
     });
   };
+
   const handleEdit = (taskId: any) => {
     navigate({
       to: `/tasks/${taskId}`,
     });
   };
+
   const onClickClose = () => {
     setOpen(false);
   };
+
   const onClickOpen = (id: any) => {
     setOpen(true);
     setDeleteTaskId(id);
   };
+
   const isAbleToAddOrEdit = (users: any) => {
     if (
       (isMananger(users, profileData?.id, profileData?.user_type) ||
@@ -73,6 +84,7 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
       return true;
     }
   };
+
   return [
     {
       accessorFn: (row: any) => row.serial,
@@ -96,6 +108,7 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
             to: `/projects/view/${info.row.original.project_id}`,
           });
         };
+
         return (
           <div className="project-title flex items-center gap-2">
             {project_logo_url && (
@@ -132,11 +145,13 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
       id: "title",
       cell: (info: any) => {
         const { ref_id, title } = info.getValue();
+
         const handleView = (taskId: any) => {
           navigate({
             to: `/tasks/view/${taskId}`,
           });
         };
+
         return (
           <div
             className="task capitalize flex justify-between cursor-pointer"
@@ -165,6 +180,7 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
       id: "assignees",
       cell: (info: any) => {
         const [showPopover, setShowPopover] = useState(false);
+
         return (
           <div className="flex justify-start items-center -space-x-2">
             {info
@@ -175,11 +191,12 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
                   assignee.user_first_name?.[0]?.toUpperCase() +
                   assignee.user_last_name?.[0]?.toUpperCase();
                 const backgroundColor = getColorFromInitials(initials);
+
                 return (
                   <Avatar
                     key={assignee.user_id}
                     title={
-                      assignee?.user_first_name + " " + assignee.user_last_name
+                      assignee.user_first_name + " " + assignee.user_last_name
                     }
                     className={`w-6 h-6 ${backgroundColor}`}
                   >
@@ -330,6 +347,7 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
               : priorityValue === "LOW"
                 ? ArrowDown
                 : null;
+
         return (
           <>
             <span
@@ -357,6 +375,7 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
       header: () => <span>Priority</span>,
       footer: (props: any) => props.column.id,
     },
+
     {
       accessorFn: (row: any) => row.actions,
       id: "actions",
@@ -365,41 +384,7 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
           <ul className="table-action-buttons flex space-x-2 items-center">
             <li>
               <Button
-                title="View"
-                variant={"ghost"}
-                className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
-                onClick={() => handleView(info.row.original.id)}
-              >
-                <img src={viewButtonIcon} alt="view" height={18} width={18} />
-              </Button>
-            </li>
-            <li>
-              <Button
-                title="Edit"
-                variant={"ghost"}
-                disabled={
-                  profileData?.user_type === "admin" ||
-                  isProjectMemberOrNot(
-                    info.row.original.assignees,
-                    profileData?.id
-                  )
-                    ? false
-                    : true
-                }
-                className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
-                onClick={() => handleEdit(info.row.original.id)}
-              >
-                <img
-                  src={"/table/edit.svg"}
-                  alt="view"
-                  height={18}
-                  width={18}
-                />
-              </Button>
-            </li>
-            <li>
-              <Button
-                title="archive"
+                title="restore"
                 disabled={
                   profileData?.user_type === "admin" ||
                   isProjectMemberOrNot(
@@ -415,7 +400,7 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
               >
                 <img
                   src={"/archive.svg"}
-                  alt="archive"
+                  alt="restore"
                   height={18}
                   width={18}
                 />
@@ -424,11 +409,11 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
           </ul>
           <DeleteDialog
             openOrNot={open}
-            label="Are you sure you want to Archive this task?"
+            label="Are you sure you want to restore this task?"
             onCancelClick={onClickClose}
-            onOKClick={deleteTask}
+            onOKClick={restoreTask}
             deleteLoading={deleteLoading}
-            buttonLable="Yes! Archive"
+            buttonLable="Yes! Restore"
           />
         </>
       ),

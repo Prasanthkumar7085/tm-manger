@@ -9,7 +9,7 @@ import {
   updateUsersAPI,
 } from "@/lib/services/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useLocation,useRouter } from "@tanstack/react-router";
+import { useLocation, useRouter } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import TanStackTable from "../core/TanstackTable";
 import { userColumns } from "./UserColumns";
@@ -94,8 +94,12 @@ function UsersTable() {
         to: "/users",
         search: queryParams,
       });
-      // setUsers( response?.data?.data?.records,)
-      return response;
+      let responseAfterSerial = addSerial(
+        response?.data?.data?.records,
+        response?.data?.data?.pagination_info?.current_page,
+        response?.data?.data?.pagination_info?.page_size
+      );
+      return [responseAfterSerial, response?.data?.data?.pagination_info];
     },
   });
   const getAllUsers = async ({ pageIndex, pageSize, order_by }: any) => {
@@ -254,16 +258,7 @@ function UsersTable() {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString,selectedStatus]);
-  
-  const usersData =
-    addSerial(
-      data?.data?.data?.records,
-      data?.data?.data?.pagination_info?.current_page,
-      data?.data?.data?.pagination_info?.page_size
-    ) || [];
-
-  
+  }, [searchString, selectedStatus]);
 
   const handleFormSubmit = async () => {
     if (isEditing) {
@@ -437,6 +432,8 @@ function UsersTable() {
 
   const handleUpdate = (id: number) => {
     handleDrawerOpen(id);
+    setIsEditing(true);
+
     mutate();
   };
 
@@ -568,10 +565,10 @@ function UsersTable() {
         </div>
         <div className="mt-3">
           <TanStackTable
-            data={usersData}
+            data={data?.[0]}
             columns={[...userColumns, ...userActions]}
             loading={isLoading || isFetching || loading}
-            paginationDetails={data?.data?.data?.pagination_info}
+            paginationDetails={data?.[1]}
             getData={getAllUsers}
             removeSortingForColumnIds={[
               "serial",
@@ -581,6 +578,7 @@ function UsersTable() {
               "in_progress_count",
               "overdue_count",
               "completed_count",
+              "1_counts_todo_count",
             ]}
           />
         </div>
