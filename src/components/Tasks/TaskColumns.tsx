@@ -155,7 +155,7 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
           >
             <span
               title={title}
-              className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]"
+              className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[100px]"
             >
               {title || "-"}
             </span>
@@ -165,9 +165,9 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
           </div>
         );
       },
-      width: "350px",
-      maxWidth: "350px",
-      minWidth: "350px",
+      width: "230px",
+      maxWidth: "230px",
+      minWidth: "230px",
       header: () => <span>Tasks</span>,
       footer: (props: any) => props.column.id,
     },
@@ -259,9 +259,9 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
           </div>
         );
       },
-      width: "150px",
-      maxWidth: "150px",
-      minWidth: "150px",
+      width: "130px",
+      maxWidth: "130px",
+      minWidth: "130px",
       header: () => <span>Assigned User</span>,
       footer: (props: any) => props.column.id,
     },
@@ -272,9 +272,9 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
         const date: string = info.getValue();
         return <span>{date ? momentWithTimezone(date) : "-"}</span>;
       },
-      width: "120px",
-      maxWidth: "120px",
-      minWidth: "120px",
+      width: "100px",
+      maxWidth: "100px",
+      minWidth: "100px",
       header: () => <span>Due Date</span>,
       footer: (props: any) => props.column.id,
     },
@@ -320,9 +320,9 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
           </span>
         );
       },
-      width: "120px",
-      maxWidth: "120px",
-      minWidth: "120px",
+      width: "110px",
+      maxWidth: "110px",
+      minWidth: "110px",
       header: () => <span>Status</span>,
       footer: (props: any) => props.column.id,
     },

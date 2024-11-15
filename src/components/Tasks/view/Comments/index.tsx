@@ -452,7 +452,7 @@ const TaskComments = ({ taskId }: any) => {
             )}
           </div>
         </div>
-        <div className="card-footer border-t bg-[#EEEEF8] sticky bottom-0 left-0 right-0  px-4 py-4  z-10 overflow-hidden">
+        <div className="card-footer border-t bg-[#EEEEF8] sticky bottom-0 left-0 right-0  px-4 py-4 z-[7] overflow-hidden">
           <div className="grid grid-cols-[40px,auto] space-x-3">
             <div className="profile-image">
               <img

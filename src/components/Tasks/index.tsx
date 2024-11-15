@@ -210,8 +210,8 @@ const Tasks = () => {
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
           <div className="flex items-center">
-            <div className="filters w-[100%]">
-              <ul className="flex justify-start space-x-3 overflow-auto w-[100%] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+            <div className="filters w-[100%] flex items-center gap-x-4 ">
+              <ul className="flex justify-start space-x-3 py-1 overflow-auto w-[100%] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 ">
                 <li>
                   <SelectTaskProjects
                     selectedProject={selectedProject}
@@ -256,13 +256,13 @@ const Tasks = () => {
                   />
                 </li>
 
-                <li>
+                {/* <li>
                   <Button
                     title={`${isArchive || searchParams.get("isArchived") === "true" ? "Show Active Tasks" : "Show Archived Tasks"}`}
                     className={`font-normal text-sm flex items-center space-x-2 ${
                       isArchive || searchParams.get("isArchived") === "true"
                         ? "bg-primary hover:bg-primary text-white"
-                        : "bg-gray-200 hover:bg-gray-200"
+                        : "bg-white hover:bg-gray-200 border border-[#1b2459]"
                     } max-w-[100px] overflow-hidden truncate`}
                     size="sm"
                     onClick={() => setIsArchive(!isArchive)}
@@ -279,8 +279,74 @@ const Tasks = () => {
                         : " Archived Tasks"}
                     </span>
                   </Button>
-                </li>
+                </li> */}
+
+                {/* <li>
+  <Button
+    title={`${
+      isArchive || searchParams.get("isArchived") === "true"
+        ? "Show Active Tasks"
+        : "Show Archived Tasks"
+    }`}
+    className={`font-normal text-sm flex items-center space-x-2 ${
+      isArchive || searchParams.get("isArchived") === "true"
+        ? "bg-primary hover:bg-primary text-white"
+        : "bg-white hover:bg-gray-200 border border-[#1b2459]"
+    } max-w-[100px] overflow-hidden truncate`}
+    size="sm"
+    onClick={() => setIsArchive(!isArchive)}
+  >
+    <img
+      src={
+        isArchive || searchParams.get("isArchived") === "true"
+          ? "/active-icon.svg" // path for the active tasks image
+          : "/archive.svg" // path for the archived tasks image
+      }
+      alt={isArchive || searchParams.get("isArchived") === "true" ? "active" : "archive"}
+      height={18}
+      width={18}
+    />
+    <span className="truncate">
+      {isArchive || searchParams.get("isArchived") === "true"
+        ? " Active Tasks"
+        : " Archived Tasks"}
+    </span>
+  </Button>
+</li> */}
+
+          
               </ul>
+              <div>
+                  <Button
+                    title={`${
+                      isArchive || searchParams.get("isArchived") === "true"
+                        ? "Show Active Tasks"
+                        : "Show Archived Tasks"
+                    }`}
+                    className={`font-normal text-sm flex  ${
+                      isArchive || searchParams.get("isArchived") === "true"
+                        ? "bg-green-700 hover:bg-green-700 text-white"
+                        : "bg-white hover:bg-gray-200 border border-[#1b2459]"
+                    } max-w-[50px] w-[50px] overflow-hidden truncate`} /* Adjusted width */
+                    size="sm"
+                    onClick={() => setIsArchive(!isArchive)}
+                  >
+                    <img
+                      src={
+                        isArchive || searchParams.get("isArchived") === "true"
+                          ? "/active-icon.svg"
+                          : "/archive.svg"
+                      }
+                      alt={
+                        isArchive || searchParams.get("isArchived") === "true"
+                          ? "active"
+                          : "archive"
+                      }
+                      height={18}
+                      width={18}
+                    />
+                  </Button>
+                </div>
             </div>
           </div>
         </div>
