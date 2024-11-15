@@ -15,12 +15,14 @@ const DeleteDialog = ({
   onCancelClick,
   onOKClick,
   deleteLoading,
+  buttonLable,
 }: {
   openOrNot: boolean;
   label: string;
   onCancelClick: () => void;
   onOKClick: () => void;
   deleteLoading: boolean;
+  buttonLable?: string;
 }) => {
   return (
     <AlertDialog open={openOrNot}>
@@ -37,7 +39,7 @@ const DeleteDialog = ({
             {deleteLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
-              "Yes! Delete"
+              buttonLable?.toUpperCase() || "Yes! Delete"
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

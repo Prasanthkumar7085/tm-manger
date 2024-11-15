@@ -30,14 +30,7 @@ function SideMenu() {
   };
 
   const handleNavigation = (to: string) => {
-    if (isNavigating) return;
-    setIsNavigating(true);
-
     router.navigate({ to });
-
-    setTimeout(() => {
-      setIsNavigating(false);
-    }, 300);
   };
 
   return (

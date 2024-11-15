@@ -24,6 +24,7 @@ import TanStackTable from "../core/TanstackTable";
 import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
 import { archivetaskColumns } from "./ArchiveColumns";
+import { Button } from "../ui/button";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -55,7 +56,6 @@ const Tasks = () => {
   const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
   const [dateValue, setDateValue] = useState<any>(null);
   const [users, setUsers] = useState<any[]>([]);
-  const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [del, setDel] = useState<any>(1);
   const [selectedMembers, setSelectedMembers] = useState<any[]>([]);
@@ -81,8 +81,8 @@ const Tasks = () => {
       selectedpriority,
       selectedProject,
       selectedMembers,
-      intialisArchived,
     ],
+
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
         pageIndex: pagination.pageIndex,
@@ -181,7 +181,6 @@ const Tasks = () => {
     selectedpriority,
     selectedProject,
     selectedMembers,
-    isArchive,
   ]);
 
   const handleDateChange = (fromDate: any, toDate: any) => {
@@ -267,30 +266,26 @@ const Tasks = () => {
         </div>
 
         <div className="flex flex-col mt-4 space-y-5">
-          {data?.[0]?.length !== 0 ? (
-            <div>
-              <TanStackTable
-                data={data?.[0]}
-                columns={
-                  isArchive
-                    ? archivetaskColumns({ setDel })
-                    : taskColumns({ setDel })
-                }
-                paginationDetails={data?.[1]}
-                getData={getAllTasks}
-                loading={isLoading || isFetching}
-                removeSortingForColumnIds={[
-                  "serial",
-                  "actions",
-                  "project_title",
-                  "assignees",
-                  "status",
-                ]}
-              />
-            </div>
-          ) : (
-            ""
-          )}
+          <div>
+            <TanStackTable
+              data={data?.[0]?.length > 0 ? data?.[0] : []}
+              columns={
+                searchParams.get("isArchived") == "true"
+                  ? archivetaskColumns({ setDel })
+                  : taskColumns({ setDel })
+              }
+              paginationDetails={data?.[1]}
+              getData={getAllTasks}
+              loading={isLoading || isFetching}
+              removeSortingForColumnIds={[
+                "serial",
+                "actions",
+                "project_title",
+                "assignees",
+                "status",
+              ]}
+            />
+          </div>
         </div>
       </div>
       <LoadingComponent loading={isLoading} />

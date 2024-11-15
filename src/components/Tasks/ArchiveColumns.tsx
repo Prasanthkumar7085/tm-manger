@@ -384,7 +384,7 @@ export const archivetaskColumns = ({ setDel }: any) => {
           <ul className="table-action-buttons flex space-x-2 items-center">
             <li>
               <Button
-                title="archive"
+                title="restore"
                 disabled={
                   profileData?.user_type === "admin" ||
                   isProjectMemberOrNot(
@@ -400,7 +400,7 @@ export const archivetaskColumns = ({ setDel }: any) => {
               >
                 <img
                   src={"/archive.svg"}
-                  alt="archive"
+                  alt="restore"
                   height={18}
                   width={18}
                 />
@@ -413,6 +413,7 @@ export const archivetaskColumns = ({ setDel }: any) => {
             onCancelClick={onClickClose}
             onOKClick={restoreTask}
             deleteLoading={deleteLoading}
+            buttonLable="Yes! Restore"
           />
         </>
       ),

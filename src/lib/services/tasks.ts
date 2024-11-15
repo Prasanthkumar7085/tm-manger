@@ -40,7 +40,7 @@ export const getAllPaginatedTasks = async ({
       user_ids: user_ids,
       is_archived,
     };
-    if (is_archived === "true") {
+    if (is_archived === "true" || is_archived === true) {
       return await $fetch.get("/tasks/archives", queryParams);
     } else {
       return await $fetch.get("/tasks/all", queryParams);
@@ -297,6 +297,14 @@ export const downloadAttachmentAPI = async (payload: any) => {
 export const getTaskStatsCountsAPI = async () => {
   try {
     return await $fetch.get(`/tasks/tasks-stats`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+
+export const getTaskArchivedStatsCountsAPI = async () => {
+  try {
+    return await $fetch.get(`/tasks/archived-tasks-stats`);
   } catch (err: any) {
     throw err;
   }
