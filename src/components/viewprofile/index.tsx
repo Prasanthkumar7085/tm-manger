@@ -161,12 +161,6 @@ function ViewProfile() {
                       <Loader className="text-white w-6 h-6 animate-spin" />
                     </div>
                   )}
-                  {/* <button
-                    onClick={handleRemoveFile}
-                    className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border border-white"
-                  >
-                    <X className="text-white w-4 h-4" />
-                  </button> */}
                 </div>
               ) : (
                 <img
