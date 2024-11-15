@@ -41,18 +41,57 @@ table tbody td:last-child{
   position: sticky;
   right: 0;
 }
+#users table thead th:first-child,
+#users table tbody td:first-child {
+  width: 40px!important;
+  max-width: 40px!important;
+  min-width: 40px!important;
+}
 #users table thead th:nth-child(2),
 #users table tbody td:nth-child(2){
   position: sticky;
-  left: 50px;
+  left: 40px;
+  width: 150px!important;
+  max-width: 150px!important;
 }
 #users table thead th:nth-child(3),
 #users table tbody td:nth-child(3){
   position: sticky;
-  left: 200px;
+  left: 190px;
+  width: 150px!important;
+  max-width: 150px!important;
 }
-#users table thead th:nth-last-child(2),
-#users table tbody td:nth-last-child(2){
+
+#users table thead th:nth-child(4),
+#users table tbody td:nth-child(4){
+  width: 200px!important;
+  max-width: 200px!important;
+}
+#users table thead th:nth-child(5),
+#users table thead th:nth-child(6),
+#users table tbody td:nth-child(5),
+#users table tbody td:nth-child(6){
+  width: 150px!important;
+  max-width: 150px!important;
+}
+
+
+#users table thead th:nth-child(8),
+#users table tbody td:nth-child(8){
+  width: 350px!important;
+  max-width: 350px!important;
+}
+#users table thead th:nth-child(9),
+#users table tbody td:nth-child(9){
+  width: 120px!important;
+  max-width: 120px!important;
   position: sticky;
-  right: 100px;
+  right: 130px;
+}
+
+
+#users table thead th:last-child,
+#users table tbody td:last-child{
+  width: 130px!important;
+  max-width: 130px!important;
 }
