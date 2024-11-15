@@ -204,7 +204,7 @@ const Tasks = () => {
         <div className="tasks-navbar">
           <div className="flex justify-end items-center ">
             <div className="filters">
-              <ul className="flex justify-end space-x-3 overflow-auto w-[100%]">
+              <ul className="flex justify-end space-x-2 overflow-auto w-[100%]">
                 <li>
                   <SelectTaskProjects
                     selectedProject={selectedProject}
