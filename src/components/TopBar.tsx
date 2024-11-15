@@ -1,27 +1,24 @@
+import downArrowIcon from "@/assets/down-arrow.svg";
 import { navBarConstants } from "@/lib/helpers/navBarConstants";
+import { getSingleUserApi } from "@/lib/services/viewprofile";
+import { useQuery } from "@tanstack/react-query";
 import {
   useLocation,
   useNavigate,
   useParams,
   useRouter,
 } from "@tanstack/react-router";
+import Cookies from "js-cookie";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import downArrowIcon from "@/assets/down-arrow.svg";
-import { useSelector } from "react-redux";
-import { getSingleTaskAPI } from "@/lib/services/tasks";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { getSingleUserApi } from "@/lib/services/viewprofile";
-import { Button } from "./ui/button";
-import Cookies from "js-cookie";
 
 interface titleProps {
   title: string;
@@ -39,8 +36,6 @@ function TopBar() {
     pathname.includes(item.path)
   );
   const [archiveTasks, setArchiveTasks] = useState(false);
-
-  const intialisArchived = searchParams.get("isArchived") || "";
 
   const userID = useSelector(
     (state: any) => state.auth?.user?.user_details?.id
@@ -107,7 +102,7 @@ function TopBar() {
               <span className="text-xl font-normal pr-2 text-md">+</span>
               Add Task
             </Button>
-            {/* <Button
+            <Button
               className="font-normal text-sm"
               variant="add"
               size="DefaultButton"
@@ -115,7 +110,8 @@ function TopBar() {
                 setArchiveTasks(!archiveTasks);
                 let queryParams = {
                   ...location.search,
-                  isArchived: archiveTasks,
+                  isArchived: archiveTasks ? "false" : "true",
+                  current_page: 1,
                 };
                 router.navigate({
                   to: "/tasks",
@@ -123,8 +119,10 @@ function TopBar() {
                 });
               }}
             >
-              Archive Tasks
-            </Button> */}
+              {searchParams.get("isArchived") == "true"
+                ? "View Tasks"
+                : "Archive Tasks"}
+            </Button>
           </div>
         )}
         <DropdownMenu>

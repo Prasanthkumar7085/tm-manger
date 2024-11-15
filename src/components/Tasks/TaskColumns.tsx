@@ -443,6 +443,7 @@ export const taskColumns = ({ setDel, getAllTasks }: any) => {
             onCancelClick={onClickClose}
             onOKClick={deleteTask}
             deleteLoading={deleteLoading}
+            buttonLable="Yes! Archive"
           />
         </>
       ),

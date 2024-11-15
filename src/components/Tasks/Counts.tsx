@@ -6,9 +6,16 @@ import completedTasksIcon from "@/assets/completed-tasks-icon.svg";
 import overDueTasksIcon from "@/assets/overdue-tasks-icon.svg";
 import CountUp from "react-countup";
 import { useQuery } from "@tanstack/react-query";
-import { getTaskStatsCountsAPI } from "@/lib/services/tasks";
+import {
+  getTaskArchivedStatsCountsAPI,
+  getTaskStatsCountsAPI,
+} from "@/lib/services/tasks";
+import { useLocation } from "@tanstack/react-router";
 
 const TotalCounts = ({ refreshCount }: any) => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
   const { data: totalTasks } = useQuery({
     queryKey: ["totalTasks", refreshCount],
     queryFn: () => getTotalTasksCounts(),
@@ -16,8 +23,13 @@ const TotalCounts = ({ refreshCount }: any) => {
 
   const getTotalTasksCounts = async () => {
     try {
-      const response = await getTaskStatsCountsAPI();
-      return response?.data?.data;
+      if (searchParams.get("isArchived") == "true") {
+        const response = await getTaskArchivedStatsCountsAPI();
+        return response?.data?.data;
+      } else {
+        const response = await getTaskStatsCountsAPI();
+        return response?.data?.data;
+      }
     } catch (error) {
       console.error(error);
     }
