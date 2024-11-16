@@ -1,0 +1,23 @@
+.ckeditor-content table {
+  display: block;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.ckeditor-content td {
+  padding: 10px;
+  border: 1px solid black;
+}
+
+.ckeditor-content ol {
+  list-style-type: decimal !important;
+  padding-left: 20px;
+}
+.ckeditor-content ul {
+  list-style-type: disc !important;
+  padding-left: 20px;
+}
+
+.ckeditor-content li {
+  margin-bottom: 5px;
+}
