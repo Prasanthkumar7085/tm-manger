@@ -34,7 +34,7 @@ function ViewProfile() {
   const [isUploading, setIsUploading] = useState(false);
 
   const { isLoading } = useQuery({
-    queryKey: ["users", userID],
+    queryKey: ["users", userID, isEditMode],
     queryFn: async () => {
       setLoading(true);
       try {
@@ -137,10 +137,19 @@ function ViewProfile() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setEditedData((prev: any) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    if (name == "phone_number") {
+      const numericValue = e.target.value.replace(/\D/g, "").slice(0, 10);
+      setEditedData((prev: any) => ({
+        ...prev,
+        [name]: numericValue,
+      }));
+    } else {
+      setEditedData((prev: any) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSave = async () => {
@@ -229,12 +238,6 @@ function ViewProfile() {
               <span className="absolute bottom-[-10%] left-[40%] bg-[#1b2459] text-white rounded-full p-1">
                 <Pencil className="w-4 h-4" />
               </span>
-              {/* <button
-                onClick={handleRemoveFile}
-                className="absolute top-0 right-0 bg-red-500 p-1 rounded-full border border-white"
-              >
-                <X className="text-white w-4 h-4" />
-              </button> */}
             </label>
           </div>
           <div>
@@ -253,7 +256,13 @@ function ViewProfile() {
           {["fname", "lname", "email", "phone_number"].map((field) => (
             <div key={field}>
               <h3 className="text-sm font-normal text-[#666666]">
-                {field.replace("_", " ").toUpperCase()}
+                {field == "fname"
+                  ? "First Name"
+                  : field == "lname"
+                    ? "Last Name"
+                    : field == "email"
+                      ? "Email"
+                      : "Phone Number"}
               </h3>
               {isEditMode ? (
                 <input

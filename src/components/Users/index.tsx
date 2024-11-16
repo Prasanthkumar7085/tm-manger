@@ -300,16 +300,6 @@ function UsersTable() {
 
   const handleDrawerOpen = (user?: any) => {
     if (user) {
-      // setUserData({
-      //   id: userData.id || null,
-      //   fname: userData.fname || "",
-      //   lname: userData.lname || "",
-      //   email: userData.email || "",
-      //   designation: userData.designation || "",
-      //   password: userData.password || "",
-      //   phone_number: userData.phone_number || "",
-      // });
-      // setUserType(userType.user_type ||"");
       setIsEditing(true);
       setSelectedId(user);
     } else {
@@ -375,17 +365,6 @@ function UsersTable() {
     setErrors({});
   };
 
-  // const handleInputChange = (e: any) => {
-  //   let { name, value } = e.target;
-  //   const updatedValue = value
-  //     .replace(/[^\w\s]/g, "")
-  //     .replace(/^\s+/g, "")
-  //     .replace(/\s{2,}/g, " ");
-  //   setUserData({
-  //     ...userData,
-  //     [name]: updatedValue,
-  //   });
-  // };
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     if (

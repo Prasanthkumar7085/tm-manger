@@ -287,8 +287,8 @@ export const userColumns = [
         >
           <div
             style={{
-              color: isActive ? "#28A745" : "#A71D2A",
-              background: isActive ? "#28A74533" : "#A71D2A33",
+              color: info.getValue() ? "#28A745" : "#A71D2A",
+              background: info.getValue() ? "#28A74533" : "#A71D2A33",
             }}
             className="rounded-full cursor-pointer flex items-center py-0 px-3 min-w-[90px]"
             onClick={togglePopover}
@@ -298,11 +298,11 @@ export const userColumns = [
                 height: "8px",
                 width: "8px",
                 borderRadius: "50%",
-                backgroundColor: isActive ? "green" : "red",
+                backgroundColor: info.getValue() ? "green" : "red",
                 marginRight: "8px",
               }}
             ></span>
-            <span>{isActive ? "Active" : "Inactive"}</span>
+            <span>{info.getValue() ? "Active" : "Inactive"}</span>
           </div>
           {isOpen && (
             <div
