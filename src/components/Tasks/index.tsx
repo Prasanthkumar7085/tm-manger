@@ -311,40 +311,38 @@ const Tasks = () => {
     </span>
   </Button>
 </li> */}
-
-          
               </ul>
               <div>
-                  <Button
-                    title={`${
+                <Button
+                  title={`${
+                    isArchive || searchParams.get("isArchived") === "true"
+                      ? "Show Active Tasks"
+                      : "Show Archived Tasks"
+                  }`}
+                  className={`font-normal text-sm flex  ${
+                    isArchive || searchParams.get("isArchived") === "true"
+                      ? "bg-green-700 hover:bg-green-700 text-white"
+                      : "bg-white hover:bg-gray-200 border border-[#1b2459]"
+                  } max-w-[50px] w-[50px] overflow-hidden truncate`}
+                  size="sm"
+                  onClick={() => setIsArchive(!isArchive)}
+                >
+                  <img
+                    src={
                       isArchive || searchParams.get("isArchived") === "true"
-                        ? "Show Active Tasks"
-                        : "Show Archived Tasks"
-                    }`}
-                    className={`font-normal text-sm flex  ${
+                        ? "/active-icon.svg"
+                        : "/archive.svg"
+                    }
+                    alt={
                       isArchive || searchParams.get("isArchived") === "true"
-                        ? "bg-green-700 hover:bg-green-700 text-white"
-                        : "bg-white hover:bg-gray-200 border border-[#1b2459]"
-                    } max-w-[50px] w-[50px] overflow-hidden truncate`} /* Adjusted width */
-                    size="sm"
-                    onClick={() => setIsArchive(!isArchive)}
-                  >
-                    <img
-                      src={
-                        isArchive || searchParams.get("isArchived") === "true"
-                          ? "/active-icon.svg"
-                          : "/archive.svg"
-                      }
-                      alt={
-                        isArchive || searchParams.get("isArchived") === "true"
-                          ? "active"
-                          : "archive"
-                      }
-                      height={18}
-                      width={18}
-                    />
-                  </Button>
-                </div>
+                        ? "active"
+                        : "archive"
+                    }
+                    height={18}
+                    width={18}
+                  />
+                </Button>
+              </div>
             </div>
           </div>
         </div>

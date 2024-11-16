@@ -82,7 +82,7 @@ export const TasksSelectPriority: React.FC<StatusFilterProps> = ({
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0 bg-white">
         <Command>
-          <CommandInput placeholder="Search Status" />
+          <CommandInput placeholder="Search Priortity" />
           <CommandList>
             <CommandEmpty>No Status found.</CommandEmpty>
             <CommandGroup>

@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import RepliedComments from "./RepliedComments";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
+import "./comments.css";
 const TaskComments = ({ taskId }: any) => {
   const userID = useSelector(
     (state: any) => state.auth?.user?.user_details?.id
@@ -363,6 +364,7 @@ const TaskComments = ({ taskId }: any) => {
                                       </div>
                                     ) : (
                                       <p
+                                        className="ckeditor-content"
                                         dangerouslySetInnerHTML={{
                                           __html: comment.message,
                                         }}

@@ -28,86 +28,83 @@ body {
   z-index: 999;
 }
 
-.stats-and-graph-chart .highcharts-title{
-  display:none;
+.stats-and-graph-chart .highcharts-title {
+  display: none;
 }
 table thead th:first-child,
-table tbody td:first-child{
+table tbody td:first-child {
   position: sticky;
   left: 0;
 }
 table thead th:last-child,
-table tbody td:last-child{
+table tbody td:last-child {
   position: sticky;
   right: 0;
 }
 
 #tasks table thead th:first-child,
-#tasks table tbody td:first-child{
+#tasks table tbody td:first-child {
   position: sticky;
   left: 0;
 }
 
 #tasks table thead th:nth-child(2),
-#tasks table tbody td:nth-child(2){
+#tasks table tbody td:nth-child(2) {
   position: sticky;
   left: 50px;
 }
 
 #tasks table thead th:nth-child(3),
-#tasks table tbody td:nth-child(3){
+#tasks table tbody td:nth-child(3) {
   position: sticky;
   left: 250px;
   z-index: 8;
 }
 
 #tasks table thead th:last-child,
-#tasks table tbody td:last-child{
+#tasks table tbody td:last-child {
   position: sticky;
   right: 0px;
 }
 
-
-
 #users table thead th:first-child,
 #users table tbody td:first-child {
-  width: 40px!important;
-  max-width: 40px!important;
-  min-width: 40px!important;
+  width: 40px !important;
+  max-width: 40px !important;
+  min-width: 40px !important;
 }
 #users table thead th:nth-child(2),
-#users table tbody td:nth-child(2){
+#users table tbody td:nth-child(2) {
   position: sticky;
   left: 40px;
-  width: 150px!important;
-  max-width: 150px!important;
+  width: 150px !important;
+  max-width: 150px !important;
 }
 #users table thead th:nth-child(3),
-#users table tbody td:nth-child(3){
+#users table tbody td:nth-child(3) {
   position: sticky;
   left: 190px;
-  width: 150px!important;
-  max-width: 150px!important;
+  width: 150px !important;
+  max-width: 150px !important;
 }
 
 #users table thead th:nth-child(4),
-#users table tbody td:nth-child(4){
-  width: 200px!important;
-  max-width: 200px!important;
+#users table tbody td:nth-child(4) {
+  width: 200px !important;
+  max-width: 200px !important;
 }
 #users table thead th:nth-child(5),
 #users table thead th:nth-child(6),
 #users table tbody td:nth-child(5),
-#users table tbody td:nth-child(6){
-  width: 150px!important;
-  max-width: 150px!important;
+#users table tbody td:nth-child(6) {
+  width: 150px !important;
+  max-width: 150px !important;
 }
 
-
 #users table thead th:nth-child(8),
-#users table tbody td:nth-child(8){
-  width: 350px!important;
-  max-width: 350px!important;
+#users table tbody td:nth-child(8) {
+  width: 350px !important;
+  max-width: 350px !important;
 }
 /* #users table thead th:nth-child(9),
 #users table tbody td:nth-child(9){
@@ -117,22 +114,22 @@ table tbody td:last-child{
   right: 130px;
 } */
 
-
 #users table thead th:last-child,
-#users table tbody td:last-child{
-  width: 130px!important;
-  max-width: 130px!important;
+#users table tbody td:last-child {
+  width: 130px !important;
+  max-width: 130px !important;
 }
-
-
 
 /* .ck-editor__editable_inline .ck-dropdown__panel {
   z-index: 9999999999999 !important;
 } */
 
-.ck .ck-reset .ck-dropdown__panel .ck-dropdown__panel_ne .ck-dropdown__panel_visible{
+.ck
+  .ck-reset
+  .ck-dropdown__panel
+  .ck-dropdown__panel_ne
+  .ck-dropdown__panel_visible {
   z-index: 9999999999999 !important;
-
 }
 
 .ck-editor__editable_inline .ck-dropdown__panel {
@@ -147,15 +144,10 @@ table tbody td:last-child{
 }
 
 .ck.ck-dropdown__panel {
- 
   position: absolute !important;
   top: 0px !important; /* Adjust this value to move the dropdown downwards */
   left: 0px !important; /* Adjust this value to align the dropdown horizontally */
   z-index: 1050 !important;
-  
 }
 
-/* .ck .ck-button .ck-heading_heading11 .ck-off .ck-button_with-text{
-  z-index: 9999999999999 !important;
 
-} */
