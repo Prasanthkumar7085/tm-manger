@@ -26,7 +26,7 @@ export const ActivityDrawer = ({
   };
   return (
     <Dialog open={activityOpen} onOpenChange={setActivityOpen}>
-      <DialogContent className="p-0 sm:max-w-[1000px] bg-white">
+      <DialogContent className="p-0 sm:max-w-[1000px] h-[80vh] bg-white">
         <DialogHeader>
           <div className="flex justify-between border-b-[#e7e7f7] border-b-[1.2px]">
             <h3 className="py-2 px-4 text-[#273480] items-center flex text-base border-r-[1.2px] border-r-[#e7e7f7] font-medium">

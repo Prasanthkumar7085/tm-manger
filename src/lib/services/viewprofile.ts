@@ -1,11 +1,8 @@
 import { $fetch } from "../fetch";
 
 export const getSingleViewUserAPI = async (userId: string | undefined) => {
-  const queryParams = {
-    metadata: true,
-  };
   try {
-    return await $fetch.get(`/users/${userId}`, queryParams);
+    return await $fetch.get(`/users/${userId}`);
   } catch (err) {
     throw err;
   }
@@ -31,6 +28,3 @@ export const updateUserDetailsAPI = async (id: any, payload: any) => {
     throw err;
   }
 };
-
-
-

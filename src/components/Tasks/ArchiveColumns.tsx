@@ -399,7 +399,7 @@ export const archivetaskColumns = ({ setDel }: any) => {
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
               >
                 <img
-                  src={"/archive.svg"}
+                  src={"/restore_1.svg"}
                   alt="restore"
                   height={18}
                   width={18}

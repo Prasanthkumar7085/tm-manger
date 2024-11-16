@@ -36,6 +36,22 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
           aria-expanded={open}
           className="justify-between bg-[#ffffff] border-[#E2E2E2] text-[#00000099] font-normal  rounded-[8px] h-[35px] w-[220px] relative"
         >
+          {value && (
+            <span
+              style={{
+                width: "10px",
+                height: "10px",
+                borderRadius: "50%",
+                backgroundColor:
+                  statusConstants.find((item) => item.value === value)?.label ==
+                  "Active"
+                    ? "green"
+                    : "red",
+                display: "inline-block",
+                marginRight: "8px",
+              }}
+            ></span>
+          )}
           {value
             ? statusConstants.find((item) => item.value === value)?.label
             : "Select Status"}
@@ -59,11 +75,11 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
             <CommandGroup>
               {statusConstants.map((status) => (
                 <CommandItem
-                className="cursor-pointer"
+                  className="cursor-pointer"
                   key={status.value}
                   value={status.value}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
+                    setValue(currentValue);
                     setOpen(false);
                   }}
                 >
@@ -73,6 +89,17 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
                       value === status.value ? "opacity-100" : "opacity-0"
                     )}
                   />
+                  <span
+                    style={{
+                      width: "10px",
+                      height: "10px",
+                      borderRadius: "50%",
+                      backgroundColor:
+                        status.label == "Active" ? "green" : "red",
+                      display: "inline-block",
+                      marginRight: "8px",
+                    }}
+                  ></span>{" "}
                   {status.label}
                 </CommandItem>
               ))}
