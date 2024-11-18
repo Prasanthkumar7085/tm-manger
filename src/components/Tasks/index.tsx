@@ -25,7 +25,6 @@ import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
 import { archivetaskColumns } from "./ArchiveColumns";
 import { Button } from "../ui/button";
-import { Pagination } from "rsuite";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 
 const Tasks = () => {
@@ -43,13 +42,13 @@ const Tasks = () => {
   const orderBY = searchParams.get("order_by")
     ? searchParams.get("order_by")
     : "";
-    const initialFromDate = searchParams.get("from_date")
-    ?  searchParams.get("from_date")
-    :"";
-  
+  const initialFromDate = searchParams.get("from_date")
+    ? searchParams.get("from_date")
+    : "";
+
   const initialToDate = searchParams.get("to_date")
-  ? searchParams.get("to_date")
-    :"";
+    ? searchParams.get("to_date")
+    : "";
   const initialSearch = searchParams.get("search_string") || "";
   const initialStatus = searchParams.get("status") || "";
   const initialPrioritys = searchParams.get("priority") || "";
@@ -69,7 +68,11 @@ const Tasks = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [del, setDel] = useState<any>(1);
-  const [selectedMembers, setSelectedMembers] = useState<any[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<any>();
+  const [selectedMembersData, setSelectedMembersData] = useState<any>(
+    intialuserIds ? intialuserIds.split(",").map((id: string) => ({ id })) : []
+  );
+
   const [isArchive, setIsArchive] = useState(false);
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
@@ -142,8 +145,8 @@ const Tasks = () => {
     },
   });
 
-  const getAllTasks = async ({ pageIndex, pageSize, order_by}: any) => {
-    setPagination({ pageIndex, pageSize, order_by});
+  const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
+    setPagination({ pageIndex, pageSize, order_by });
   };
 
   const getFullName = (user: any) => {
@@ -156,15 +159,28 @@ const Tasks = () => {
       const response = await getAllMembers();
       const data = response?.data;
       setUsers(data?.data?.data || []);
+      const userIdsArray = intialuserIds.split(",");
+      const usersData = data?.data;
+      const intialusersData = usersData?.filter((item: any) =>
+        userIdsArray.includes(item.id.toString())
+      );
+
+      console.log(intialusersData);
+      setSelectedMembers(intialusersData);
+
       return response?.data?.data;
     },
   });
 
   useEffect(() => {
-    
-    if(initialFromDate ) {
-      setDateValue(changeDateToUTC(initialFromDate, initialToDate))
+    if (initialFromDate) {
+      setDateValue(changeDateToUTC(initialFromDate, initialToDate));
     }
+
+    if (intialuserIds) {
+      setSelectedMembersData(intialuserIds);
+    }
+
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
       if (
@@ -172,8 +188,9 @@ const Tasks = () => {
         selectedStatus ||
         selectedpriority ||
         selectedProject ||
-        selectedDate||
-        isArchive
+        selectedDate ||
+        isArchive ||
+        selectedMembers
       ) {
         getAllTasks({
           pageIndex: 1,
@@ -198,22 +215,26 @@ const Tasks = () => {
     selectedProject,
     selectedMembers,
     isArchive,
-   selectedDate,
+    selectedDate,
   ]);
 
   const handleDateChange = (initialFromDate: any, initialToDate: any) => {
     if (initialFromDate) {
       setDateValue(changeDateToUTC(initialFromDate, initialToDate));
-       setSelectedDate([initialFromDate ,  initialToDate]);
-    } 
-    else {
-       setDateValue([]);
-       setSelectedDate([]);
+      setSelectedDate([initialFromDate, initialToDate]);
+    } else {
+      setDateValue([]);
+      setSelectedDate([]);
     }
   };
- 
-  const handleSelectMembers = (selectedMembers: any) => {
-    setSelectedMembers(selectedMembers);
+  const handleSelectMembers = (intialuserIds: any) => {
+    if (intialuserIds) {
+      setSelectedMembersData(intialuserIds);
+      setSelectedMembers(intialuserIds);
+    } else {
+      setSelectedMembersData([]);
+      setSelectedMembers([]);
+    }
   };
 
   return (
@@ -235,15 +256,10 @@ const Tasks = () => {
                   />
                 </li>
                 <li>
-                  <TasksSelectPriority
-                    value={selectedpriority}
-                    setValue={setSelectedpriority}
-                  />
-                </li>
-                <li>
-                  <TasksSelectStatusFilter
-                    value={selectedStatus}
-                    setValue={setSelectedStatus}
+                  <SearchFilter
+                    searchString={searchString}
+                    setSearchString={setSearchString}
+                    title="Search By Task name"
                   />
                 </li>
                 <li>
@@ -257,7 +273,6 @@ const Tasks = () => {
                     onSelectMembers={handleSelectMembers}
                   />
                 </li>
-
                 <li>
                   <DateRangeFilter
                     dateValue={dateValue}
@@ -265,10 +280,15 @@ const Tasks = () => {
                   />
                 </li>
                 <li>
-                  <SearchFilter
-                    searchString={searchString}
-                    setSearchString={setSearchString}
-                    title="Search By Task name"
+                  <TasksSelectPriority
+                    value={selectedpriority}
+                    setValue={setSelectedpriority}
+                  />
+                </li>
+                <li>
+                  <TasksSelectStatusFilter
+                    value={selectedStatus}
+                    setValue={setSelectedStatus}
                   />
                 </li>
               </ul>

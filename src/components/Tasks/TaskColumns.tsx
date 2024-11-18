@@ -124,7 +124,7 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
       width: "200px",
       maxWidth: "200px",
       minWidth: "200px",
-      header: () => <span>Projects</span>,
+      header: () => <span>Project</span>,
       footer: (props: any) => props.column.id,
     },
     {
@@ -157,7 +157,7 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
       width: "230px",
       maxWidth: "230px",
       minWidth: "230px",
-      header: () => <span>Tasks</span>,
+      header: () => <span>Task</span>,
       footer: (props: any) => props.column.id,
     },
     {
@@ -249,7 +249,7 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
       width: "130px",
       maxWidth: "130px",
       minWidth: "130px",
-      header: () => <span>Assigned User</span>,
+      header: () => <span>Assigned Users</span>,
       footer: (props: any) => props.column.id,
     },
     {
