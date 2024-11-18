@@ -523,7 +523,7 @@ function UsersTable() {
                   <SearchFilter
                     searchString={searchString}
                     setSearchString={setSearchString}
-                    title="Search User"
+                    title="Search By Name"
                   />
                 </li>
                 <li>

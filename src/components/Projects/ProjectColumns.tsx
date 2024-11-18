@@ -170,9 +170,9 @@ export const projectColumns = ({
         return <span>{info.getValue()}</span>;
       },
       footer: (props: any) => props.column.id,
-      width: "50px",
-      maxWidth: "50px",
-      minWidth: "50px",
+      width: "80px",
+      maxWidth: "80px",
+      minWidth: "80px",
     },
     {
       accessorFn: (row: any) => row.description,

@@ -10,7 +10,7 @@ const SearchFilter: React.FC<IReportsFilters> = ({
   title,
 }) => {
   return (
-    <div className="relative h-[35px] w-[170px]">
+    <div className="relative h-[35px] w-[180px]">
       <Search className="absolute left-2 top-1/2 -translate-y-1/2 bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
       <Input
         placeholder={title}
