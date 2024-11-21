@@ -1,6 +1,6 @@
 interface LoadingComponentProps {
   loading: boolean;
-  message: string;
+  message?: string;
 }
 
 const LoadingComponent: React.FC<LoadingComponentProps> = ({
