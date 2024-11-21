@@ -9,6 +9,7 @@ import { useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import tagIcon from "@/assets/tag- icon.svg";
+import { Popover } from "rsuite";
 
 interface TagsComponentProps {
   tagInput: string;
@@ -30,6 +31,9 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
   const { taskId } = useParams({ strict: false });
   const [tagsRefresh, setTagsRefresh] = useState(0);
   const [tags, setTags] = useState<any>([]);
+  const [visible, setVisible] = useState(false);
+
+  const togglePopover = () => setVisible((prev) => !prev);
 
   const { isLoading: isTaskTagsLoading, isError: isTaskTagsError } = useQuery({
     queryKey: ["getSingleTaskTags", taskId, tagsRefresh],

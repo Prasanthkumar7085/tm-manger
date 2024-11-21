@@ -10,9 +10,10 @@ import {
   getTaskArchivedStatsCountsAPI,
   getTaskStatsCountsAPI,
 } from "@/lib/services/tasks";
-import { useLocation } from "@tanstack/react-router";
+import { useLocation, useNavigate } from "@tanstack/react-router";
 
-const TotalCounts = ({ refreshCount, isArchive }: any) => {
+const TotalCounts = ({ refreshCount, isArchive, onCardClick }: any) => {
+  const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
 
@@ -38,7 +39,10 @@ const TotalCounts = ({ refreshCount, isArchive }: any) => {
   return (
     <section id="tasks-counts">
       <div className="flex justify-between items-center gap-4 bg-gradient-to-rounded-lg  px-6">
-        <Card className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg">
+        <Card
+          className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg cursor-pointer"
+          
+        >
           <div className="flex justify-between w-full items-center">
             <div className="content">
               <h3 className="leading-5 text-sm font-medium text-[#7E7E98]">
@@ -60,7 +64,10 @@ const TotalCounts = ({ refreshCount, isArchive }: any) => {
             </div>
           </div>
         </Card>
-        <Card className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg">
+        <Card
+          className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg cursor-pointer"
+          onClick={() => onCardClick("TODO")}
+        >
           <div className="flex justify-between w-full items-center">
             <div className="content">
               <h3 className="leading-5 text-sm font-medium text-[#7E7E98]">
@@ -82,7 +89,10 @@ const TotalCounts = ({ refreshCount, isArchive }: any) => {
             </div>
           </div>
         </Card>
-        <Card className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg">
+        <Card
+          className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg cursor-pointer"
+          onClick={() => onCardClick("IN_PROGRESS")}
+        >
           <div className="flex justify-between w-full items-center">
             <div className="content">
               <h3 className="leading-5 text-sm font-medium text-[#7E7E98]">
@@ -104,7 +114,10 @@ const TotalCounts = ({ refreshCount, isArchive }: any) => {
             </div>
           </div>
         </Card>
-        <Card className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg">
+        <Card
+          className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg cursor-pointer"
+          onClick={() => onCardClick("OVER_DUE")}
+        >
           <div className="flex justify-between w-full items-center">
             <div className="content">
               <h3 className="leading-5 text-sm font-medium text-[#7E7E98]">
@@ -126,7 +139,10 @@ const TotalCounts = ({ refreshCount, isArchive }: any) => {
             </div>
           </div>
         </Card>
-        <Card className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg">
+        <Card
+          className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg cursor-pointer"
+          onClick={() => onCardClick("COMPLETED")}
+        >
           <div className="flex justify-between w-full items-center">
             <div className="content">
               <h3 className="leading-5 text-sm font-medium text-[#4C4C66]">

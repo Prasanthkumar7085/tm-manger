@@ -237,11 +237,16 @@ const Tasks = () => {
     }
   };
 
+  const handleCardClick = (status: string) => {
+    setSelectedStatus(status);
+    setPagination({ ...pagination, pageIndex: 1 });
+  };
+
   return (
     <section id="tasks" className="relative">
       <div>
         {!isDashboard && (
-          <TotalCounts refreshCount={del} isArchive={isArchive} />
+          <TotalCounts refreshCount={del} isArchive={isArchive}  onCardClick={handleCardClick} />
         )}
       </div>
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
