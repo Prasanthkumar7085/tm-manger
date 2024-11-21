@@ -6,7 +6,7 @@ import {
   taskPriorityConstants,
   taskStatusConstants,
 } from "@/lib/helpers/statusConstants";
-import { deleteTaskAPI } from "@/lib/services/tasks";
+import { archiveTaskAPI, deleteTaskAPI } from "@/lib/services/tasks";
 import { useNavigate } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
@@ -22,8 +22,8 @@ import {
   isProjectMemberOrNot,
 } from "@/lib/helpers/loginHelpers";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
-
-export const taskColumns = ({ setDel }: any) => {
+import { getColorFromInitials } from "@/lib/constants/colorConstants";
+export const taskColumns = ({ setDel, isArchive }: any) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState("");
@@ -31,37 +31,13 @@ export const taskColumns = ({ setDel }: any) => {
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
   );
-
-  const getColorFromInitials = (initials: string) => {
-    const colors = [
-      "bg-red-200",
-      "bg-green-200",
-      "bg-blue-200",
-      "bg-yellow-200",
-      "bg-purple-200",
-      "bg-pink-200",
-      "bg-indigo-200",
-      "bg-teal-200",
-      "bg-orange-200",
-      "bg-cyan-200",
-      "bg-amber-200",
-      "bg-lime-200",
-      "bg-emerald-200",
-      "bg-fuchsia-200",
-      "bg-rose-200",
-    ];
-
-    const index = initials.charCodeAt(0) % colors.length;
-    return colors[index];
-  };
-
   const deleteTask = async () => {
     try {
       setDeleteLoading(true);
-      const response = await deleteTaskAPI(deleteTaskId);
+      const response = await archiveTaskAPI(deleteTaskId);
       if (response?.status === 200 || response?.status === 201) {
         onClickClose();
-        toast.success(response?.data?.message || "User Task Successfully");
+        toast.success(response?.data?.message);
         setDel((prev: any) => prev + 1);
       }
     } catch (err: any) {
@@ -71,28 +47,23 @@ export const taskColumns = ({ setDel }: any) => {
       setDeleteLoading(false);
     }
   };
-
   const handleView = (taskId: any) => {
     navigate({
       to: `/tasks/view/${taskId}`,
     });
   };
-
   const handleEdit = (taskId: any) => {
     navigate({
       to: `/tasks/${taskId}`,
     });
   };
-
   const onClickClose = () => {
     setOpen(false);
   };
-
   const onClickOpen = (id: any) => {
     setOpen(true);
     setDeleteTaskId(id);
   };
-
   const isAbleToAddOrEdit = (users: any) => {
     if (
       (isMananger(users, profileData?.id, profileData?.user_type) ||
@@ -102,7 +73,6 @@ export const taskColumns = ({ setDel }: any) => {
       return true;
     }
   };
-
   return [
     {
       accessorFn: (row: any) => row.serial,
@@ -126,7 +96,6 @@ export const taskColumns = ({ setDel }: any) => {
             to: `/projects/view/${info.row.original.project_id}`,
           });
         };
-
         return (
           <div className="project-title flex items-center gap-2">
             {project_logo_url && (
@@ -163,13 +132,11 @@ export const taskColumns = ({ setDel }: any) => {
       id: "title",
       cell: (info: any) => {
         const { ref_id, title } = info.getValue();
-
         const handleView = (taskId: any) => {
           navigate({
             to: `/tasks/view/${taskId}`,
           });
         };
-
         return (
           <div
             className="task capitalize flex justify-between cursor-pointer"
@@ -177,7 +144,7 @@ export const taskColumns = ({ setDel }: any) => {
           >
             <span
               title={title}
-              className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]"
+              className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[100px]"
             >
               {title || "-"}
             </span>
@@ -187,9 +154,9 @@ export const taskColumns = ({ setDel }: any) => {
           </div>
         );
       },
-      width: "350px",
-      maxWidth: "350px",
-      minWidth: "350px",
+      width: "230px",
+      maxWidth: "230px",
+      minWidth: "230px",
       header: () => <span>Tasks</span>,
       footer: (props: any) => props.column.id,
     },
@@ -198,7 +165,6 @@ export const taskColumns = ({ setDel }: any) => {
       id: "assignees",
       cell: (info: any) => {
         const [showPopover, setShowPopover] = useState(false);
-
         return (
           <div className="flex justify-start items-center -space-x-2">
             {info
@@ -206,14 +172,14 @@ export const taskColumns = ({ setDel }: any) => {
               .slice(0, 5)
               .map((assignee: any) => {
                 const initials =
-                  assignee.user_first_name[0] + assignee.user_last_name[0];
+                  assignee.user_first_name?.[0]?.toUpperCase() +
+                  assignee.user_last_name?.[0]?.toUpperCase();
                 const backgroundColor = getColorFromInitials(initials);
-
                 return (
                   <Avatar
                     key={assignee.user_id}
                     title={
-                      assignee.user_first_name + " " + assignee.user_last_name
+                      assignee?.user_first_name + " " + assignee.user_last_name
                     }
                     className={`w-6 h-6 ${backgroundColor}`}
                   >
@@ -280,9 +246,9 @@ export const taskColumns = ({ setDel }: any) => {
           </div>
         );
       },
-      width: "150px",
-      maxWidth: "150px",
-      minWidth: "150px",
+      width: "130px",
+      maxWidth: "130px",
+      minWidth: "130px",
       header: () => <span>Assigned User</span>,
       footer: (props: any) => props.column.id,
     },
@@ -293,9 +259,9 @@ export const taskColumns = ({ setDel }: any) => {
         const date: string = info.getValue();
         return <span>{date ? momentWithTimezone(date) : "-"}</span>;
       },
-      width: "120px",
-      maxWidth: "120px",
-      minWidth: "120px",
+      width: "100px",
+      maxWidth: "100px",
+      minWidth: "100px",
       header: () => <span>Due Date</span>,
       footer: (props: any) => props.column.id,
     },
@@ -341,9 +307,9 @@ export const taskColumns = ({ setDel }: any) => {
           </span>
         );
       },
-      width: "120px",
-      maxWidth: "120px",
-      minWidth: "120px",
+      width: "115px",
+      maxWidth: "115px",
+      minWidth: "115px",
       header: () => <span>Status</span>,
       footer: (props: any) => props.column.id,
     },
@@ -364,7 +330,6 @@ export const taskColumns = ({ setDel }: any) => {
               : priorityValue === "LOW"
                 ? ArrowDown
                 : null;
-
         return (
           <>
             <span
@@ -392,7 +357,6 @@ export const taskColumns = ({ setDel }: any) => {
       header: () => <span>Priority</span>,
       footer: (props: any) => props.column.id,
     },
-
     {
       accessorFn: (row: any) => row.actions,
       id: "actions",
@@ -435,7 +399,7 @@ export const taskColumns = ({ setDel }: any) => {
             </li>
             <li>
               <Button
-                title="Delete"
+                title="archive"
                 disabled={
                   profileData?.user_type === "admin" ||
                   isProjectMemberOrNot(
@@ -450,8 +414,8 @@ export const taskColumns = ({ setDel }: any) => {
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
               >
                 <img
-                  src={"/table/delete.svg"}
-                  alt="delete"
+                  src={"/archive.svg"}
+                  alt="archive"
                   height={18}
                   width={18}
                 />
@@ -460,10 +424,11 @@ export const taskColumns = ({ setDel }: any) => {
           </ul>
           <DeleteDialog
             openOrNot={open}
-            label="Are you sure you want to Delete this task?"
+            label="Are you sure you want to Archive this task?"
             onCancelClick={onClickClose}
             onOKClick={deleteTask}
             deleteLoading={deleteLoading}
+            buttonLable="Yes! Archive"
           />
         </>
       ),

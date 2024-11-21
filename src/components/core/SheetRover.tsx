@@ -38,27 +38,28 @@ import { SheetRoverProps } from "@/lib/interfaces";
           </div>
           <SheetDescription></SheetDescription>
         </SheetHeader>
-        <div className="relative flex flex-col space-y-1">
+        <div className="relative flex flex-col space-y-1">  
           <Label
             className="text-md text-slate-600 font-semibold"
             htmlFor="password"
           >
             New Password
           </Label>
-          <div className="relative">
+          <div className="relative flex items">
             <LockKeyhole className="absolute left-3 mt-[1px] top-1/2 transform -translate-y-1/2 text-slate-800 w-4" />
+            
             <Input
-              className="bg-[#E7E7E7] appearance-none block py-1 h-12 text-lg pl-9 focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
+             className="bg-[#E7E7E7] appearance-none block py-1 h-12 text-lg pl-9 focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
               id="password"
               placeholder="Enter New Password"
               value={userPasswordData.new_password}
               name="new_password"
               onChange={handleUpdateChangePassword}
             />
-            {errors?.new_password && (
-              <p style={{ color: "red" }}>{errors?.new_password[0]}</p>
-            )}
           </div>
+          {errors?.new_password && (
+              <p className="text-xs pt-1 text-red-600">{errors?.new_password[0]}</p>
+            )}
         </div>
         <SheetFooter className="mt-10">
           <Button

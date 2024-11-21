@@ -1,9 +1,7 @@
-import { DateRangePicker } from "rsuite";
-import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import { predefinedRanges } from "./CommonComponents/DatePickerRanges";
-import "rsuite/dist/rsuite.css";
 import { convertToLabUTC } from "@/lib/helpers/timeZone";
+import { DateRangePicker } from "rsuite";
+import "rsuite/dist/rsuite.css";
+import { predefinedRanges } from "./CommonComponents/DatePickerRanges";
 
 const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
   const updateDateValues = (newDate: any) => {
@@ -18,7 +16,7 @@ const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
 
   return (
     <DateRangePicker
-      className="!bg-[#F4F4F6] border border-[#E2E2E2] rounded-[8px] placeholder:text-[#00000066]"
+      className="!bg-[#F4F4F6] border border-[#E2E2E2] rounded-[8px] w-[210px] placeholder:text-[#00000066]"
       editable={false}
       placeholder={"Select Date"}
       placement="bottomEnd"

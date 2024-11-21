@@ -142,73 +142,85 @@ export const userColumns = [
     footer: (props: any) => props.column.id,
   },
   {
-    accessorFn: (row: any) => row.todo_count,
-    id: "todo_count",
-    cell: (info: any) => {
-      let title = info.getValue();
-      return (
-        <div style={{ textAlign: "left" }}>
-          <span>{title ? title : "0"}</span>
-        </div>
-      );
-    },
-    width: "100px",
-    maxWidth: "100px",
-    minWidth: "100px",
-    header: () => <span>Todo</span>,
+    accessorFn: (row: any) => row.counts,
+    id: "counts",
+    width: "160px",
+    maxWidth: "160px",
+    minWidth: "160px",
+    header: () => <span>Users Stats</span>,
     footer: (props: any) => props.column.id,
+    columns: [
+      {
+        accessorFn: (row: any) => row.todo_count,
+        id: "todo_count",
+        cell: (info: any) => {
+          let title = info.getValue();
+          return (
+            <div style={{ textAlign: "left" }}>
+              <span>{title ? title : "0"}</span>
+            </div>
+          );
+        },
+        width: "100px",
+        maxWidth: "100px",
+        minWidth: "100px",
+        header: () => <span>Todo</span>,
+        footer: (props: any) => props.column.id,
+      },
+      {
+        accessorFn: (row: any) => row.in_progress_count,
+        id: "in_progress_count",
+        cell: (info: any) => {
+          let title = info.getValue();
+          return (
+            <div style={{ textAlign: "left" }}>
+              <span>{title ? title : "0"}</span>
+            </div>
+          );
+        },
+        width: "100px",
+        maxWidth: "100px",
+        minWidth: "100px",
+        header: () => <span>In Progress</span>,
+        footer: (props: any) => props.column.id,
+      },
+      {
+        accessorFn: (row: any) => row.overdue_count,
+        id: "overdue_count",
+        cell: (info: any) => {
+          let title = info.getValue();
+          return (
+            <div style={{ textAlign: "left" }}>
+              <span>{title ? title : "0"}</span>
+            </div>
+          );
+        },
+        width: "100px",
+        maxWidth: "100px",
+        minWidth: "100px",
+        header: () => <span>Overdue</span>,
+        footer: (props: any) => props.column.id,
+      },
+      {
+        accessorFn: (row: any) => row.completed_count,
+        id: "completed_count",
+        cell: (info: any) => {
+          let title = info.getValue();
+          return (
+            <div style={{ textAlign: "left" }}>
+              <span>{title ? title : "0"}</span>
+            </div>
+          );
+        },
+        width: "100px",
+        maxWidth: "100px",
+        minWidth: "100px",
+        header: () => <span>Completed</span>,
+        footer: (props: any) => props.column.id,
+      },
+    ],
   },
-  {
-    accessorFn: (row: any) => row.in_progress_count,
-    id: "in_progress_count",
-    cell: (info: any) => {
-      let title = info.getValue();
-      return (
-        <div style={{ textAlign: "left" }}>
-          <span>{title ? title : "0"}</span>
-        </div>
-      );
-    },
-    width: "100px",
-    maxWidth: "100px",
-    minWidth: "100px",
-    header: () => <span>In Progress</span>,
-    footer: (props: any) => props.column.id,
-  },
-  {
-    accessorFn: (row: any) => row.overdue_count,
-    id: "overdue_count",
-    cell: (info: any) => {
-      let title = info.getValue();
-      return (
-        <div style={{ textAlign: "left" }}>
-          <span>{title ? title : "0"}</span>
-        </div>
-      );
-    },
-    width: "100px",
-    maxWidth: "100px",
-    minWidth: "100px",
-    header: () => <span>Overdue</span>,
-    footer: (props: any) => props.column.id,
-  },
-  {
-    accessorFn: (row: any) => row.completed_count,
-    id: "completed_count",
-    cell: (info: any) => {
-      let title = info.getValue();
-      return (
-        <div style={{ textAlign: "left" }}>
-          <span>{title ? title : "0"}</span>
-        </div>
-      );
-    },
-    width: "100px",
-    maxWidth: "100px",
-    minWidth: "100px",
-    header: () => <span>Completed</span>,
-    footer: (props: any) => props.column.id,
-  },
+
   {
     accessorFn: (row: any) => row.active,
     id: "active",
@@ -275,8 +287,8 @@ export const userColumns = [
         >
           <div
             style={{
-              color: isActive ? "#28A745" : "#A71D2A",
-              background: isActive ? "#28A74533" : "#A71D2A33",
+              color: info.getValue() ? "#28A745" : "#A71D2A",
+              background: info.getValue() ? "#28A74533" : "#A71D2A33",
             }}
             className="rounded-full cursor-pointer flex items-center py-0 px-3 min-w-[90px]"
             onClick={togglePopover}
@@ -286,11 +298,11 @@ export const userColumns = [
                 height: "8px",
                 width: "8px",
                 borderRadius: "50%",
-                backgroundColor: isActive ? "green" : "red",
+                backgroundColor: info.getValue() ? "green" : "red",
                 marginRight: "8px",
               }}
             ></span>
-            <span>{isActive ? "Active" : "Inactive"}</span>
+            <span>{info.getValue() ? "Active" : "Inactive"}</span>
           </div>
           {isOpen && (
             <div

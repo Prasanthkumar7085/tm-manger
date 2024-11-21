@@ -126,8 +126,6 @@ const AddProject = () => {
     );
   };
   const confirmSelection = () => {
-    console.log(tempSelectedMember, "tempSelectedMember");
-    console.log(selectedMembers, "selectedMembers");
     const newMembers = tempSelectedMember
       ?.map((memberValue: string) => {
         const member = users.find(
@@ -250,13 +248,13 @@ const AddProject = () => {
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
-                    className="w-full text-left justify-start h-[40px] bg-[#F5F6FA] border border-[#CDCED2] rounded-[8px] text-[#00000066]"
+                    className="w-full text-left justify-between h-[40px] bg-[#F5F6FA] border border-[#CDCED2] rounded-[8px] text-[#00000066]"
                   >
                     Select Members
                     <ChevronsUpDown className=" bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[400px] p-0 bg-white border rounded-[8px]">
+                <PopoverContent className="w-[400px] p-0 bg-white border rounded-[8px] !z-[1050]">
                   <Command>
                     <CommandInput placeholder="Search Members" />
                     <CommandList>

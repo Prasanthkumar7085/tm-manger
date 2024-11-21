@@ -42,9 +42,9 @@ export const TasksSelectPriority: React.FC<StatusFilterProps> = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between bg-[#F4F4F6] h-[35px] w-[170px] overflow-hidden relative text-[#00000099] font-normal text-sm border border-[#E2E2E2]"
+          className="justify-between bg-[#F4F4F6] h-[35px] w-[130px] overflow-hidden relative text-[#00000099] font-normal text-sm border border-[#E2E2E2]"
         >
-          <div>
+          <div className="max-w-[80px] overflow-hidden overflow-ellipsis whitespace-nowrap">
             {value ? (
               <span
                 style={{
@@ -82,7 +82,7 @@ export const TasksSelectPriority: React.FC<StatusFilterProps> = ({
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0 bg-white">
         <Command>
-          <CommandInput placeholder="Search Status" />
+          <CommandInput placeholder="Search Priortity" />
           <CommandList>
             <CommandEmpty>No Status found.</CommandEmpty>
             <CommandGroup>

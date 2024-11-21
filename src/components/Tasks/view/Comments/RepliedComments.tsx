@@ -1,7 +1,5 @@
 import CKEditorComponent from "@/components/core/CKEditor/CKEditorComponent";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
-import { formatDistanceToNow, format } from "date-fns";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,6 +7,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { X } from "lucide-react";
+import "./comments.css";
+
 const RepliedComments = ({
   mainComment,
   handleReplyChange,
@@ -43,7 +44,7 @@ const RepliedComments = ({
           <X />
         </Button>
       </div>
-      <div className="card-body flex flex-col h-comments overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+      <div className="card-body flex flex-col h-[272px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
         <div className="flex space-x-4  my-3 px-4">
           <div className="member-profile-image">
             <img
@@ -72,6 +73,7 @@ const RepliedComments = ({
             <div className="person-message mt-2 text-slate-500 leading-snug">
               <div className="flex flex-col">
                 <p
+                  className="ckeditor-content"
                   dangerouslySetInnerHTML={{
                     __html: mainComment.message,
                   }}
@@ -80,12 +82,11 @@ const RepliedComments = ({
             </div>
           </div>
         </div>
-        <div className="overflow-y-auto pl-4 pr-3 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+        <div className=" pl-4 pr-3 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
           <div className="font-medium text-md text-gray-800 my-2">Replies</div>
           <div className="space-y-4">
             {replyComments()?.length > 0 ? (
               replyComments()?.map((reply: any) => {
-                console.log(reply, "ljljds");
                 return (
                   <div key={reply.id}>
                     <div className="flex space-x-4 justify-end">
@@ -118,6 +119,7 @@ const RepliedComments = ({
                         <div className="person-message mt-2 text-slate-500 leading-snug pr-10">
                           <div className="flex flex-col">
                             <p
+                              className="ckeditor-content"
                               dangerouslySetInnerHTML={{
                                 __html: reply.message,
                               }}

@@ -9,7 +9,7 @@ import {
   updateUsersAPI,
 } from "@/lib/services/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useLocation,useRouter } from "@tanstack/react-router";
+import { useLocation, useRouter } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import TanStackTable from "../core/TanstackTable";
 import { userColumns } from "./UserColumns";
@@ -44,6 +44,7 @@ function UsersTable() {
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [userType, setUserType] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
+  const [users, setUsers] = useState<any>({});
   const [open, setOpen] = useState(false);
   const [deleteuserId, setDeleteUserId] = useState<any>();
   const [isEditing, setIsEditing] = useState(false);
@@ -93,8 +94,12 @@ function UsersTable() {
         to: "/users",
         search: queryParams,
       });
-
-      return response;
+      let responseAfterSerial = addSerial(
+        response?.data?.data?.records,
+        response?.data?.data?.pagination_info?.current_page,
+        response?.data?.data?.pagination_info?.page_size
+      );
+      return [responseAfterSerial, response?.data?.data?.pagination_info];
     },
   });
   const getAllUsers = async ({ pageIndex, pageSize, order_by }: any) => {
@@ -233,8 +238,6 @@ function UsersTable() {
     }
   };
 
-
-
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
@@ -256,13 +259,6 @@ function UsersTable() {
       clearTimeout(handler);
     };
   }, [searchString, selectedStatus]);
-
-  const usersData =
-    addSerial(
-      data?.data?.data?.records,
-      data?.data?.data?.pagination_info?.current_page,
-      data?.data?.data?.pagination_info?.page_size
-    ) || [];
 
   const handleFormSubmit = async () => {
     if (isEditing) {
@@ -304,16 +300,6 @@ function UsersTable() {
 
   const handleDrawerOpen = (user?: any) => {
     if (user) {
-      // setUserData({
-      //   id: userData.id || null,
-      //   fname: userData.fname || "",
-      //   lname: userData.lname || "",
-      //   email: userData.email || "",
-      //   designation: userData.designation || "",
-      //   password: userData.password || "",
-      //   phone_number: userData.phone_number || "",
-      // });
-      // setUserType(userType.user_type ||"");
       setIsEditing(true);
       setSelectedId(user);
     } else {
@@ -380,15 +366,25 @@ function UsersTable() {
   };
 
   const handleInputChange = (e: any) => {
-    let { name, value } = e.target;
-    const updatedValue = value
-      .replace(/[^\w\s]/g, "")
-      .replace(/^\s+/g, "")
-      .replace(/\s{2,}/g, " ");
-    setUserData({
-      ...userData,
-      [name]: updatedValue,
-    });
+    const { name, value } = e.target;
+    if (
+      (name === "fname" || name === "lname") &&
+      !/^[a-zA-Z\s]*$/.test(value)
+    ) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+      }));
+      return;
+    }
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: [],
+    }));
+    setUserData((prevData: any) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleChangeEmail = (e: any) => {
@@ -418,6 +414,8 @@ function UsersTable() {
 
   const handleUpdate = (id: number) => {
     handleDrawerOpen(id);
+    setIsEditing(true);
+
     mutate();
   };
 
@@ -525,7 +523,7 @@ function UsersTable() {
                   <SearchFilter
                     searchString={searchString}
                     setSearchString={setSearchString}
-                    title="Search User"
+                    title="Search By Name"
                   />
                 </li>
                 <li>
@@ -546,10 +544,10 @@ function UsersTable() {
         </div>
         <div className="mt-3">
           <TanStackTable
-            data={usersData}
+            data={data?.[0]}
             columns={[...userColumns, ...userActions]}
             loading={isLoading || isFetching || loading}
-            paginationDetails={data?.data?.data?.pagination_info}
+            paginationDetails={data?.[1]}
             getData={getAllUsers}
             removeSortingForColumnIds={[
               "serial",
@@ -559,6 +557,7 @@ function UsersTable() {
               "in_progress_count",
               "overdue_count",
               "completed_count",
+              "1_counts_todo_count",
             ]}
           />
         </div>

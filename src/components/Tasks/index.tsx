@@ -1,6 +1,9 @@
+import memberIcon from "@/assets/members.svg";
+import selectDropIcon from "@/assets/select-dropdown.svg";
 import { addSerial } from "@/lib/helpers/addSerial";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
-import { getAllPaginatedTasks, getAssignesListAPI } from "@/lib/services/tasks";
+import { getAllMembers } from "@/lib/services/projects/members";
+import { getAllPaginatedTasks } from "@/lib/services/tasks";
 import { useQuery } from "@tanstack/react-query";
 import {
   useLocation,
@@ -9,36 +12,19 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import SearchFilter from "../core/CommonComponents/SearchFilter";
 import { SelectTaskProjects } from "../core/CommonComponents/SelectTaskProjects";
 import { TasksSelectPriority } from "../core/CommonComponents/TasksSelectPriority";
 import { TasksSelectStatusFilter } from "../core/CommonComponents/TasksSelectStatusFilter";
 import DateRangeFilter from "../core/DateRangePicker";
 import LoadingComponent from "../core/LoadingComponent";
+import UserSelectionPopover from "../core/MultipleUsersSelect";
 import TanStackTable from "../core/TanstackTable";
-import { Button } from "../ui/button";
 import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
-import { canAddTask } from "@/lib/helpers/loginHelpers";
-import { toast } from "sonner";
-import {
-  getAllMembers,
-  getProjectMembersAPI,
-} from "@/lib/services/projects/members";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Check, Command } from "lucide-react";
-import {
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../ui/command";
-import memberIcon from "@/assets/members.svg";
-import selectDropIcon from "@/assets/select-dropdown.svg";
-import { cn } from "@/lib/utils";
-import UserSelectionPopover from "../core/MultipleUsersSelect";
+import { archivetaskColumns } from "./ArchiveColumns";
+import { Button } from "../ui/button";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -55,10 +41,13 @@ const Tasks = () => {
   const orderBY = searchParams.get("order_by")
     ? searchParams.get("order_by")
     : "";
-  const initialSearch = searchParams.get("search") || "";
+  const initialSearch = searchParams.get("search_string") || "";
   const initialStatus = searchParams.get("status") || "";
   const initialPrioritys = searchParams.get("priority") || "";
   const intialProject = searchParams.get("project_id") || "";
+  const intialuserIds = searchParams.get("user_ids") || "";
+  const intialisArchived = searchParams.get("isArchived") || "";
+
   const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedDate, setSelectedDate] = useState<any>(new Date());
@@ -67,11 +56,10 @@ const Tasks = () => {
   const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
   const [dateValue, setDateValue] = useState<any>(null);
   const [users, setUsers] = useState<any[]>([]);
-  const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [del, setDel] = useState<any>(1);
-  const [selectedMembers, setSelectedMembers] = useState<any>([]);
-
+  const [selectedMembers, setSelectedMembers] = useState<any[]>([]);
+  const [isArchive, setIsArchive] = useState(false);
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
@@ -91,7 +79,9 @@ const Tasks = () => {
       selectedpriority,
       selectedProject,
       selectedMembers,
+      isArchive,
     ],
+
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
         pageIndex: pagination.pageIndex,
@@ -103,8 +93,10 @@ const Tasks = () => {
         project_id: selectedProject,
         from_date: selectedDate?.length ? selectedDate[0] : null,
         to_date: selectedDate?.length ? selectedDate[1] : null,
-        user_ids: selectedMembers.map((member: any) => member.id),
+        user_ids: selectedMembers?.map((member: any) => member.id) || null,
+        is_archived: isArchive ? "true" : "false",
       });
+
       let queryParams: any = {
         current_page: +pagination.pageIndex,
         page_size: +pagination.pageSize,
@@ -115,34 +107,34 @@ const Tasks = () => {
         status: selectedStatus || undefined,
         project_id: selectedProject || undefined,
         priority: selectedpriority || undefined,
+        isArchived: isArchive ? "true" : "false",
       };
-      if (selectedMembers?.length) {
+      if (selectedMembers?.length > 0) {
         queryParams["user_ids"] = selectedMembers.map(
           (member: any) => member.id
         );
       }
+
       if (response?.status == 200) {
         router.navigate({
           to: "/tasks",
           search: queryParams,
-          replace: true,
         });
-
-        return response;
+        let responseAfterSerial: any =
+          addSerial(
+            response?.data?.data?.data,
+            response?.data?.data?.pagination_info?.current_page,
+            response?.data?.data?.pagination_info?.page_size
+          ) || [];
+        return [responseAfterSerial, response?.data?.data?.pagination_info];
       }
     },
   });
 
-  const taksDataAfterSerial =
-    addSerial(
-      data?.data?.data?.data,
-      data?.data?.data?.pagination_info?.current_page,
-      data?.data?.data?.pagination_info?.page_size
-    ) || [];
-
   const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
+
   const getFullName = (user: any) => {
     return `${user?.fname || ""} ${user?.lname || ""}`;
   };
@@ -164,7 +156,8 @@ const Tasks = () => {
         searchString ||
         selectedStatus ||
         selectedpriority ||
-        selectedProject
+        selectedProject ||
+        isArchive
       ) {
         getAllTasks({
           pageIndex: 1,
@@ -188,13 +181,8 @@ const Tasks = () => {
     selectedpriority,
     selectedProject,
     selectedMembers,
+    isArchive,
   ]);
-
-  const handleNavigation = () => {
-    navigate({
-      to: "/tasks/add",
-    });
-  };
 
   const handleDateChange = (fromDate: any, toDate: any) => {
     if (fromDate) {
@@ -212,12 +200,16 @@ const Tasks = () => {
 
   return (
     <section id="tasks" className="relative">
-      <div>{!isDashboard && <TotalCounts refreshCount={del} />}</div>
+      <div>
+        {!isDashboard && (
+          <TotalCounts refreshCount={del} isArchive={isArchive} />
+        )}
+      </div>
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
-          <div className="flex justify-end items-center">
-            <div className="filters">
-              <ul className="flex justify-end space-x-3">
+          <div className="flex items-center">
+            <div className="filters w-[100%] flex items-center gap-x-4 ">
+              <ul className="flex justify-start space-x-3 py-1 overflow-auto w-[100%] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 ">
                 <li>
                   <SelectTaskProjects
                     selectedProject={selectedProject}
@@ -236,7 +228,6 @@ const Tasks = () => {
                     setValue={setSelectedStatus}
                   />
                 </li>
-
                 <li>
                   <UserSelectionPopover
                     usersData={usersData}
@@ -248,6 +239,13 @@ const Tasks = () => {
                     onSelectMembers={handleSelectMembers}
                   />
                 </li>
+
+                <li>
+                  <DateRangeFilter
+                    dateValue={dateValue}
+                    onChangeData={handleDateChange}
+                  />
+                </li>
                 <li>
                   <SearchFilter
                     searchString={searchString}
@@ -255,51 +253,124 @@ const Tasks = () => {
                     title="Search By Task name"
                   />
                 </li>
-                <li>
-                  <DateRangeFilter
-                    dateValue={dateValue}
-                    onChangeData={handleDateChange}
-                  />
-                </li>
+
                 {/* <li>
                   <Button
-                    className="font-normal text-sm"
-                    variant="add"
-                    size="DefaultButton"
-                    onClick={handleNavigation}
+                    title={`${isArchive || searchParams.get("isArchived") === "true" ? "Show Active Tasks" : "Show Archived Tasks"}`}
+                    className={`font-normal text-sm flex items-center space-x-2 ${
+                      isArchive || searchParams.get("isArchived") === "true"
+                        ? "bg-primary hover:bg-primary text-white"
+                        : "bg-white hover:bg-gray-200 border border-[#1b2459]"
+                    } max-w-[100px] overflow-hidden truncate`}
+                    size="sm"
+                    onClick={() => setIsArchive(!isArchive)}
                   >
-                    <span className="text-xl font-normal pr-2 text-md">+</span>
-                    Add Task
+                    <img
+                      src={"/archive.svg"}
+                      alt="archive"
+                      height={18}
+                      width={18}
+                    />
+                    <span className="truncate">
+                      {isArchive || searchParams.get("isArchived") === "true"
+                        ? " Active Tasks"
+                        : " Archived Tasks"}
+                    </span>
                   </Button>
                 </li> */}
+
+                {/* <li>
+  <Button
+    title={`${
+      isArchive || searchParams.get("isArchived") === "true"
+        ? "Show Active Tasks"
+        : "Show Archived Tasks"
+    }`}
+    className={`font-normal text-sm flex items-center space-x-2 ${
+      isArchive || searchParams.get("isArchived") === "true"
+        ? "bg-primary hover:bg-primary text-white"
+        : "bg-white hover:bg-gray-200 border border-[#1b2459]"
+    } max-w-[100px] overflow-hidden truncate`}
+    size="sm"
+    onClick={() => setIsArchive(!isArchive)}
+  >
+    <img
+      src={
+        isArchive || searchParams.get("isArchived") === "true"
+          ? "/active-icon.svg" // path for the active tasks image
+          : "/archive.svg" // path for the archived tasks image
+      }
+      alt={isArchive || searchParams.get("isArchived") === "true" ? "active" : "archive"}
+      height={18}
+      width={18}
+    />
+    <span className="truncate">
+      {isArchive || searchParams.get("isArchived") === "true"
+        ? " Active Tasks"
+        : " Archived Tasks"}
+    </span>
+  </Button>
+</li> */}
               </ul>
+              <div>
+                <Button
+                  title={`${
+                    isArchive || searchParams.get("isArchived") === "true"
+                      ? "Show Active Tasks"
+                      : "Show Archived Tasks"
+                  }`}
+                  className={`font-normal text-sm flex  ${
+                    isArchive || searchParams.get("isArchived") === "true"
+                      ? "bg-green-700 hover:bg-green-700 text-white"
+                      : "bg-white hover:bg-gray-200 border border-[#1b2459]"
+                  } max-w-[50px] w-[50px] overflow-hidden truncate`}
+                  size="sm"
+                  onClick={() => setIsArchive(!isArchive)}
+                >
+                  <img
+                    src={
+                      isArchive || searchParams.get("isArchived") === "true"
+                        ? "/active-icon.svg"
+                        : "/archive.svg"
+                    }
+                    alt={
+                      isArchive || searchParams.get("isArchived") === "true"
+                        ? "active"
+                        : "archive"
+                    }
+                    height={18}
+                    width={18}
+                  />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-        <div className="mt-3">
-          {isError ? (
-            <div>Error: {error.message}</div>
-          ) : (
-            <div>
-              <TanStackTable
-                data={taksDataAfterSerial}
-                columns={taskColumns({ setDel })}
-                paginationDetails={data?.data?.data?.pagination_info}
-                getData={getAllTasks}
-                loading={isLoading || isFetching}
-                removeSortingForColumnIds={[
-                  "serial",
-                  "actions",
-                  "project_title",
-                  "assignees",
-                   "status"
-                ]}
-              />
-            </div>
-          )}
+
+        <div className="flex flex-col mt-4 space-y-5">
+          <div>
+            <TanStackTable
+              data={data?.[0]?.length > 0 ? data?.[0] : []}
+              columns={
+                isArchive || searchParams.get("isArchived") == "true"
+                  ? archivetaskColumns({ setDel, isArchive })
+                  : taskColumns({ setDel, isArchive })
+              }
+              paginationDetails={data?.[1]}
+              getData={getAllTasks}
+              loading={isLoading || isFetching}
+              removeSortingForColumnIds={[
+                "serial",
+                "actions",
+                "project_title",
+                "assignees",
+                "status",
+              ]}
+            />
+          </div>
         </div>
       </div>
-      <LoadingComponent loading={isLoading || isFetching} />
+      <LoadingComponent loading={isLoading} />
     </section>
   );
 };

@@ -17,6 +17,7 @@ import { CameraIcon, Grid3x3, List, Loader, X } from "lucide-react";
 import { useSelector } from "react-redux";
 import KanbanBoard from "../KanBanView";
 import ProjectTasksCounts from "./ProjectTasksCounts";
+import ProjectMembersManagment from "./ProjectMembersManagment";
 
 const ProjectView = () => {
   const { projectId } = useParams({ strict: false });
@@ -231,10 +232,10 @@ const ProjectView = () => {
           >
             <div className="flex">
               <List
-                className={`mr-2 ${viewMode === "table" ? "text-[#1B2459]" : "text-[#BF1B39] "}`}
+                className={`mr-2 ${viewMode === "table" ? "text-[#BF1B39]" : "text-[#1B2459]"}`}
               />
               <Grid3x3
-                className={`${viewMode === "card" ? "text-[#1B2459]" : "text-[#BF1B39]"}`}
+                className={`${viewMode === "card" ? "text-[#BF1B39]" : "text-[#1B2459]"}`}
               />
             </div>
           </button>
@@ -289,22 +290,9 @@ const ProjectView = () => {
         </div>
       </div>
       <div className="mt-4">
-        {/* {openMembers || searchParams.get("tab") == "project_members" ? (
-        //   <ProjectMembersManagment projectDetails={projectDetails} />
-        // ) : (
-        //   <KanbanBoard
-        //     projectDetails={projectDetails}
-        //     setProjetStatsUpdate={setProjetStatsUpdate}
-        //   />
-        // )}
-        // <TanStackTable
-        //     data={projectsData}
-        //     columns={colums}
-        //     paginationDetails={data?.data?.data?.pagination_info}
-        //     getData={getAllProjects}
-        //     removeSortingForColumnIds={["serial", "actions", "project_title"]}
-        //   /> */}
-        {viewMode === "card" ? (
+        {openMembers || searchParams.get("tab") == "project_members" ? (
+          <ProjectMembersManagment projectDetails={projectDetails} />
+        ) : viewMode === "card" ? (
           <KanbanBoard
             projectDetails={projectDetails}
             setProjetStatsUpdate={setProjetStatsUpdate}

@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import RepliedComments from "./RepliedComments";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
+import "./comments.css";
 const TaskComments = ({ taskId }: any) => {
   const userID = useSelector(
     (state: any) => state.auth?.user?.user_details?.id
@@ -91,7 +92,6 @@ const TaskComments = ({ taskId }: any) => {
         date,
         comments: grouped[date],
       }));
-      console.log(groupedArray, "groupedArray");
       setGroupedComments(groupedArray);
     }
   }, [commentsData]);
@@ -273,7 +273,7 @@ const TaskComments = ({ taskId }: any) => {
         </div>
         <div
           ref={commentsContainerRef}
-          className="card-body pb-[5rem] px-4 flex flex-col h-comments overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
+          className="card-body pb-[5rem] px-4 h-[272px] flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
         >
           <div className="member-comments space-y-3  flex-1 pr-3">
             {groupedComments?.length > 0 ? (
@@ -364,6 +364,7 @@ const TaskComments = ({ taskId }: any) => {
                                       </div>
                                     ) : (
                                       <p
+                                        className="ckeditor-content"
                                         dangerouslySetInnerHTML={{
                                           __html: comment.message,
                                         }}
@@ -453,7 +454,7 @@ const TaskComments = ({ taskId }: any) => {
             )}
           </div>
         </div>
-        <div className="card-footer border-t bg-[#EEEEF8] sticky bottom-0 left-0 right-0  px-4 py-4  z-10 overflow-hidden">
+        <div className="card-footer border-t bg-[#EEEEF8] sticky bottom-0 left-0 right-0  px-4 py-4 z-[7] overflow-hidden">
           <div className="grid grid-cols-[40px,auto] space-x-3">
             <div className="profile-image">
               <img
@@ -462,7 +463,7 @@ const TaskComments = ({ taskId }: any) => {
                 alt="User"
               />
             </div>
-            <div className="ck-editor-send-button grid grid-cols-[auto,50px] space-x-3 items-end">
+            <div className="ck-editor-send-button grid grid-cols-[auto,50px] space-x-3 items-end ">
               <div className="overflow-auto">
                 {taskId && (
                   <CKEditorComponent

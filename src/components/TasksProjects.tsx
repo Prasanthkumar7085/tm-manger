@@ -1,19 +1,27 @@
+import memberIcon from "@/assets/members.svg";
+import selectDropIcon from "@/assets/select-dropdown.svg";
 import { addSerial } from "@/lib/helpers/addSerial";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 import { useQuery } from "@tanstack/react-query";
-import { useLocation, useNavigate, useParams, useRouter } from "@tanstack/react-router";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useRouter,
+} from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import {useSelector } from "react-redux";
-import { SelectTaskProjects } from "./core/CommonComponents/SelectTaskProjects";
+import { useSelector } from "react-redux";
+import { getAllMembers } from "@/lib/services/projects/members";
+import SearchFilter from "./core/CommonComponents/SearchFilter";
 import { TasksSelectPriority } from "./core/CommonComponents/TasksSelectPriority";
 import { TasksSelectStatusFilter } from "./core/CommonComponents/TasksSelectStatusFilter";
-import SearchFilter from "./core/CommonComponents/SearchFilter";
 import DateRangeFilter from "./core/DateRangePicker";
-import { Button } from "./ui/button";
+import LoadingComponent from "./core/LoadingComponent";
+import UserSelectionPopover from "./core/MultipleUsersSelect";
 import TanStackTable from "./core/TanstackTable";
 import { taskColumns } from "./Tasks/TaskColumns";
-import LoadingComponent from "./core/LoadingComponent";
-import { getAllPaginatedTasks } from "@/lib/services/tasksprojects";
+import { Button } from "./ui/button";
+import { getAllPaginatedTasks } from "@/lib/services/tasks";
 
 const TasksProjects = () => {
   const navigate = useNavigate();
@@ -42,23 +50,14 @@ const TasksProjects = () => {
   const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
   const [dateValue, setDateValue] = useState<any>(null);
   const [del, setDel] = useState<any>(1);
-  const [task, setTask] = useState<any>({
-    title: "",
-    ref_id: "",
-    description: "",
-    priority: "",
-    status: "",
-    due_date: "",
-    tags: [],
-    users: [],
-  });
+  const [selectedMembers, setSelectedMembers] = useState<any>([]);
 
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
     order_by: orderBY,
   });
-  const { isLoading, isError, data, error, isFetching} = useQuery({
+  const { isLoading, isError, data, error, isFetching } = useQuery({
     queryKey: [
       "tasks",
       pagination,
@@ -69,21 +68,22 @@ const TasksProjects = () => {
       selectedpriority,
       selectedProject,
       projectId,
+      selectedMembers,
     ],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
-        
         pageIndex: pagination.pageIndex,
         pageSize: pagination.pageSize,
         order_by: pagination.order_by,
         search_string: debouncedSearch,
         status: selectedStatus,
         priority: selectedpriority,
-        project_id: selectedProject,
+        project_id: projectId,
         from_date: selectedDate?.length ? selectedDate[0] : null,
         to_date: selectedDate?.length ? selectedDate[1] : null,
-    });
-      const queryParams = {
+        user_ids: selectedMembers.map((member: any) => member.id),
+      });
+      let queryParams: any = {
         current_page: +pagination.pageIndex,
         page_size: +pagination.pageSize,
         order_by: pagination.order_by ? pagination.order_by : undefined,
@@ -91,16 +91,34 @@ const TasksProjects = () => {
         from_date: selectedDate?.length ? selectedDate[0] : undefined,
         to_date: selectedDate?.length ? selectedDate[1] : undefined,
         status: selectedStatus || undefined,
-        project_id: selectedProject || undefined,
+        project_id: projectId || undefined,
         priority: selectedpriority || undefined,
       };
-       {
+      if (selectedMembers?.length) {
+        queryParams["user_ids"] = selectedMembers.map(
+          (member: any) => member.id
+        );
+      }
+      {
         router.navigate({
-         to: `/projects/view//${projectId}`,
-        search: queryParams,
-      });
+          to: `/projects/view//${projectId}`,
+          search: queryParams,
+        });
       }
       return response;
+    },
+  });
+
+  const getFullName = (user: any) => {
+    return `${user?.fname || ""} ${user?.lname || ""}`;
+  };
+
+  const { data: usersData, isLoading: membersLoading } = useQuery({
+    queryKey: ["members"],
+    queryFn: async () => {
+      const response = await getAllMembers();
+      const data = response?.data;
+      return response?.data?.data;
     },
   });
 
@@ -111,8 +129,8 @@ const TasksProjects = () => {
       data?.data?.data?.pagination_info?.page_size
     ) || [];
 
-  const getAllTasks = async ({ pageIndex, pageSize, order_by}: any) => {
-    setPagination({ pageIndex, pageSize, order_by});
+  const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
+    setPagination({ pageIndex, pageSize, order_by });
   };
 
   useEffect(() => {
@@ -147,9 +165,6 @@ const TasksProjects = () => {
       to: "/tasks/add",
     });
   };
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchString(event.target.value);
-  };
 
   const handleDateChange = (fromDate: any, toDate: any) => {
     if (fromDate) {
@@ -160,6 +175,9 @@ const TasksProjects = () => {
       setSelectedDate([]);
     }
   };
+  const handleSelectMembers = (selectedMembers: any) => {
+    setSelectedMembers(selectedMembers);
+  };
   return (
     <section id="tasks" className="relative">
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
@@ -167,12 +185,6 @@ const TasksProjects = () => {
           <div className="flex justify-end items-center">
             <div className="filters">
               <ul className="flex justify-end space-x-3">
-                <li>
-                  <SelectTaskProjects
-                    selectedProject={selectedProject}
-                    setSelectedProject={setSelectedProject}
-                  />
-                </li>
                 <li>
                   <TasksSelectPriority
                     value={selectedpriority}
@@ -190,6 +202,17 @@ const TasksProjects = () => {
                     searchString={searchString}
                     setSearchString={setSearchString}
                     title="Search By Task name"
+                  />
+                </li>
+                <li>
+                  <UserSelectionPopover
+                    usersData={usersData}
+                    getFullName={getFullName}
+                    memberIcon={memberIcon}
+                    selectDropIcon={selectDropIcon}
+                    selectedMembers={selectedMembers}
+                    setSelectedMembers={setSelectedMembers}
+                    onSelectMembers={handleSelectMembers}
                   />
                 </li>
                 <li>
