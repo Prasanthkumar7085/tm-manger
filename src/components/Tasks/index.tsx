@@ -129,17 +129,8 @@ const Tasks = () => {
     queryKey: ["members"],
     queryFn: async () => {
       const response = await getAllMembers();
-      console.log(response, "respp");
-      if (response.success) {
-        const modifieData = addSerial(
-          response?.data?.data,
-          1,
-          response?.data?.data?.length
-        );
-        return modifieData;
-      } else {
-        throw new Error("Failed to fetch  details");
-      }
+      setUsers(response?.data?.data?.data || []);
+      return response?.data?.data;
     },
   });
 
@@ -149,23 +140,6 @@ const Tasks = () => {
       project.project_title.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
-
-  // const filterDataBySearch = (data: any[], searchTerm: string) => {
-  //   if (!searchTerm) return data;
-
-  //   return data.filter((task) => {
-  //     const projectMatch = task.project_title
-  //       ?.toLowerCase()
-  //       .includes(searchTerm.toLowerCase());
-  //     const userMatch = task.assigned_to?.some((user: any) =>
-  //       `${user.fname} ${user.lname}`
-  //         .toLowerCase()
-  //         .includes(searchTerm.toLowerCase())
-  //     );
-
-  //     return projectMatch || userMatch;
-  //   });
-  // };
 
   useEffect(() => {
     const handler = setTimeout(() => {
