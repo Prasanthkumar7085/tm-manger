@@ -1,27 +1,92 @@
+import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
+import { getTaskTrendsAPI } from "@/lib/services/dashboard";
+import { useQuery } from "@tanstack/react-query";
+import { useLocation, useNavigate } from "@tanstack/react-router";
+import { endOfMonth, startOfMonth } from "date-fns";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getTaskTrendsAPI } from "@/lib/services/dashboard";
+import { useState, useEffect } from "react";
 import DateRangeFilter from "./core/DateRangePicker";
-import { useLocation, useNavigate } from "@tanstack/react-router";
-import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
-import LoadingComponent from "./core/LoadingComponent";
 import Loading from "./core/Loading";
-import { endOfMonth, startOfMonth } from "date-fns";
 
-const StatsAndGraph = ({ selectedDate }: any) => {
+interface TaskTrendData {
+  task_date: string;
+  completed_count: number;
+  inprogress_count: number;
+}
+
+type SelectedDateRange = [Date, Date];
+
+interface HighchartsOptions {
+  credits: {
+    enabled: boolean;
+  };
+  chart: {
+    type: string;
+    height: number;
+    style: {
+      borderRadius: string;
+    };
+  };
+  title: {
+    text: string;
+    align: string;
+    style: {
+      fontWeight: string;
+      fontSize: string;
+      color: string;
+    };
+  };
+  xAxis: {
+    categories: string[];
+    tickColor: string;
+  };
+  yAxis: {
+    title: {
+      text: string;
+    };
+    gridLineColor: string;
+  };
+  series: {
+    name: string;
+    data: number[];
+    color: string;
+    marker: {
+      enabled: boolean;
+    };
+    lineWidth: number;
+  }[];
+  legend: {
+    layout: string;
+    align: string;
+    verticalAlign: string;
+    symbolHeight: number;
+    itemStyle: {
+      color: string;
+      fontSize: string;
+    };
+  };
+  tooltip: {
+    backgroundColor: string;
+    borderColor: string;
+    borderRadius: number;
+    shadow: boolean;
+    style: {
+      color: string;
+      fontSize: string;
+    };
+  };
+}
+
+const StatsAndGraph: React.FC = () => {
   const today = new Date();
 
-  const [selectedDateRange, setSelectedDateRange] = useState<any>([
-    startOfMonth(new Date()),
-    endOfMonth(new Date()),
-  ]);
-  const [dateValue, setDateValue] = useState<[Date, Date] | null>();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [selectedDateRange, setSelectedDateRange] = useState<SelectedDateRange>(
+    [startOfMonth(today), endOfMonth(today)]
+  );
+  const [dateValue, setDateValue] = useState<SelectedDateRange | null>(null);
 
-  const { data, isFetching } = useQuery({
+  const { data, isFetching } = useQuery<TaskTrendData[]>({
     queryKey: ["getTaskTrends", selectedDateRange],
     queryFn: async () => {
       const [fromDate, toDate] = selectedDateRange || [];
@@ -31,20 +96,20 @@ const StatsAndGraph = ({ selectedDate }: any) => {
       });
 
       if (response.success) {
-        return response.data?.data;
+        return response.data?.data || [];
       }
+      return [];
     },
     enabled: !!selectedDateRange,
   });
 
   const trendData = Array.isArray(data) && data.length > 0 ? data : [];
 
-  const categories = trendData.map((item: any) => item.task_date);
+  const categories = trendData.map((item) => item.task_date);
+  const completedData = trendData.map((item) => item.completed_count);
+  const inProgressData = trendData.map((item) => item.inprogress_count);
 
-  const completedData = trendData.map((item: any) => item.completed_count);
-  const inProgressData = trendData.map((item: any) => item.inprogress_count);
-
-  const options = {
+  const options: HighchartsOptions = {
     credits: {
       enabled: false,
     },
@@ -88,14 +153,17 @@ const StatsAndGraph = ({ selectedDate }: any) => {
     },
   };
 
-  const handleDateChange = (fromDate: Date | null, toDate: Date | null) => {
+  const handleDateChange = (
+    fromDate: Date | null,
+    toDate: Date | null
+  ): void => {
     if (fromDate && toDate) {
       const [fromDateUTC, toDateUTC] = changeDateToUTC(fromDate, toDate);
       setDateValue([fromDateUTC, toDateUTC]);
       setSelectedDateRange([fromDateUTC, toDateUTC]);
     } else {
       setDateValue(null);
-      setSelectedDateRange(null);
+      setSelectedDateRange([startOfMonth(today), endOfMonth(today)]);
     }
   };
 
@@ -108,6 +176,7 @@ const StatsAndGraph = ({ selectedDate }: any) => {
           onChangeData={handleDateChange}
         />
       </div>
+
       <div className="stats-and-graph-chart">
         <HighchartsReact highcharts={Highcharts} options={options} />
       </div>
