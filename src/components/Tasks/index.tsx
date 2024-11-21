@@ -198,11 +198,20 @@ const Tasks = () => {
     setSelectedMembers(selectedMembers);
   };
 
+  const handleCardClick = (status: string) => {
+    console.log(status);
+    setSelectedStatus(status);
+  };
+
   return (
     <section id="tasks" className="relative">
       <div>
         {!isDashboard && (
-          <TotalCounts refreshCount={del} isArchive={isArchive} />
+          <TotalCounts
+            refreshCount={del}
+            isArchive={isArchive}
+            onCardClick={handleCardClick}
+          />
         )}
       </div>
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
