@@ -237,7 +237,10 @@ const ProjectView = () => {
         <div className="flex flex-row items-center gap-4">
           <button
             className="text-white h-[35px] flex items-center justify-center bg-white border  px-3 rounded-md"
-            onClick={() => setViewMode(viewMode === "card" ? "table" : "card")}
+            onClick={() => {
+              setSelectedStatus("");
+              setViewMode(viewMode === "card" ? "table" : "card");
+            }}
           >
             <div className="flex">
               <List
