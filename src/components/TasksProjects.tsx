@@ -257,7 +257,10 @@ const TasksProjects = () => {
             </div>
           )}
         </div>
-        <LoadingComponent loading={isLoading || isFetching} />
+        <LoadingComponent
+          loading={isLoading || isFetching}
+          message="Fetching projects..."
+        />
       </div>
     </section>
   );

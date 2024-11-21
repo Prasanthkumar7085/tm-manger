@@ -295,7 +295,7 @@ const UploadAttachments = () => {
           <p className="text-red-600 mt-2">{rejectionMessage}</p>
         )}
       </div>
-      <LoadingComponent loading={loading} />
+      <LoadingComponent loading={loading} message="Loading..." />
     </div>
   );
 };

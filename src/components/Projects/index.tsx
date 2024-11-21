@@ -262,7 +262,10 @@ const Projects = () => {
         />
       </div>
 
-      <LoadingComponent loading={isLoading || isFetching} />
+      <LoadingComponent
+        loading={isLoading || isFetching}
+        message="Loading Projects..."
+      />
     </section>
   );
 };

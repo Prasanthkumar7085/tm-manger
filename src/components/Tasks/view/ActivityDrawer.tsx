@@ -1,3 +1,4 @@
+import SearchFilter from "@/components/core/CommonComponents/SearchFilter";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -5,8 +6,14 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { addSerial } from "@/lib/helpers/addSerial";
+import { errPopper } from "@/lib/helpers/errPopper";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
+import { getAllMembers } from "@/lib/services/projects/members";
+import { getAllPaginatedUsers } from "@/lib/services/users";
+import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import { useState } from "react";
 
 interface ActivityDrawerProps {
   setActivityOpen: (open: boolean) => void;
@@ -21,6 +28,36 @@ export const ActivityDrawer = ({
   activityLogData,
   id,
 }: ActivityDrawerProps) => {
+  const searchParams = new URLSearchParams(location.search);
+  const initialSearch = searchParams.get("search");
+
+  const [loading, setLoading] = useState(false);
+  const [searchString, setSearchString] = useState<any>(initialSearch || "");
+
+  const { isLoading, isError, error, data, isFetching } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      try {
+        const response = await getAllMembers();
+        console.log(response, "respp");
+        if (response.success) {
+          const modifieData = addSerial(
+            response?.data?.data,
+            1,
+            response?.data?.data?.length
+          );
+          return modifieData;
+        } else {
+          throw new Error("Failed to fetch project details");
+        }
+      } catch (errData) {
+        console.error(errData);
+        errPopper(errData);
+        throw errData;
+      }
+    },
+  });
+
   const handleClose = () => {
     setActivityOpen(false);
   };
@@ -32,6 +69,11 @@ export const ActivityDrawer = ({
             <h3 className="py-2 px-4 text-[#273480] items-center flex text-base border-r-[1.2px] border-r-[#e7e7f7] font-medium">
               Activity Logs
             </h3>
+            <SearchFilter
+              searchString={searchString}
+              setSearchString={setSearchString}
+              title="Search User Name"
+            />
             <Button
               variant="ghost"
               onClick={handleClose}

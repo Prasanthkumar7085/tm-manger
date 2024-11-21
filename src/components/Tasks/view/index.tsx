@@ -314,7 +314,7 @@ const TaskView = () => {
           </div>
         </div>
       </div>
-      <LoadingComponent loading={isLoading || loading} />
+      <LoadingComponent loading={isLoading || loading} message="Loading..." />
     </div>
   );
 };

@@ -90,7 +90,10 @@ const ProjectDataTable = () => {
           removeSortingForColumnIds={["serial"]}
         />
       </div>
-      <LoadingComponent loading={isLoading || isFetching || loading} />
+      <LoadingComponent
+        loading={isLoading || isFetching || loading}
+        message="Loading.."
+      />
     </div>
   );
 };

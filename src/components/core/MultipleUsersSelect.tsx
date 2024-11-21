@@ -185,6 +185,8 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
                 onClick={() => {
                   setSelectedMembers([]);
                   setTempSelectedMember([]);
+                  onSelectMembers([]);
+                  setOpen(false);
                 }}
               >
                 Clear
