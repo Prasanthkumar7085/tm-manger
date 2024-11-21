@@ -24,7 +24,7 @@ import { taskColumns } from "./Tasks/TaskColumns";
 import TanStackTable from "./core/TanstackTable";
 import LoadingComponent from "./core/LoadingComponent";
 
-const TasksProjects = () => {
+const TasksProjects = ({ setSelectedStatus, selectedStatus }: any) => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
@@ -49,7 +49,6 @@ const TasksProjects = () => {
   const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedDate, setSelectedDate] = useState<any>(new Date());
-  const [selectedStatus, setSelectedStatus] = useState(initialStatus);
   const [selectedProject, setSelectedProject] = useState<any>(intialProject);
   const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
   const [dateValue, setDateValue] = useState<any>(null);

@@ -28,6 +28,9 @@ const ProjectView = () => {
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
   );
+  const initialStatus = searchParams.get("status") || "";
+  const [selectedStatus, setSelectedStatus] = useState(initialStatus);
+
   const [projectDetails, setProjectDetails] = useState<any>({});
   const [projectsData, setProjectsData] = useState<any>({});
   const [viewMode, setViewMode] = useState("card");
@@ -145,6 +148,9 @@ const ProjectView = () => {
     setSelectedFile(null);
     setPreviewUrl(null);
   };
+  const handleCardClick = (status: string) => {
+    setSelectedStatus(status);
+  };
 
   return (
     <div className="card-container shadow-md border p-5 rounded-lg bg-white h-[calc(100vh-100px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
@@ -209,7 +215,10 @@ const ProjectView = () => {
           {uploadingStatus.startUploading && <p>Uploading...</p>}
         </div>
         <div className="w-[90%]">
-          <ProjectTasksCounts projectStatsUpdate={projectStatsUpdate} />
+          <ProjectTasksCounts
+            projectStatsUpdate={projectStatsUpdate}
+            onCardClick={handleCardClick}
+          />
         </div>
       </div>
       <div className="flex items-center mt-4 space-x-2 w-full justify-between relative">
@@ -298,7 +307,10 @@ const ProjectView = () => {
             setProjetStatsUpdate={setProjetStatsUpdate}
           />
         ) : (
-          <TasksProjects />
+          <TasksProjects
+            setSelectedStatus={setSelectedStatus}
+            selectedStatus={selectedStatus}
+          />
         )}
       </div>
       <LoadingComponent loading={isLoading || isFetching} />

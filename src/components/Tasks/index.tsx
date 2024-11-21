@@ -199,7 +199,6 @@ const Tasks = () => {
   };
 
   const handleCardClick = (status: string) => {
-    console.log(status);
     setSelectedStatus(status);
   };
 
