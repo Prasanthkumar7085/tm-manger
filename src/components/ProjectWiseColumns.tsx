@@ -79,17 +79,20 @@ const ProjectWiseColumn = () => {
       cell: (info: any) => {
         const title = info.getValue();
         return (
-          <div
-            className="cursor-pointer"
+          <span
+            className=" block font-semibold cursor-pointer"
             onClick={() => {
               router.navigate({
-                to: "/tasks",
-                search: `?project_id=${info.row.original.project_id}&status=TODO`,
+                to: `/tasks`,
+                search: {
+                  project_id: info.row.original.project_id,
+                  status: "TODO",
+                },
               });
             }}
           >
-            <span className="block font-semibold">{title ? title : "0"}</span>
-          </div>
+            {title ? title : "0"}
+          </span>
         );
       },
       width: "75px",
@@ -104,17 +107,20 @@ const ProjectWiseColumn = () => {
       cell: (info: any) => {
         const title = info.getValue();
         return (
-          <div
-            className="cursor-pointer"
+          <span
+            className=" block font-semibold cursor-pointer"
             onClick={() => {
               router.navigate({
-                to: "/tasks",
-                search: `?project_id=${info.row.original.project_id}&status=IN_PROGRESS`,
+                to: `/tasks`,
+                search: {
+                  project_id: info.row.original.project_id,
+                  status: "IN_PROGRESS",
+                },
               });
             }}
           >
-            <span className="block font-semibold">{title ? title : "0"}</span>
-          </div>
+            {title ? title : "0"}
+          </span>
         );
       },
       width: "75px",
@@ -129,17 +135,20 @@ const ProjectWiseColumn = () => {
       cell: (info: any) => {
         const title = info.getValue();
         return (
-          <div
-            className="cursor-pointer"
+          <span
+            className=" block font-semibold cursor-pointer"
             onClick={() => {
               router.navigate({
-                to: "/tasks",
-                search: `?project_id=${info.row.original.project_id}&status= COMPLETED`,
+                to: `/tasks`,
+                search: {
+                  project_id: info.row.original.project_id,
+                  status: "COMPLETED",
+                },
               });
             }}
           >
-            <span className="block font-semibold">{title ? title : "0"}</span>
-          </div>
+            {title ? title : "0"}
+          </span>
         );
       },
       width: "75px",
@@ -154,17 +163,20 @@ const ProjectWiseColumn = () => {
       cell: (info: any) => {
         const title = info.getValue();
         return (
-          <div
-            className="cursor-pointer"
+          <span
+            className=" block font-semibold cursor-pointer"
             onClick={() => {
               router.navigate({
-                to: "/tasks",
-                search: `?project_id=${info.row.original.project_id}&status=OVERDUE`,
+                to: `/tasks`,
+                search: {
+                  project_id: info.row.original.project_id,
+                  status: "OVER_DUE",
+                },
               });
             }}
           >
-            <span className="block font-semibold">{title ? title : "0"}</span>
-          </div>
+            {title ? title : "0"}
+          </span>
         );
       },
       width: "75px",
@@ -179,7 +191,19 @@ const ProjectWiseColumn = () => {
       cell: (info: any) => {
         const title = info.getValue();
         return (
-          <span className="block font-semibold">{title ? title : "0"}</span>
+          <span
+            className=" block font-semibold cursor-pointer"
+            onClick={() => {
+              router.navigate({
+                to: `/tasks`,
+                search: {
+                  project_id: info.row.original.project_id,
+                },
+              });
+            }}
+          >
+            {title ? title : "0"}
+          </span>
         );
       },
       width: "50px",

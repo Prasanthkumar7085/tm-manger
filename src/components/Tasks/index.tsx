@@ -170,14 +170,30 @@ const Tasks = () => {
     return `${user?.fname || ""} ${user?.lname || ""}`;
   };
 
+  const handleCardClick = (status: string) => {
+    setSelectedStatus(status);
+  };
+
   return (
     <section id="tasks" className="relative">
+<<<<<<< HEAD
       {!isDashboard && (
         <TotalCounts
           refreshCount={pagination.pageIndex}
           isArchive={isArchive}
         />
       )}
+=======
+      <div>
+        {!isDashboard && (
+          <TotalCounts
+            refreshCount={del}
+            isArchive={isArchive}
+            onCardClick={handleCardClick}
+          />
+        )}
+      </div>
+>>>>>>> b7cf6849a3339e07b331fed4de31866dfd9b5620
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
           <ul className="flex items-center gap-4 overflow-auto">

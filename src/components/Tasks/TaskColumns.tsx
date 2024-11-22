@@ -167,6 +167,8 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
         const [showPopover, setShowPopover] = useState(false);
         return (
           <div className="flex justify-start items-center -space-x-2">
+            {info.getValue().length === 0 && <span>--</span>}
+
             {info
               .getValue()
               .slice(0, 5)
