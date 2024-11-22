@@ -2,6 +2,7 @@ import { useRouter } from "@tanstack/react-router";
 
 const ProjectWiseColumn = () => {
   const router = useRouter();
+
   return [
     {
       accessorFn: (row: any) => row.serial,
@@ -11,7 +12,7 @@ const ProjectWiseColumn = () => {
       width: "35px",
       maxWidth: "35px",
       minWidth: "35px",
-      enableSorging: false,
+      enableSorting: false,
       cell: ({ row, table }: any) => (
         <span style={{ display: "flex", alignItems: "center" }}>
           {(table
@@ -78,7 +79,17 @@ const ProjectWiseColumn = () => {
       cell: (info: any) => {
         const title = info.getValue();
         return (
-          <span className=" block font-semibold">{title ? title : "0"}</span>
+          <div
+            className="cursor-pointer"
+            onClick={() => {
+              router.navigate({
+                to: "/tasks",
+                search: `?project_id=${info.row.original.project_id}&status=TODO`,
+              });
+            }}
+          >
+            <span className="block font-semibold">{title ? title : "0"}</span>
+          </div>
         );
       },
       width: "75px",
@@ -93,7 +104,17 @@ const ProjectWiseColumn = () => {
       cell: (info: any) => {
         const title = info.getValue();
         return (
-          <span className=" block font-semibold">{title ? title : "0"}</span>
+          <div
+            className="cursor-pointer"
+            onClick={() => {
+              router.navigate({
+                to: "/tasks",
+                search: `?project_id=${info.row.original.project_id}&status=IN_PROGRESS`,
+              });
+            }}
+          >
+            <span className="block font-semibold">{title ? title : "0"}</span>
+          </div>
         );
       },
       width: "75px",
@@ -108,7 +129,17 @@ const ProjectWiseColumn = () => {
       cell: (info: any) => {
         const title = info.getValue();
         return (
-          <span className=" block font-semibold">{title ? title : "0"}</span>
+          <div
+            className="cursor-pointer"
+            onClick={() => {
+              router.navigate({
+                to: "/tasks",
+                search: `?project_id=${info.row.original.project_id}&status= COMPLETED`,
+              });
+            }}
+          >
+            <span className="block font-semibold">{title ? title : "0"}</span>
+          </div>
         );
       },
       width: "75px",
@@ -123,7 +154,17 @@ const ProjectWiseColumn = () => {
       cell: (info: any) => {
         const title = info.getValue();
         return (
-          <span className=" block font-semibold">{title ? title : "0"}</span>
+          <div
+            className="cursor-pointer"
+            onClick={() => {
+              router.navigate({
+                to: "/tasks",
+                search: `?project_id=${info.row.original.project_id}&status=OVERDUE`,
+              });
+            }}
+          >
+            <span className="block font-semibold">{title ? title : "0"}</span>
+          </div>
         );
       },
       width: "75px",
@@ -138,7 +179,7 @@ const ProjectWiseColumn = () => {
       cell: (info: any) => {
         const title = info.getValue();
         return (
-          <span className=" block font-semibold">{title ? title : "0"}</span>
+          <span className="block font-semibold">{title ? title : "0"}</span>
         );
       },
       width: "50px",
