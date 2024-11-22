@@ -1,7 +1,6 @@
 import memberIcon from "@/assets/members.svg";
 import selectDropIcon from "@/assets/select-dropdown.svg";
 import { addSerial } from "@/lib/helpers/addSerial";
-import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 import { getAllMembers } from "@/lib/services/projects/members";
 import { getAllPaginatedTasks } from "@/lib/services/tasks";
 import { useQuery } from "@tanstack/react-query";
@@ -25,7 +24,7 @@ import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
 import { archivetaskColumns } from "./ArchiveColumns";
 import { Button } from "../ui/button";
-
+import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 const Tasks = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,12 +33,17 @@ const Tasks = () => {
     (state: any) => state.auth.user.user_details?.user_type
   );
   const { projectId } = useParams({ strict: false });
-
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 25;
   const orderBY = searchParams.get("order_by")
     ? searchParams.get("order_by")
+    : "";
+  const initialFromDate = searchParams.get("from_date")
+    ? searchParams.get("from_date")
+    : "";
+  const initialToDate = searchParams.get("to_date")
+    ? searchParams.get("to_date")
     : "";
   const initialSearch = searchParams.get("search_string") || "";
   const initialStatus = searchParams.get("status") || "";
@@ -47,27 +51,29 @@ const Tasks = () => {
   const intialProject = searchParams.get("project_id") || "";
   const intialuserIds = searchParams.get("user_ids") || "";
   const intialisArchived = searchParams.get("isArchived") || "";
-
   const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
-  const [selectedDate, setSelectedDate] = useState<any>(new Date());
+  const [selectedDate, setSelectedDate] = useState<any>(
+    initialFromDate && initialToDate ? [initialFromDate, initialToDate] : []
+  );
   const [selectedStatus, setSelectedStatus] = useState(initialStatus);
   const [selectedProject, setSelectedProject] = useState<any>(intialProject);
   const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
-  const [dateValue, setDateValue] = useState<any>(null);
+  const [dateValue, setDateValue] = useState<any>();
   const [users, setUsers] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [del, setDel] = useState<any>(1);
-  const [selectedMembers, setSelectedMembers] = useState<any[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<any>();
+  const [selectedMembersData, setSelectedMembersData] = useState<any>(
+    intialuserIds ? intialuserIds.split(",").map((id: string) => ({ id })) : []
+  );
   const [isArchive, setIsArchive] = useState(false);
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
     order_by: orderBY,
   });
-
   const isDashboard = location.pathname === "/dashboard";
-
   const { isLoading, isError, data, error, isFetching } = useQuery({
     queryKey: [
       "tasks",
@@ -81,7 +87,6 @@ const Tasks = () => {
       selectedMembers,
       isArchive,
     ],
-
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
         pageIndex: pagination.pageIndex,
@@ -96,7 +101,6 @@ const Tasks = () => {
         user_ids: selectedMembers?.map((member: any) => member.id) || null,
         is_archived: isArchive ? "true" : "false",
       });
-
       let queryParams: any = {
         current_page: +pagination.pageIndex,
         page_size: +pagination.pageSize,
@@ -114,7 +118,6 @@ const Tasks = () => {
           (member: any) => member.id
         );
       }
-
       if (response?.status == 200) {
         router.navigate({
           to: "/tasks",
@@ -130,26 +133,35 @@ const Tasks = () => {
       }
     },
   });
-
   const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
-
   const getFullName = (user: any) => {
     return `${user?.fname || ""} ${user?.lname || ""}`;
   };
-
   const { data: usersData, isLoading: membersLoading } = useQuery({
     queryKey: ["members"],
     queryFn: async () => {
       const response = await getAllMembers();
       const data = response?.data;
       setUsers(data?.data?.data || []);
+      const userIdsArray = intialuserIds.split(",");
+      const usersData = data?.data;
+      const intialusersData = usersData?.filter((item: any) =>
+        userIdsArray.includes(item.id.toString())
+      );
+      console.log(intialusersData);
+      setSelectedMembers(intialusersData);
       return response?.data?.data;
     },
   });
-
   useEffect(() => {
+    if (initialFromDate) {
+      setDateValue(changeDateToUTC(initialFromDate, initialToDate));
+    }
+    if (intialuserIds) {
+      setSelectedMembersData(intialuserIds);
+    }
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
       if (
@@ -157,7 +169,9 @@ const Tasks = () => {
         selectedStatus ||
         selectedpriority ||
         selectedProject ||
-        isArchive
+        selectedDate ||
+        isArchive ||
+        selectedMembers
       ) {
         getAllTasks({
           pageIndex: 1,
@@ -182,26 +196,30 @@ const Tasks = () => {
     selectedProject,
     selectedMembers,
     isArchive,
+    selectedDate,
   ]);
-
-  const handleDateChange = (fromDate: any, toDate: any) => {
-    if (fromDate) {
-      setDateValue(changeDateToUTC(fromDate, toDate));
-      setSelectedDate([fromDate, toDate]);
+  const handleDateChange = (initialFromDate: any, initialToDate: any) => {
+    if (initialFromDate) {
+      setDateValue(changeDateToUTC(initialFromDate, initialToDate));
+      setSelectedDate([initialFromDate, initialToDate]);
     } else {
       setDateValue([]);
       setSelectedDate([]);
     }
   };
-
-  const handleSelectMembers = (selectedMembers: any) => {
-    setSelectedMembers(selectedMembers);
+  const handleSelectMembers = (intialuserIds: any) => {
+    if (intialuserIds) {
+      setSelectedMembersData(intialuserIds);
+      setSelectedMembers(intialuserIds);
+    } else {
+      setSelectedMembersData([]);
+      setSelectedMembers([]);
+    }
   };
-
   const handleCardClick = (status: string) => {
     setSelectedStatus(status);
+    setPagination({ ...pagination, pageIndex: 1 });
   };
-
   return (
     <section id="tasks" className="relative">
       <div>
@@ -217,7 +235,7 @@ const Tasks = () => {
         <div className="tasks-navbar">
           <div className="flex items-center">
             <div className="filters w-[100%] flex items-center gap-x-4 ">
-              <ul className="flex justify-start space-x-3 py-1 overflow-auto w-[100%] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+              <ul className="flex justify-start space-x-3 py-1 overflow-auto w-[100%] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 ">
                 <li>
                   <SelectTaskProjects
                     selectedProject={selectedProject}
@@ -231,7 +249,6 @@ const Tasks = () => {
                     title="Search By Task name"
                   />
                 </li>
-
                 <li>
                   <UserSelectionPopover
                     usersData={usersData}
@@ -250,15 +267,15 @@ const Tasks = () => {
                   />
                 </li>
                 <li>
-                  <TasksSelectStatusFilter
-                    value={selectedStatus}
-                    setValue={setSelectedStatus}
-                  />
-                </li>
-                <li>
                   <TasksSelectPriority
                     value={selectedpriority}
                     setValue={setSelectedpriority}
+                  />
+                </li>
+                <li>
+                  <TasksSelectStatusFilter
+                    value={selectedStatus}
+                    setValue={setSelectedStatus}
                   />
                 </li>
               </ul>
@@ -296,7 +313,6 @@ const Tasks = () => {
             </div>
           </div>
         </div>
-
         <div className="flex flex-col mt-4 space-y-5">
           <div>
             <TanStackTable
@@ -320,9 +336,8 @@ const Tasks = () => {
           </div>
         </div>
       </div>
-      <LoadingComponent loading={isLoading} message="Loading Tasks..." />
+      <LoadingComponent loading={isLoading} />
     </section>
   );
 };
-
 export default Tasks;
