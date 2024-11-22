@@ -105,7 +105,7 @@ const DashBoard: React.FC = () => {
 
   useEffect(() => {
     const today = new Date();
-    setSelectedDate([startOfMonth(today), endOfMonth(today)]);
+    setSelectedDate([startOfMonth(new Date()), new Date()]);
   }, []);
 
   return (
