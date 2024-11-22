@@ -198,10 +198,10 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
                 variant="add"
                 disabled={isTaskTagsLoading}
                 size="DefaultButton"
-                onClick={() => {
-                  handleTagSubmit();
-                  setIsDropdownOpen(false);
-                }}
+                // onClick={() => {
+                //   handleTagSubmit();
+                //   setIsDropdownOpen(false);
+                // }}
                 className="h-[20px] bg-green-600 px-3"
               >
                 Add
@@ -221,10 +221,10 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
                             className="cursor-pointer"
                             key={index}
                             value={tag?.title}
-                            onSelect={(currentvale) => {
-                              setTagInput(currentvale);
-                              setIsDropdownOpen(false);
-                            }}
+                            // onSelect={(currentvale) => {
+                            //   setTagInput(currentvale);
+                            //   setIsDropdownOpen(false);
+                            // }}
                           >
                             <Check
                               className={cn(

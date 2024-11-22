@@ -38,7 +38,9 @@ const Tasks = () => {
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 25;
-  const orderBY = searchParams.get("order_by") || "";
+  const orderBY = searchParams.get("order_by")
+    ? searchParams.get("order_by")
+    : "";
   const initialSearch = searchParams.get("search_string") || "";
   const initialStatus = searchParams.get("status") || "";
   const initialPrioritys = searchParams.get("priority") || "";
@@ -46,20 +48,18 @@ const Tasks = () => {
   const intialuserIds = searchParams.get("user_ids") || "";
   const intialisArchived = searchParams.get("isArchived") || "";
 
-  const [searchString, setSearchString] = useState(initialSearch);
+  const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
-  const [selectedDate, setSelectedDate] = useState<any>([]);
+  const [selectedDate, setSelectedDate] = useState<any>(new Date());
   const [selectedStatus, setSelectedStatus] = useState(initialStatus);
-  const [selectedProject, setSelectedProject] = useState(intialProject);
-  const [selectedPriority, setSelectedPriority] = useState(initialPrioritys);
+  const [selectedProject, setSelectedProject] = useState<any>(intialProject);
+  const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
   const [dateValue, setDateValue] = useState<any>(null);
   const [users, setUsers] = useState<any[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
+  const [del, setDel] = useState<any>(1);
   const [selectedMembers, setSelectedMembers] = useState<any[]>([]);
-  const [filteredData, setFilteredData] = useState<any[]>([]);
-
-  const [isArchive, setIsArchive] = useState(
-    intialisArchived === "true" ? true : false
-  );
+  const [isArchive, setIsArchive] = useState(false);
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
@@ -68,18 +68,20 @@ const Tasks = () => {
 
   const isDashboard = location.pathname === "/dashboard";
 
-  const { isLoading, isError, data, isFetching } = useQuery({
+  const { isLoading, isError, data, error, isFetching } = useQuery({
     queryKey: [
       "tasks",
       pagination,
       debouncedSearch,
       selectedDate,
+      del,
       selectedStatus,
-      selectedPriority,
+      selectedpriority,
       selectedProject,
       selectedMembers,
       isArchive,
     ],
+
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
         pageIndex: pagination.pageIndex,
@@ -87,87 +89,113 @@ const Tasks = () => {
         order_by: pagination.order_by,
         search_string: debouncedSearch,
         status: selectedStatus,
-        priority: selectedPriority,
+        priority: selectedpriority,
         project_id: selectedProject,
-        from_date: selectedDate?.[0] || null,
-        to_date: selectedDate?.[1] || null,
+        from_date: selectedDate?.length ? selectedDate[0] : null,
+        to_date: selectedDate?.length ? selectedDate[1] : null,
         user_ids: selectedMembers?.map((member: any) => member.id) || null,
         is_archived: isArchive ? "true" : "false",
       });
 
-      if (response?.status === 200) {
-        const updatedData = addSerial(
-          response?.data?.data?.data || [],
-          response?.data?.data?.pagination_info?.current_page,
-          response?.data?.data?.pagination_info?.page_size
+      let queryParams: any = {
+        current_page: +pagination.pageIndex,
+        page_size: +pagination.pageSize,
+        order_by: pagination.order_by ? pagination.order_by : undefined,
+        search_string: debouncedSearch || undefined,
+        from_date: selectedDate?.length ? selectedDate[0] : undefined,
+        to_date: selectedDate?.length ? selectedDate[1] : undefined,
+        status: selectedStatus || undefined,
+        project_id: selectedProject || undefined,
+        priority: selectedpriority || undefined,
+        isArchived: isArchive ? "true" : "false",
+      };
+      if (selectedMembers?.length > 0) {
+        queryParams["user_ids"] = selectedMembers.map(
+          (member: any) => member.id
         );
+      }
 
+      if (response?.status == 200) {
         router.navigate({
           to: "/tasks",
-          search: {
-            ...pagination,
-            search_string: debouncedSearch || undefined,
-            status: selectedStatus || undefined,
-            priority: selectedPriority || undefined,
-            project_id: selectedProject || undefined,
-            from_date: selectedDate?.[0] || undefined,
-            to_date: selectedDate?.[1] || undefined,
-            user_ids:
-              selectedMembers?.length > 0
-                ? selectedMembers.map((m: any) => m.id)
-                : undefined,
-            isArchived: isArchive ? "true" : undefined,
-          },
+          search: queryParams,
         });
-
-        return [updatedData, response?.data?.data?.pagination_info];
+        let responseAfterSerial: any =
+          addSerial(
+            response?.data?.data?.data,
+            response?.data?.data?.pagination_info?.current_page,
+            response?.data?.data?.pagination_info?.page_size
+          ) || [];
+        return [responseAfterSerial, response?.data?.data?.pagination_info];
       }
     },
   });
+
+  const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
+    setPagination({ pageIndex, pageSize, order_by });
+  };
+
+  const getFullName = (user: any) => {
+    return `${user?.fname || ""} ${user?.lname || ""}`;
+  };
 
   const { data: usersData, isLoading: membersLoading } = useQuery({
     queryKey: ["members"],
     queryFn: async () => {
       const response = await getAllMembers();
-      setUsers(response?.data?.data?.data || []);
+      const data = response?.data;
+      setUsers(data?.data?.data || []);
       return response?.data?.data;
     },
   });
 
-  const filterDataBySearch = (data: any[], searchTerm: string) => {
-    if (!searchTerm) return data;
-    return data.filter((project) =>
-      project.project_title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  };
-
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
+      if (
+        searchString ||
+        selectedStatus ||
+        selectedpriority ||
+        selectedProject ||
+        isArchive
+      ) {
+        getAllTasks({
+          pageIndex: 1,
+          pageSize: pageSizeParam,
+          order_by: orderBY,
+        });
+      } else {
+        getAllTasks({
+          pageIndex: pageIndexParam,
+          pageSize: pageSizeParam,
+          order_by: orderBY,
+        });
+      }
     }, 500);
-
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString]);
-
-  useEffect(() => {
-    if (data) {
-      const filtered = filterDataBySearch(data, debouncedSearch);
-      setFilteredData(filtered);
-    }
-  }, [debouncedSearch, data]);
+  }, [
+    searchString,
+    selectedStatus,
+    selectedpriority,
+    selectedProject,
+    selectedMembers,
+    isArchive,
+  ]);
 
   const handleDateChange = (fromDate: any, toDate: any) => {
-    setDateValue(changeDateToUTC(fromDate, toDate));
-    setSelectedDate([fromDate, toDate]);
+    if (fromDate) {
+      setDateValue(changeDateToUTC(fromDate, toDate));
+      setSelectedDate([fromDate, toDate]);
+    } else {
+      setDateValue([]);
+      setSelectedDate([]);
+    }
   };
 
-  const handleSelectMembers = (members: any) => {
-    setSelectedMembers(members);
-  };
-  const getFullName = (user: any) => {
-    return `${user?.fname || ""} ${user?.lname || ""}`;
+  const handleSelectMembers = (selectedMembers: any) => {
+    setSelectedMembers(selectedMembers);
   };
 
   const handleCardClick = (status: string) => {
@@ -176,80 +204,121 @@ const Tasks = () => {
 
   return (
     <section id="tasks" className="relative">
-      {!isDashboard && (
-        <TotalCounts
-          refreshCount={pagination.pageIndex}
-          isArchive={isArchive}
-        />
-      )}
+      <div>
+        {!isDashboard && (
+          <TotalCounts
+            refreshCount={del}
+            isArchive={isArchive}
+            onCardClick={handleCardClick}
+          />
+        )}
+      </div>
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
-          <ul className="flex items-center gap-4 overflow-auto">
-            <li>
-              <SelectTaskProjects
-                selectedProject={selectedProject}
-                setSelectedProject={setSelectedProject}
-              />
-            </li>
-            <li>
-              <TasksSelectPriority
-                value={selectedPriority}
-                setValue={setSelectedPriority}
-              />
-            </li>
-            <li>
-              <TasksSelectStatusFilter
-                value={selectedStatus}
-                setValue={setSelectedStatus}
-              />
-            </li>
-            <li>
-              <UserSelectionPopover
-                usersData={usersData}
-                getFullName={getFullName}
-                memberIcon={memberIcon}
-                selectDropIcon={selectDropIcon}
-                selectedMembers={selectedMembers}
-                setSelectedMembers={setSelectedMembers}
-                onSelectMembers={handleSelectMembers}
-              />
-            </li>
-            <li>
-              <DateRangeFilter
-                dateValue={dateValue}
-                onChangeData={handleDateChange}
-              />
-            </li>
-            <li>
-              <SearchFilter
-                searchString={searchString}
-                setSearchString={setSearchString}
-                title="Search By Task name"
-              />
-            </li>
-            <li>
-              <Button
-                onClick={() => setIsArchive(!isArchive)}
-                className={`${
-                  isArchive ? "bg-green-700 text-white" : "bg-gray-200"
-                }`}
-              >
-                {isArchive ? "Show Active Tasks" : "Show Archived Tasks"}
-              </Button>
-            </li>
-          </ul>
+          <div className="flex items-center">
+            <div className="filters w-[100%] flex items-center gap-x-4 ">
+              <ul className="flex justify-start space-x-3 py-1 overflow-auto w-[100%] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+                <li>
+                  <SelectTaskProjects
+                    selectedProject={selectedProject}
+                    setSelectedProject={setSelectedProject}
+                  />
+                </li>
+                <li>
+                  <SearchFilter
+                    searchString={searchString}
+                    setSearchString={setSearchString}
+                    title="Search By Task name"
+                  />
+                </li>
+
+                <li>
+                  <UserSelectionPopover
+                    usersData={usersData}
+                    getFullName={getFullName}
+                    memberIcon={memberIcon}
+                    selectDropIcon={selectDropIcon}
+                    selectedMembers={selectedMembers}
+                    setSelectedMembers={setSelectedMembers}
+                    onSelectMembers={handleSelectMembers}
+                  />
+                </li>
+                <li>
+                  <DateRangeFilter
+                    dateValue={dateValue}
+                    onChangeData={handleDateChange}
+                  />
+                </li>
+                <li>
+                  <TasksSelectStatusFilter
+                    value={selectedStatus}
+                    setValue={setSelectedStatus}
+                  />
+                </li>
+                <li>
+                  <TasksSelectPriority
+                    value={selectedpriority}
+                    setValue={setSelectedpriority}
+                  />
+                </li>
+              </ul>
+              <div>
+                <Button
+                  title={`${
+                    isArchive || searchParams.get("isArchived") === "true"
+                      ? "Show Active Tasks"
+                      : "Show Archived Tasks"
+                  }`}
+                  className={`font-normal text-sm flex  ${
+                    isArchive || searchParams.get("isArchived") === "true"
+                      ? "bg-green-700 hover:bg-green-700 text-white"
+                      : "bg-white hover:bg-gray-200 border border-[#1b2459]"
+                  } max-w-[50px] w-[50px] overflow-hidden truncate`}
+                  size="sm"
+                  onClick={() => setIsArchive(!isArchive)}
+                >
+                  <img
+                    src={
+                      isArchive || searchParams.get("isArchived") === "true"
+                        ? "/active-icon.svg"
+                        : "/archive.svg"
+                    }
+                    alt={
+                      isArchive || searchParams.get("isArchived") === "true"
+                        ? "active"
+                        : "archive"
+                    }
+                    height={18}
+                    width={18}
+                  />
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
-        <TanStackTable
-          data={data?.[0] || []}
-          columns={
-            isArchive
-              ? archivetaskColumns({ isArchive })
-              : taskColumns({ isArchive })
-          }
-          paginationDetails={data?.[1]}
-          getData={setPagination}
-          loading={isLoading || isFetching}
-        />
+
+        <div className="flex flex-col mt-4 space-y-5">
+          <div>
+            <TanStackTable
+              data={data?.[0]?.length > 0 ? data?.[0] : []}
+              columns={
+                isArchive || searchParams.get("isArchived") == "true"
+                  ? archivetaskColumns({ setDel, isArchive })
+                  : taskColumns({ setDel, isArchive })
+              }
+              paginationDetails={data?.[1]}
+              getData={getAllTasks}
+              loading={isLoading || isFetching}
+              removeSortingForColumnIds={[
+                "serial",
+                "actions",
+                "project_title",
+                "assignees",
+                "status",
+              ]}
+            />
+          </div>
+        </div>
       </div>
       <LoadingComponent loading={isLoading} message="Loading Tasks..." />
     </section>
