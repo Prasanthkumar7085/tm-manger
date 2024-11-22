@@ -64,7 +64,7 @@ export function UserCombobox({
       </PopoverTrigger>
       <PopoverContent className="w-[250px] p-0">
         <Command>
-          <CommandInput placeholder="Search user..." className="h-9" />
+          <CommandInput placeholder="Search user.." className="h-9" />
           <CommandList>
             <CommandEmpty>No user found.</CommandEmpty>
             <CommandGroup>

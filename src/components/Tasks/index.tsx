@@ -198,18 +198,26 @@ const Tasks = () => {
     setSelectedMembers(selectedMembers);
   };
 
+  const handleCardClick = (status: string) => {
+    setSelectedStatus(status);
+  };
+
   return (
     <section id="tasks" className="relative">
       <div>
         {!isDashboard && (
-          <TotalCounts refreshCount={del} isArchive={isArchive} />
+          <TotalCounts
+            refreshCount={del}
+            isArchive={isArchive}
+            onCardClick={handleCardClick}
+          />
         )}
       </div>
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
           <div className="flex items-center">
             <div className="filters w-[100%] flex items-center gap-x-4 ">
-              <ul className="flex justify-start space-x-3 py-1 overflow-auto w-[100%] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 ">
+              <ul className="flex justify-start space-x-3 py-1 overflow-auto w-[100%] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
                 <li>
                   <SelectTaskProjects
                     selectedProject={selectedProject}
@@ -217,17 +225,13 @@ const Tasks = () => {
                   />
                 </li>
                 <li>
-                  <TasksSelectPriority
-                    value={selectedpriority}
-                    setValue={setSelectedpriority}
+                  <SearchFilter
+                    searchString={searchString}
+                    setSearchString={setSearchString}
+                    title="Search By Task name"
                   />
                 </li>
-                <li>
-                  <TasksSelectStatusFilter
-                    value={selectedStatus}
-                    setValue={setSelectedStatus}
-                  />
-                </li>
+
                 <li>
                   <UserSelectionPopover
                     usersData={usersData}
@@ -239,7 +243,6 @@ const Tasks = () => {
                     onSelectMembers={handleSelectMembers}
                   />
                 </li>
-
                 <li>
                   <DateRangeFilter
                     dateValue={dateValue}
@@ -247,70 +250,17 @@ const Tasks = () => {
                   />
                 </li>
                 <li>
-                  <SearchFilter
-                    searchString={searchString}
-                    setSearchString={setSearchString}
-                    title="Search By Task name"
+                  <TasksSelectStatusFilter
+                    value={selectedStatus}
+                    setValue={setSelectedStatus}
                   />
                 </li>
-
-                {/* <li>
-                  <Button
-                    title={`${isArchive || searchParams.get("isArchived") === "true" ? "Show Active Tasks" : "Show Archived Tasks"}`}
-                    className={`font-normal text-sm flex items-center space-x-2 ${
-                      isArchive || searchParams.get("isArchived") === "true"
-                        ? "bg-primary hover:bg-primary text-white"
-                        : "bg-white hover:bg-gray-200 border border-[#1b2459]"
-                    } max-w-[100px] overflow-hidden truncate`}
-                    size="sm"
-                    onClick={() => setIsArchive(!isArchive)}
-                  >
-                    <img
-                      src={"/archive.svg"}
-                      alt="archive"
-                      height={18}
-                      width={18}
-                    />
-                    <span className="truncate">
-                      {isArchive || searchParams.get("isArchived") === "true"
-                        ? " Active Tasks"
-                        : " Archived Tasks"}
-                    </span>
-                  </Button>
-                </li> */}
-
-                {/* <li>
-  <Button
-    title={`${
-      isArchive || searchParams.get("isArchived") === "true"
-        ? "Show Active Tasks"
-        : "Show Archived Tasks"
-    }`}
-    className={`font-normal text-sm flex items-center space-x-2 ${
-      isArchive || searchParams.get("isArchived") === "true"
-        ? "bg-primary hover:bg-primary text-white"
-        : "bg-white hover:bg-gray-200 border border-[#1b2459]"
-    } max-w-[100px] overflow-hidden truncate`}
-    size="sm"
-    onClick={() => setIsArchive(!isArchive)}
-  >
-    <img
-      src={
-        isArchive || searchParams.get("isArchived") === "true"
-          ? "/active-icon.svg" // path for the active tasks image
-          : "/archive.svg" // path for the archived tasks image
-      }
-      alt={isArchive || searchParams.get("isArchived") === "true" ? "active" : "archive"}
-      height={18}
-      width={18}
-    />
-    <span className="truncate">
-      {isArchive || searchParams.get("isArchived") === "true"
-        ? " Active Tasks"
-        : " Archived Tasks"}
-    </span>
-  </Button>
-</li> */}
+                <li>
+                  <TasksSelectPriority
+                    value={selectedpriority}
+                    setValue={setSelectedpriority}
+                  />
+                </li>
               </ul>
               <div>
                 <Button
@@ -370,7 +320,7 @@ const Tasks = () => {
           </div>
         </div>
       </div>
-      <LoadingComponent loading={isLoading} />
+      <LoadingComponent loading={isLoading} message="Loading Tasks..." />
     </section>
   );
 };

@@ -478,7 +478,7 @@ const TaskComments = ({ taskId }: any) => {
             </div>
           </div>
         </div>
-        <LoadingComponent loading={loading} />
+        <LoadingComponent loading={loading} message="Loading comments..." />
       </div>
       {openReplies?.open && (
         <div className={`${openReplies?.open ? "w-[45%] ml-2" : ""}`}>

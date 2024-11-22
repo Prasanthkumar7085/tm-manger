@@ -2,6 +2,7 @@ import { convertToLabUTC } from "@/lib/helpers/timeZone";
 import { DateRangePicker } from "rsuite";
 import "rsuite/dist/rsuite.css";
 import { predefinedRanges } from "./CommonComponents/DatePickerRanges";
+import dayjs from "dayjs";
 
 const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
   const updateDateValues = (newDate: any) => {
@@ -12,6 +13,10 @@ const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
     } else {
       onChangeData("", "");
     }
+  };
+
+  const disableFutureDates = (date: Date) => {
+    return dayjs(date).isAfter(dayjs());
   };
 
   return (
@@ -25,6 +30,7 @@ const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
       onChange={updateDateValues}
       showHeader={false}
       cleanable={true}
+      shouldDisableDate={disableFutureDates}
     />
   );
 };

@@ -170,9 +170,9 @@ export const projectColumns = ({
         return <span>{info.getValue()}</span>;
       },
       footer: (props: any) => props.column.id,
-      width: "50px",
-      maxWidth: "50px",
-      minWidth: "50px",
+      width: "80px",
+      maxWidth: "80px",
+      minWidth: "80px",
     },
     {
       accessorFn: (row: any) => row.description,
@@ -271,7 +271,7 @@ export const projectColumns = ({
                     +{info.getValue().length - 5}
                   </div>
                 </PopoverTrigger>
-                <PopoverContent className="p-2 w-48 max-w-xs bg-white border border-gray-300 rounded-lg shadow-lg">
+                <PopoverContent className="p-2 w-48 max-w-xs bg-white border border-gray-300 rounded-lg shadow-lg max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
                   <div className="space-y-2">
                     {info.getValue().map((assignee: any) => (
                       <div

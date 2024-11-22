@@ -1,32 +1,26 @@
-import viewButtonIcon from "@/assets/view.svg";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getColorFromInitials } from "@/lib/constants/colorConstants";
+import {
+  isMananger,
+  isProjectAdmin,
+  isProjectMemberOrNot,
+} from "@/lib/helpers/loginHelpers";
 import {
   bgColorObjectForStatus,
   colorObjectForStatus,
   taskPriorityConstants,
   taskStatusConstants,
 } from "@/lib/helpers/statusConstants";
-import {
-  archiveTaskAPI,
-  deleteTaskAPI,
-  unArchiveTaskAPI,
-} from "@/lib/services/tasks";
+import { momentWithTimezone } from "@/lib/helpers/timeZone";
+import { unArchiveTaskAPI } from "@/lib/services/tasks";
 import { useNavigate } from "@tanstack/react-router";
-import dayjs from "dayjs";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import DeleteDialog from "../core/deleteDialog";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { useSelector } from "react-redux";
-import {
-  isMananger,
-  isProjectAdmin,
-  isProjectMemberOrNot,
-} from "@/lib/helpers/loginHelpers";
-import { momentWithTimezone } from "@/lib/helpers/timeZone";
-import { getColorFromInitials } from "@/lib/constants/colorConstants";
 
 export const archivetaskColumns = ({ setDel }: any) => {
   const navigate = useNavigate();
@@ -183,6 +177,7 @@ export const archivetaskColumns = ({ setDel }: any) => {
 
         return (
           <div className="flex justify-start items-center -space-x-2">
+            {info.getValue().length === 0 && <span>--</span>}
             {info
               .getValue()
               .slice(0, 5)
