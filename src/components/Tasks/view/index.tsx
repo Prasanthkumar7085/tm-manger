@@ -138,11 +138,11 @@ const TaskView = () => {
 
   const filterDataBySearch = (data: any[], searchTerm: string) => {
     if (!searchTerm) return data;
-    return data.filter((project) =>
-      project.project_title.toLowerCase().includes(searchTerm.toLowerCase())
+    return data.filter((user) =>
+      user.user_name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
-  
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
@@ -154,11 +154,11 @@ const TaskView = () => {
   }, [searchString]);
 
   useEffect(() => {
-    if (data) {
-      const filtered = filterDataBySearch(data, debouncedSearch);
+    if (viewData) {
+      const filtered = filterDataBySearch(viewData, debouncedSearch);
       setFilteredData(filtered);
     }
-  }, [debouncedSearch, data]);
+  }, [debouncedSearch,viewData ]);
 
   return (
     <div className="relative overflow-y-auto">
