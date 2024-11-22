@@ -1,3 +1,4 @@
+import SearchFilter from "@/components/core/CommonComponents/SearchFilter";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,6 +14,8 @@ interface ActivityDrawerProps {
   activityOpen: boolean;
   activityLogData: any[];
   id: any;
+  searchString: string;
+  setSearchString: any;
 }
 
 export const ActivityDrawer = ({
@@ -20,6 +23,8 @@ export const ActivityDrawer = ({
   activityOpen,
   activityLogData,
   id,
+  searchString,
+  setSearchString,
 }: ActivityDrawerProps) => {
   const handleClose = () => {
     setActivityOpen(false);
@@ -32,6 +37,11 @@ export const ActivityDrawer = ({
             <h3 className="py-2 px-4 text-[#273480] items-center flex text-base border-r-[1.2px] border-r-[#e7e7f7] font-medium">
               Activity Logs
             </h3>
+            <SearchFilter
+                    searchString={searchString}
+                    setSearchString={setSearchString}
+                    title="Search By User name"
+                  />
             <Button
               variant="ghost"
               onClick={handleClose}
@@ -39,6 +49,13 @@ export const ActivityDrawer = ({
             ></Button>
           </div>
         </DialogHeader>
+        {/* <li>
+                  <SearchFilter
+                    searchString={searchString}
+                    setSearchString={setSearchString}
+                    title="Search By Task name"
+                  />
+                </li> */}
         {activityLogData && activityLogData.length > 0 ? (
           <div className="overflow-y-auto w-[96%] m-auto mt-2 mb-6">
             <table className="min-w-full bg-white border rounded-lg shadow">
