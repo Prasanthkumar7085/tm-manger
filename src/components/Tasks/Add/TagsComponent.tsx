@@ -47,8 +47,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
   const [tags, setTags] = useState<any>([]);
   const [tagsDropdown, setTagsDropdown] = useState<any[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  console.log(tagsDropdown, "tagsDropdown");
-
+  
   const { isLoading: isTaskTagsLoading, isError: isTaskTagsError } = useQuery({
     queryKey: ["getSingleTaskTags", taskId, tagsRefresh],
     queryFn: async () => {
@@ -59,7 +58,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
           setTags(tagsResponse?.data?.data || []);
           setTask((prev: any) => ({
             ...prev,
-            tags: tagsData || [], // Ensure tagsData is an array
+            tags: tagsData || [],
           }));
         } else {
           throw new Error("Failed to fetch task");
@@ -110,7 +109,6 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
     try {
       const response = await getTagsDropdownAPI();
       if (response?.status === 200 || response?.status === 201) {
-        console.log(response?.data?.data, "sdfsd");
         setTagsDropdown(response?.data?.data || []);
         setIsDropdownOpen(true);
       } else {
@@ -196,7 +194,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
               <Button
                 type="button"
                 variant="add"
-                disabled={isTaskTagsLoading}
+                disabled={isTaskTagsLoading}                                    
                 size="DefaultButton"
                 onClick={() => {
                   handleTagSubmit();

@@ -196,7 +196,7 @@ function TopBar() {
               )}
             </div>
           </PopoverTrigger>
-          <PopoverContent className="w-64 bg-white p-3 shadow-md rounded-md">
+          <PopoverContent className="w-100 bg-white p-3 shadow-md rounded-md">
             <div className="flex justify-between items-center mb-2">
               <h3 className="font-semibold text-sm">
                 Notifications ({totalNotifications})
