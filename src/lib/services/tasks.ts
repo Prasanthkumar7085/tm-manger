@@ -135,14 +135,6 @@ export const addTagAPI = async (taskId: any, payload: any) => {
   }
 };
 
-export const getTagsDropdownAPI = async () => {
-  try {
-    return await $fetch.get(`/tasks/tags-drop-down`);
-  } catch (err) {
-    throw err;
-  }
-};
-
 export const removeTagAPI = async (tagId: string) => {
   try {
     return await $fetch.delete(`/tasks/${tagId}/tags`);
