@@ -14,14 +14,12 @@ import { getAllPaginatedUsers } from "@/lib/services/users";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useState } from "react";
-
 interface ActivityDrawerProps {
   setActivityOpen: (open: boolean) => void;
   activityOpen: boolean;
   activityLogData: any[];
   id: any;
 }
-
 export const ActivityDrawer = ({
   setActivityOpen,
   activityOpen,
@@ -30,10 +28,8 @@ export const ActivityDrawer = ({
 }: ActivityDrawerProps) => {
   const searchParams = new URLSearchParams(location.search);
   const initialSearch = searchParams.get("search");
-
   const [loading, setLoading] = useState(false);
   const [searchString, setSearchString] = useState<any>(initialSearch || "");
-
   const { isLoading, isError, error, data, isFetching } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
@@ -57,7 +53,6 @@ export const ActivityDrawer = ({
       }
     },
   });
-
   const handleClose = () => {
     setActivityOpen(false);
   };
@@ -65,8 +60,8 @@ export const ActivityDrawer = ({
     <Dialog open={activityOpen} onOpenChange={setActivityOpen}>
       <DialogContent className="p-0 sm:max-w-[1000px] h-[80vh] bg-white">
         <DialogHeader>
-          <div className="flex justify-between border-b-[#e7e7f7] border-b-[1.2px]">
-            <h3 className="py-2 px-4 text-[#273480] items-center flex text-base border-r-[1.2px] border-r-[#e7e7f7] font-medium">
+          <div className="flex justify-between border-b-[#E7E7F7] border-b-[1.2px]">
+            <h3 className="py-2 px-4 text-[#273480] items-center flex text-base border-r-[1.2px] border-r-[#E7E7F7] font-medium">
               Activity Logs
             </h3>
             <SearchFilter
@@ -97,7 +92,6 @@ export const ActivityDrawer = ({
                 {activityLogData.map((item: any, index: number) => (
                   <tr key={index} className="border-b hover:bg-gray-50">
                     <td className="p-3 text-xs text-gray-500">{index + 1}</td>
-
                     <td className="p-3 flex items-center space-x-3">
                       {item.user_name && (
                         <>

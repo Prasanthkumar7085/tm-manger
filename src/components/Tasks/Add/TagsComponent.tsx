@@ -18,13 +18,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@radix-ui/react-popover";
-
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { Check, Command } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-
 interface TagsComponentProps {
   tagInput: string;
   setTagInput: React.Dispatch<React.SetStateAction<string>>;
@@ -33,7 +31,6 @@ interface TagsComponentProps {
   errorMessages?: any;
   setErrorMessages?: React.Dispatch<React.SetStateAction<any>> | any;
 }
-
 const TagsComponent: React.FC<TagsComponentProps> = ({
   tagInput,
   setTagInput,
@@ -47,8 +44,6 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
   const [tags, setTags] = useState<any>([]);
   const [tagsDropdown, setTagsDropdown] = useState<any[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  console.log(tagsDropdown, "tagsDropdown");
-
   const { isLoading: isTaskTagsLoading, isError: isTaskTagsError } = useQuery({
     queryKey: ["getSingleTaskTags", taskId, tagsRefresh],
     queryFn: async () => {
@@ -198,10 +193,10 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
                 variant="add"
                 disabled={isTaskTagsLoading}
                 size="DefaultButton"
-                // onClick={() => {
-                //   handleTagSubmit();
-                //   setIsDropdownOpen(false);
-                // }}
+                onClick={() => {
+                  handleTagSubmit();
+                  setIsDropdownOpen(false);
+                }}
                 className="h-[20px] bg-green-600 px-3"
               >
                 Add
@@ -221,10 +216,10 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
                             className="cursor-pointer"
                             key={index}
                             value={tag?.title}
-                            // onSelect={(currentvale) => {
-                            //   setTagInput(currentvale);
-                            //   setIsDropdownOpen(false);
-                            // }}
+                            onSelect={(currentvale) => {
+                              setTagInput(currentvale);
+                              setIsDropdownOpen(false);
+                            }}
                           >
                             <Check
                               className={cn(

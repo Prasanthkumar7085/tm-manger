@@ -150,8 +150,10 @@ const Tasks = () => {
       const intialusersData = usersData?.filter((item: any) =>
         userIdsArray.includes(item.id.toString())
       );
+
       console.log(intialusersData);
       setSelectedMembers(intialusersData);
+
       return response?.data?.data;
     },
   });
@@ -159,9 +161,11 @@ const Tasks = () => {
     if (initialFromDate) {
       setDateValue(changeDateToUTC(initialFromDate, initialToDate));
     }
+
     if (intialuserIds) {
       setSelectedMembersData(intialuserIds);
     }
+
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
       if (

@@ -125,6 +125,7 @@ export const addTagAPI = async (taskId: any, payload: any) => {
     throw err;
   }
 };
+
 export const getTagsDropdownAPI = async () => {
   try {
     return await $fetch.get(`/tasks/tags-drop-down`);

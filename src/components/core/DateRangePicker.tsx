@@ -3,7 +3,6 @@ import { DateRangePicker } from "rsuite";
 import "rsuite/dist/rsuite.css";
 import { predefinedRanges } from "./CommonComponents/DatePickerRanges";
 import dayjs from "dayjs";
-
 const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
   const updateDateValues = (newDate: any) => {
     if (newDate) {
@@ -15,11 +14,9 @@ const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
       onChangeData("", "");
     }
   };
-
   const disableFutureDates = (date: Date) => {
     return dayjs(date).isAfter(dayjs());
   };
-
   return (
     <DateRangePicker
       className="!bg-[#F4F4F6] border border-[#E2E2E2] rounded-[8px] w-[210px] placeholder:text-[#00000066]"
@@ -35,5 +32,4 @@ const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
     />
   );
 };
-
 export default DateRangeFilter;

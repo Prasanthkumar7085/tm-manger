@@ -7,12 +7,11 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { fileUploadAPI, uploadToS3API } from "@/lib/services/projects";
 import { toast } from "sonner";
-import { Pencil, Loader } from "lucide-react";
-import { CirclePlus, Plus, UserRoundPlus, X } from "lucide-react";
 import { Button } from "../ui/button";
 import LoadingComponent from "../core/LoadingComponent";
+import { fileUploadAPI, uploadToS3API } from "@/lib/services/projects";
+import { Loader, Pencil } from "lucide-react";
 
 function ViewProfile() {
   const userID = useSelector(
@@ -53,9 +52,10 @@ function ViewProfile() {
             lname: data?.lname,
             email: data?.email,
             phone_number: data?.phone_number,
+            profile_pic:data?.profile_pic,
           });
           setUserType({
-            user_type: data?.user_type,
+            user_type:"admin",
           });
         } else {
           throw response;
@@ -294,5 +294,4 @@ function ViewProfile() {
     </div>
   );
 }
-
 export default ViewProfile;
