@@ -6,26 +6,53 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { addSerial } from "@/lib/helpers/addSerial";
+import { errPopper } from "@/lib/helpers/errPopper";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
+import { getAllMembers } from "@/lib/services/projects/members";
+import { getAllPaginatedUsers } from "@/lib/services/users";
+import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-
+import { useState } from "react";
 interface ActivityDrawerProps {
   setActivityOpen: (open: boolean) => void;
   activityOpen: boolean;
   activityLogData: any[];
   id: any;
-  searchString: string;
-  setSearchString: any;
 }
-
 export const ActivityDrawer = ({
   setActivityOpen,
   activityOpen,
   activityLogData,
   id,
-  searchString,
-  setSearchString,
 }: ActivityDrawerProps) => {
+  const searchParams = new URLSearchParams(location.search);
+  const initialSearch = searchParams.get("search");
+  const [loading, setLoading] = useState(false);
+  const [searchString, setSearchString] = useState<any>(initialSearch || "");
+  const { isLoading, isError, error, data, isFetching } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      try {
+        const response = await getAllMembers();
+        console.log(response, "respp");
+        if (response.success) {
+          const modifieData = addSerial(
+            response?.data?.data,
+            1,
+            response?.data?.data?.length
+          );
+          return modifieData;
+        } else {
+          throw new Error("Failed to fetch project details");
+        }
+      } catch (errData) {
+        console.error(errData);
+        errPopper(errData);
+        throw errData;
+      }
+    },
+  });
   const handleClose = () => {
     setActivityOpen(false);
   };
@@ -33,15 +60,15 @@ export const ActivityDrawer = ({
     <Dialog open={activityOpen} onOpenChange={setActivityOpen}>
       <DialogContent className="p-0 sm:max-w-[1000px] h-[80vh] bg-white">
         <DialogHeader>
-          <div className="flex justify-between border-b-[#e7e7f7] border-b-[1.2px]">
-            <h3 className="py-2 px-4 text-[#273480] items-center flex text-base border-r-[1.2px] border-r-[#e7e7f7] font-medium">
+          <div className="flex justify-between border-b-[#E7E7F7] border-b-[1.2px]">
+            <h3 className="py-2 px-4 text-[#273480] items-center flex text-base border-r-[1.2px] border-r-[#E7E7F7] font-medium">
               Activity Logs
             </h3>
             <SearchFilter
-                    searchString={searchString}
-                    setSearchString={setSearchString}
-                    title="Search By User name"
-                  />
+              searchString={searchString}
+              setSearchString={setSearchString}
+              title="Search User Name"
+            />
             <Button
               variant="ghost"
               onClick={handleClose}
@@ -49,13 +76,6 @@ export const ActivityDrawer = ({
             ></Button>
           </div>
         </DialogHeader>
-        {/* <li>
-                  <SearchFilter
-                    searchString={searchString}
-                    setSearchString={setSearchString}
-                    title="Search By Task name"
-                  />
-                </li> */}
         {activityLogData && activityLogData.length > 0 ? (
           <div className="overflow-y-auto w-[96%] m-auto mt-2 mb-6">
             <table className="min-w-full bg-white border rounded-lg shadow">
@@ -72,7 +92,6 @@ export const ActivityDrawer = ({
                 {activityLogData.map((item: any, index: number) => (
                   <tr key={index} className="border-b hover:bg-gray-50">
                     <td className="p-3 text-xs text-gray-500">{index + 1}</td>
-
                     <td className="p-3 flex items-center space-x-3">
                       {item.user_name && (
                         <>

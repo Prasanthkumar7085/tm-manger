@@ -187,12 +187,15 @@ function ViewProfile() {
           <span>Profile Information</span>
           {isEditMode ? (
             <div>
-              <Button className="mr-2" onClick={handleSave}>
-                Save
-              </Button>
-              <Button variant="secondary" onClick={handleCancel}>
+             <Button variant="secondary" onClick={handleCancel}
+                  className="bg-white border-transparent text-[#FF6000] text-sm mr-2 px-8 font-medium hover:bg-transparent hover:text-[#FF6000]">
                 Cancel
               </Button>
+               <Button  onClick={handleSave}
+                   className="bg-[#1B2459] text-white font-medium text-sm hover:bg-[#1B2459] hover:text-white px-8">
+                Save
+              </Button>
+        
             </div>
           ) : (
             <Button
@@ -252,7 +255,7 @@ function ViewProfile() {
         <h1 className="text-xl border-b-2 px-4 py-2 font-medium text-[#475569]">
           Personal Information
         </h1>
-        <div className="grid p-4 grid-cols-1 md:grid-cols-2 gap-y-8 text-lg">
+        <div className="grid p-4 grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-8 text-lg">
           {["fname", "lname", "email", "phone_number"].map((field) => (
             <div key={field}>
               <h3 className="text-sm font-normal text-[#666666]">
@@ -270,7 +273,7 @@ function ViewProfile() {
                   name={field}
                   value={editedData[field]}
                   onChange={handleInputChange}
-                  className="border rounded-md p-2 w-full"
+                  className="border rounded-md p-2 w-full h-[34px] text-sm"
                 />
               ) : (
                 <p className="text-base font-medium text-[#000000]">

@@ -1,28 +1,41 @@
+import loginBackground from "@/assets/login-bg-image.png";
 import LogoPath from "@/assets/logo.svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { errPopper } from "@/lib/helpers/errPopper";
+import { loginProps } from "@/lib/interfaces";
 import { loginAPI } from "@/lib/services/auth";
+import { setUserDetails } from "@/redux/Modules/userlogin";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import Cookies from "js-cookie";
-import { Eye, EyeOff, Loader2, LockKeyhole, LogIn } from "lucide-react";
+import { Eye, EyeOff, Loader2, LockKeyhole, Mail } from "lucide-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Mail } from "lucide-react";
 import { toast } from "sonner";
-import loginBackground from "@/assets/login-bg-image.png";
-import { setUserDetails } from "@/redux/Modules/userlogin";
-import { errPopper } from "@/lib/helpers/errPopper";
-import { loginProps } from "@/lib/interfaces";
 
-const LoginComponent = () => {
-  const [loginDetails, setLoginDetails] = useState({ email: "", password: "" });
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
+interface LoginDetails {
+  email: string;
+  password: string;
+}
+
+interface Errors {
+  email?: string[];
+  password?: string[];
+}
+
+const LoginComponent: React.FC = () => {
+  const [loginDetails, setLoginDetails] = useState<LoginDetails>({
+    email: "",
+    password: "",
+  });
+
+  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<Errors>({});
+  const [invalidMessages, setInvalidMessages] = useState<string | null>(null);
+
   const dispatch = useDispatch();
-  const [errors, setErrors] = useState<any>({});
-  const [invalidMessages, setInvalidMessages] = useState<any>();
-
   const navigate = useNavigate({ from: "/" });
 
   const { mutate, isError, error } = useMutation({
@@ -47,7 +60,6 @@ const LoginComponent = () => {
           setErrors(errData);
         } else if (response?.status === 401) {
           const inValid = response?.data?.message;
-
           setInvalidMessages(inValid);
         } else {
           throw response;
@@ -61,13 +73,16 @@ const LoginComponent = () => {
     },
   });
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
-    setErrors([]);
+    setErrors({});
     setLoading(true);
     mutate(loginDetails);
   };
-  const togglePasswordVisibility = () => {
+
+  const togglePasswordVisibility = (): void => {
     setPasswordVisible(!passwordVisible);
   };
 
@@ -186,4 +201,5 @@ const LoginComponent = () => {
     </section>
   );
 };
+
 export default LoginComponent;

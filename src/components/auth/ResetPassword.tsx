@@ -71,29 +71,29 @@ function ResetPassword() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen  mx-auto p-20 bg-white">
-      <div className="w-[60%] h-full py-10">
-        <img
-          src={loginBackground}
-          alt="logo"
-          className="w-[90%] mx-auto mt-2"
-        />
+    <section
+    id="authentication"
+    className="reset-password=page relative h-screen flex items-center"
+  >
+     <div className="company-logo absolute top-7 left-7">
+        <img src={LogoPath} alt="logo" className="w-[200px] mx-auto" />
       </div>
-      <div className="w-[40%] h-full border flex flex-col justify-center items-center space-y-8 relative ml-[-20px] bg-white shadow-xl p-8">
-        <div>
-          <img
-            src={LogoPath}
-            alt="logo"
-            className="w-[200px] mx-auto animate-in zoom-in-0 duration-1000"
-          />
-        </div>
 
-        <form className="w-full" onSubmit={handleSubmit}>
-          <div className="flex flex-col space-y-6">
+    <div  className="grid grid-cols-1 lg:grid-cols-2 items-center">
+      <div  className="left-part">
+      <img src={loginBackground} alt="logo" className="w-[75%] mx-auto" />
+      </div>
+      <div className="right-part m-auto">
+      <div className="login-card w-[420px] shadow-2xl border p-6 rounded-xl">
+      <div className="top mb-7">
+              <h1 className="text-xl font-semibold mb-2">Reset Password</h1>
+            </div>
+        <form onSubmit={handleSubmit}>
+       <div className="mb-3">
             <div className="relative">
-              <LockKeyhole className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+              <LockKeyhole  className="absolute left-3 mt-[1px] top-1/2 transform -translate-y-1/2 text-slate-800 w-4" />
               <Input
-                className="appearance-none block py-1 h-12 text-lg pl-10 rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
+                 className="bg-[#E7E7E7] appearance-none block py-1 h-12 text-lg pl-9 focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
                 id="password"
                 placeholder="New Password"
                 style={{
@@ -111,19 +111,20 @@ function ResetPassword() {
               <button
                 type="button"
                 onClick={togglePasswordVisibility}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-800"
               >
                 {passwordVisible ? <Eye /> : <EyeOff />}
               </button>
             </div>
             {errors?.new_password && (
-              <p style={{ color: "red" }}>{errors?.new_password[0]}</p>
+              <p className="text-xs pt-1 text-red-600">{errors?.new_password[0]}</p>
             )}
-
+         </div>
+          <div>
             <div className="relative">
-              <LockKeyhole className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+              <LockKeyhole className="absolute left-3 mt-[1px] top-1/2 transform -translate-y-1/2 text-slate-800 w-4"  />
               <Input
-                className="appearance-none block py-1 h-12 text-lg pl-10 rounded-none focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none"
+               className="bg-[#E7E7E7] appearance-none block py-1 h-12 text-lg pl-9 focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
                 id="password"
                 placeholder="Re-Enter Password"
                 style={{
@@ -141,25 +142,23 @@ function ResetPassword() {
               <button
                 type="button"
                 onClick={toggleResetPasswordVisibility}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-800"
               >
                 {resetpasswordVisible ? <Eye /> : <EyeOff />}
               </button>
             </div>
             {errors?.confirm_new_password && (
-              <p style={{ color: "red" }}>{errors?.confirm_new_password[0]}</p>
+              <p className="text-xs pt-1 text-red-600">{errors?.confirm_new_password[0]}</p>
             )}
-          </div>
-
-          <div className="mt-10">
-            <ul>
-              <li className="mb-4" style={{ lineHeight: "1.2" }}>
+               </div>
+            <div>
+              <p className="my-8" style={{ lineHeight: "1.2" }}>
                 • New password must be at least 6 characters long
-              </li>
-            </ul>
+              </p>
+            </div>
             <Button
               type="submit"
-              className="w-full flex justify-center items-center bg-blue-500 text-white hover:bg-blue-600"
+                           className="text-center bg-custom-gradient text-white w-full font-semibold text-md"
             >
               {loading ? (
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -167,11 +166,13 @@ function ResetPassword() {
                 "Recover Account"
               )}
             </Button>
-          </div>
+   
         </form>
+      </div>
       </div>
       {/* <Loading loading={loading} /> */}
     </div>
+    </section>
   );
 }
 

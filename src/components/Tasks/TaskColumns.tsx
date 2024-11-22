@@ -167,6 +167,8 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
         const [showPopover, setShowPopover] = useState(false);
         return (
           <div className="flex justify-start items-center -space-x-2">
+            {info.getValue().length === 0 && <span>--</span>}
+
             {info
               .getValue()
               .slice(0, 5)
@@ -201,7 +203,7 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
                     +{info.getValue().length - 5}
                   </div>
                 </PopoverTrigger>
-                <PopoverContent className="p-2 w-48 max-w-xs bg-white border border-gray-300 rounded-lg shadow-lg">
+                <PopoverContent className="p-2 w-48 max-w-xs bg-white border border-gray-300 rounded-lg shadow-lg max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
                   <div className="space-y-2">
                     {info.getValue().map((assignee: any) => (
                       <div

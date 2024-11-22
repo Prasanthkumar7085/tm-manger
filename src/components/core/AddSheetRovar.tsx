@@ -191,10 +191,11 @@ export const AddSheetRover = ({
                     aria-expanded={userTypeOpen}
                     className="w-full text-left flex h-8 justify-between bg-[#F5F6FA] font-normal text-[#00000066]"
                   >
-                    {userType
+                    <p className="text-[#000000] text-md">   {userType
                       ? userTypes.find((type: any) => type.value === userType)
                           ?.label
-                      : "Select User Type"}
+                      : "Select User Type"}</p>
+                 
                     <div className="flex">
                       {userType && (
                         <X

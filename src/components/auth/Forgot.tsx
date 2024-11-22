@@ -1,3 +1,4 @@
+import loginBackground from "@/assets/login-bg-image.png";
 import LogoPath from "@/assets/logo.svg";
 import { errPopper } from "@/lib/helpers/errPopper";
 import { forgotAPI } from "@/lib/services/auth";
@@ -6,27 +7,32 @@ import { useNavigate } from "@tanstack/react-router";
 import { Loader2, Mail } from "lucide-react";
 import React, { useState } from "react";
 import { toast } from "sonner";
-import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import loginBackground from "@/assets/login-bg-image.png";
+import { Input } from "../ui/input";
 
-interface loginProps {
+interface ForgotDetails {
   email: string;
 }
 
-function ForgotComponent() {
-  const [loading, setLoading] = useState(false);
-  const [forgotDetails, setForgotDetails] = useState({ email: "" });
-  const [errors, setErrors] = useState<any>({});
+interface Errors {
+  email?: string[];
+}
+
+const ForgotComponent: React.FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [forgotDetails, setForgotDetails] = useState<ForgotDetails>({
+    email: "",
+  });
+  const [errors, setErrors] = useState<Errors>({});
   const navigate = useNavigate();
-  const { mutate, isError, error } = useMutation({
-    mutationFn: async (forgotDetails: loginProps) => {
+
+  const { mutate } = useMutation({
+    mutationFn: async (forgotDetails: ForgotDetails) => {
       setLoading(true);
       try {
         const response = await forgotAPI(forgotDetails);
         if (response?.status === 200 || response?.status === 201) {
           toast.success(response?.data?.message);
-          const { data } = response?.data;
         } else if (response?.status === 422) {
           const errData = response?.data?.errData;
           setErrors(errData);
@@ -41,13 +47,17 @@ function ForgotComponent() {
       }
     },
   });
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
-    setErrors([]);
+    setErrors({});
     setLoading(true);
     mutate(forgotDetails);
   };
-  const handleBack = async () => {
+
+  const handleBack = (): void => {
     navigate({
       to: "/",
     });
@@ -92,7 +102,9 @@ function ForgotComponent() {
                   />
                 </div>
                 {errors?.email && (
-                  <p style={{ color: "red" }}>{errors?.email[0]}</p>
+                  <p className="text-xs pt-1 text-red-600">
+                    {errors?.email[0]}
+                  </p>
                 )}
               </div>
 
@@ -112,7 +124,7 @@ function ForgotComponent() {
                 <Button
                   type="button"
                   onClick={handleBack}
-                  className="font-medium  text-sm text-black bg-transparent hover:bg-transparent hover:text-black"
+                  className="font-medium text-sm text-black bg-transparent hover:bg-transparent hover:text-black"
                 >
                   Back to Login
                 </Button>
@@ -123,5 +135,6 @@ function ForgotComponent() {
       </div>
     </section>
   );
-}
+};
+
 export default ForgotComponent;

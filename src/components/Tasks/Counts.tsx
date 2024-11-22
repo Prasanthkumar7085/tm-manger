@@ -10,18 +10,14 @@ import {
   getTaskArchivedStatsCountsAPI,
   getTaskStatsCountsAPI,
 } from "@/lib/services/tasks";
-import { useLocation, useNavigate } from "@tanstack/react-router";
-
+import { useLocation } from "@tanstack/react-router";
 const TotalCounts = ({ refreshCount, isArchive, onCardClick }: any) => {
-  const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-
   const { data: totalTasks } = useQuery({
     queryKey: ["totalTasks", refreshCount, isArchive],
     queryFn: () => getTotalTasksCounts(),
   });
-
   const getTotalTasksCounts = async () => {
     try {
       if (isArchive) {
@@ -35,13 +31,12 @@ const TotalCounts = ({ refreshCount, isArchive, onCardClick }: any) => {
       console.error(error);
     }
   };
-
   return (
     <section id="tasks-counts">
       <div className="flex justify-between items-center gap-4 bg-gradient-to-rounded-lg  px-6">
         <Card
           className="flex-1 flex flex-row items-center bg-white shadow-md px-3 py-2 rounded-lg cursor-pointer"
-          
+          onClick={() => onCardClick("")}
         >
           <div className="flex justify-between w-full items-center">
             <div className="content">
@@ -168,5 +163,4 @@ const TotalCounts = ({ refreshCount, isArchive, onCardClick }: any) => {
     </section>
   );
 };
-
 export default TotalCounts;

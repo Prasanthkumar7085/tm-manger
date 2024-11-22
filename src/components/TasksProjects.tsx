@@ -2,6 +2,8 @@ import memberIcon from "@/assets/members.svg";
 import selectDropIcon from "@/assets/select-dropdown.svg";
 import { addSerial } from "@/lib/helpers/addSerial";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
+import { getAllMembers } from "@/lib/services/projects/members";
+import { getAllPaginatedTasks } from "@/lib/services/tasks";
 import { useQuery } from "@tanstack/react-query";
 import {
   useLocation,
@@ -11,26 +13,25 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { getAllMembers } from "@/lib/services/projects/members";
 import SearchFilter from "./core/CommonComponents/SearchFilter";
-import { TasksSelectPriority } from "./core/CommonComponents/TasksSelectPriority";
-import { TasksSelectStatusFilter } from "./core/CommonComponents/TasksSelectStatusFilter";
-import DateRangeFilter from "./core/DateRangePicker";
-import LoadingComponent from "./core/LoadingComponent";
 import UserSelectionPopover from "./core/MultipleUsersSelect";
-import TanStackTable from "./core/TanstackTable";
-import { taskColumns } from "./Tasks/TaskColumns";
+import DateRangeFilter from "./core/DateRangePicker";
+import { TasksSelectStatusFilter } from "./core/CommonComponents/TasksSelectStatusFilter";
+import { TasksSelectPriority } from "./core/CommonComponents/TasksSelectPriority";
 import { Button } from "./ui/button";
-import { getAllPaginatedTasks } from "@/lib/services/tasks";
+import { archivetaskColumns } from "./Tasks/ArchiveColumns";
+import { taskColumns } from "./Tasks/TaskColumns";
+import TanStackTable from "./core/TanstackTable";
+import LoadingComponent from "./core/LoadingComponent";
 
-const TasksProjects = () => {
+const TasksProjects = ({ setSelectedStatus, selectedStatus }: any) => {
   const navigate = useNavigate();
-  const router = useRouter();
   const location = useLocation();
-  const { projectId } = useParams({ strict: false });
+  const router = useRouter();
   const user_type: any = useSelector(
     (state: any) => state.auth.user.user_details?.user_type
   );
+  const { projectId } = useParams({ strict: false });
 
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
@@ -38,25 +39,32 @@ const TasksProjects = () => {
   const orderBY = searchParams.get("order_by")
     ? searchParams.get("order_by")
     : "";
-  const initialSearch = searchParams.get("search") || "";
+  const initialSearch = searchParams.get("search_string") || "";
   const initialStatus = searchParams.get("status") || "";
   const initialPrioritys = searchParams.get("priority") || "";
   const intialProject = searchParams.get("project_id") || "";
+  const intialuserIds = searchParams.get("user_ids") || "";
+  const intialisArchived = searchParams.get("isArchived") || "";
+
   const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedDate, setSelectedDate] = useState<any>(new Date());
-  const [selectedStatus, setSelectedStatus] = useState(initialStatus);
   const [selectedProject, setSelectedProject] = useState<any>(intialProject);
   const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
   const [dateValue, setDateValue] = useState<any>(null);
+  const [users, setUsers] = useState<any[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
   const [del, setDel] = useState<any>(1);
-  const [selectedMembers, setSelectedMembers] = useState<any>([]);
-
+  const [selectedMembers, setSelectedMembers] = useState<any[]>([]);
+  const [isArchive, setIsArchive] = useState(false);
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
     order_by: orderBY,
   });
+
+  const isDashboard = location.pathname === "/dashboard";
+
   const { isLoading, isError, data, error, isFetching } = useQuery({
     queryKey: [
       "tasks",
@@ -67,9 +75,10 @@ const TasksProjects = () => {
       selectedStatus,
       selectedpriority,
       selectedProject,
-      projectId,
       selectedMembers,
+      isArchive,
     ],
+
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
         pageIndex: pagination.pageIndex,
@@ -81,8 +90,10 @@ const TasksProjects = () => {
         project_id: projectId,
         from_date: selectedDate?.length ? selectedDate[0] : null,
         to_date: selectedDate?.length ? selectedDate[1] : null,
-        user_ids: selectedMembers.map((member: any) => member.id),
+        user_ids: selectedMembers?.map((member: any) => member.id) || null,
+        is_archived: isArchive ? "true" : "false",
       });
+
       let queryParams: any = {
         current_page: +pagination.pageIndex,
         page_size: +pagination.pageSize,
@@ -91,23 +102,35 @@ const TasksProjects = () => {
         from_date: selectedDate?.length ? selectedDate[0] : undefined,
         to_date: selectedDate?.length ? selectedDate[1] : undefined,
         status: selectedStatus || undefined,
-        project_id: projectId || undefined,
+        project_id: projectId,
         priority: selectedpriority || undefined,
+        isArchived: isArchive ? "true" : "false",
       };
-      if (selectedMembers?.length) {
+      if (selectedMembers?.length > 0) {
         queryParams["user_ids"] = selectedMembers.map(
           (member: any) => member.id
         );
       }
-      {
+
+      if (response?.status == 200) {
         router.navigate({
           to: `/projects/view//${projectId}`,
           search: queryParams,
         });
+        let responseAfterSerial: any =
+          addSerial(
+            response?.data?.data?.data,
+            response?.data?.data?.pagination_info?.current_page,
+            response?.data?.data?.pagination_info?.page_size
+          ) || [];
+        return [responseAfterSerial, response?.data?.data?.pagination_info];
       }
-      return response;
     },
   });
+
+  const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
+    setPagination({ pageIndex, pageSize, order_by });
+  };
 
   const getFullName = (user: any) => {
     return `${user?.fname || ""} ${user?.lname || ""}`;
@@ -118,20 +141,10 @@ const TasksProjects = () => {
     queryFn: async () => {
       const response = await getAllMembers();
       const data = response?.data;
+      setUsers(data?.data?.data || []);
       return response?.data?.data;
     },
   });
-
-  const taksDataAfterSerial =
-    addSerial(
-      data?.data?.data?.data,
-      data?.data?.data?.pagination_info?.current_page,
-      data?.data?.data?.pagination_info?.page_size
-    ) || [];
-
-  const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
-    setPagination({ pageIndex, pageSize, order_by });
-  };
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -140,7 +153,8 @@ const TasksProjects = () => {
         searchString ||
         selectedStatus ||
         selectedpriority ||
-        selectedProject
+        selectedProject ||
+        isArchive
       ) {
         getAllTasks({
           pageIndex: 1,
@@ -158,13 +172,14 @@ const TasksProjects = () => {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString, selectedStatus, selectedpriority, selectedProject]);
-
-  const handleNavigation = () => {
-    navigate({
-      to: "/tasks/add",
-    });
-  };
+  }, [
+    searchString,
+    selectedStatus,
+    selectedpriority,
+    selectedProject,
+    selectedMembers,
+    isArchive,
+  ]);
 
   const handleDateChange = (fromDate: any, toDate: any) => {
     if (fromDate) {
@@ -175,28 +190,23 @@ const TasksProjects = () => {
       setSelectedDate([]);
     }
   };
+
   const handleSelectMembers = (selectedMembers: any) => {
     setSelectedMembers(selectedMembers);
   };
+
+  const handleCardClick = (status: string) => {
+    console.log(status);
+    setSelectedStatus(status);
+  };
+
   return (
     <section id="tasks" className="relative">
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
         <div className="tasks-navbar">
-          <div className="flex justify-end items-center">
-            <div className="filters">
-              <ul className="flex justify-end space-x-3">
-                <li>
-                  <TasksSelectPriority
-                    value={selectedpriority}
-                    setValue={setSelectedpriority}
-                  />
-                </li>
-                <li>
-                  <TasksSelectStatusFilter
-                    value={selectedStatus}
-                    setValue={setSelectedStatus}
-                  />
-                </li>
+          <div className="flex items-center">
+            <div className="filters w-[100%] flex items-center gap-x-4 ">
+              <ul className="flex justify-start space-x-3 py-1 overflow-auto w-[100%] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
                 <li>
                   <SearchFilter
                     searchString={searchString}
@@ -204,6 +214,7 @@ const TasksProjects = () => {
                     title="Search By Task name"
                   />
                 </li>
+
                 <li>
                   <UserSelectionPopover
                     usersData={usersData}
@@ -222,43 +233,77 @@ const TasksProjects = () => {
                   />
                 </li>
                 <li>
-                  <Button
-                    className="font-normal text-sm"
-                    variant="add"
-                    size="DefaultButton"
-                    onClick={handleNavigation}
-                  >
-                    <span className="text-xl font-normal pr-2 text-md">+</span>
-                    Add Task
-                  </Button>
+                  <TasksSelectStatusFilter
+                    value={selectedStatus}
+                    setValue={setSelectedStatus}
+                  />
+                </li>
+                <li>
+                  <TasksSelectPriority
+                    value={selectedpriority}
+                    setValue={setSelectedpriority}
+                  />
                 </li>
               </ul>
+              <div>
+                <Button
+                  title={`${
+                    isArchive || searchParams.get("isArchived") === "true"
+                      ? "Show Active Tasks"
+                      : "Show Archived Tasks"
+                  }`}
+                  className={`font-normal text-sm flex  ${
+                    isArchive || searchParams.get("isArchived") === "true"
+                      ? "bg-green-700 hover:bg-green-700 text-white"
+                      : "bg-white hover:bg-gray-200 border border-[#1b2459]"
+                  } max-w-[50px] w-[50px] overflow-hidden truncate`}
+                  size="sm"
+                  onClick={() => setIsArchive(!isArchive)}
+                >
+                  <img
+                    src={
+                      isArchive || searchParams.get("isArchived") === "true"
+                        ? "/active-icon.svg"
+                        : "/archive.svg"
+                    }
+                    alt={
+                      isArchive || searchParams.get("isArchived") === "true"
+                        ? "active"
+                        : "archive"
+                    }
+                    height={18}
+                    width={18}
+                  />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-        <div className="mt-3">
-          {isError ? (
-            <div>Error: {error.message}</div>
-          ) : (
-            <div>
-              <TanStackTable
-                data={taksDataAfterSerial}
-                columns={taskColumns({ setDel })}
-                paginationDetails={data?.data?.data?.pagination_info}
-                getData={getAllTasks}
-                // loading={isLoading || isFetching}
-                removeSortingForColumnIds={[
-                  "serial",
-                  "actions",
-                  "project_title",
-                  "assignees",
-                ]}
-              />
-            </div>
-          )}
+
+        <div className="flex flex-col mt-4 space-y-5">
+          <div>
+            <TanStackTable
+              data={data?.[0]?.length > 0 ? data?.[0] : []}
+              columns={
+                isArchive || searchParams.get("isArchived") == "true"
+                  ? archivetaskColumns({ setDel, isArchive })
+                  : taskColumns({ setDel, isArchive })
+              }
+              paginationDetails={data?.[1]}
+              getData={getAllTasks}
+              loading={isLoading || isFetching}
+              removeSortingForColumnIds={[
+                "serial",
+                "actions",
+                "project_title",
+                "assignees",
+                "status",
+              ]}
+            />
+          </div>
         </div>
-        <LoadingComponent loading={isLoading || isFetching} />
       </div>
+      <LoadingComponent loading={isLoading} message="Loading Tasks..." />
     </section>
   );
 };

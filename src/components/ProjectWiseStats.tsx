@@ -1,13 +1,12 @@
+import { addSerial } from "@/lib/helpers/addSerial";
 import { errPopper } from "@/lib/helpers/errPopper";
 import { getAllProjectStats } from "@/lib/services/dashboard";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
-import React, { useEffect, useState } from "react";
-import TanStackTable from "./core/TanstackTable";
-import { addDataSerial, addSerial } from "@/lib/helpers/addSerial";
-import Loading from "./core/Loading";
+import { useEffect, useState } from "react";
 import SearchFilter from "./core/CommonComponents/SearchFilter";
 import LoadingComponent from "./core/LoadingComponent";
+import TanStackTable from "./core/TanstackTable";
 import ProjectWiseColumn from "./ProjectWiseColumns";
 
 const ProjectDataTable = () => {
@@ -91,7 +90,10 @@ const ProjectDataTable = () => {
           removeSortingForColumnIds={["serial"]}
         />
       </div>
-      <LoadingComponent loading={isLoading || isFetching || loading} />
+      <LoadingComponent
+        loading={isLoading || isFetching || loading}
+        message="Loading.."
+      />
     </div>
   );
 };

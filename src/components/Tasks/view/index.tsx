@@ -11,7 +11,7 @@ import { setRefId } from "@/redux/Modules/userlogin";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams, useRouter } from "@tanstack/react-router";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import TagsComponent from "../Add/TagsComponent";
@@ -50,15 +50,9 @@ const TaskView = () => {
     commentId: null,
     open: false,
   });
-  const searchParams = new URLSearchParams(location.search);
-  const initialSearch = searchParams.get("search");
   const [selectedPriority, setSelectedPriority] = useState<any>();
   const [activityOpen, setActivityOpen] = useState(false);
   const [activityLogData, setActivityLogData] = useState<any>();
-  const [searchString, setSearchString] = useState<any>(initialSearch || "");
-  const [debouncedSearch, setDebouncedSearch] = useState(searchString);
-  const [filteredData, setFilteredData] = useState<any[]>([]);
-
 
   const { isLoading, isError, error } = useQuery({
     queryKey: ["getSingleTask", taskId, updateDetailsOfTask],
@@ -135,30 +129,6 @@ const TaskView = () => {
   const onActivityClick = () => {
     setActivityOpen(true);
   };
-
-  const filterDataBySearch = (data: any[], searchTerm: string) => {
-    if (!searchTerm) return data;
-    return data.filter((user) =>
-      user.user_name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  };
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearch(searchString);
-    }, 500);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [searchString]);
-
-  useEffect(() => {
-    if (viewData) {
-      const filtered = filterDataBySearch(viewData, debouncedSearch);
-      setFilteredData(filtered);
-    }
-  }, [debouncedSearch,viewData ]);
 
   return (
     <div className="relative overflow-y-auto">
@@ -338,8 +308,6 @@ const TaskView = () => {
                   activityOpen={activityOpen}
                   id={taskId}
                   activityLogData={activityLogData}
-                  searchString={searchString}
-                  setSearchString={setSearchString}
                 />
               )}
             </div>

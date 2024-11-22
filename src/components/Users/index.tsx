@@ -523,7 +523,7 @@ function UsersTable() {
                   <SearchFilter
                     searchString={searchString}
                     setSearchString={setSearchString}
-                    title="Search User"
+                    title="Search By Name"
                   />
                 </li>
                 <li>
@@ -596,7 +596,10 @@ function UsersTable() {
           handleFormSubmit={handleFormSubmit}
         />
       </div>
-      <LoadingComponent loading={isLoading || isFetching || loading} />
+      <LoadingComponent
+        loading={isLoading || isFetching || loading}
+        message="Loading Users..."
+      />
     </section>
   );
 }
