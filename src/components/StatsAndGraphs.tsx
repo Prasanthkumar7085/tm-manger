@@ -82,7 +82,7 @@ const StatsAndGraph: React.FC = () => {
   const today = new Date();
 
   const [selectedDateRange, setSelectedDateRange] = useState<SelectedDateRange>(
-    [startOfMonth(today), endOfMonth(today)]
+    [startOfMonth(new Date()), new Date()]
   );
   const [dateValue, setDateValue] = useState<SelectedDateRange | null>(null);
 
@@ -163,7 +163,7 @@ const StatsAndGraph: React.FC = () => {
       setSelectedDateRange([fromDateUTC, toDateUTC]);
     } else {
       setDateValue(null);
-      setSelectedDateRange([startOfMonth(today), endOfMonth(today)]);
+      setSelectedDateRange([startOfMonth(new Date()), new Date()]);
     }
   };
 
