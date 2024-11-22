@@ -125,6 +125,13 @@ export const addTagAPI = async (taskId: any, payload: any) => {
     throw err;
   }
 };
+export const getTagsDropdownAPI = async () => {
+  try {
+    return await $fetch.get(`/tasks/tags-drop-down`);
+  } catch (err) {
+    throw err;
+  }
+};
 
 export const removeTagAPI = async (tagId: string) => {
   try {
