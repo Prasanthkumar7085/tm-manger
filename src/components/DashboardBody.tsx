@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import ProjectDataTable from "./ProjectWiseStats";
 import StatsAndGraph from "./StatsAndGraphs";
 import DatePickerField from "./core/DateRangePicker";
+import { useRouter } from "@tanstack/react-router";
 type SelectedDate = [Date, Date];
 interface ProfileData {
   user_type: string;
@@ -34,6 +35,7 @@ const DashBoard: React.FC = () => {
     startOfMonth(new Date()),
     endOfMonth(new Date()),
   ]);
+  const router = useRouter();
   const [dateValue, setDateValue] = useState<SelectedDate | null>(null);
   const profileData = useSelector(
     (state: { auth: { user: { user_details: ProfileData } } }) =>
@@ -109,7 +111,14 @@ const DashBoard: React.FC = () => {
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-[#FFE2E5] rounded-xl text-left shadow-sm">
+            <div
+              className="p-4 bg-[#FFE2E5] rounded-xl text-left shadow-sm"
+              onClick={() => {
+                router.navigate({
+                  to: `/projects`,
+                });
+              }}
+            >
               <div className="flex justify-left items-center mb-6">
                 <img
                   src={dahboardProjectIcon}
@@ -122,7 +131,10 @@ const DashBoard: React.FC = () => {
               </h1>
               <p className="text-md font-normal text-[#425166]">Projects</p>
             </div>
-            <div className="p-4 bg-[#FFF4DE] rounded-xl text-left shadow-sm">
+            <div
+              className="p-4 bg-[#FFF4DE] rounded-xl text-left shadow-sm"
+              onClick={() => router.navigate({ to: `/tasks` })}
+            >
               <div className="flex justify-left items-center mb-6">
                 <img
                   src={dahboardTaskIcon}
@@ -136,7 +148,14 @@ const DashBoard: React.FC = () => {
               <p className="text-md text-[#425166] font-normal">Tasks</p>
             </div>
             {profileData?.user_type !== "user" && (
-              <div className="p-4 bg-[#F3E8FF] rounded-xl text-left shadow-sm">
+              <div
+                className="p-4 bg-[#F3E8FF] rounded-xl text-left shadow-sm"
+                onClick={() => {
+                  router.navigate({
+                    to: `/users`,
+                  });
+                }}
+              >
                 <div className="flex justify-left items-center mb-6">
                   <img
                     src={dashboardUsersIcon}

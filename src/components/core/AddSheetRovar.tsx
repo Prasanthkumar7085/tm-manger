@@ -19,6 +19,7 @@ export const AddSheetRover = ({
   isOpen,
   userData,
   isEditing,
+  isEdit,
   userTypeOpen,
   userType,
   userTypes,
@@ -32,13 +33,20 @@ export const AddSheetRover = ({
   handleDrawerClose,
   handleFormSubmit,
 }: AddSheetRoverProps) => {
+  console.log(isEdit, "EDIT");
   return (
     <Sheet open={isOpen}>
       <SheetContent className="bg-white overflow-auto rounded-l-[14px] p-0">
         <SheetHeader className="sticky bg-white top-0">
           <div className="custom-header  flex items-center justify-between border-b-[1.2px] border-b-[#e7e7f7]">
             <SheetTitle className="px-4 py-1.5 text-[#273480] items-center flex text-base border-r-[1.2px] border-r-[#e7e7f7] font-medium">
-              {isEditing ? "Edit User" : "Add User"}
+              {isEdit === "user"
+                ? isEditing
+                  ? "Edit User"
+                  : "Add User"
+                : isEditing
+                  ? "Edit Admin"
+                  : "Add Admin"}
             </SheetTitle>
             <Button
               variant="outline"
@@ -183,7 +191,7 @@ export const AddSheetRover = ({
               >
                 User Type<span className="text-red-500">*</span>
               </label>
-              <Popover open={userTypeOpen} onOpenChange={setUserTypeOpen}>
+              {/* <Popover open={userTypeOpen} onOpenChange={setUserTypeOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -191,11 +199,14 @@ export const AddSheetRover = ({
                     aria-expanded={userTypeOpen}
                     className="w-full text-left flex h-8 justify-between bg-[#F5F6FA] font-normal text-[#00000066]"
                   >
-                    <p className="text-[#000000] text-md">   {userType
-                      ? userTypes.find((type: any) => type.value === userType)
-                          ?.label
-                      : "Select User Type"}</p>
-                 
+                    <p className="text-[#000000] text-md">
+                      {" "}
+                      {userType
+                        ? userTypes.find((type: any) => type.value === userType)
+                            ?.label
+                        : "Select User Type"}
+                    </p>
+
                     <div className="flex">
                       {userType && (
                         <X
@@ -239,7 +250,71 @@ export const AddSheetRover = ({
                     ))}
                   </div>
                 </PopoverContent>
+              </Popover> */}
+              <Popover open={userTypeOpen} onOpenChange={setUserTypeOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={userTypeOpen}
+                    className="w-full text-left flex h-8 justify-between bg-[#F5F6FA] font-normal text-[#00000066]"
+                  >
+                    <p className="text-[#000000] text-md">
+                      {userType
+                        ? userTypes.find((type: any) => type.value === userType)
+                            ?.label
+                        : "Select User Type"}
+                    </p>
+
+                    <div className="flex">
+                      {userType && (
+                        <X
+                          className="mr-2 h-4 w-4 shrink-0 opacity-50"
+                          onClick={(e: any) => {
+                            e.stopPropagation();
+                            onChangeStatus("");
+                            setUserTypeOpen(false);
+                          }}
+                        />
+                      )}
+                      {userTypeOpen ? (
+                        <ChevronUp className="h-4 w-4 shrink-0 opacity-50" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+                      )}
+                    </div>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full left-0 p-0 right-0">
+                  <div className="max-h-[300px] overflow-y-auto">
+                    {userTypes?.map((type: any) => (
+                      <Button
+                        key={type.value}
+                        onClick={() => {
+                          onChangeStatus(type.value);
+                          setUserTypeOpen(false);
+                        }}
+                        className="w-full justify-start font-normal border-none bg-white text-[#343434] capitalize hover:bg-[#f7f8fa] hover:text-[#343434]"
+                        disabled={
+                          (userType === "user" && type.value === "admin") ||
+                          (userType === "admin" && type.value === "user")
+                        }
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4 inline-block",
+                            userType === type.value
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                        {type.label}
+                      </Button>
+                    ))}
+                  </div>
+                </PopoverContent>
               </Popover>
+
               {errors?.user_type && (
                 <p style={{ color: "red" }}>{errors.user_type[0]}</p>
               )}
