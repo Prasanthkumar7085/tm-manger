@@ -118,11 +118,11 @@ const Tasks = () => {
           (member: any) => member.id
         );
       }
+      router.navigate({
+        to: "/tasks",
+        search: queryParams,
+      });
       if (response?.status == 200) {
-        router.navigate({
-          to: "/tasks",
-          search: queryParams,
-        });
         let responseAfterSerial: any =
           addSerial(
             response?.data?.data?.data,

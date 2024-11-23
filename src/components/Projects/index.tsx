@@ -90,12 +90,12 @@ const Projects = () => {
         from_date: selectedDate?.length ? selectedDate[0] : undefined,
         to_date: selectedDate?.length ? selectedDate[1] : undefined,
       };
+      router.navigate({
+        to: "/projects",
+        search: queryParams,
+        replace: true,
+      });
       if (response?.status == 200) {
-        router.navigate({
-          to: "/projects",
-          search: queryParams,
-          replace: true,
-        });
         return response;
       }
     },
@@ -156,6 +156,7 @@ const Projects = () => {
   }, [searchString, selectedSort, selectedStatus, dateValue]);
 
   let colums = projectColumns({ setDel, getAllProjects, projectsData });
+
   return (
     <section id="projects-container" className="relative">
       <div className="tasks-navbar">
