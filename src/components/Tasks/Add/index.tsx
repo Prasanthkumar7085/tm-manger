@@ -144,7 +144,7 @@ const AddTask = () => {
         } else {
           throw new Error("Failed to fetch task");
         }
-        return response
+        return response;
       } catch (err: any) {
         toast.error(err?.message || "Something went wrong");
         throw err;
@@ -240,43 +240,41 @@ const AddTask = () => {
                     className="justify-between  bg-slate-50 h-[40px] w-[400px] relative text-[#00000099] font-normal text-md border border-[#E2E2E2]"
                   >
                     <div className="flex items-center">
-                    {task.project_id && selectedProjectLogo && (
-                      <img
-                        src={selectedProjectLogo || "/favicon.png"}
-                        alt={` logo`}
-                        onError={(e: any) => {
-                          e.target.onerror = null;
-                          e.target.src =
-                            "https://via.placeholder.com/150?text=No preview";
-                        }}
-                        className="mr-2 h-6 w-6 rounded-full object-cover"
-                      />
-                    )}
-                    {task.project_id
-                      ? projectsList.find((p: any) => p.id === task.project_id)
-                          ?.title
-                      : "Select Project"}
-                           </div>
-                           <div>
-
-                       
-                    <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
-                    {task.project_id && (
-                      <X
-                        className="mr-4 h-4 w-4 cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setTask((prev: any) => ({
-                            ...prev,
-                            project_id: null,
-                            users: [],
-                          }));
-                          setSelectedProjectLogo(null);
-                        }}
-                      />
-                     
-                    )}
-                     </div>
+                      {task.project_id && selectedProjectLogo && (
+                        <img
+                          src={selectedProjectLogo || "/favicon.png"}
+                          alt={` logo`}
+                          onError={(e: any) => {
+                            e.target.onerror = null;
+                            e.target.src =
+                              "https://via.placeholder.com/150?text=No preview";
+                          }}
+                          className="mr-2 h-6 w-6 rounded-full object-cover"
+                        />
+                      )}
+                      {task.project_id
+                        ? projectsList.find(
+                            (p: any) => p.id === task.project_id
+                          )?.title
+                        : "Select Project"}
+                    </div>
+                    <div>
+                      <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
+                      {task.project_id && (
+                        <X
+                          className="mr-4 h-4 w-4 cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setTask((prev: any) => ({
+                              ...prev,
+                              project_id: null,
+                              users: [],
+                            }));
+                            setSelectedProjectLogo(null);
+                          }}
+                        />
+                      )}
+                    </div>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[400px] p-0 bg-white">
@@ -361,8 +359,6 @@ const AddTask = () => {
                 ""
               ) : (
                 <TagsComponent
-                  tagInput={tagInput}
-                  setTagInput={setTagInput}
                   task={task}
                   setTask={setTask}
                   errorMessages={errorMessages}
@@ -421,7 +417,9 @@ const AddTask = () => {
                   onChange={handleChange}
                   className="bg-slate-50 h-[40px] p-2 border w-full rounded-md"
                 >
-                  <option value="" className="text-[#00000080]">Select priority</option>
+                  <option value="" className="text-[#00000080]">
+                    Select priority
+                  </option>
                   <option value="HIGH">High</option>
                   <option value="MEDIUM">Medium</option>
                   <option value="LOW">Low</option>
@@ -442,7 +440,9 @@ const AddTask = () => {
                 onChange={handleChange}
                 className="bg-slate-50 h-[40px] p-2 border w-full rounded-md"
               >
-                <option value="" className="text-[#00000080]">Select Status</option>
+                <option value="" className="text-[#00000080]">
+                  Select Status
+                </option>
                 <option value="TODO">Todo</option>
                 <option value="IN_PROGRESS">In Progress</option>
                 <option value="OVER_DUE">Overdue</option>
