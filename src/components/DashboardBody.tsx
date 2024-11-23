@@ -112,14 +112,14 @@ const DashBoard: React.FC = () => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div
-              className="p-4 bg-[#FFE2E5] rounded-xl text-left shadow-sm"
+              className="p-4 bg-[#FFE2E5] rounded-xl text-left shadow-sm cursor-pointer"
               onClick={() => {
                 router.navigate({
                   to: `/projects`,
                 });
               }}
             >
-              <div className="flex justify-left items-center mb-6">
+              <div className="flex justify-left items-center mb-6 ">
                 <img
                   src={dahboardProjectIcon}
                   alt="Projects icon"
@@ -132,7 +132,7 @@ const DashBoard: React.FC = () => {
               <p className="text-md font-normal text-[#425166]">Projects</p>
             </div>
             <div
-              className="p-4 bg-[#FFF4DE] rounded-xl text-left shadow-sm"
+              className="p-4 bg-[#FFF4DE] rounded-xl text-left shadow-sm cursor-pointer"
               onClick={() => router.navigate({ to: `/tasks` })}
             >
               <div className="flex justify-left items-center mb-6">
@@ -149,7 +149,7 @@ const DashBoard: React.FC = () => {
             </div>
             {profileData?.user_type !== "user" && (
               <div
-                className="p-4 bg-[#F3E8FF] rounded-xl text-left shadow-sm"
+                className="p-4 bg-[#F3E8FF] rounded-xl text-left shadow-sm cursor-pointer"
                 onClick={() => {
                   router.navigate({
                     to: `/users`,

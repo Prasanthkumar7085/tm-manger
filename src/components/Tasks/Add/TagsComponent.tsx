@@ -21,7 +21,7 @@ import {
 } from "@/lib/services/tasks";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation, useParams } from "@tanstack/react-router";
-import { ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -36,15 +36,15 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
   task,
   setTask,
   errorMessages,
-  setErrorMessages,
 }) => {
   const { taskId } = useParams({ strict: false });
   const [tagsRefresh, setTagsRefresh] = useState(0);
   const [tagsDropdown, setTagsDropdown] = useState<any[]>([]);
+  const [selectedTags, setSelectedTags] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
-
   const [tagsloading, setTagsLoading] = useState(false);
+  const [popoverOpen, setPopoverOpen] = useState(false);
 
   const { isLoading: isTaskTagsLoading, isError: isTaskTagsError } = useQuery({
     queryKey: ["getSingleTaskTags", taskId, tagsRefresh],
@@ -52,9 +52,9 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
       const tagsResponse = await getTasksBasedTagsAPI(taskId);
       const tagsData = tagsResponse?.data?.data.map((tag: any) => ({
         id: tag.id,
+        tag_id: tag.tag_id,
         title: tag.title,
       }));
-      console.log(tagsData, "tagsData");
 
       try {
         if (tagsResponse?.status === 200 || tagsResponse?.status === 201) {
@@ -77,7 +77,6 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
     try {
       setTagsLoading(true);
       const response = await getTagsDropdownAPI();
-      console.log(response, "response");
       if (response?.status === 200 || response?.status === 201) {
         setTagsDropdown(response?.data?.data || []);
       } else {
@@ -85,7 +84,6 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
       }
     } catch (error) {
       toast.error("Failed to fetch tag suggestions");
-      console.error(error);
       setTagsDropdown([]);
     } finally {
       setTagsLoading(false);
@@ -114,7 +112,6 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
 
   const { mutate: removeTag } = useMutation({
     mutationFn: async (payload: any) => {
-      console.log(payload?.tagId, "payload");
       return await removeTagAPI(payload?.tagId);
     },
     onSuccess: (response: any) => {
@@ -133,31 +130,24 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
   });
 
   const handleTagSelect = (tag: any) => {
-    if (task?.tags?.some((t: any) => t.title === tag.title)) {
-      toast.error("Tag already added to this task.");
-      return;
-    }
-    if (!location.pathname.includes("/add")) {
-      setTask((prev: any) => ({
-        ...prev,
-        tags: [...prev?.tags, { id: tag.id, title: tag.title }],
-      }));
-      addTag({ title: tag.title });
+    if (selectedTags.some((t) => t.id === tag.id)) {
+      setSelectedTags(selectedTags.filter((t) => t.id !== tag.id));
     } else {
-      setTask((prev: any) => ({
-        ...prev,
-        tags: [...prev.tags, tag.title.trim()],
-      }));
+      setSelectedTags([...selectedTags, tag]);
     }
   };
 
-  const handleAddNewTag = async () => {
-    if (searchTerm.trim() === "") {
-      toast.error("Please enter a valid tag name.");
-      return;
+  const handleConfirmTags = () => {
+    const tagTitles = selectedTags.map((tag) => tag.title);
+    if (tagTitles.length > 0) {
+      addTag({ tags: tagTitles });
     }
-    addTag({ title: searchTerm.trim() });
-    setSearchTerm("");
+    setSelectedTags([]);
+    setPopoverOpen(false);
+  };
+
+  const handleClearTags = () => {
+    setSelectedTags([]);
   };
 
   const handleTagDelete = (tagId: string) => {
@@ -171,6 +161,15 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
     }));
   };
 
+  const handleAddNewTag = async () => {
+    if (searchTerm.trim() === "") {
+      toast.error("Please enter a valid tag name.");
+      return;
+    }
+    addTag({ tags: [searchTerm.trim()] });
+    setSearchTerm("");
+  };
+
   useEffect(() => {
     fetchTagsDropdown();
   }, []);
@@ -181,7 +180,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
         <div className="card-header border-b px-4 py-0 flex justify-between items-center gap-x-2 bg-gray-50">
           <h3 className="leading-1 text-black text-[1.1em]">Tags</h3>
           <div>
-            <Popover>
+            <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
               <PopoverTrigger>
                 <Button
                   variant="outline"
@@ -202,14 +201,28 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
                   />
                   <CommandList>
                     <CommandGroup>
-                      {tagsDropdown?.map((tagItem: any) => (
-                        <CommandItem
-                          key={tagItem.id}
-                          onSelect={() => handleTagSelect(tagItem)}
-                        >
-                          {tagItem.title}
-                        </CommandItem>
-                      ))}
+                      {tagsDropdown?.map((tagItem: any) => {
+                        const isDisabled = task?.tags?.some(
+                          (t: any) => t.tag_id === tagItem.id
+                        );
+                        return (
+                          <CommandItem
+                            key={tagItem.id}
+                            onSelect={() => handleTagSelect(tagItem)}
+                            disabled={isDisabled}
+                            className={`${
+                              selectedTags.some((t) => t.id === tagItem.id)
+                                ? "bg-blue-100"
+                                : ""
+                            }`}
+                          >
+                            {selectedTags.some((t) => t.id === tagItem.id) && (
+                              <Check className="mr-2 text-green-500" />
+                            )}
+                            {tagItem.title}
+                          </CommandItem>
+                        );
+                      })}
                     </CommandGroup>
 
                     {searchTerm &&
@@ -226,6 +239,17 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
                       )}
                   </CommandList>
                 </Command>
+                <div className="flex justify-between p-2">
+                  <Button variant="outline" onClick={handleClearTags}>
+                    Clear
+                  </Button>
+                  <Button
+                    onClick={handleConfirmTags}
+                    disabled={selectedTags.length === 0}
+                  >
+                    Confirm
+                  </Button>
+                </div>
               </PopoverContent>
             </Popover>
           </div>

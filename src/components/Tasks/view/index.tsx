@@ -298,7 +298,6 @@ const TaskView = () => {
                 task={viewData}
                 setTask={setViewData}
                 errorMessages={errorMessages}
-                setErrorMessages={setErrorMessages}
               />
               {setActivityOpen && (
                 <ActivityDrawer
