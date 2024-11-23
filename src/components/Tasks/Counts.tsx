@@ -11,16 +11,13 @@ import {
   getTaskStatsCountsAPI,
 } from "@/lib/services/tasks";
 import { useLocation } from "@tanstack/react-router";
-
 const TotalCounts = ({ refreshCount, isArchive, onCardClick }: any) => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-
   const { data: totalTasks } = useQuery({
     queryKey: ["totalTasks", refreshCount, isArchive],
     queryFn: () => getTotalTasksCounts(),
   });
-
   const getTotalTasksCounts = async () => {
     try {
       if (isArchive) {
@@ -34,7 +31,6 @@ const TotalCounts = ({ refreshCount, isArchive, onCardClick }: any) => {
       console.error(error);
     }
   };
-
   return (
     <section id="tasks-counts">
       <div className="flex justify-between items-center gap-4 bg-gradient-to-rounded-lg  px-6">
@@ -167,5 +163,4 @@ const TotalCounts = ({ refreshCount, isArchive, onCardClick }: any) => {
     </section>
   );
 };
-
 export default TotalCounts;

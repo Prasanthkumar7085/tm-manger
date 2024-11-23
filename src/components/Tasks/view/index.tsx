@@ -295,8 +295,6 @@ const TaskView = () => {
               <AssignedUsers viewTaskData={viewData} />
 
               <TagsComponent
-                tagInput={tagInput}
-                setTagInput={setTagInput}
                 task={viewData}
                 setTask={setViewData}
                 errorMessages={errorMessages}
@@ -314,7 +312,7 @@ const TaskView = () => {
           </div>
         </div>
       </div>
-      <LoadingComponent loading={isLoading || loading} message="Loading..." />
+      <LoadingComponent loading={isLoading || loading} />
     </div>
   );
 };

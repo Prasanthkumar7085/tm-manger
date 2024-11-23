@@ -96,6 +96,10 @@ function ResetPassword() {
                  className="bg-[#E7E7E7] appearance-none block py-1 h-12 text-lg pl-9 focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
                 id="password"
                 placeholder="New Password"
+                style={{
+                  fontFamily: "inherit",
+                  paddingRight: "2.5rem",
+                }}
                 type={passwordVisible ? "text" : "password"}
                 onChange={(e) =>
                   setResetDetails({
@@ -123,6 +127,10 @@ function ResetPassword() {
                className="bg-[#E7E7E7] appearance-none block py-1 h-12 text-lg pl-9 focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
                 id="password"
                 placeholder="Re-Enter Password"
+                style={{
+                  fontFamily: "inherit",
+                  paddingRight: "2.5rem",
+                }}
                 type={resetpasswordVisible ? "text" : "password"}
                 onChange={(e) =>
                   setResetDetails({

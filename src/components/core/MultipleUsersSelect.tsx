@@ -41,9 +41,10 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
   memberIcon,
   selectDropIcon,
   onSelectMembers,
+  selectedMembers,
+  setSelectedMembers
 }) => {
   const [open, setOpen] = useState<boolean>(false);
-  const [selectedMembers, setSelectedMembers] = useState<User[]>([]);
   const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
 
   const toggleValue = (userId: string): void => {
@@ -79,7 +80,7 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
               />
             </div>
             <div className="flex items-center gap-1 justify-start w-[100%]">
-              {selectedMembers.length === 0 ? (
+              {selectedMembers?.length === 0 ? (
                 <p>Select Assignees</p>
               ) : (
                 <div className="flex items-center gap-1 justify-between w-[96%]">
@@ -206,5 +207,5 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
     </TooltipProvider>
   );
 };
-
+//
 export default UserSelectionPopover;
