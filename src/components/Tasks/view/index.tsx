@@ -295,8 +295,6 @@ const TaskView = () => {
               <AssignedUsers viewTaskData={viewData} />
 
               <TagsComponent
-                tagInput={tagInput}
-                setTagInput={setTagInput}
                 task={viewData}
                 setTask={setViewData}
                 errorMessages={errorMessages}

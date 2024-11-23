@@ -1,4 +1,18 @@
+import tagIcon from "@/assets/tag- icon.svg";
+import Loading from "@/components/core/Loading";
 import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   addTagAPI,
   getTagsDropdownAPI,
@@ -6,24 +20,10 @@ import {
   removeTagAPI,
 } from "@/lib/services/tasks";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
-import tagIcon from "@/assets/tag- icon.svg";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { useLocation, useParams } from "@tanstack/react-router";
 import { ChevronsUpDown } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface TagsComponentProps {
   task: any;
@@ -42,6 +42,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
   const [tagsRefresh, setTagsRefresh] = useState(0);
   const [tagsDropdown, setTagsDropdown] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const location = useLocation();
 
   const [tagsloading, setTagsLoading] = useState(false);
 
@@ -89,10 +90,6 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
     }
   };
 
-  useEffect(() => {
-    fetchTagsDropdown();
-  }, []);
-
   const { mutate: addTag } = useMutation({
     mutationFn: async (payload: any) => {
       return await addTagAPI(taskId, payload);
@@ -101,6 +98,8 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message);
         fetchTagsDropdown();
+        setTagsRefresh((prev) => prev + 1);
+      } else {
         setTagsRefresh((prev) => prev + 1);
       }
     },
@@ -120,6 +119,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
         toast.success(response?.data?.message);
         setTagsRefresh((prev) => prev + 1);
       } else {
+        setTagsRefresh((prev) => prev + 1);
         throw new Error("Failed to remove tag");
       }
     },
@@ -134,11 +134,18 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
       toast.error("Tag already added to this task.");
       return;
     }
-    setTask((prev: any) => ({
-      ...prev,
-      tags: [...prev.tags, { id: tag.id, title: tag.title }],
-    }));
-    addTag({ title: tag.title });
+    if (!location.pathname.includes("/add")) {
+      setTask((prev: any) => ({
+        ...prev,
+        tags: [...prev?.tags, { id: tag.id, title: tag.title }],
+      }));
+      addTag({ title: tag.title });
+    } else {
+      setTask((prev: any) => ({
+        ...prev,
+        tags: [...prev.tags, tag.title.trim()],
+      }));
+    }
   };
 
   const handleAddNewTag = async () => {
@@ -153,6 +160,17 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
   const handleTagDelete = (tagId: string) => {
     removeTag({ tagId });
   };
+
+  const handleTagDeleteInAdd = (tag: any) => {
+    setTask((prev: any) => ({
+      ...prev,
+      tags: prev.tags.filter((t: any) => t !== tag),
+    }));
+  };
+
+  useEffect(() => {
+    fetchTagsDropdown();
+  }, []);
 
   return (
     <div>
@@ -180,27 +198,24 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
                     onValueChange={setSearchTerm}
                   />
                   <CommandList>
-                    {tagsloading ? (
-                      <CommandEmpty>Loading...</CommandEmpty>
-                    ) : (
-                      <CommandGroup>
-                        {tagsDropdown?.map((tagItem: any) => (
-                          <CommandItem
-                            key={tagItem.id}
-                            onSelect={() => handleTagSelect(tagItem)}
-                          >
-                            {tagItem.title}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    )}
+                    <CommandGroup>
+                      {tagsDropdown?.map((tagItem: any) => (
+                        <CommandItem
+                          key={tagItem.id}
+                          onSelect={() => handleTagSelect(tagItem)}
+                        >
+                          {tagItem.title}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+
                     {searchTerm &&
                       !tagsDropdown.some(
                         (tag) =>
                           tag.title.toLowerCase() === searchTerm.toLowerCase()
                       ) && (
                         <CommandItem
-                          className="text-green-600"
+                          className="text-green-600 cursor-pointer"
                           onSelect={handleAddNewTag}
                         >
                           Add New Tag: "{searchTerm}"
@@ -212,19 +227,25 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
             </Popover>
           </div>
         </div>
-        <div className="card-body">
+        <div className="card-body relative">
           <div className="max-h-[120px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 space-y-2 pt-3 pl-3 pr-3">
             <div className="flex flex-wrap">
               {task?.tags?.length > 0 ? (
                 task?.tags.map((tag: any) => (
                   <div
-                    key={tag.id}
+                    key={tag.id || tag}
                     className="bg-[#00B8121A] text-[#00B812] text-md font-medium mr-2 mb-2 flex items-center px-2 py-0 border rounded-full"
                   >
-                    {tag.title}
+                    {tag.title || tag}
                     <p
                       className="ml-1 text-[#000000] rotate-[45deg] font-medium cursor-pointer !text-[1.1rem] leading-3"
-                      onClick={() => handleTagDelete(tag.id)}
+                      onClick={() => {
+                        if (location.pathname.includes("/add")) {
+                          handleTagDeleteInAdd(tag);
+                        } else {
+                          handleTagDelete(tag.id);
+                        }
+                      }}
                     >
                       +
                     </p>
@@ -240,6 +261,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
               )}
             </div>
           </div>
+          <Loading loading={tagsloading || isTaskTagsLoading} />
         </div>
       </div>
 

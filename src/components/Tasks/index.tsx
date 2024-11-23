@@ -132,6 +132,7 @@ const Tasks = () => {
         return [responseAfterSerial, response?.data?.data?.pagination_info];
       }
     },
+    staleTime: 0,
   });
   const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
@@ -151,7 +152,6 @@ const Tasks = () => {
         userIdsArray.includes(item.id.toString())
       );
 
-      console.log(intialusersData);
       setSelectedMembers(intialusersData);
 
       return response?.data?.data;
