@@ -53,6 +53,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
         id: tag.id,
         title: tag.title,
       }));
+      console.log(tagsData, "tagsData");
 
       try {
         if (tagsResponse?.status === 200 || tagsResponse?.status === 201) {
@@ -75,6 +76,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
     try {
       setTagsLoading(true);
       const response = await getTagsDropdownAPI();
+      console.log(response, "response");
       if (response?.status === 200 || response?.status === 201) {
         setTagsDropdown(response?.data?.data || []);
       } else {
@@ -113,6 +115,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
 
   const { mutate: removeTag } = useMutation({
     mutationFn: async (payload: any) => {
+      console.log(payload?.tagId, "payload");
       return await removeTagAPI(payload?.tagId);
     },
     onSuccess: (response: any) => {
