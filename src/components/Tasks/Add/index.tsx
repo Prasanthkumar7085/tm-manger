@@ -38,6 +38,7 @@ import {
   isProjectAdmin,
   isProjectMemberOrNot,
 } from "@/lib/helpers/loginHelpers";
+import TagsComponentForAdd from "./TagsComponentForAdd";
 
 const AddTask = () => {
   const navigate = useNavigate();
@@ -55,7 +56,6 @@ const AddTask = () => {
     priority: "LOW",
     status: searchParams.get("status") || "TODO",
     due_date: "",
-    tags: [],
     users: [],
     project_id: Number(searchParams.get("project_id")) || "",
   });
@@ -95,7 +95,6 @@ const AddTask = () => {
     mutate(payload);
   };
 
-  //to add the task in the database
   const { mutate } = useMutation({
     mutationFn: async (payload: any) => {
       setErrorMessages({});
@@ -357,7 +356,7 @@ const AddTask = () => {
               {taskId ? (
                 ""
               ) : (
-                <TagsComponent
+                <TagsComponentForAdd
                   task={task}
                   setTask={setTask}
                   errorMessages={errorMessages}
