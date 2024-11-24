@@ -118,7 +118,7 @@ function UsersTable() {
         email: userData?.email,
         designation: userData?.designation || null,
         password: userData?.password,
-        user_type: userType,
+        user_type: "user",
         phone_number: userData?.phone_number || null,
       };
       const response = await addUsersAPI(payload);
@@ -220,7 +220,7 @@ function UsersTable() {
         designation: userData?.designation,
         password: userData?.password,
         phone_number: userData?.phone_number,
-        user_type: userType,
+        user_type: "admin",
       };
       const response = await addAdminUserAPI(payload);
       if (response?.status === 200 || response?.status === 201) {
@@ -304,7 +304,7 @@ function UsersTable() {
       }
     } else {
       {
-        userType === "admin" ? await addAdminUser() : await addUser();
+        isEdit === "admin" ? await addAdminUser() : await addUser();
       }
     }
   };

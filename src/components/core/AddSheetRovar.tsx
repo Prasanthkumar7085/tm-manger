@@ -33,7 +33,6 @@ export const AddSheetRover = ({
   handleDrawerClose,
   handleFormSubmit,
 }: AddSheetRoverProps) => {
-  console.log(isEdit, "EDIT");
   return (
     <Sheet open={isOpen}>
       <SheetContent className="bg-white overflow-auto rounded-l-[14px] p-0">
@@ -256,14 +255,12 @@ export const AddSheetRover = ({
                   <Button
                     variant="outline"
                     role="combobox"
+                    disabled
                     aria-expanded={userTypeOpen}
                     className="w-full text-left flex h-8 justify-between bg-[#F5F6FA] font-normal text-[#00000066]"
                   >
                     <p className="text-[#000000] text-md">
-                      {userType
-                        ? userTypes.find((type: any) => type.value === userType)
-                            ?.label
-                        : "Select User Type"}
+                      {isEdit === "user" ? "User" : "Admin"}
                     </p>
 
                     <div className="flex">
