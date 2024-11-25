@@ -38,6 +38,7 @@ import {
   isProjectAdmin,
   isProjectMemberOrNot,
 } from "@/lib/helpers/loginHelpers";
+import TagsComponentForAdd from "./TagsComponentForAdd";
 
 const AddTask = () => {
   const navigate = useNavigate();
@@ -55,7 +56,6 @@ const AddTask = () => {
     priority: "LOW",
     status: searchParams.get("status") || "TODO",
     due_date: "",
-    tags: [],
     users: [],
     project_id: Number(searchParams.get("project_id")) || "",
   });
@@ -82,8 +82,7 @@ const AddTask = () => {
     setOpenProjects(false);
     setSelectedProjectLogo(project.logo_url || "/favicon.png");
   };
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     let payload = {
       ...task,
     };
@@ -96,7 +95,6 @@ const AddTask = () => {
     mutate(payload);
   };
 
-  //to add the task in the database
   const { mutate } = useMutation({
     mutationFn: async (payload: any) => {
       setErrorMessages({});
@@ -223,7 +221,7 @@ const AddTask = () => {
       <h2 className="text-lg font-bold mb-5 border-b px-6 py-4">
         {taskId ? "Edit Task" : "Add Task"}
       </h2>
-      <form onSubmit={handleSubmit} className="px-6">
+      <div className="px-6">
         <div className="grid grid-cols-2 gap-10">
           <div className="leftColumn space-y-5">
             <div className="form-item">
@@ -358,11 +356,10 @@ const AddTask = () => {
               {taskId ? (
                 ""
               ) : (
-                <TagsComponent
+                <TagsComponentForAdd
                   task={task}
                   setTask={setTask}
                   errorMessages={errorMessages}
-                  setErrorMessages={setErrorMessages}
                 />
               )}
             </div>
@@ -605,12 +602,12 @@ const AddTask = () => {
               </Button>
 
               <Button
-                type="submit"
                 disabled={
                   profileData?.user_type === "admin" || isAbleToAddOrEdit()
                     ? false
                     : true
                 }
+                onClick={handleSubmit}
                 className="bg-[#1B2459] text-white font-medium text-md hover:bg-[#1B2459] hover:text-white px-8"
               >
                 {taskId ? "Update" : " Submit"}
@@ -618,7 +615,7 @@ const AddTask = () => {
             </div>
           </div>
         </div>
-      </form>
+      </div>
       <LoadingComponent loading={loading || isLoading || isTaskLoading} />
     </section>
   );
