@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useLocation, useParams } from "@tanstack/react-router";
 import tagIcon from "@/assets/tag- icon.svg";
 import Loading from "@/components/core/Loading";
 import { Button } from "@/components/ui/button";
@@ -19,10 +22,7 @@ import {
   getTasksBasedTagsAPI,
   removeTagAPI,
 } from "@/lib/services/tasks";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useLocation, useParams } from "@tanstack/react-router";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface TagsComponentProps {

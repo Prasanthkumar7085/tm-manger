@@ -13,6 +13,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  isMananger,
+  isProjectAdmin,
+  isProjectMemberOrNot,
+} from "@/lib/helpers/loginHelpers";
 import { getDropDownForProjects } from "@/lib/services/projects";
 import { getProjectMembersAPI } from "@/lib/services/projects/members";
 import {
@@ -29,17 +34,10 @@ import {
 } from "@tanstack/react-router";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { DatePicker } from "rsuite";
 import { toast } from "sonner";
-import TagsComponent from "./TagsComponent";
-import { useSelector } from "react-redux";
-import {
-  isMananger,
-  isProjectAdmin,
-  isProjectMemberOrNot,
-} from "@/lib/helpers/loginHelpers";
 import TagsComponentForAdd from "./TagsComponentForAdd";
-
 const AddTask = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -72,7 +70,6 @@ const AddTask = () => {
   const handleChange = (e: any) => {
     setTask({ ...task, [e.target.name]: e.target.value });
   };
-
   const handleProjectSelect = (project: any) => {
     setTask((prev: any) => ({
       ...prev,
@@ -94,7 +91,6 @@ const AddTask = () => {
     }
     mutate(payload);
   };
-
   const { mutate } = useMutation({
     mutationFn: async (payload: any) => {
       setErrorMessages({});
@@ -120,7 +116,6 @@ const AddTask = () => {
       setLoading(false);
     },
   });
-
   const {
     isLoading: isTaskLoading,
     isError: isTaskError,
@@ -150,7 +145,6 @@ const AddTask = () => {
     },
     enabled: Boolean(taskId),
   });
-
   const { isLoading, isError, error, data, isFetching } = useQuery({
     queryKey: ["projects"],
     queryFn: async () => {
@@ -159,15 +153,12 @@ const AddTask = () => {
       return response;
     },
   });
-
-  //to get the users
   const { isLoading: isUsersLoading } = useQuery({
     queryKey: ["users", task?.project_id],
     queryFn: async () => {
       const response = await getProjectMembersAPI(task?.project_id);
       if (response.success) {
         const data = response.data?.data;
-
         setUsers(data?.members || []);
       } else {
         setUsers([]);
@@ -175,7 +166,6 @@ const AddTask = () => {
       return response;
     },
   });
-
   const handleUserSelect = (user: any) => {
     const updatedSelectedUsers = new Set(selectedUsers);
     if (updatedSelectedUsers.has(user.id)) {
@@ -185,7 +175,6 @@ const AddTask = () => {
     }
     setSelectedUsers(updatedSelectedUsers);
   };
-
   const handleConfirmSelection = () => {
     const usersToAssign = users.filter((user) => selectedUsers.has(user.id));
     setTask((prevTask: any) => ({
@@ -195,14 +184,12 @@ const AddTask = () => {
     setOpenUsers(false);
     setSelectedUsers(new Set());
   };
-
   const handleUserRemove = (userId: any) => {
     setTask((prevTask: any) => ({
       ...prevTask,
       users: prevTask.users.filter((user: any) => user.id !== userId),
     }));
   };
-
   const isAbleToAddOrEdit = () => {
     if (
       (isMananger(users, profileData?.id, profileData?.user_type) ||
@@ -212,7 +199,6 @@ const AddTask = () => {
       return true;
     }
   };
-
   return (
     <section
       id="add-task"
@@ -313,7 +299,6 @@ const AddTask = () => {
                   </Command>
                 </PopoverContent>
               </Popover>
-
               {errorMessages.project_id && (
                 <p style={{ color: "red" }}>{errorMessages?.project_id?.[0]}</p>
               )}
@@ -377,7 +362,6 @@ const AddTask = () => {
                       const selectedDate = new Date(date);
                       const today = new Date();
                       today.setHours(0, 0, 0, 0);
-
                       if (
                         selectedDate.setHours(0, 0, 0, 0) === today.getTime()
                       ) {
@@ -385,7 +369,6 @@ const AddTask = () => {
                       } else {
                         selectedDate.setHours(0, 0, 0, 0);
                       }
-
                       handleChange({
                         target: { name: "due_date", value: selectedDate },
                       });
@@ -399,7 +382,6 @@ const AddTask = () => {
                   }
                   style={{ width: "100%", height: "40px" }}
                 />
-
                 {errorMessages.due_date && (
                   <p style={{ color: "red" }}>{errorMessages?.due_date?.[0]}</p>
                 )}
@@ -426,7 +408,6 @@ const AddTask = () => {
                 )}
               </div>
             </div>
-
             <div className="form-item">
               <label className="block text-gray-700 font-semibold text-[0.95em] mb-1">
                 Task Status
@@ -540,7 +521,6 @@ const AddTask = () => {
                       <label className="block text-[#383838] font-medium text-sm mb-1 mt-4">
                         Assigned Users
                       </label>
-
                       <div className="overflow-auto max-h-40 rounded-[10px] border border-gray-200">
                         <table className="min-w-full">
                           <thead className="bg-gray-200 sticky top-0 z-[999]">
@@ -563,7 +543,6 @@ const AddTask = () => {
                                 <td className=" px-4 py-2 capitalize">
                                   {user.fname} {user.lname}
                                 </td>
-
                                 <td className=" px-4 py-2">
                                   <button
                                     className="text-red-500 "
@@ -591,7 +570,6 @@ const AddTask = () => {
                 </div>
               )}
             </div>
-
             <div className="form-action-button flex justify-end mt-5">
               <Button
                 type="button"
@@ -600,7 +578,6 @@ const AddTask = () => {
               >
                 Cancel
               </Button>
-
               <Button
                 disabled={
                   profileData?.user_type === "admin" || isAbleToAddOrEdit()
@@ -620,5 +597,4 @@ const AddTask = () => {
     </section>
   );
 };
-
 export default AddTask;
