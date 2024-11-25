@@ -10,11 +10,11 @@ import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
-interface ForgotDetails {
+export interface ForgotDetails {
   email: string;
 }
 
-interface Errors {
+export interface Errors {
   email?: string[];
 }
 
