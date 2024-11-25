@@ -42,7 +42,7 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
   selectDropIcon,
   onSelectMembers,
   selectedMembers,
-  setSelectedMembers
+  setSelectedMembers,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [tempSelectedMember, setTempSelectedMember] = useState<string[]>([]);
@@ -123,15 +123,16 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
                       </div>
                     )}
                   </div>
-
-                  <X
-                    className="cursor-pointer text-red-700 w-4 h-4"
-                    onClick={() => {
-                      setSelectedMembers([]);
-                      setTempSelectedMember([]);
-                      onSelectMembers([]);
-                    }}
-                  />
+                  {selectedMembers?.length > 0 && (
+                    <X
+                      className="cursor-pointer text-red-700 w-4 h-4"
+                      onClick={() => {
+                        setSelectedMembers([]);
+                        setTempSelectedMember([]);
+                        onSelectMembers([]);
+                      }}
+                    />
+                  )}
                 </div>
               )}
             </div>

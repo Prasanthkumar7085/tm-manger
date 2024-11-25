@@ -1,8 +1,9 @@
 import memberIcon from "@/assets/members.svg";
 import selectDropIcon from "@/assets/select-dropdown.svg";
 import { addSerial } from "@/lib/helpers/addSerial";
+import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 import { getAllMembers } from "@/lib/services/projects/members";
-import { getAllPaginatedTasks } from "@/lib/services/tasks";
+import { getAllPaginatedTasks, getTagsDropdownAPI } from "@/lib/services/tasks";
 import { useQuery } from "@tanstack/react-query";
 import {
   useLocation,
@@ -20,11 +21,11 @@ import DateRangeFilter from "../core/DateRangePicker";
 import LoadingComponent from "../core/LoadingComponent";
 import UserSelectionPopover from "../core/MultipleUsersSelect";
 import TanStackTable from "../core/TanstackTable";
+import { Button } from "../ui/button";
+import { archivetaskColumns } from "./ArchiveColumns";
 import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
-import { archivetaskColumns } from "./ArchiveColumns";
-import { Button } from "../ui/button";
-import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
+import TagsSearchFilter from "../core/CommonComponents/TagsSearchFilter";
 const Tasks = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -64,6 +65,7 @@ const Tasks = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [del, setDel] = useState<any>(1);
   const [selectedMembers, setSelectedMembers] = useState<any>();
+  const [selectedTags, setSelectedTags] = useState([]);
   const [selectedMembersData, setSelectedMembersData] = useState<any>(
     intialuserIds ? intialuserIds.split(",").map((id: string) => ({ id })) : []
   );
@@ -73,6 +75,7 @@ const Tasks = () => {
     pageSize: pageSizeParam,
     order_by: orderBY,
   });
+  const [tagsDropdown, setTagsDropdown] = useState<any[]>([]);
   const isDashboard = location.pathname === "/dashboard";
   const { isLoading, isError, data, error, isFetching } = useQuery({
     queryKey: [
@@ -86,6 +89,7 @@ const Tasks = () => {
       selectedProject,
       selectedMembers,
       isArchive,
+      selectedTags,
     ],
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
@@ -100,6 +104,9 @@ const Tasks = () => {
         to_date: selectedDate?.length ? selectedDate[1] : null,
         user_ids: selectedMembers?.map((member: any) => member.id) || null,
         is_archived: isArchive ? "true" : "false",
+        tags: selectedTags?.length
+          ? selectedTags?.map((tag: any) => tag.id)
+          : undefined,
       });
       let queryParams: any = {
         current_page: +pagination.pageIndex,
@@ -117,6 +124,9 @@ const Tasks = () => {
         queryParams["user_ids"] = selectedMembers.map(
           (member: any) => member.id
         );
+      }
+      if (selectedTags?.length > 0) {
+        queryParams["tags"] = selectedTags.map((tag: any) => tag.id);
       }
       router.navigate({
         to: "/tasks",
@@ -148,24 +158,34 @@ const Tasks = () => {
       setUsers(data?.data?.data || []);
       const userIdsArray = intialuserIds.split(",");
       const usersData = data?.data;
-      const intialusersData = usersData?.filter((item: any) =>
-        userIdsArray.includes(item.id.toString())
-      );
-
-      setSelectedMembers(intialusersData);
-
+      if (searchParams.get("user_ids")) {
+        const intialusersData = usersData?.filter((item: any) =>
+          userIdsArray.includes(item.id.toString())
+        );
+        setSelectedMembers(intialusersData);
+      }
       return response?.data?.data;
     },
   });
+
+  const { data: tagsData, isLoading: isTagsLoading } = useQuery({
+    queryKey: ["tags"],
+    queryFn: async () => {
+      const response = await getTagsDropdownAPI();
+      if (response?.status === 200 || response?.status === 201) {
+        setTagsDropdown(response?.data?.data || []);
+      }
+      return response?.data?.data;
+    },
+  });
+
   useEffect(() => {
     if (initialFromDate) {
       setDateValue(changeDateToUTC(initialFromDate, initialToDate));
     }
-
     if (intialuserIds) {
       setSelectedMembersData(intialuserIds);
     }
-
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
       if (
@@ -175,7 +195,8 @@ const Tasks = () => {
         selectedProject ||
         selectedDate ||
         isArchive ||
-        selectedMembers
+        selectedMembers ||
+        selectedTags
       ) {
         getAllTasks({
           pageIndex: 1,
@@ -201,6 +222,7 @@ const Tasks = () => {
     selectedMembers,
     isArchive,
     selectedDate,
+    selectedTags,
   ]);
   const handleDateChange = (initialFromDate: any, initialToDate: any) => {
     if (initialFromDate) {
@@ -220,12 +242,20 @@ const Tasks = () => {
       setSelectedMembers([]);
     }
   };
+
+  const handleSelectTags = (tags: any) => {
+    if (tags) {
+      setSelectedTags(tags);
+    } else {
+      setSelectedTags([]);
+    }
+  };
   const handleCardClick = (status: string) => {
     setSelectedStatus(status);
     setPagination({ ...pagination, pageIndex: 1 });
   };
   return (
-    <section id="tasks" className="relative">
+    <section id="tasks">
       <div>
         {!isDashboard && (
           <TotalCounts
@@ -280,6 +310,14 @@ const Tasks = () => {
                   <TasksSelectStatusFilter
                     value={selectedStatus}
                     setValue={setSelectedStatus}
+                  />
+                </li>
+                <li>
+                  <TagsSearchFilter
+                    tagsData={tagsData}
+                    selectedTags={selectedTags}
+                    setSelectedTags={setSelectedTags}
+                    onSelectTags={handleSelectTags}
                   />
                 </li>
               </ul>
@@ -340,7 +378,7 @@ const Tasks = () => {
           </div>
         </div>
       </div>
-      <LoadingComponent loading={isLoading} />
+      <LoadingComponent loading={isLoading} message="Loading tasks..." />
     </section>
   );
 };
