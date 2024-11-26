@@ -11,6 +11,7 @@ interface GetAllPaginatedUsersPropTypes {
   project_id?: any;
   user_ids?: any;
   is_archived?: any;
+  tags?: any;
 }
 
 export const getAllPaginatedTasks = async ({
@@ -25,6 +26,7 @@ export const getAllPaginatedTasks = async ({
   project_id,
   user_ids,
   is_archived,
+  tags,
 }: GetAllPaginatedUsersPropTypes) => {
   try {
     const queryParams = {
@@ -39,6 +41,7 @@ export const getAllPaginatedTasks = async ({
       project_id: project_id,
       user_ids: user_ids,
       is_archived,
+      tags,
     };
     if (is_archived === "true" || is_archived === true) {
       return await $fetch.get("/tasks/archives", queryParams);

@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useLocation, useParams } from "@tanstack/react-router";
 import tagIcon from "@/assets/tag- icon.svg";
 import Loading from "@/components/core/Loading";
 import { Button } from "@/components/ui/button";
@@ -19,24 +22,15 @@ import {
   getTasksBasedTagsAPI,
   removeTagAPI,
 } from "@/lib/services/tasks";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useLocation, useParams } from "@tanstack/react-router";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface TagsComponentProps {
-  task: any;
-  setTask: React.Dispatch<React.SetStateAction<any>>;
   errorMessages?: any;
   setErrorMessages?: React.Dispatch<React.SetStateAction<any>> | any;
 }
 
-const TagsComponent: React.FC<TagsComponentProps> = ({
-  task,
-  setTask,
-  errorMessages,
-}) => {
+const TagsComponent: React.FC<TagsComponentProps> = ({ errorMessages }) => {
   const { taskId } = useParams({ strict: false });
   const [tagsRefresh, setTagsRefresh] = useState(0);
   const [tagsDropdown, setTagsDropdown] = useState<any[]>([]);
@@ -45,6 +39,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
   const location = useLocation();
   const [tagsloading, setTagsLoading] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const [task, setTask] = useState<any>({});
 
   const { isLoading: isTaskTagsLoading, isError: isTaskTagsError } = useQuery({
     queryKey: ["getSingleTaskTags", taskId, tagsRefresh],

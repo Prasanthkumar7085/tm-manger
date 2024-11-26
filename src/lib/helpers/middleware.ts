@@ -23,11 +23,11 @@ export const authMiddleware = ({
   if (getIsAuthenticated() && authRoutes.includes(location.pathname)) {
     if (getUserType() == "admin") {
       throw redirect({
-        to: "/dashboard",
+        // to: "/dashboard",
       });
     }
     throw redirect({
-      to: "/dashboard",
+      // to: "/dashboard",
     });
   }
 };

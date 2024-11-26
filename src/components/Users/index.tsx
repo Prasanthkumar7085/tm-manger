@@ -1,4 +1,5 @@
 import { addSerial } from "@/lib/helpers/addSerial";
+import { errPopper } from "@/lib/helpers/errPopper";
 import {
   addAdminUserAPI,
   addUsersAPI,
@@ -8,25 +9,26 @@ import {
   resetPasswordUsersAPI,
   updateUsersAPI,
 } from "@/lib/services/users";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useLocation, useRouter } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import TanStackTable from "../core/TanstackTable";
-import { userColumns } from "./UserColumns";
-import { Button } from "../ui/button";
-import SearchFilter from "../core/CommonComponents/SearchFilter";
-import { toast } from "sonner";
 import { userTypes } from "@/utils/conistance/users";
-import { errPopper } from "@/lib/helpers/errPopper";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import SearchFilter from "../core/CommonComponents/SearchFilter";
 import LoadingComponent from "../core/LoadingComponent";
 import { StatusFilter } from "../core/StatusFilter";
+import TanStackTable from "../core/TanstackTable";
+import { Button } from "../ui/button";
 
-import { SheetRover } from "../core/SheetRover";
-import DeleteDialog from "../core/deleteDialog";
+import { forgotAPI } from "@/lib/services/auth";
+import { ForgotDetails } from "../auth/Forgot";
 import { AddSheetRover } from "../core/AddSheetRovar";
+import DeleteDialog from "../core/deleteDialog";
+import UserColumns from "./UserColumns";
 
 function UsersTable() {
   const location = useLocation();
+  const navigate = useNavigate();
   const router = useRouter();
   const popoverRef = useRef<HTMLDivElement>(null);
   const searchParams = new URLSearchParams(location.search);
@@ -45,10 +47,9 @@ function UsersTable() {
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [userType, setUserType] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
-  const [users, setUsers] = useState<any>({});
+  const [users, setUsers] = useState<any>([]);
   const [open, setOpen] = useState(false);
   const [deleteuserId, setDeleteUserId] = useState<any>();
-
   const [isEditing, setIsEditing] = useState(false);
   const [isEdit, setIsEdit] = useState("");
   const [del, setDel] = useState(1);
@@ -57,6 +58,11 @@ function UsersTable() {
   const [selectedStatus, setSelectedStatus] = useState(initialStatus);
   const [selectedUserId, setSelectedUserId] = useState<any>(null);
   const [selectedId, setSelectedId] = useState<any>();
+  const [forgotDetails, setForgotDetails] = useState<any>({
+    email: "",
+  });
+  const [errorss, setErrorss] = useState<any>({});
+
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
@@ -71,6 +77,7 @@ function UsersTable() {
     password: "",
     phone_number: "",
   });
+
   const [userPasswordData, setUsePasswordData] = useState<any>({
     new_password: "",
   });
@@ -85,13 +92,14 @@ function UsersTable() {
         search: debouncedSearch,
         active: selectedStatus,
       });
+      setUsers(response?.data?.data?.records);
 
       const queryParams = {
-        current_page: +pagination.pageIndex,
+        current_page:+pagination.pageIndex,
         page_size: +pagination.pageSize,
         order_by: pagination.order_by ? pagination.order_by : undefined,
         search: debouncedSearch || undefined,
-        active: selectedStatus || undefined,
+         active: selectedStatus || undefined,
       };
       router.navigate({
         to: "/users",
@@ -105,8 +113,9 @@ function UsersTable() {
       return [responseAfterSerial, response?.data?.data?.pagination_info];
     },
   });
-  const getAllUsers = async ({ pageIndex, pageSize, order_by }: any) => {
-    setPagination({ pageIndex, pageSize, order_by });
+  
+  const getAllUsers = async ({ pageIndex, pageSize, order_by,}: any) => {
+    setPagination({ pageIndex, pageSize, order_by});
   };
 
   const addUser = async () => {
@@ -153,6 +162,7 @@ function UsersTable() {
             password: data?.password,
             phone_number: data?.phone_number,
           });
+          console.log(data, "data");
           setUserType(data?.user_type);
         } else {
           throw response;
@@ -246,7 +256,7 @@ function UsersTable() {
       setDebouncedSearch(searchString);
       if (searchString || selectedStatus) {
         getAllUsers({
-          pageIndex: 1,
+          pageIndex: pageIndexParam,
           pageSize: pageSizeParam,
           order_by: orderBY,
         });
@@ -308,6 +318,28 @@ function UsersTable() {
       }
     }
   };
+
+  const { mutate: forgotPassword } = useMutation({
+    mutationFn: async (forgotDetails: ForgotDetails) => {
+      setLoading(true);
+      try {
+        const response = await forgotAPI(forgotDetails);
+        if (response?.status === 200 || response?.status === 201) {
+          toast.success(response?.data?.message);
+        } else if (response?.status === 422) {
+          const errData = response?.data?.errData;
+          setErrors(errData);
+        } else {
+          throw response;
+        }
+      } catch (errData) {
+        console.error(errData);
+        errPopper(errData);
+      } finally {
+        setLoading(false);
+      }
+    },
+  });
   const onChangeStatus = (value: string) => {
     setUserType(value);
   };
@@ -347,37 +379,6 @@ function UsersTable() {
     setIsEdit("");
     setErrors("");
     setIsOpen(false);
-  };
-
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
-  };
-  const handlePasswordUpdateOpen = (id: any) => {
-    setSelectedUserId(id);
-    setIsPasswordSheetOpen(true);
-  };
-
-  const handleUpdateChangePassword = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { name, value } = e.target;
-    const updatedValue = value
-      .replace(/[^\w\s]/g, "")
-      .replace(/^\s+/g, "")
-      .replace(/\s{2,}/g, " ");
-    setUsePasswordData((prevData: any) => ({
-      ...prevData,
-      [name]: updatedValue,
-    }));
-  };
-
-  const handlePasswordUpdateCancel = () => {
-    setIsPasswordSheetOpen(false);
-    setSelectedUserId(null);
-    setUsePasswordData({
-      new_password: "",
-    });
-    setErrors({});
   };
 
   const handleInputChange = (e: any) => {
@@ -427,12 +428,24 @@ function UsersTable() {
     setOpen(false);
   };
 
+  const handleStatusChange = (value:any) => {
+    setSelectedStatus(value);
+   setPagination((prev) => ({ ...prev, pageIndex: pageIndexParam }));
+  };
   const handleUpdate = (id: number, type: string) => {
     handleDrawerOpen(id);
     setIsEditing(true);
     setIsEdit(type);
 
     mutate();
+  };
+
+  const handleForgotPassword = (email: string) => {
+    const forgotDetails = {
+      email: email,
+    };
+
+    forgotPassword(forgotDetails);
   };
 
   const userActions = [
@@ -446,11 +459,13 @@ function UsersTable() {
             <ul className="table-action-buttons flex space-x-2 items-center">
               <li>
                 <Button
-                  title="reset password"
-                  onClick={() => handlePasswordUpdateOpen(info.row.original.id)}
+                  title="forgot-password"
+                  onClick={() => {
+                    handleForgotPassword(info.row.original.email);
+                  }}
                   size={"sm"}
                   variant={"ghost"}
-                  disabled={!isActive}
+                  // disabled={!isActive}
                   className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
                 >
                   <img
@@ -526,117 +541,125 @@ function UsersTable() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
-  return (
-    <section id="users" className="relative">
-      <div className="card-container shadow-all border p-3 rounded-xl bg-white">
-        <div className="tasks-navbar">
-          <div className="flex justify-between items-center">
-            <div className="heading"></div>
-            <div className="filters">
-              <ul className="flex justify-end space-x-3">
-                <li>
-                  <StatusFilter
-                    value={selectedStatus}
-                    setValue={setSelectedStatus}
-                  />
-                </li>
-                <li>
-                  <SearchFilter
-                    searchString={searchString}
-                    setSearchString={setSearchString}
-                    title="Search By Name"
-                  />
-                </li>
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    e.preventDefault();
+    setErrors({});
+    setLoading(true);
+    mutate(forgotDetails);
+  };
 
-                <li>
-                  <Button
-                    type="button"
-                    variant="add"
-                    size="DefaultButton"
-                    className="font-normal"
-                    // onClick={() => handleDrawerOpen()}
-                    onClick={handleUserClick}
-                  >
-                    <span className="text-xl pr-2">+</span>
-                    Add User
-                  </Button>
-                </li>
-                <li>
-                  <Button
-                    type="button"
-                    variant="add"
-                    size="DefaultButton"
-                    className="font-normal"
-                    onClick={handleAdminClick}
-                  >
-                    <span className="text-xl pr-2">+</span>
-                    Add Admin
-                  </Button>
-                </li>
-              </ul>
+  const handleBack = (): void => {
+    navigate({
+      to: "/",
+    });
+  };
+
+  return (
+    <>
+      <section id="users" className="relative">
+        <div className="card-container shadow-all border p-3 rounded-xl bg-white">
+          <div className="tasks-navbar">
+            <div className="flex justify-between items-center">
+              <div className="heading"></div>
+              <div className="filters">
+                <ul className="flex justify-end space-x-3">
+                  <li>
+                    <StatusFilter
+                      value={selectedStatus}
+                      setValue={handleStatusChange}
+                    />
+                  </li>
+                  <li>
+                    <SearchFilter
+                      searchString={searchString}
+                      setSearchString={setSearchString}
+                      title="Search By Name"
+                    />
+                  </li>
+
+                  <li>
+                    <Button
+                      type="button"
+                      variant="add"
+                      size="DefaultButton"
+                      className="font-normal"
+                      // onClick={() => handleDrawerOpen()}
+                      onClick={handleUserClick}
+                    >
+                      <span className="text-xl pr-2">+</span>
+                      Add User
+                    </Button>
+                  </li>
+                  <li>
+                    <Button
+                      type="button"
+                      variant="add"
+                      size="DefaultButton"
+                      className="font-normal"
+                      onClick={handleAdminClick}
+                    >
+                      <span className="text-xl pr-2">+</span>
+                      Add Admin
+                    </Button>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="mt-3">
-          <TanStackTable
-            data={data?.[0]}
-            columns={[...userColumns, ...userActions]}
-            loading={isLoading || isFetching || loading}
-            paginationDetails={data?.[1]}
-            getData={getAllUsers}
-            removeSortingForColumnIds={[
-              "serial",
-              "actions",
-              "active",
-              "todo_count",
-              "in_progress_count",
-              "overdue_count",
-              "completed_count",
-              "1_counts_todo_count",
-            ]}
+          <div className="mt-3">
+            <TanStackTable
+              data={data?.[0]}
+              columns={[...UserColumns(), ...userActions]}
+              loading={isLoading || isFetching || loading}
+              paginationDetails={data?.[1]}
+              getData={getAllUsers}
+              removeSortingForColumnIds={[
+                "serial",
+                "actions",
+                "active",
+                "todo_count",
+                "in_progress_count",
+                "overdue_count",
+                "completed_count",
+                "1_counts_todo_count",
+              ]}
+            />
+          </div>
+          <DeleteDialog
+            openOrNot={open}
+            label="Are you sure you want to Delete this user?"
+            onCancelClick={onClickClose}
+            onOKClick={deleteUser}
+            deleteLoading={deleteLoading}
+          />
+
+          <AddSheetRover
+            isOpen={isOpen}
+            isEditing={isEditing}
+            isEdit={isEdit}
+            userData={userData}
+            userTypeOpen={userTypeOpen}
+            userType={userType}
+            userTypes={userTypes}
+            errors={errors}
+            loading={loading}
+            handleInputChange={handleInputChange}
+            handleChangeEmail={handleChangeEmail}
+            handleChangePassword={handleChangePassword}
+            setUserTypeOpen={setUserTypeOpen}
+            onChangeStatus={onChangeStatus}
+            handleDrawerClose={handleDrawerClose}
+            handleFormSubmit={handleFormSubmit}
           />
         </div>
-        <DeleteDialog
-          openOrNot={open}
-          label="Are you sure you want to Delete this user?"
-          onCancelClick={onClickClose}
-          onOKClick={deleteUser}
-          deleteLoading={deleteLoading}
+        <LoadingComponent
+          loading={isLoading || isFetching || loading}
+          message="Loading Users..."
         />
-        <SheetRover
-          isOpen={isPasswordSheetOpen}
-          handleCancel={handlePasswordUpdateCancel}
-          userPasswordData={userPasswordData}
-          handleUpdateChangePassword={handleUpdateChangePassword}
-          resetUserPassword={resetUserPassword}
-          errors={errors}
-          loading={loading}
-        />
-
-        <AddSheetRover
-          isOpen={isOpen}
-          isEditing={isEditing}
-          isEdit={isEdit}
-          userData={userData}
-          userTypeOpen={userTypeOpen}
-          userType={userType}
-          userTypes={userTypes}
-          errors={errors}
-          loading={loading}
-          handleInputChange={handleInputChange}
-          handleChangeEmail={handleChangeEmail}
-          handleChangePassword={handleChangePassword}
-          setUserTypeOpen={setUserTypeOpen}
-          onChangeStatus={onChangeStatus}
-          handleDrawerClose={handleDrawerClose}
-          handleFormSubmit={handleFormSubmit}
-        />
-      </div>
-      <LoadingComponent
-        loading={isLoading || isFetching || loading}
-        message="Loading Users..."
-      />
-    </section>
+      </section>
+    </>
   );
 }
 export default UsersTable;
