@@ -10,9 +10,7 @@ import { addSerial } from "@/lib/helpers/addSerial";
 import { errPopper } from "@/lib/helpers/errPopper";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
 import { getAllMembers } from "@/lib/services/projects/members";
-import { getAllPaginatedUsers } from "@/lib/services/users";
 import { useQuery } from "@tanstack/react-query";
-import dayjs from "dayjs";
 import { useState } from "react";
 interface ActivityDrawerProps {
   setActivityOpen: (open: boolean) => void;
