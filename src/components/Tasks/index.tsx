@@ -58,6 +58,7 @@ const Tasks = () => {
   const [selectedDate, setSelectedDate] = useState<any>(
     initialFromDate && initialToDate ? [initialFromDate, initialToDate] : []
   );
+
   const [selectedStatus, setSelectedStatus] = useState(initialStatus);
   const [selectedProject, setSelectedProject] = useState<any>(intialProject);
   const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);

@@ -23,7 +23,12 @@ import { Bell } from "lucide-react";
 import { Popover } from "@radix-ui/react-popover";
 import { PopoverContent, PopoverTrigger } from "./ui/popover";
 import { format } from "date-fns";
-import { getAllNotificationsAPI } from "@/lib/services/notifications";
+import {
+  getAllNotificationsAPI,
+  markAsReadAPI,
+} from "@/lib/services/notifications";
+import { toast } from "sonner";
+import { s } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 
 interface titleProps {
   title: string;
@@ -32,6 +37,7 @@ interface titleProps {
 
 function TopBar() {
   const location = useLocation();
+  // const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("current_page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 10;
@@ -39,7 +45,7 @@ function TopBar() {
   const [viewData, setViewData] = useState<any>();
   const [isNotificationsLoading, setIsNotificationLoading] = useState(false);
   const [isPaginationLoading, setIsPaginationLoading] = useState(false);
-  const [notificationsData, setNotificationsData] = useState<any>();
+  const [notificationsData, setNotificationsData] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginationInfo, setPaginationInfo] = useState<any>({
     total_records: 0,
@@ -103,6 +109,25 @@ function TopBar() {
     }
   };
 
+  const markAsRead = async (markID: any) => {
+    try {
+      const response = await markAsReadAPI(markID);
+      if (response?.status === 200 || response?.status === 201) {
+        // toast.success(response?.data?.message);
+        setNotificationsData((prev = []) =>
+          prev.map((notification) =>
+            notification.id === markID
+              ? { ...notification, is_marked: true }
+              : notification
+          )
+        );
+        setIsNotificationsOpen(false);
+      }
+    } catch (error) {
+      console.error("Failed to fetch notifications:", error);
+    }
+  };
+
   const handleNotificationsScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const bottom =
       event.currentTarget.scrollHeight <=
@@ -131,13 +156,7 @@ function TopBar() {
   };
 
   const handlePopoverToggle = () => {
-    setIsNotificationsOpen((prev) => {
-      if (!prev) {
-        // getAllNotifications(paginationInfo.current_page + 1,);
-        // getAllNotifications();
-      }
-      return !prev;
-    });
+    setIsNotificationsOpen((prev) => !prev);
   };
 
   const handleLogout = () => {
@@ -170,9 +189,9 @@ function TopBar() {
             </Button>
           </div>
         )}
-        <Popover>
-          <PopoverTrigger asChild onClick={handlePopoverToggle}>
-            <div className="relative cursor-pointer">
+        <Popover open={isNotificationsOpen} onOpenChange={setIsNotificationsOpen}>
+          <PopoverTrigger asChild>
+            <div className="relative cursor-pointer" onClick={handlePopoverToggle}>
               <Bell className="h-6 w-6" />
               {paginationInfo?.total_records > 0 && (
                 <span className="absolute top-0 right-0 text-xs bg-red-500 text-white rounded-full h-4 w-4 flex items-center justify-center">
@@ -186,6 +205,7 @@ function TopBar() {
               <h3 className="font-semibold text-sm">
                 Notifications ({paginationInfo?.total_records || 0})
               </h3>
+              {notificationsData?.length > 0 && (
               <button
                 className="text-blue-500 text-xs font-semibold hover:underline"
                 onClick={() => {
@@ -194,6 +214,7 @@ function TopBar() {
               >
                 Mark All as Read
               </button>
+              )}
             </div>
             {isNotificationsLoading ? (
               <p className="text-center">Loading...</p>
@@ -207,8 +228,26 @@ function TopBar() {
                     <li
                       key={notification.id}
                       className="py-2 border-b last:border-none cursor-pointer hover:bg-gray-100 rounded-md"
+                      onClick={() => {
+                        if (notification.is_marked == false) {
+                          markAsRead(notification.id);
+                          navigate({
+                            to: `/tasks/view/${notification.task_id}`,
+                          });
+                          setIsNotificationsOpen(false);
+                        } else {
+                          navigate({
+                            to: `/tasks/view/${notification.task_id}`,
+                          });
+                          setIsNotificationsOpen(false);
+                        }
+                      }}
                     >
-                      <p>{notification.message}</p>
+                      <p
+                        className={`${notification.is_marked == false ? "font-bold" : "font-normal"}`}
+                      >
+                        {notification.message}
+                      </p>
                       <p className="text-xs text-gray-500">
                         {format(
                           new Date(notification.created_at),
