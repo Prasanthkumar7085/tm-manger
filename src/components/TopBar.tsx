@@ -1,7 +1,7 @@
 import downArrowIcon from "@/assets/down-arrow.svg";
 import { navBarConstants } from "@/lib/helpers/navBarConstants";
 import { getSingleUserApi } from "@/lib/services/viewprofile";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   useLocation,
   useNavigate,
@@ -9,7 +9,7 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import Cookies from "js-cookie";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
@@ -23,6 +23,7 @@ import { Bell } from "lucide-react";
 import { Popover } from "@radix-ui/react-popover";
 import { PopoverContent, PopoverTrigger } from "./ui/popover";
 import { format } from "date-fns";
+import { getAllNotificationsAPI } from "@/lib/services/notifications";
 
 interface titleProps {
   title: string;
@@ -31,11 +32,24 @@ interface titleProps {
 
 function TopBar() {
   const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const pageIndexParam = Number(searchParams.get("current_page")) || 1;
+  const pageSizeParam = Number(searchParams.get("page_size")) || 10;
   const router = useRouter();
   const [viewData, setViewData] = useState<any>();
+  const [isNotificationsLoading, setIsNotificationLoading] = useState(false);
+  const [isPaginationLoading, setIsPaginationLoading] = useState(false);
+  const [notificationsData, setNotificationsData] = useState<any>();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paginationInfo, setPaginationInfo] = useState<any>({
+    total_records: 0,
+    total_pages: 1,
+    page_size: pageSizeParam,
+    current_page: pageIndexParam,
+  });
+
   const { taskId } = useParams({ strict: false });
   const pathname = location.pathname;
-  const searchParams = new URLSearchParams(location.search);
   const currentNavItem = navBarConstants.find((item: titleProps) =>
     pathname.includes(item.path)
   );
@@ -73,9 +87,56 @@ function TopBar() {
     enabled: Boolean(userID),
   });
 
+  const getAllNotifications = async (page = paginationInfo.current_page) => {
+    try {
+      const response = await getAllNotificationsAPI({
+        current_page: page,
+        page_size: paginationInfo.page_size,
+      });
+      if (response?.status === 200 || response?.status === 201) {
+        const { records, pagination_info } = response.data.data;
+        setNotificationsData((prev: any) => [...(prev || []), ...records]);
+        setPaginationInfo(pagination_info);
+      }
+    } catch (error) {
+      console.error("Failed to fetch notifications:", error);
+    }
+  };
+
+  const handleNotificationsScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    const bottom =
+      event.currentTarget.scrollHeight <=
+      event.currentTarget.scrollTop + event.currentTarget.clientHeight + 50;
+
+    if (
+      bottom &&
+      !isPaginationLoading &&
+      paginationInfo.current_page < paginationInfo.total_pages
+    ) {
+      setIsPaginationLoading(true);
+      getAllNotifications(paginationInfo.current_page + 1).finally(() =>
+        setIsPaginationLoading(false)
+      );
+    }
+  };
+
+  useEffect(() => {
+    getAllNotifications();
+  }, []);
+
   const handleNavigation = () => {
     navigate({
       to: "/tasks/add",
+    });
+  };
+
+  const handlePopoverToggle = () => {
+    setIsNotificationsOpen((prev) => {
+      if (!prev) {
+        // getAllNotifications(paginationInfo.current_page + 1,);
+        // getAllNotifications();
+      }
+      return !prev;
     });
   };
 
@@ -86,35 +147,6 @@ function TopBar() {
       to: `/`,
     });
   };
-
-  const notifications = [
-    {
-      id: 1,
-      message: "Task #123 has been assigned to you.",
-      timestamp: new Date("2024-11-22T09:00:00"),
-    },
-    {
-      id: 2,
-      message: "Project 'Website Redesign' is due tomorrow.",
-      timestamp: new Date("2024-11-21T14:00:00"),
-    },
-    {
-      id: 3,
-      message: "Your profile information was updated successfully.",
-      timestamp: new Date("2024-11-20T16:30:00"),
-    },
-    {
-      id: 4,
-      message: "A new comment was added to Task #456.",
-      timestamp: new Date("2024-11-22T08:45:00"),
-    },
-    {
-      id: 5,
-      message: "Meeting scheduled for 3:00 PM today.",
-      timestamp: new Date("2024-11-22T15:00:00"),
-    },
-  ];
-  const totalNotifications = notifications.length;
 
   return (
     <div className="py-3 px-5 flex justify-between items-center bg-white border-b">
@@ -138,68 +170,21 @@ function TopBar() {
             </Button>
           </div>
         )}
-        {/* <Popover>
-          <PopoverTrigger
-            asChild
-            onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-          >
-            <div className="relative cursor-pointer">
-              <Bell className="h-6 w-6" />
-              {totalNotifications > 0 && (
-                <span className="absolute top-0 right-0 text-xs bg-red-500 text-white rounded-full h-4 w-4 flex items-center justify-center">
-                  {totalNotifications}
-                </span>
-              )}
-            </div>
-          </PopoverTrigger>
-          <PopoverContent className="w-64 bg-white p-3 shadow-md rounded-md">
-            <h3 className="font-semibold text-sm mb-2">
-              Notifications ({totalNotifications})
-            </h3>
-            {notifications.length > 0 ? (
-              <>
-                <ul className="text-sm max-h-48 overflow-y-auto">
-                  {notifications.map((notification) => (
-                    <li
-                      key={notification.id}
-                      className="py-2 border-b last:border-none cursor-pointer hover:bg-gray-100 rounded-md"
-                    >
-                      {notification.message}
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-2 text-center">
-                  <button
-                    className="text-blue-500 text-sm font-semibold hover:underline"
-                    // onClick={() => navigate("/notifications")}
-                  >
-                    View All Notifications
-                  </button>
-                </div>
-              </>
-            ) : (
-              <p>No notifications available</p>
-            )}
-          </PopoverContent>
-        </Popover> */}
         <Popover>
-          <PopoverTrigger
-            asChild
-            onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-          >
+          <PopoverTrigger asChild onClick={handlePopoverToggle}>
             <div className="relative cursor-pointer">
               <Bell className="h-6 w-6" />
-              {totalNotifications > 0 && (
+              {paginationInfo?.total_records > 0 && (
                 <span className="absolute top-0 right-0 text-xs bg-red-500 text-white rounded-full h-4 w-4 flex items-center justify-center">
-                  {totalNotifications}
+                  {paginationInfo.total_records}
                 </span>
               )}
             </div>
           </PopoverTrigger>
-          <PopoverContent className="w-64 bg-white p-3 shadow-md rounded-md">
+          <PopoverContent className="w-100 bg-white p-3 shadow-md rounded-md">
             <div className="flex justify-between items-center mb-2">
               <h3 className="font-semibold text-sm">
-                Notifications ({totalNotifications})
+                Notifications ({paginationInfo?.total_records || 0})
               </h3>
               <button
                 className="text-blue-500 text-xs font-semibold hover:underline"
@@ -210,10 +195,15 @@ function TopBar() {
                 Mark All as Read
               </button>
             </div>
-            {notifications.length > 0 ? (
-              <>
-                <ul className="text-sm max-h-48 overflow-y-auto">
-                  {notifications.map((notification) => (
+            {isNotificationsLoading ? (
+              <p className="text-center">Loading...</p>
+            ) : notificationsData?.length > 0 ? (
+              <div
+                className="flex flex-col rounded-md max-h-[500px] h-[500px] min-h-[500px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
+                onScroll={handleNotificationsScroll}
+              >
+                <ul>
+                  {notificationsData.map((notification: any) => (
                     <li
                       key={notification.id}
                       className="py-2 border-b last:border-none cursor-pointer hover:bg-gray-100 rounded-md"
@@ -221,22 +211,19 @@ function TopBar() {
                       <p>{notification.message}</p>
                       <p className="text-xs text-gray-500">
                         {format(
-                          notification.timestamp,
+                          new Date(notification.created_at),
                           "MMMM dd, yyyy - hh:mm a"
                         )}
                       </p>
                     </li>
                   ))}
                 </ul>
-                <div className="mt-2 text-center">
-                  <button
-                    className="text-blue-500 text-sm font-semibold hover:underline"
-                    // onClick={() => navigate("/notifications")}
-                  >
-                    View All Notifications
-                  </button>
-                </div>
-              </>
+                {paginationInfo.current_page < paginationInfo.total_pages && (
+                  <div className="text-center text-xs text-gray-500 mt-2">
+                    Loading more notifications...
+                  </div>
+                )}
+              </div>
             ) : (
               <p>No notifications available</p>
             )}

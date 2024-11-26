@@ -7,7 +7,6 @@ const DateRangeFilter = ({ dateValue, onChangeData }: any) => {
   const updateDateValues = (newDate: any) => {
     if (newDate) {
       const date1 = convertToLabUTC(newDate[0]);
-      console.log(date1, "date1");
       const date2 = convertToLabUTC(newDate[1], true);
       onChangeData(date1, date2);
     } else {

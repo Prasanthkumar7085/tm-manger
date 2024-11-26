@@ -196,7 +196,6 @@ const TasksProjects = ({ setSelectedStatus, selectedStatus }: any) => {
   };
 
   const handleCardClick = (status: string) => {
-    console.log(status);
     setSelectedStatus(status);
   };
 
