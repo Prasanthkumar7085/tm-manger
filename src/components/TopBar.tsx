@@ -205,6 +205,7 @@ function TopBar() {
               <h3 className="font-semibold text-sm">
                 Notifications ({paginationInfo?.total_records || 0})
               </h3>
+              {notificationsData?.length > 0 && (
               <button
                 className="text-blue-500 text-xs font-semibold hover:underline"
                 onClick={() => {
@@ -213,6 +214,7 @@ function TopBar() {
               >
                 Mark All as Read
               </button>
+              )}
             </div>
             {isNotificationsLoading ? (
               <p className="text-center">Loading...</p>
