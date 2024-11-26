@@ -79,7 +79,7 @@ export const UserTypeFilter: React.FC<StatusFilterProps> = ({
       </PopoverTrigger>
       <PopoverContent className="w-[200px] !p-0 bg-white">
         <Command>
-          <CommandInput placeholder="Search Status" />
+          <CommandInput placeholder="Search userType" />
           <CommandList>
             <CommandEmpty>No UserType found.</CommandEmpty>
             <CommandGroup className="!px-0 py-1">
