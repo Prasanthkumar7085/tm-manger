@@ -48,7 +48,6 @@ function UsersTable() {
   const [userType, setUserType] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
   const [users, setUsers] = useState<any>([]);
-  console.log(users, "ioio");
   const [open, setOpen] = useState(false);
   const [deleteuserId, setDeleteUserId] = useState<any>();
 
@@ -116,7 +115,6 @@ function UsersTable() {
       return [responseAfterSerial, response?.data?.data?.pagination_info];
     },
   });
-  console.log(data, "mani");
 
   const getAllUsers = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
@@ -166,7 +164,6 @@ function UsersTable() {
             password: data?.password,
             phone_number: data?.phone_number,
           });
-          console.log(data, "data");
           setUserType(data?.user_type);
         } else {
           throw response;
