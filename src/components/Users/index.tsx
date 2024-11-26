@@ -6,7 +6,6 @@ import {
   deleteUsersAPI,
   getAllPaginatedUsers,
   getSingleUserAPI,
-  resetPasswordUsersAPI,
   updateUsersAPI,
 } from "@/lib/services/users";
 import { userTypes } from "@/utils/conistance/users";
@@ -38,17 +37,22 @@ function UsersTable() {
     ? searchParams.get("order_by")
     : "";
   const initialSearch = searchParams.get("search") || "";
+  const initialUserType = searchParams.get("user_type") || "";
   const initialStatus = searchParams.get("active") || "";
   const [searchString, setSearchString] = useState(initialSearch);
   const [loading, setLoading] = useState(false);
   const [userTypeOpen, setUserTypeOpen] = useState(false);
   const [errors, setErrors] = useState({});
-  const [passwordVisible, setPasswordVisible] = useState(false);
+
+  const [userTypeSearch, setUserTypeSearch] = useState(initialUserType);
+
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
+  const [userTypeDebouncedSearch, setUserTypeDebouncedSearch] =
+    useState(userTypeSearch);
   const [userType, setUserType] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
   const [users, setUsers] = useState<any>([]);
-  console.log(users, "ioio");
+
   const [open, setOpen] = useState(false);
   const [deleteuserId, setDeleteUserId] = useState<any>();
 
@@ -58,14 +62,10 @@ function UsersTable() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [isPasswordSheetOpen, setIsPasswordSheetOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(initialStatus);
-  const [selectedUserId, setSelectedUserId] = useState<any>(null);
-
   const [selectedId, setSelectedId] = useState<any>();
   const [forgotDetails, setForgotDetails] = useState<any>({
     email: "",
   });
-  const [errorss, setErrorss] = useState<any>({});
-
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
@@ -80,19 +80,22 @@ function UsersTable() {
     password: "",
     phone_number: "",
   });
-
-  const [userPasswordData, setUsePasswordData] = useState<any>({
-    new_password: "",
-  });
-
   const { isLoading, isError, error, data, isFetching } = useQuery({
-    queryKey: ["users", pagination, debouncedSearch, del, selectedStatus],
+    queryKey: [
+      "users",
+      pagination,
+      debouncedSearch,
+      del,
+      userTypeDebouncedSearch,
+      selectedStatus,
+    ],
     queryFn: async () => {
       const response = await getAllPaginatedUsers({
         pageIndex: pagination.pageIndex,
         pageSize: pagination.pageSize,
         order_by: pagination.order_by,
         search: debouncedSearch,
+        user_type: userTypeDebouncedSearch,
         active: selectedStatus,
       });
       setUsers(response?.data?.data?.records);
@@ -102,6 +105,7 @@ function UsersTable() {
         page_size: +pagination.pageSize,
         order_by: pagination.order_by ? pagination.order_by : undefined,
         search: debouncedSearch || undefined,
+        user_type: userTypeDebouncedSearch || undefined,
         active: selectedStatus || undefined,
       };
       router.navigate({
@@ -116,7 +120,6 @@ function UsersTable() {
       return [responseAfterSerial, response?.data?.data?.pagination_info];
     },
   });
-  console.log(data, "mani");
 
   const getAllUsers = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
@@ -197,33 +200,6 @@ function UsersTable() {
     }
   };
 
-  const resetUserPassword = async () => {
-    setLoading(true);
-    try {
-      const payload = {
-        new_password: userPasswordData?.new_password,
-      };
-      const response = await resetPasswordUsersAPI(selectedUserId, payload);
-      if (response?.status === 200 || response?.status === 201) {
-        toast.success(
-          response?.data?.message || "Update Password successfully"
-        );
-        setIsPasswordSheetOpen(false);
-        setUsePasswordData({
-          new_password: "",
-        });
-      } else if (response?.status === 422) {
-        const errData = response?.data?.errData;
-        setErrors(errData);
-        throw response;
-      }
-    } catch (err: any) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const addAdminUser = async () => {
     try {
       setLoading(true);
@@ -258,7 +234,8 @@ function UsersTable() {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
-      if (searchString || selectedStatus) {
+      setUserTypeDebouncedSearch(userTypeSearch);
+      if (searchString || selectedStatus || userTypeSearch) {
         getAllUsers({
           pageIndex: 1,
           pageSize: pageSizeParam,
@@ -275,7 +252,7 @@ function UsersTable() {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString, selectedStatus]);
+  }, [searchString, selectedStatus, userTypeSearch]);
   const handleUserClick = () => {
     setUserType("user");
     setIsEdit("user");
@@ -578,6 +555,11 @@ function UsersTable() {
                       title="Search By Name"
                     />
                   </li>
+                  <SearchFilter
+                    searchString={userTypeSearch}
+                    setSearchString={setUserTypeSearch}
+                    title="Search By UserType"
+                  />
 
                   <li>
                     <Button
