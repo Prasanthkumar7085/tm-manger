@@ -8,6 +8,16 @@ export const statusConstants = [
     label: "In-Active",
   },
 ];
+export const userTypeConstants = [
+  {
+    value: "admin",
+    label: "Admin",
+  },
+  {
+    value: "user",
+    label: "User",
+  },
+];
 export const activityStatus: any = [
   {
     value: "TODO",
