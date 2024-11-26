@@ -72,34 +72,40 @@ const TagsSearchFilter = ({
                 <p>Select Tags</p>
               ) : (
                 <div className="flex items-center gap-1 justify-between w-[96%]">
-                  <div className="flex justify-start -space-x-1">
-                    {selectedTags.slice(0, 4).map((tag) => (
-                      <p
-                        key={tag.id}
-                        title={tag.title}
-                        className="bg-[#00B8121A] text-[#00B812] text-md font-medium mr-2 flex items-center px-2 py-0 border rounded-full text-md capitalize w-[40px] truncate"
-                      >
-                        {tag.title}
-                      </p>
-                    ))}
+                  <div className="w-full flex items-center justify-between">
+                    <div className="flex justify-start items-center">
+                      {selectedTags.slice(0, 3).map((tag, index) => (
+                        <p
+                          key={tag.id}
+                          title={tag.title}
+                          className="text-[#00B812] text-md font-medium rounded-full capitalize truncate max-w-[80px]"
+                        >
+                          {tag.title}
+                          {index < 2 && ","}{" "}
+                        </p>
+                      ))}
+                    </div>
 
-                    {selectedTags.length > 4 && (
-                      <div className="flex items-center justify-center w-6 h-6 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold">
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div className="flex items-center bg-[#F4F4F6] px-2 py-1 rounded-full text-sm text-[#00000099]">
-                              +{selectedTags.length - 4}
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent className="bg-white">
-                            <div>
-                              {selectedTags.map((tag) => (
-                                <p key={tag.id}>{tag.title}</p>
-                              ))}
-                            </div>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
+                    {selectedTags.length > 3 && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex items-center justify-center w-6 h-6 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold cursor-pointer">
+                            +{selectedTags.length - 3}
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-white p-2 rounded-md shadow-md">
+                          <div className="max-w-[250px]">
+                            {selectedTags.map((tag) => (
+                              <p
+                                key={tag.id}
+                                className="text-sm text-gray-700 capitalize"
+                              >
+                                {tag.title}
+                              </p>
+                            ))}
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
                     )}
                   </div>
                 </div>

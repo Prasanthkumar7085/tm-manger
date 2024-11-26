@@ -51,6 +51,8 @@ const Tasks = () => {
   const initialPrioritys = searchParams.get("priority") || "";
   const intialProject = searchParams.get("project_id") || "";
   const intialuserIds = searchParams.get("user_ids") || "";
+  const intialTags = searchParams.get("tags") || "";
+  console.log(intialTags, "intialTags");
   const intialisArchived = searchParams.get("isArchived") || "";
   const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
@@ -64,8 +66,8 @@ const Tasks = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [del, setDel] = useState<any>(1);
-  const [selectedMembers, setSelectedMembers] = useState<any>();
-  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedMembers, setSelectedMembers] = useState<any>([]);
+  const [selectedTags, setSelectedTags] = useState<any>([]);
   const [selectedMembersData, setSelectedMembersData] = useState<any>(
     intialuserIds ? intialuserIds.split(",").map((id: string) => ({ id })) : []
   );
@@ -174,8 +176,20 @@ const Tasks = () => {
       const response = await getTagsDropdownAPI();
       if (response?.status === 200 || response?.status === 201) {
         setTagsDropdown(response?.data?.data || []);
+
+        if (searchParams.get("tags")) {
+          let tagsString: any = searchParams.get("tags");
+          let tagsArray = tagsString.split(",");
+          tagsArray = tagsArray.map((tag: any) => Number(tag));
+          const intialTagsData = response?.data?.data?.filter((item: any) =>
+            tagsArray?.includes(item.id)
+          );
+          setSelectedTags(intialTagsData);
+        } else {
+          setSelectedTags([]);
+        }
+        return response?.data?.data;
       }
-      return response?.data?.data;
     },
   });
 
@@ -186,6 +200,7 @@ const Tasks = () => {
     if (intialuserIds) {
       setSelectedMembersData(intialuserIds);
     }
+
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
       if (
@@ -301,9 +316,11 @@ const Tasks = () => {
                   />
                 </li>
                 <li>
-                  <TasksSelectPriority
-                    value={selectedpriority}
-                    setValue={setSelectedpriority}
+                  <TagsSearchFilter
+                    tagsData={tagsData}
+                    selectedTags={selectedTags}
+                    setSelectedTags={setSelectedTags}
+                    onSelectTags={handleSelectTags}
                   />
                 </li>
                 <li>
@@ -313,11 +330,9 @@ const Tasks = () => {
                   />
                 </li>
                 <li>
-                  <TagsSearchFilter
-                    tagsData={tagsData}
-                    selectedTags={selectedTags}
-                    setSelectedTags={setSelectedTags}
-                    onSelectTags={handleSelectTags}
+                  <TasksSelectPriority
+                    value={selectedpriority}
+                    setValue={setSelectedpriority}
                   />
                 </li>
               </ul>

@@ -1,4 +1,5 @@
 import { addSerial } from "@/lib/helpers/addSerial";
+import { errPopper } from "@/lib/helpers/errPopper";
 import {
   addAdminUserAPI,
   addUsersAPI,
@@ -8,28 +9,22 @@ import {
   resetPasswordUsersAPI,
   updateUsersAPI,
 } from "@/lib/services/users";
+import { userTypes } from "@/utils/conistance/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import TanStackTable from "../core/TanstackTable";
-import { userColumns } from "./UserColumns";
-import { Button } from "../ui/button";
-import SearchFilter from "../core/CommonComponents/SearchFilter";
 import { toast } from "sonner";
-import { userTypes } from "@/utils/conistance/users";
-import { errPopper } from "@/lib/helpers/errPopper";
+import SearchFilter from "../core/CommonComponents/SearchFilter";
 import LoadingComponent from "../core/LoadingComponent";
 import { StatusFilter } from "../core/StatusFilter";
+import TanStackTable from "../core/TanstackTable";
+import { Button } from "../ui/button";
 
-import { SheetRover } from "../core/SheetRover";
-import DeleteDialog from "../core/deleteDialog";
-import { AddSheetRover } from "../core/AddSheetRovar";
-import ForgotComponent, { ForgotDetails } from "../auth/Forgot";
 import { forgotAPI } from "@/lib/services/auth";
-import loginBackground from "@/assets/login-bg-image.png";
-import LogoPath from "@/assets/logo.svg";
-import { Loader2, Mail } from "lucide-react";
-import { Input } from "../ui/input";
+import { ForgotDetails } from "../auth/Forgot";
+import { AddSheetRover } from "../core/AddSheetRovar";
+import DeleteDialog from "../core/deleteDialog";
+import UserColumns from "./UserColumns";
 
 function UsersTable() {
   const location = useLocation();
@@ -616,7 +611,7 @@ function UsersTable() {
           <div className="mt-3">
             <TanStackTable
               data={data?.[0]}
-              columns={[...userColumns, ...userActions]}
+              columns={[...UserColumns(), ...userActions]}
               loading={isLoading || isFetching || loading}
               paginationDetails={data?.[1]}
               getData={getAllUsers}

@@ -1,7 +1,14 @@
 export const arrayToUrlString = (key: any, value: any) => {
-  let arrayUrl = value.map((item: any) => {
-    return `${key}[]=${item}`;
-  });
+  let arrayUrl: any;
+  if (key == "tags") {
+    arrayUrl = value.map((item: any) => {
+      return `${key}=${item}`;
+    });
+  } else {
+    arrayUrl = value.map((item: any) => {
+      return `${key}[]=${item}`;
+    });
+  }
   return arrayUrl.join("&");
 };
 const prepareURLEncodedParams = (url: string, params: any) => {

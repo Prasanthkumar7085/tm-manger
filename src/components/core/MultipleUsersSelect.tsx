@@ -80,7 +80,7 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
               />
             </div>
             <div className="flex items-center gap-1 justify-start w-[100%]">
-              {selectedMembers?.length === 0 ? (
+              {selectedMembers?.length == 0 ? (
                 <p>Select Assignees</p>
               ) : (
                 <div className="flex items-center gap-1 justify-between w-[96%]">

@@ -26,17 +26,11 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { toast } from "sonner";
 
 interface TagsComponentProps {
-  task: any;
-  setTask: React.Dispatch<React.SetStateAction<any>>;
   errorMessages?: any;
   setErrorMessages?: React.Dispatch<React.SetStateAction<any>> | any;
 }
 
-const TagsComponent: React.FC<TagsComponentProps> = ({
-  task,
-  setTask,
-  errorMessages,
-}) => {
+const TagsComponent: React.FC<TagsComponentProps> = ({ errorMessages }) => {
   const { taskId } = useParams({ strict: false });
   const [tagsRefresh, setTagsRefresh] = useState(0);
   const [tagsDropdown, setTagsDropdown] = useState<any[]>([]);
@@ -45,6 +39,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({
   const location = useLocation();
   const [tagsloading, setTagsLoading] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const [task, setTask] = useState<any>({});
 
   const { isLoading: isTaskTagsLoading, isError: isTaskTagsError } = useQuery({
     queryKey: ["getSingleTaskTags", taskId, tagsRefresh],
