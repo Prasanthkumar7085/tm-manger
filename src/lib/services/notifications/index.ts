@@ -32,3 +32,11 @@ export const getAllNotificationsAPI = async ({
     throw err;
   }
 };
+
+export const markAsReadAPI = async (markId: any) => {
+  try {
+    return await $fetch.patch(`/notifications/${markId}/mark-as-read`);
+  } catch (err) {
+    throw err;
+  }
+};
