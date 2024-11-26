@@ -1,5 +1,11 @@
 import { $fetch } from "@/lib/fetch";
 
+interface GetAllPaginatedNotificationsPropTypes {
+  current_page?: number;
+  page_size?: number;
+}
+
+
 // export const getAllNotificationsAPI = async (page: number, limit: number) => {
 //   try {
 //     return await $fetch.get(`/notifications`, {
@@ -12,10 +18,15 @@ import { $fetch } from "@/lib/fetch";
 //     throw err;
 //   }
 // };
-export const getAllNotificationsAPI = async (
-  queryParams: any
-) => {
+export const getAllNotificationsAPI = async ({
+  current_page,
+  page_size
+}: GetAllPaginatedNotificationsPropTypes) => {
   try {
+    const queryParams = {
+      page: current_page,
+      page_size: page_size,
+    };
     return await $fetch.get(`/notifications`, queryParams);
   } catch (err: any) {
     throw err;

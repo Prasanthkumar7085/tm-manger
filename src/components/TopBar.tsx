@@ -47,6 +47,7 @@ function TopBar() {
     page_size: pageSizeParam,
     current_page: pageIndexParam,
   });
+
   const { taskId } = useParams({ strict: false });
   const pathname = location.pathname;
   const currentNavItem = navBarConstants.find((item: titleProps) =>
@@ -88,11 +89,10 @@ function TopBar() {
 
   const getAllNotifications = async (page = paginationInfo.current_page) => {
     try {
-      const queryParams = {
+      const response = await getAllNotificationsAPI({
         current_page: page,
         page_size: paginationInfo.page_size,
-      };
-      const response = await getAllNotificationsAPI(queryParams);
+      });
       if (response?.status === 200 || response?.status === 201) {
         const { records, pagination_info } = response.data.data;
         setNotificationsData((prev: any) => [...(prev || []), ...records]);
@@ -107,21 +107,21 @@ function TopBar() {
     const bottom =
       event.currentTarget.scrollHeight <=
       event.currentTarget.scrollTop + event.currentTarget.clientHeight + 50;
-  
+
     if (
       bottom &&
       !isPaginationLoading &&
       paginationInfo.current_page < paginationInfo.total_pages
     ) {
       setIsPaginationLoading(true);
-      getAllNotifications(paginationInfo.current_page + 1)
-        .finally(() => setIsPaginationLoading(false));
+      getAllNotifications(paginationInfo.current_page + 1).finally(() =>
+        setIsPaginationLoading(false)
+      );
     }
   };
-  
 
   useEffect(() => {
-   getAllNotifications()
+    getAllNotifications();
   }, []);
 
   const handleNavigation = () => {
@@ -134,25 +134,11 @@ function TopBar() {
     setIsNotificationsOpen((prev) => {
       if (!prev) {
         // getAllNotifications(paginationInfo.current_page + 1,);
-        getAllNotifications();
+        // getAllNotifications();
       }
       return !prev;
     });
   };
-
-  // const handlePageChange = (newPage: number) => {
-  //   if (newPage >= 1 && newPage <= paginationInfo.total_pages) {
-  //     setCurrentPage(newPage);
-  //     navigate({
-  //       search: `?current_page=${newPage}&page_size=${paginationInfo.page_size}`,
-  //     });
-  //   }
-  // };
-
-  // const calculateNextPage = () =>
-  //   currentPage < paginationInfo.total_pages ? currentPage + 1 : null;
-
-  // const calculatePrevPage = () => (currentPage > 1 ? currentPage - 1 : null);
 
   const handleLogout = () => {
     Cookies.remove("token");
