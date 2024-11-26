@@ -118,17 +118,18 @@ export const getTagsAPI = async (taskId: any) => {
     throw err;
   }
 };
-export const addTagAPI = async (taskId: any, payload: any) => {
+
+export const getTagsDropdownAPI = async () => {
   try {
-    return await $fetch.post(`/tasks/${taskId}/tags`, payload);
+    return await $fetch.get(`/tasks/tags-drop-down`);
   } catch (err) {
     throw err;
   }
 };
 
-export const getTagsDropdownAPI = async () => {
+export const addTagAPI = async (taskId: any, payload: any) => {
   try {
-    return await $fetch.get(`/tasks/tags-drop-down`);
+    return await $fetch.post(`/tasks/${taskId}/tags`, payload);
   } catch (err) {
     throw err;
   }

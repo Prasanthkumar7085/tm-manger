@@ -38,6 +38,7 @@ import {
   isProjectAdmin,
   isProjectMemberOrNot,
 } from "@/lib/helpers/loginHelpers";
+import TagsComponentForAdd from "./TagsComponentForAdd";
 
 const AddTask = () => {
   const navigate = useNavigate();
@@ -55,7 +56,6 @@ const AddTask = () => {
     priority: "LOW",
     status: searchParams.get("status") || "TODO",
     due_date: "",
-    tags: [],
     users: [],
     project_id: Number(searchParams.get("project_id")) || "",
   });
@@ -82,8 +82,7 @@ const AddTask = () => {
     setOpenProjects(false);
     setSelectedProjectLogo(project.logo_url || "/favicon.png");
   };
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     let payload = {
       ...task,
     };
@@ -96,7 +95,6 @@ const AddTask = () => {
     mutate(payload);
   };
 
-  //to add the task in the database
   const { mutate } = useMutation({
     mutationFn: async (payload: any) => {
       setErrorMessages({});
@@ -144,7 +142,7 @@ const AddTask = () => {
         } else {
           throw new Error("Failed to fetch task");
         }
-        return response
+        return response;
       } catch (err: any) {
         toast.error(err?.message || "Something went wrong");
         throw err;
@@ -223,7 +221,7 @@ const AddTask = () => {
       <h2 className="text-lg font-bold mb-5 border-b px-6 py-4">
         {taskId ? "Edit Task" : "Add Task"}
       </h2>
-      <form onSubmit={handleSubmit} className="px-6">
+      <div className="px-6">
         <div className="grid grid-cols-2 gap-10">
           <div className="leftColumn space-y-5">
             <div className="form-item">
@@ -240,43 +238,41 @@ const AddTask = () => {
                     className="justify-between  bg-slate-50 h-[40px] w-[400px] relative text-[#00000099] font-normal text-md border border-[#E2E2E2]"
                   >
                     <div className="flex items-center">
-                    {task.project_id && selectedProjectLogo && (
-                      <img
-                        src={selectedProjectLogo || "/favicon.png"}
-                        alt={` logo`}
-                        onError={(e: any) => {
-                          e.target.onerror = null;
-                          e.target.src =
-                            "https://via.placeholder.com/150?text=No preview";
-                        }}
-                        className="mr-2 h-6 w-6 rounded-full object-cover"
-                      />
-                    )}
-                    {task.project_id
-                      ? projectsList.find((p: any) => p.id === task.project_id)
-                          ?.title
-                      : "Select Project"}
-                           </div>
-                           <div>
-
-                       
-                    <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
-                    {task.project_id && (
-                      <X
-                        className="mr-4 h-4 w-4 cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setTask((prev: any) => ({
-                            ...prev,
-                            project_id: null,
-                            users: [],
-                          }));
-                          setSelectedProjectLogo(null);
-                        }}
-                      />
-                     
-                    )}
-                     </div>
+                      {task.project_id && selectedProjectLogo && (
+                        <img
+                          src={selectedProjectLogo || "/favicon.png"}
+                          alt={` logo`}
+                          onError={(e: any) => {
+                            e.target.onerror = null;
+                            e.target.src =
+                              "https://via.placeholder.com/150?text=No preview";
+                          }}
+                          className="mr-2 h-6 w-6 rounded-full object-cover"
+                        />
+                      )}
+                      {task.project_id
+                        ? projectsList.find(
+                            (p: any) => p.id === task.project_id
+                          )?.title
+                        : "Select Project"}
+                    </div>
+                    <div>
+                      <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
+                      {task.project_id && (
+                        <X
+                          className="mr-4 h-4 w-4 cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setTask((prev: any) => ({
+                              ...prev,
+                              project_id: null,
+                              users: [],
+                            }));
+                            setSelectedProjectLogo(null);
+                          }}
+                        />
+                      )}
+                    </div>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[400px] p-0 bg-white">
@@ -360,13 +356,10 @@ const AddTask = () => {
               {taskId ? (
                 ""
               ) : (
-                <TagsComponent
-                  tagInput={tagInput}
-                  setTagInput={setTagInput}
+                <TagsComponentForAdd
                   task={task}
                   setTask={setTask}
                   errorMessages={errorMessages}
-                  setErrorMessages={setErrorMessages}
                 />
               )}
             </div>
@@ -421,7 +414,9 @@ const AddTask = () => {
                   onChange={handleChange}
                   className="bg-slate-50 h-[40px] p-2 border w-full rounded-md"
                 >
-                  <option value="" className="text-[#00000080]">Select priority</option>
+                  <option value="" className="text-[#00000080]">
+                    Select priority
+                  </option>
                   <option value="HIGH">High</option>
                   <option value="MEDIUM">Medium</option>
                   <option value="LOW">Low</option>
@@ -442,7 +437,9 @@ const AddTask = () => {
                 onChange={handleChange}
                 className="bg-slate-50 h-[40px] p-2 border w-full rounded-md"
               >
-                <option value="" className="text-[#00000080]">Select Status</option>
+                <option value="" className="text-[#00000080]">
+                  Select Status
+                </option>
                 <option value="TODO">Todo</option>
                 <option value="IN_PROGRESS">In Progress</option>
                 <option value="OVER_DUE">Overdue</option>
@@ -605,12 +602,12 @@ const AddTask = () => {
               </Button>
 
               <Button
-                type="submit"
                 disabled={
                   profileData?.user_type === "admin" || isAbleToAddOrEdit()
                     ? false
                     : true
                 }
+                onClick={handleSubmit}
                 className="bg-[#1B2459] text-white font-medium text-md hover:bg-[#1B2459] hover:text-white px-8"
               >
                 {taskId ? "Update" : " Submit"}
@@ -618,7 +615,7 @@ const AddTask = () => {
             </div>
           </div>
         </div>
-      </form>
+      </div>
       <LoadingComponent loading={loading || isLoading || isTaskLoading} />
     </section>
   );

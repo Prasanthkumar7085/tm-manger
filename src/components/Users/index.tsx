@@ -20,9 +20,10 @@ import { userTypes } from "@/utils/conistance/users";
 import { errPopper } from "@/lib/helpers/errPopper";
 import LoadingComponent from "../core/LoadingComponent";
 import { StatusFilter } from "../core/StatusFilter";
-import { AddSheetRover } from "../core/AddSheetRovar";
+
 import { SheetRover } from "../core/SheetRover";
 import DeleteDialog from "../core/deleteDialog";
+import { AddSheetRover } from "../core/AddSheetRovar";
 
 function UsersTable() {
   const location = useLocation();
@@ -47,7 +48,9 @@ function UsersTable() {
   const [users, setUsers] = useState<any>({});
   const [open, setOpen] = useState(false);
   const [deleteuserId, setDeleteUserId] = useState<any>();
+
   const [isEditing, setIsEditing] = useState(false);
+  const [isEdit, setIsEdit] = useState("");
   const [del, setDel] = useState(1);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [isPasswordSheetOpen, setIsPasswordSheetOpen] = useState(false);
@@ -115,7 +118,7 @@ function UsersTable() {
         email: userData?.email,
         designation: userData?.designation || null,
         password: userData?.password,
-        user_type: userType,
+        user_type: "user",
         phone_number: userData?.phone_number || null,
       };
       const response = await addUsersAPI(payload);
@@ -217,7 +220,7 @@ function UsersTable() {
         designation: userData?.designation,
         password: userData?.password,
         phone_number: userData?.phone_number,
-        user_type: userType,
+        user_type: "admin",
       };
       const response = await addAdminUserAPI(payload);
       if (response?.status === 200 || response?.status === 201) {
@@ -259,6 +262,17 @@ function UsersTable() {
       clearTimeout(handler);
     };
   }, [searchString, selectedStatus]);
+  const handleUserClick = () => {
+    setUserType("user");
+    setIsEdit("user");
+    handleDrawerOpen();
+  };
+
+  const handleAdminClick = () => {
+    setUserType("admin");
+    setIsEdit("admin");
+    handleDrawerOpen();
+  };
 
   const handleFormSubmit = async () => {
     if (isEditing) {
@@ -290,7 +304,7 @@ function UsersTable() {
       }
     } else {
       {
-        userType === "admin" ? await addAdminUser() : await addUser();
+        isEdit === "admin" ? await addAdminUser() : await addUser();
       }
     }
   };
@@ -330,6 +344,7 @@ function UsersTable() {
     });
     setUserType("");
     setIsEditing(false);
+    setIsEdit("");
     setErrors("");
     setIsOpen(false);
   };
@@ -412,9 +427,10 @@ function UsersTable() {
     setOpen(false);
   };
 
-  const handleUpdate = (id: number) => {
+  const handleUpdate = (id: number, type: string) => {
     handleDrawerOpen(id);
     setIsEditing(true);
+    setIsEdit(type);
 
     mutate();
   };
@@ -448,7 +464,12 @@ function UsersTable() {
               <li>
                 <Button
                   title="edit"
-                  onClick={() => handleUpdate(info.row.original.id)}
+                  onClick={() =>
+                    handleUpdate(
+                      info.row.original.id,
+                      info.row.original.user_type
+                    )
+                  }
                   size={"sm"}
                   variant={"ghost"}
                   disabled={!isActive}
@@ -526,16 +547,30 @@ function UsersTable() {
                     title="Search By Name"
                   />
                 </li>
+
                 <li>
                   <Button
                     type="button"
                     variant="add"
                     size="DefaultButton"
                     className="font-normal"
-                    onClick={() => handleDrawerOpen()}
+                    // onClick={() => handleDrawerOpen()}
+                    onClick={handleUserClick}
                   >
                     <span className="text-xl pr-2">+</span>
-                    Add Users
+                    Add User
+                  </Button>
+                </li>
+                <li>
+                  <Button
+                    type="button"
+                    variant="add"
+                    size="DefaultButton"
+                    className="font-normal"
+                    onClick={handleAdminClick}
+                  >
+                    <span className="text-xl pr-2">+</span>
+                    Add Admin
                   </Button>
                 </li>
               </ul>
@@ -581,6 +616,7 @@ function UsersTable() {
         <AddSheetRover
           isOpen={isOpen}
           isEditing={isEditing}
+          isEdit={isEdit}
           userData={userData}
           userTypeOpen={userTypeOpen}
           userType={userType}

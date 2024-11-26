@@ -1,7 +1,6 @@
 import memberIcon from "@/assets/members.svg";
 import selectDropIcon from "@/assets/select-dropdown.svg";
 import { addSerial } from "@/lib/helpers/addSerial";
-
 import { getAllMembers } from "@/lib/services/projects/members";
 import { getAllPaginatedTasks } from "@/lib/services/tasks";
 import { useQuery } from "@tanstack/react-query";
@@ -26,7 +25,6 @@ import { taskColumns } from "./TaskColumns";
 import { archivetaskColumns } from "./ArchiveColumns";
 import { Button } from "../ui/button";
 import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
-
 const Tasks = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,7 +33,6 @@ const Tasks = () => {
     (state: any) => state.auth.user.user_details?.user_type
   );
   const { projectId } = useParams({ strict: false });
-
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 25;
@@ -45,7 +42,6 @@ const Tasks = () => {
   const initialFromDate = searchParams.get("from_date")
     ? searchParams.get("from_date")
     : "";
-
   const initialToDate = searchParams.get("to_date")
     ? searchParams.get("to_date")
     : "";
@@ -55,7 +51,6 @@ const Tasks = () => {
   const intialProject = searchParams.get("project_id") || "";
   const intialuserIds = searchParams.get("user_ids") || "";
   const intialisArchived = searchParams.get("isArchived") || "";
-
   const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedDate, setSelectedDate] = useState<any>(
@@ -72,16 +67,13 @@ const Tasks = () => {
   const [selectedMembersData, setSelectedMembersData] = useState<any>(
     intialuserIds ? intialuserIds.split(",").map((id: string) => ({ id })) : []
   );
-
   const [isArchive, setIsArchive] = useState(false);
   const [pagination, setPagination] = useState({
     pageIndex: pageIndexParam,
     pageSize: pageSizeParam,
     order_by: orderBY,
   });
-
   const isDashboard = location.pathname === "/dashboard";
-
   const { isLoading, isError, data, error, isFetching } = useQuery({
     queryKey: [
       "tasks",
@@ -95,7 +87,6 @@ const Tasks = () => {
       selectedMembers,
       isArchive,
     ],
-
     queryFn: async () => {
       const response = await getAllPaginatedTasks({
         pageIndex: pagination.pageIndex,
@@ -110,7 +101,6 @@ const Tasks = () => {
         user_ids: selectedMembers?.map((member: any) => member.id) || null,
         is_archived: isArchive ? "true" : "false",
       });
-
       let queryParams: any = {
         current_page: +pagination.pageIndex,
         page_size: +pagination.pageSize,
@@ -128,12 +118,11 @@ const Tasks = () => {
           (member: any) => member.id
         );
       }
-
+      router.navigate({
+        to: "/tasks",
+        search: queryParams,
+      });
       if (response?.status == 200) {
-        router.navigate({
-          to: "/tasks",
-          search: queryParams,
-        });
         let responseAfterSerial: any =
           addSerial(
             response?.data?.data?.data,
@@ -143,16 +132,14 @@ const Tasks = () => {
         return [responseAfterSerial, response?.data?.data?.pagination_info];
       }
     },
+    staleTime: 0,
   });
-
   const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
-
   const getFullName = (user: any) => {
     return `${user?.fname || ""} ${user?.lname || ""}`;
   };
-
   const { data: usersData, isLoading: membersLoading } = useQuery({
     queryKey: ["members"],
     queryFn: async () => {
@@ -165,13 +152,11 @@ const Tasks = () => {
         userIdsArray.includes(item.id.toString())
       );
 
-      console.log(intialusersData);
       setSelectedMembers(intialusersData);
 
       return response?.data?.data;
     },
   });
-
   useEffect(() => {
     if (initialFromDate) {
       setDateValue(changeDateToUTC(initialFromDate, initialToDate));
@@ -217,7 +202,6 @@ const Tasks = () => {
     isArchive,
     selectedDate,
   ]);
-
   const handleDateChange = (initialFromDate: any, initialToDate: any) => {
     if (initialFromDate) {
       setDateValue(changeDateToUTC(initialFromDate, initialToDate));
@@ -236,17 +220,19 @@ const Tasks = () => {
       setSelectedMembers([]);
     }
   };
-
   const handleCardClick = (status: string) => {
     setSelectedStatus(status);
     setPagination({ ...pagination, pageIndex: 1 });
   };
-
   return (
     <section id="tasks" className="relative">
       <div>
         {!isDashboard && (
-          <TotalCounts refreshCount={del} isArchive={isArchive}  onCardClick={handleCardClick} />
+          <TotalCounts
+            refreshCount={del}
+            isArchive={isArchive}
+            onCardClick={handleCardClick}
+          />
         )}
       </div>
       <div className="card-container shadow-md border p-3 rounded-lg mt-3 bg-white">
@@ -331,7 +317,6 @@ const Tasks = () => {
             </div>
           </div>
         </div>
-
         <div className="flex flex-col mt-4 space-y-5">
           <div>
             <TanStackTable
@@ -359,5 +344,4 @@ const Tasks = () => {
     </section>
   );
 };
-
 export default Tasks;

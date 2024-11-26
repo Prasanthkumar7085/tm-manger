@@ -33,7 +33,6 @@ export const ActivityDrawer = ({
     queryFn: async () => {
       try {
         const response = await getAllMembers();
-        console.log(response, "respp");
         if (response.success) {
           const modifieData = addSerial(
             response?.data?.data,
@@ -62,11 +61,7 @@ export const ActivityDrawer = ({
             <h3 className="py-2 px-4 text-[#273480] items-center flex text-base border-r-[1.2px] border-r-[#E7E7F7] font-medium">
               Activity Logs
             </h3>
-            <SearchFilter
-              searchString={searchString}
-              setSearchString={setSearchString}
-              title="Search User Name"
-            />
+
             <Button
               variant="ghost"
               onClick={handleClose}

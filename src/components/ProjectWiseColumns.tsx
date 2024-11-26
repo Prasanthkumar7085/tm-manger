@@ -2,6 +2,7 @@ import { useRouter } from "@tanstack/react-router";
 
 const ProjectWiseColumn = () => {
   const router = useRouter();
+
   return [
     {
       accessorFn: (row: any) => row.serial,
@@ -11,7 +12,7 @@ const ProjectWiseColumn = () => {
       width: "35px",
       maxWidth: "35px",
       minWidth: "35px",
-      enableSorging: false,
+      enableSorting: false,
       cell: ({ row, table }: any) => (
         <span style={{ display: "flex", alignItems: "center" }}>
           {(table

@@ -26,6 +26,7 @@ export interface AddSheetRoverProps {
   handleFormSubmit: () => void;
   onChangeStatus: any;
   handleInputChange: any;
+  isEdit: any;
 }
 
 export interface DynamicPaginationProps {
