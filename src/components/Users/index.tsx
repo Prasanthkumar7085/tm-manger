@@ -24,6 +24,7 @@ import { ForgotDetails } from "../auth/Forgot";
 import { AddSheetRover } from "../core/AddSheetRovar";
 import DeleteDialog from "../core/deleteDialog";
 import UserColumns from "./UserColumns";
+import { UserTypeFilter } from "../core/CommonComponents/UserTypeDropDown";
 
 function UsersTable() {
   const location = useLocation();
@@ -37,30 +38,27 @@ function UsersTable() {
     ? searchParams.get("order_by")
     : "";
   const initialSearch = searchParams.get("search") || "";
-  const initialUserType = searchParams.get("user_type") || "";
+  const initialUserType = searchParams.get("user_type") || "user";
   const initialStatus = searchParams.get("active") || "";
   const [searchString, setSearchString] = useState(initialSearch);
   const [loading, setLoading] = useState(false);
   const [userTypeOpen, setUserTypeOpen] = useState(false);
   const [errors, setErrors] = useState({});
-
   const [userTypeSearch, setUserTypeSearch] = useState(initialUserType);
-
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
-  const [userTypeDebouncedSearch, setUserTypeDebouncedSearch] =
-    useState(userTypeSearch);
+
   const [userType, setUserType] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
   const [users, setUsers] = useState<any>([]);
   const [open, setOpen] = useState(false);
   const [deleteuserId, setDeleteUserId] = useState<any>();
-
   const [isEditing, setIsEditing] = useState(false);
   const [isEdit, setIsEdit] = useState("");
   const [del, setDel] = useState(1);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [isPasswordSheetOpen, setIsPasswordSheetOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(initialStatus);
+  const [selectedUserType, setSelectedUserType] = useState(initialUserType);
   const [selectedId, setSelectedId] = useState<any>();
   const [forgotDetails, setForgotDetails] = useState<any>({
     email: "",
@@ -85,7 +83,7 @@ function UsersTable() {
       pagination,
       debouncedSearch,
       del,
-      userTypeDebouncedSearch,
+      selectedUserType,
       selectedStatus,
     ],
     queryFn: async () => {
@@ -94,17 +92,16 @@ function UsersTable() {
         pageSize: pagination.pageSize,
         order_by: pagination.order_by,
         search: debouncedSearch,
-        user_type: userTypeDebouncedSearch,
+        user_type: selectedUserType,
         active: selectedStatus,
       });
       setUsers(response?.data?.data?.records);
-
       const queryParams = {
         current_page: +pagination.pageIndex,
         page_size: +pagination.pageSize,
         order_by: pagination.order_by ? pagination.order_by : undefined,
         search: debouncedSearch || undefined,
-        user_type: userTypeDebouncedSearch || undefined,
+        user_type: selectedUserType || undefined,
         active: selectedStatus || undefined,
       };
       router.navigate({
@@ -123,7 +120,6 @@ function UsersTable() {
   const getAllUsers = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
-
   const addUser = async () => {
     try {
       setLoading(true);
@@ -152,7 +148,6 @@ function UsersTable() {
       setLoading(false);
     }
   };
-
   const { mutate, data: singledata } = useMutation({
     mutationFn: async () => {
       setLoading(true);
@@ -180,7 +175,6 @@ function UsersTable() {
       }
     },
   });
-
   const deleteUser = async () => {
     try {
       setDeleteLoading(true);
@@ -197,7 +191,6 @@ function UsersTable() {
       setDeleteLoading(false);
     }
   };
-
   const addAdminUser = async () => {
     try {
       setLoading(true);
@@ -228,12 +221,11 @@ function UsersTable() {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
-      setUserTypeDebouncedSearch(userTypeSearch);
-      if (searchString || selectedStatus || userTypeSearch) {
+
+      if (searchString || selectedStatus || selectedUserType) {
         getAllUsers({
           pageIndex: 1,
           pageSize: pageSizeParam,
@@ -250,19 +242,17 @@ function UsersTable() {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchString, selectedStatus, userTypeSearch]);
+  }, [searchString, selectedStatus, selectedUserType]);
   const handleUserClick = () => {
     setUserType("user");
     setIsEdit("user");
     handleDrawerOpen();
   };
-
   const handleAdminClick = () => {
     setUserType("admin");
     setIsEdit("admin");
     handleDrawerOpen();
   };
-
   const handleFormSubmit = async () => {
     if (isEditing) {
       try {
@@ -297,7 +287,6 @@ function UsersTable() {
       }
     }
   };
-
   const { mutate: forgotPassword } = useMutation({
     mutationFn: async (forgotDetails: ForgotDetails) => {
       setLoading(true);
@@ -322,7 +311,6 @@ function UsersTable() {
   const onChangeStatus = (value: string) => {
     setUserType(value);
   };
-
   const handleDrawerOpen = (user?: any) => {
     if (user) {
       setIsEditing(true);
@@ -359,7 +347,6 @@ function UsersTable() {
     setErrors("");
     setIsOpen(false);
   };
-
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     if (
@@ -371,7 +358,6 @@ function UsersTable() {
       }));
       return;
     }
-
     setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: [],
@@ -381,7 +367,6 @@ function UsersTable() {
       [name]: value,
     }));
   };
-
   const handleChangeEmail = (e: any) => {
     let { name, value } = e.target;
     setUserData({
@@ -389,7 +374,6 @@ function UsersTable() {
       [name]: value,
     });
   };
-
   const handleChangePassword = (e: any) => {
     let { name, value } = e.target;
     setUserData({
@@ -397,32 +381,25 @@ function UsersTable() {
       [name]: value,
     });
   };
-
   const onClickOpen = (id: any) => {
     setOpen(true);
     setDeleteUserId(id);
   };
-
   const onClickClose = () => {
     setOpen(false);
   };
-
   const handleUpdate = (id: number, type: string) => {
     handleDrawerOpen(id);
     setIsEditing(true);
     setIsEdit(type);
-
     mutate();
   };
-
   const handleForgotPassword = (email: string) => {
     const forgotDetails = {
       email: email,
     };
-
     forgotPassword(forgotDetails);
   };
-
   const userActions = [
     {
       accessorFn: (row: any) => row.actions,
@@ -500,7 +477,6 @@ function UsersTable() {
       maxWidth: "120px",
     },
   ];
-
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       if (popoverRef.current && !popoverRef.current.contains(event.target)) {
@@ -516,21 +492,6 @@ function UsersTable() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
-    e.preventDefault();
-    setErrors({});
-    setLoading(true);
-    mutate(forgotDetails);
-  };
-
-  const handleBack = (): void => {
-    navigate({
-      to: "/",
-    });
-  };
-
   return (
     <>
       <section id="users" className="relative">
@@ -550,14 +511,15 @@ function UsersTable() {
                     <SearchFilter
                       searchString={searchString}
                       setSearchString={setSearchString}
-                      title="Search By Name"
+                      title="Search By Name or Email"
                     />
                   </li>
-                  <SearchFilter
-                    searchString={userTypeSearch}
-                    setSearchString={setUserTypeSearch}
-                    title="Search By UserType"
-                  />
+                  <li>
+                    <UserTypeFilter
+                      value={selectedUserType}
+                      setValue={setSelectedUserType}
+                    />
+                  </li>
 
                   <li>
                     <Button
@@ -614,7 +576,6 @@ function UsersTable() {
             onOKClick={deleteUser}
             deleteLoading={deleteLoading}
           />
-
           <AddSheetRover
             isOpen={isOpen}
             isEditing={isEditing}
