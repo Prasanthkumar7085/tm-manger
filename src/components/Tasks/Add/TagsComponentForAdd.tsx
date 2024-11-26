@@ -89,7 +89,6 @@ const TagsComponentForAdd: React.FC<TagsComponentProps> = ({
     let newTagsarray = newTags.map((tag) => tag.title);
     if (tagIds?.length > 0) {
       taskDetails["tag_ids"] = [...tagIds];
-      console.log(tagIds, "tags ids");
     }
     if (newTagsarray?.length > 0) {
       taskDetails["tags"] = [...newTagsarray];

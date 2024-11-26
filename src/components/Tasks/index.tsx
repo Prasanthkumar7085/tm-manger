@@ -52,7 +52,6 @@ const Tasks = () => {
   const intialProject = searchParams.get("project_id") || "";
   const intialuserIds = searchParams.get("user_ids") || "";
   const intialTags = searchParams.get("tags") || "";
-  console.log(intialTags, "intialTags");
   const intialisArchived = searchParams.get("isArchived") || "";
   const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);

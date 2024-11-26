@@ -52,7 +52,6 @@ function UsersTable() {
   const [userType, setUserType] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
   const [users, setUsers] = useState<any>([]);
-
   const [open, setOpen] = useState(false);
   const [deleteuserId, setDeleteUserId] = useState<any>();
 
@@ -169,7 +168,6 @@ function UsersTable() {
             password: data?.password,
             phone_number: data?.phone_number,
           });
-          console.log(data, "data");
           setUserType(data?.user_type);
         } else {
           throw response;
