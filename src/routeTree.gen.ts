@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as ForgotPasswordImport } from './routes/forgot-password'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as IndexImport } from './routes/index'
 import { Route as PraticegraphIndexImport } from './routes/praticegraph/index'
@@ -19,7 +20,6 @@ import { Route as LayoutViewProfileImport } from './routes/_layout/view-profile'
 import { Route as LayoutUsersIndexImport } from './routes/_layout/users/index'
 import { Route as LayoutTasksIndexImport } from './routes/_layout/tasks/index'
 import { Route as LayoutProjectsIndexImport } from './routes/_layout/projects/index'
-import { Route as LayoutForgotPasswordIndexImport } from './routes/_layout/forgot-password/index'
 import { Route as LayoutDashboardIndexImport } from './routes/_layout/dashboard/index'
 import { Route as LayoutTasksAddIndexImport } from './routes/_layout/tasks/add/index'
 import { Route as LayoutTasksTaskIdIndexImport } from './routes/_layout/tasks/$taskId/index'
@@ -30,6 +30,12 @@ import { Route as LayoutTasksViewTaskIdIndexImport } from './routes/_layout/task
 import { Route as LayoutProjectsViewProjectIdIndexImport } from './routes/_layout/projects/view/$projectId/index'
 
 // Create/Update Routes
+
+const ForgotPasswordRoute = ForgotPasswordImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const LayoutRoute = LayoutImport.update({
   id: '/_layout',
@@ -75,12 +81,6 @@ const LayoutTasksIndexRoute = LayoutTasksIndexImport.update({
 const LayoutProjectsIndexRoute = LayoutProjectsIndexImport.update({
   id: '/projects/',
   path: '/projects/',
-  getParentRoute: () => LayoutRoute,
-} as any)
-
-const LayoutForgotPasswordIndexRoute = LayoutForgotPasswordIndexImport.update({
-  id: '/forgot-password/',
-  path: '/forgot-password/',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -155,6 +155,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutImport
       parentRoute: typeof rootRoute
     }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordImport
+      parentRoute: typeof rootRoute
+    }
     '/_layout/view-profile': {
       id: '/_layout/view-profile'
       path: '/view-profile'
@@ -181,13 +188,6 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof LayoutDashboardIndexImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/forgot-password/': {
-      id: '/_layout/forgot-password/'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof LayoutForgotPasswordIndexImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/projects/': {
@@ -268,7 +268,6 @@ declare module '@tanstack/react-router' {
 interface LayoutRouteChildren {
   LayoutViewProfileRoute: typeof LayoutViewProfileRoute
   LayoutDashboardIndexRoute: typeof LayoutDashboardIndexRoute
-  LayoutForgotPasswordIndexRoute: typeof LayoutForgotPasswordIndexRoute
   LayoutProjectsIndexRoute: typeof LayoutProjectsIndexRoute
   LayoutTasksIndexRoute: typeof LayoutTasksIndexRoute
   LayoutUsersIndexRoute: typeof LayoutUsersIndexRoute
@@ -284,7 +283,6 @@ interface LayoutRouteChildren {
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutViewProfileRoute: LayoutViewProfileRoute,
   LayoutDashboardIndexRoute: LayoutDashboardIndexRoute,
-  LayoutForgotPasswordIndexRoute: LayoutForgotPasswordIndexRoute,
   LayoutProjectsIndexRoute: LayoutProjectsIndexRoute,
   LayoutTasksIndexRoute: LayoutTasksIndexRoute,
   LayoutUsersIndexRoute: LayoutUsersIndexRoute,
@@ -304,11 +302,11 @@ const LayoutRouteWithChildren =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof LayoutRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/view-profile': typeof LayoutViewProfileRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/praticegraph': typeof PraticegraphIndexRoute
   '/dashboard': typeof LayoutDashboardIndexRoute
-  '/forgot-password': typeof LayoutForgotPasswordIndexRoute
   '/projects': typeof LayoutProjectsIndexRoute
   '/tasks': typeof LayoutTasksIndexRoute
   '/users': typeof LayoutUsersIndexRoute
@@ -324,11 +322,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof LayoutRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/view-profile': typeof LayoutViewProfileRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/praticegraph': typeof PraticegraphIndexRoute
   '/dashboard': typeof LayoutDashboardIndexRoute
-  '/forgot-password': typeof LayoutForgotPasswordIndexRoute
   '/projects': typeof LayoutProjectsIndexRoute
   '/tasks': typeof LayoutTasksIndexRoute
   '/users': typeof LayoutUsersIndexRoute
@@ -345,11 +343,11 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/_layout': typeof LayoutRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/_layout/view-profile': typeof LayoutViewProfileRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/praticegraph/': typeof PraticegraphIndexRoute
   '/_layout/dashboard/': typeof LayoutDashboardIndexRoute
-  '/_layout/forgot-password/': typeof LayoutForgotPasswordIndexRoute
   '/_layout/projects/': typeof LayoutProjectsIndexRoute
   '/_layout/tasks/': typeof LayoutTasksIndexRoute
   '/_layout/users/': typeof LayoutUsersIndexRoute
@@ -367,11 +365,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | ''
+    | '/forgot-password'
     | '/view-profile'
     | '/auth/reset-password'
     | '/praticegraph'
     | '/dashboard'
-    | '/forgot-password'
     | '/projects'
     | '/tasks'
     | '/users'
@@ -386,11 +384,11 @@ export interface FileRouteTypes {
   to:
     | '/'
     | ''
+    | '/forgot-password'
     | '/view-profile'
     | '/auth/reset-password'
     | '/praticegraph'
     | '/dashboard'
-    | '/forgot-password'
     | '/projects'
     | '/tasks'
     | '/users'
@@ -405,11 +403,11 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_layout'
+    | '/forgot-password'
     | '/_layout/view-profile'
     | '/auth/reset-password'
     | '/praticegraph/'
     | '/_layout/dashboard/'
-    | '/_layout/forgot-password/'
     | '/_layout/projects/'
     | '/_layout/tasks/'
     | '/_layout/users/'
@@ -426,6 +424,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LayoutRoute: typeof LayoutRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   PraticegraphIndexRoute: typeof PraticegraphIndexRoute
 }
@@ -433,6 +432,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LayoutRoute: LayoutRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   PraticegraphIndexRoute: PraticegraphIndexRoute,
 }
@@ -449,6 +449,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/_layout",
+        "/forgot-password",
         "/auth/reset-password",
         "/praticegraph/"
       ]
@@ -461,7 +462,6 @@ export const routeTree = rootRoute
       "children": [
         "/_layout/view-profile",
         "/_layout/dashboard/",
-        "/_layout/forgot-password/",
         "/_layout/projects/",
         "/_layout/tasks/",
         "/_layout/users/",
@@ -473,6 +473,9 @@ export const routeTree = rootRoute
         "/_layout/projects/view/$projectId/",
         "/_layout/tasks/view/$taskId/"
       ]
+    },
+    "/forgot-password": {
+      "filePath": "forgot-password.tsx"
     },
     "/_layout/view-profile": {
       "filePath": "_layout/view-profile.tsx",
@@ -486,10 +489,6 @@ export const routeTree = rootRoute
     },
     "/_layout/dashboard/": {
       "filePath": "_layout/dashboard/index.tsx",
-      "parent": "/_layout"
-    },
-    "/_layout/forgot-password/": {
-      "filePath": "_layout/forgot-password/index.tsx",
       "parent": "/_layout"
     },
     "/_layout/projects/": {

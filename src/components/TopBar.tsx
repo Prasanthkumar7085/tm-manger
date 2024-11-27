@@ -76,7 +76,6 @@ function TopBar() {
 
   const title = currentNavItem ? currentNavItem.title : null;
   const navigate = useNavigate({ from: "/" });
-
   const { isLoading, isError, error } = useQuery({
     queryKey: ["getSingleTask", userID],
     queryFn: async () => {
@@ -270,14 +269,34 @@ function TopBar() {
                       onClick={() => {
                         if (notification.is_marked == false) {
                           markAsRead(notification.id);
-                          navigate({
-                            to: `/tasks/view/${notification.task_id}`,
-                          });
+                          if (notification?.category == 1) {
+                            navigate({
+                              to: `/tasks/view/${notification.task_id}`,
+                            });
+                          } else if (notification?.category == 2) {
+                            navigate({
+                              to: `/projects/view/${notification.project_id}`,
+                            });
+                          } else {
+                            navigate({
+                              to: `/view-profile`,
+                            });
+                          }
                           setIsNotificationsOpen(false);
                         } else {
-                          navigate({
-                            to: `/tasks/view/${notification.task_id}`,
-                          });
+                          if (notification?.category == 1) {
+                            navigate({
+                              to: `/tasks/view/${notification.task_id}`,
+                            });
+                          } else if (notification?.category == 2) {
+                            navigate({
+                              to: `/projects/view/${notification.project_id}`,
+                            });
+                          } else {
+                            navigate({
+                              to: `/view-profile`,
+                            });
+                          }
                           setIsNotificationsOpen(false);
                         }
                       }}

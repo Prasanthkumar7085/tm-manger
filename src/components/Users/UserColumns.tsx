@@ -95,7 +95,7 @@ const UserColumns = () => {
       },
       width: "250px",
       maxWidth: "250px",
-      minWidth: "150px",
+      minWidth: "250px",
       header: () => <span>Email</span>,
       footer: (props: any) => props.column.id,
     },
@@ -268,7 +268,6 @@ const UserColumns = () => {
         const popoverRef = useRef<HTMLDivElement>(null);
         const userId = info.row.original.id;
         const togglePopover = () => setIsOpen(!isOpen);
-
         const updateUserStatus = async (status: boolean) => {
           try {
             const body = {

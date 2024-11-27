@@ -1,5 +1,4 @@
 import { addSerial } from "@/lib/helpers/addSerial";
-import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 import { getAllPaginatedProjectss } from "@/lib/services/projects";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
@@ -22,13 +21,14 @@ const Projects = () => {
   const location = useLocation();
   const router = useRouter();
   const searchParams = new URLSearchParams(location.search);
+
   const user_type: any = useSelector(
     (state: any) => state.auth.user.user_details?.user_type
   );
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
   );
-  const pageIndexParam = Number(searchParams.get("page")) || 1;
+  const pageIndexParam = Number(searchParams.get("current_page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 12;
   const orderBY = searchParams.get("order_by") || "";
   const initialSearch = searchParams.get("search") || "";
@@ -57,7 +57,6 @@ const Projects = () => {
     order_by: selectedSort || orderBY || orderBy,
   });
   const [viewMode, setViewMode] = useState("card");
-
   const { isLoading, isError, error, data, isFetching } = useQuery({
     queryKey: [
       "projects",
@@ -132,13 +131,12 @@ const Projects = () => {
       order_by: selectedSort || searchParams.get("order_by"),
     });
   };
-
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
       if (searchString || selectedStatus || dateValue) {
         getAllProjects({
-          pageIndex: 1,
+          pageIndex: pageIndexParam,
           pageSize: pageSizeParam,
           order_by: selectedSort || orderBY,
         });
@@ -156,7 +154,6 @@ const Projects = () => {
   }, [searchString, selectedSort, selectedStatus, dateValue]);
 
   let colums = projectColumns({ setDel, getAllProjects, projectsData });
-
   return (
     <section id="projects-container" className="relative">
       <div className="tasks-navbar">
@@ -254,7 +251,6 @@ const Projects = () => {
           />
         )}
       </div>
-
       <div className="pagination">
         <Pagination
           paginationDetails={data?.data?.data?.pagination_info}
@@ -262,7 +258,6 @@ const Projects = () => {
           captureRowPerItems={captureRowPerItems}
         />
       </div>
-
       <LoadingComponent
         loading={isLoading || isFetching}
         message="Loading Projects..."
@@ -270,5 +265,4 @@ const Projects = () => {
     </section>
   );
 };
-
 export default Projects;
