@@ -153,6 +153,7 @@ function TopBar() {
           )
         );
         setIsNotificationsOpen(false);
+        getAllNotificationsCount();
       }
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
