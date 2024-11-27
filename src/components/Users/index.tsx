@@ -226,7 +226,7 @@ function UsersTable() {
 
       if (searchString || selectedStatus || selectedUserType) {
         getAllUsers({
-          pageIndex: 1,
+          pageIndex: pageIndexParam,
           pageSize: pageSizeParam,
           order_by: orderBY,
         });
