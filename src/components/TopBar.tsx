@@ -1,7 +1,7 @@
 import downArrowIcon from "@/assets/down-arrow.svg";
 import { navBarConstants } from "@/lib/helpers/navBarConstants";
 import { getSingleUserApi } from "@/lib/services/viewprofile";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   useLocation,
   useNavigate,
@@ -25,10 +25,11 @@ import { PopoverContent, PopoverTrigger } from "./ui/popover";
 import { format } from "date-fns";
 import {
   getAllNotificationsAPI,
+  getAllNotificationsCountsAPI,
+  markAsReadAllAPI,
   markAsReadAPI,
 } from "@/lib/services/notifications";
 import { toast } from "sonner";
-import { s } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 
 interface titleProps {
   title: string;
@@ -37,7 +38,6 @@ interface titleProps {
 
 function TopBar() {
   const location = useLocation();
-  // const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("current_page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 10;
@@ -46,6 +46,7 @@ function TopBar() {
   const [isNotificationsLoading, setIsNotificationLoading] = useState(false);
   const [isPaginationLoading, setIsPaginationLoading] = useState(false);
   const [notificationsData, setNotificationsData] = useState<any[]>([]);
+  const [notificationCounts, setNotificationCounts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginationInfo, setPaginationInfo] = useState<any>({
     total_records: 0,
@@ -59,7 +60,7 @@ function TopBar() {
   const currentNavItem = navBarConstants.find((item: titleProps) =>
     pathname.includes(item.path)
   );
-  const [archiveTasks, setArchiveTasks] = useState(false);
+  
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
   const userID = useSelector(
@@ -109,6 +110,36 @@ function TopBar() {
     }
   };
 
+  const getAllNotificationsCount = async () => {
+    try {
+      const response = await getAllNotificationsCountsAPI();
+      if (response?.status === 200 || response?.status === 201) {
+        setNotificationCounts(response?.data?.data?.count[0].count);
+      }
+    } catch (error) {
+      console.error("Failed to fetch notifications:", error);
+    }
+  };
+
+  const markAsReadAll = async () => {
+    try {
+      const response = await markAsReadAllAPI();
+      if (response?.status === 200 || response?.status === 201) {
+        setNotificationsData((prev = []) =>
+          prev.map((notification) => ({
+            ...notification,
+            is_marked: true,
+          }))
+        );
+        setIsNotificationsOpen(false);
+        getAllNotificationsCount();
+        toast.success(response?.data?.message);
+      }
+    } catch (error) {
+      console.error("Failed to fetch notifications:", error);
+    }
+  };
+
   const markAsRead = async (markID: any) => {
     try {
       const response = await markAsReadAPI(markID);
@@ -147,6 +178,7 @@ function TopBar() {
 
   useEffect(() => {
     getAllNotifications();
+    getAllNotificationsCount();
   }, []);
 
   const handleNavigation = () => {
@@ -189,13 +221,19 @@ function TopBar() {
             </Button>
           </div>
         )}
-        <Popover open={isNotificationsOpen} onOpenChange={setIsNotificationsOpen}>
+        <Popover
+          open={isNotificationsOpen}
+          onOpenChange={setIsNotificationsOpen}
+        >
           <PopoverTrigger asChild>
-            <div className="relative cursor-pointer" onClick={handlePopoverToggle}>
+            <div
+              className="relative cursor-pointer"
+              onClick={handlePopoverToggle}
+            >
               <Bell className="h-6 w-6" />
-              {paginationInfo?.total_records > 0 && (
+              {notificationCounts > 0 && (
                 <span className="absolute top-0 right-0 text-xs bg-red-500 text-white rounded-full h-4 w-4 flex items-center justify-center">
-                  {paginationInfo.total_records}
+                  {notificationCounts || 0}
                 </span>
               )}
             </div>
@@ -203,17 +241,17 @@ function TopBar() {
           <PopoverContent className="w-100 bg-white p-3 shadow-md rounded-md">
             <div className="flex justify-between items-center mb-2">
               <h3 className="font-semibold text-sm">
-                Notifications ({paginationInfo?.total_records || 0})
+                Notifications ({notificationCounts || 0})
               </h3>
-              {notificationsData?.length > 0 && (
-              <button
-                className="text-blue-500 text-xs font-semibold hover:underline"
-                onClick={() => {
-                  // Function to mark all as read
-                }}
-              >
-                Mark All as Read
-              </button>
+              {notificationsData?.length > 0 && notificationCounts > 0 && (
+                <button
+                  className="text-blue-500 text-xs font-semibold hover:underline"
+                  onClick={() => {
+                    markAsReadAll();
+                  }}
+                >
+                  Mark All as Read
+                </button>
               )}
             </div>
             {isNotificationsLoading ? (
