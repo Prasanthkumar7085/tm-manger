@@ -23,6 +23,7 @@ import { archivetaskColumns } from "./Tasks/ArchiveColumns";
 import { taskColumns } from "./Tasks/TaskColumns";
 import TanStackTable from "./core/TanstackTable";
 import LoadingComponent from "./core/LoadingComponent";
+import TagsSearchFilter from "./core/CommonComponents/TagsSearchFilter";
 
 const TasksProjects = ({ setSelectedStatus, selectedStatus }: any) => {
   const navigate = useNavigate();
@@ -47,6 +48,7 @@ const TasksProjects = ({ setSelectedStatus, selectedStatus }: any) => {
   const intialisArchived = searchParams.get("isArchived") || "";
 
   const [searchString, setSearchString] = useState<any>(initialSearch);
+  const [selectedTags, setSelectedTags] = useState<any>([]);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedDate, setSelectedDate] = useState<any>(new Date());
   const [selectedProject, setSelectedProject] = useState<any>(intialProject);

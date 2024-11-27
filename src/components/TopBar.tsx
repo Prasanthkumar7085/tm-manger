@@ -76,7 +76,6 @@ function TopBar() {
 
   const title = currentNavItem ? currentNavItem.title : null;
   const navigate = useNavigate({ from: "/" });
-
   const { isLoading, isError, error } = useQuery({
     queryKey: ["getSingleTask", userID],
     queryFn: async () => {

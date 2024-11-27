@@ -19,6 +19,7 @@ import KanbanBoard from "../KanBanView";
 import ProjectTasksCounts from "./ProjectTasksCounts";
 import ProjectMembersManagment from "./ProjectMembersManagment";
 
+
 const ProjectView = () => {
   const { projectId } = useParams({ strict: false });
   const router = useRouter();
@@ -29,9 +30,10 @@ const ProjectView = () => {
     (state: any) => state.auth.user.user_details
   );
   const initialStatus = searchParams.get("status") || "";
+  const initialPrioritys = searchParams.get("priority") || "";
   const [selectedStatus, setSelectedStatus] = useState(initialStatus);
-
   const [projectDetails, setProjectDetails] = useState<any>({});
+  const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);
   const [projectsData, setProjectsData] = useState<any>({});
   const [viewMode, setViewMode] = useState("card");
   const [projectStatsUpdate, setProjetStatsUpdate] = useState<number>(0);

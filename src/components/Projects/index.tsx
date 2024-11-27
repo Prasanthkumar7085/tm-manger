@@ -1,5 +1,4 @@
 import { addSerial } from "@/lib/helpers/addSerial";
-import { changeDateToUTC } from "@/lib/helpers/apiHelpers";
 import { getAllPaginatedProjectss } from "@/lib/services/projects";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate, useRouter } from "@tanstack/react-router";
@@ -29,7 +28,7 @@ const Projects = () => {
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
   );
-  const pageIndexParam = Number(searchParams.get("page")) || 1;
+  const pageIndexParam = Number(searchParams.get("current_page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 12;
   const orderBY = searchParams.get("order_by") || "";
   const initialSearch = searchParams.get("search") || "";
@@ -137,7 +136,7 @@ const Projects = () => {
       setDebouncedSearch(searchString);
       if (searchString || selectedStatus || dateValue) {
         getAllProjects({
-          pageIndex: 1,
+          pageIndex: pageIndexParam,
           pageSize: pageSizeParam,
           order_by: selectedSort || orderBY,
         });

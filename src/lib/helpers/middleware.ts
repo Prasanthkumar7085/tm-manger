@@ -10,7 +10,7 @@ const getIsAuthenticated = () => {
 const getUserType = () => {
   return Cookies.get("user_type");
 };
-const authRoutes = ["/", "/forgot-password", "/auth/reset-password"];
+const authRoutes = ["/","/forgot-password", "/auth/reset-password"];
 
 export const authMiddleware = ({
   location,

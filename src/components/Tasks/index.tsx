@@ -35,7 +35,7 @@ const Tasks = () => {
   );
   const { projectId } = useParams({ strict: false });
   const searchParams = new URLSearchParams(location.search);
-  const pageIndexParam = Number(searchParams.get("page")) || 1;
+  const pageIndexParam = Number(searchParams.get("current_page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 25;
   const orderBY = searchParams.get("order_by")
     ? searchParams.get("order_by")
@@ -214,7 +214,7 @@ const Tasks = () => {
         selectedTags
       ) {
         getAllTasks({
-          pageIndex: 1,
+          pageIndex: pageIndexParam,
           pageSize: pageSizeParam,
           order_by: orderBY,
         });
@@ -267,7 +267,7 @@ const Tasks = () => {
   };
   const handleCardClick = (status: string) => {
     setSelectedStatus(status);
-    setPagination({ ...pagination, pageIndex: 1 });
+    setPagination({ ...pagination, pageIndex:1 });
   };
   return (
     <section id="tasks">

@@ -116,7 +116,6 @@ function UsersTable() {
       return [responseAfterSerial, response?.data?.data?.pagination_info];
     },
   });
-
   const getAllUsers = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
@@ -492,6 +491,7 @@ function UsersTable() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
+
   return (
     <>
       <section id="users" className="relative">
