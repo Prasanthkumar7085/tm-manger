@@ -52,13 +52,13 @@ const Tasks = () => {
   const intialProject = searchParams.get("project_id") || "";
   const intialuserIds = searchParams.get("user_ids") || "";
   const intialTags = searchParams.get("tags") || "";
-  console.log(intialTags, "intialTags");
   const intialisArchived = searchParams.get("isArchived") || "";
   const [searchString, setSearchString] = useState<any>(initialSearch);
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [selectedDate, setSelectedDate] = useState<any>(
     initialFromDate && initialToDate ? [initialFromDate, initialToDate] : []
   );
+
   const [selectedStatus, setSelectedStatus] = useState(initialStatus);
   const [selectedProject, setSelectedProject] = useState<any>(intialProject);
   const [selectedpriority, setSelectedpriority] = useState(initialPrioritys);

@@ -268,7 +268,6 @@ const UserColumns = () => {
         const popoverRef = useRef<HTMLDivElement>(null);
         const userId = info.row.original.id;
         const togglePopover = () => setIsOpen(!isOpen);
-
         const updateUserStatus = async (status: boolean) => {
           try {
             const body = {
