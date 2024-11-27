@@ -22,6 +22,7 @@ const Projects = () => {
   const location = useLocation();
   const router = useRouter();
   const searchParams = new URLSearchParams(location.search);
+
   const user_type: any = useSelector(
     (state: any) => state.auth.user.user_details?.user_type
   );
@@ -57,7 +58,6 @@ const Projects = () => {
     order_by: selectedSort || orderBY || orderBy,
   });
   const [viewMode, setViewMode] = useState("card");
-
   const { isLoading, isError, error, data, isFetching } = useQuery({
     queryKey: [
       "projects",
@@ -132,7 +132,6 @@ const Projects = () => {
       order_by: selectedSort || searchParams.get("order_by"),
     });
   };
-
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchString);
@@ -156,7 +155,6 @@ const Projects = () => {
   }, [searchString, selectedSort, selectedStatus, dateValue]);
 
   let colums = projectColumns({ setDel, getAllProjects, projectsData });
-
   return (
     <section id="projects-container" className="relative">
       <div className="tasks-navbar">
@@ -254,7 +252,6 @@ const Projects = () => {
           />
         )}
       </div>
-
       <div className="pagination">
         <Pagination
           paginationDetails={data?.data?.data?.pagination_info}
@@ -262,7 +259,6 @@ const Projects = () => {
           captureRowPerItems={captureRowPerItems}
         />
       </div>
-
       <LoadingComponent
         loading={isLoading || isFetching}
         message="Loading Projects..."
@@ -270,5 +266,4 @@ const Projects = () => {
     </section>
   );
 };
-
 export default Projects;

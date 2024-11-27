@@ -50,7 +50,6 @@ const TagsComponent: React.FC<TagsComponentProps> = ({ errorMessages }) => {
         tag_id: tag.tag_id,
         title: tag.title,
       }));
-
       try {
         if (tagsResponse?.status === 200 || tagsResponse?.status === 201) {
           setTask((prev: any) => ({
@@ -295,3 +294,4 @@ const TagsComponent: React.FC<TagsComponentProps> = ({ errorMessages }) => {
 };
 
 export default TagsComponent;
+//

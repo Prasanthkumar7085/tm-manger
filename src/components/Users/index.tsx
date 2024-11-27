@@ -227,7 +227,7 @@ function UsersTable() {
 
       if (searchString || selectedStatus || selectedUserType) {
         getAllUsers({
-          pageIndex: 1,
+          pageIndex: pageIndexParam,
           pageSize: pageSizeParam,
           order_by: orderBY,
         });
@@ -502,18 +502,25 @@ function UsersTable() {
               <div className="filters">
                 <ul className="flex justify-end space-x-3">
                   <li>
-                    <StatusFilter
-                      value={selectedStatus}
-                      setValue={setSelectedStatus}
-                    />
-                  </li>
-                  <li>
                     <SearchFilter
                       searchString={searchString}
                       setSearchString={setSearchString}
                       title="Search By Name or Email"
                     />
                   </li>
+                  <li>
+                    <StatusFilter
+                      value={selectedStatus}
+                      setValue={setSelectedStatus}
+                    />
+                  </li>
+                  {/* <li>
+                    <SearchFilter
+                      searchString={searchString}
+                      setSearchString={setSearchString}
+                      title="Search By Name or Email"
+                    />
+                  </li> */}
                   <li>
                     <UserTypeFilter
                       value={selectedUserType}
