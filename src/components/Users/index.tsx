@@ -168,7 +168,7 @@ function UsersTable() {
         }
       } catch (errData) {
         console.error(errData);
-        errPopper(errData);
+        // errPopper(errData);
       } finally {
         setLoading(false);
       }
