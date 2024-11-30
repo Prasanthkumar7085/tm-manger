@@ -72,106 +72,109 @@ function ResetPassword() {
 
   return (
     <section
-    id="authentication"
-    className="reset-password=page relative h-screen flex items-center"
-  >
-     <div className="company-logo absolute top-7 left-7">
+      id="authentication"
+      className="reset-password=page relative h-screen flex items-center"
+    >
+      <div className="company-logo absolute top-7 left-7">
         <img src={LogoPath} alt="logo" className="w-[200px] mx-auto" />
       </div>
 
-    <div  className="grid grid-cols-1 lg:grid-cols-2 items-center">
-      <div  className="left-part">
-      <img src={loginBackground} alt="logo" className="w-[75%] mx-auto" />
-      </div>
-      <div className="right-part m-auto">
-      <div className="login-card w-[420px] shadow-2xl border p-6 rounded-xl">
-      <div className="top mb-7">
+      <div className="grid grid-cols-1 lg:grid-cols-2 items-center">
+        <div className="left-part">
+          <img src={loginBackground} alt="logo" className="w-[75%] mx-auto" />
+        </div>
+        <div className="right-part m-auto">
+          <div className="login-card w-[420px] shadow-2xl border p-6 rounded-xl">
+            <div className="top mb-7">
               <h1 className="text-xl font-semibold mb-2">Reset Password</h1>
             </div>
-        <form onSubmit={handleSubmit}>
-       <div className="mb-3">
-            <div className="relative">
-              <LockKeyhole  className="absolute left-3 mt-[1px] top-1/2 transform -translate-y-1/2 text-slate-800 w-4" />
-              <Input
-                 className="bg-[#E7E7E7] appearance-none block py-1 h-12 text-lg pl-9 focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
-                id="password"
-                placeholder="New Password"
-                style={{
-                  fontFamily: "inherit",
-                  paddingRight: "2.5rem",
-                }}
-                type={passwordVisible ? "text" : "password"}
-                onChange={(e) =>
-                  setResetDetails({
-                    ...resetDetails,
-                    new_password: e.target.value,
-                  })
-                }
-              />
-              <button
-                type="button"
-                onClick={togglePasswordVisibility}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-800"
+            <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <div className="relative">
+                  <LockKeyhole className="absolute left-3 mt-[1px] top-1/2 transform -translate-y-1/2 text-slate-800 w-4" />
+                  <Input
+                    className="bg-[#E7E7E7] appearance-none block py-1 h-12 text-lg pl-9 focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
+                    id="password"
+                    placeholder="New Password"
+                    style={{
+                      fontFamily: "inherit",
+                      paddingRight: "2.5rem",
+                    }}
+                    type={passwordVisible ? "text" : "password"}
+                    onChange={(e) =>
+                      setResetDetails({
+                        ...resetDetails,
+                        new_password: e.target.value,
+                      })
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-800"
+                  >
+                    {passwordVisible ? <Eye /> : <EyeOff />}
+                  </button>
+                </div>
+                {errors?.new_password && (
+                  <p className="text-xs pt-1 text-red-600">
+                    {errors?.new_password[0]}
+                  </p>
+                )}
+              </div>
+              <div>
+                <div className="relative">
+                  <LockKeyhole className="absolute left-3 mt-[1px] top-1/2 transform -translate-y-1/2 text-slate-800 w-4" />
+                  <Input
+                    className="bg-[#E7E7E7] appearance-none block py-1 h-12 text-lg pl-9 focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
+                    id="password"
+                    placeholder="Re-Enter Password"
+                    style={{
+                      fontFamily: "inherit",
+                      paddingRight: "2.5rem",
+                    }}
+                    type={resetpasswordVisible ? "text" : "password"}
+                    onChange={(e) =>
+                      setResetDetails({
+                        ...resetDetails,
+                        confirm_new_password: e.target.value,
+                      })
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={toggleResetPasswordVisibility}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-800"
+                  >
+                    {resetpasswordVisible ? <Eye /> : <EyeOff />}
+                  </button>
+                </div>
+                {errors?.confirm_new_password && (
+                  <p className="text-xs pt-1 text-red-600">
+                    {errors?.confirm_new_password[0]}
+                  </p>
+                )}
+              </div>
+              <div>
+                <p className="my-8" style={{ lineHeight: "1.2" }}>
+                  • New password must be at least 6 characters long
+                </p>
+              </div>
+              <Button
+                type="submit"
+                className="text-center bg-custom-gradient text-white w-full font-semibold text-md"
               >
-                {passwordVisible ? <Eye /> : <EyeOff />}
-              </button>
-            </div>
-            {errors?.new_password && (
-              <p className="text-xs pt-1 text-red-600">{errors?.new_password[0]}</p>
-            )}
-         </div>
-          <div>
-            <div className="relative">
-              <LockKeyhole className="absolute left-3 mt-[1px] top-1/2 transform -translate-y-1/2 text-slate-800 w-4"  />
-              <Input
-               className="bg-[#E7E7E7] appearance-none block py-1 h-12 text-lg pl-9 focus:outline-none focus:border-gray-500 focus-visible:ring-0 focus-visible:shadow-none placeholder:text-sm placeholder:text-slate-600 border rounded-md text-md"
-                id="password"
-                placeholder="Re-Enter Password"
-                style={{
-                  fontFamily: "inherit",
-                  paddingRight: "2.5rem",
-                }}
-                type={resetpasswordVisible ? "text" : "password"}
-                onChange={(e) =>
-                  setResetDetails({
-                    ...resetDetails,
-                    confirm_new_password: e.target.value,
-                  })
-                }
-              />
-              <button
-                type="button"
-                onClick={toggleResetPasswordVisibility}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-800"
-              >
-                {resetpasswordVisible ? <Eye /> : <EyeOff />}
-              </button>
-            </div>
-            {errors?.confirm_new_password && (
-              <p className="text-xs pt-1 text-red-600">{errors?.confirm_new_password[0]}</p>
-            )}
-               </div>
-            <div>
-              <p className="my-8" style={{ lineHeight: "1.2" }}>
-                • New password must be at least 6 characters long
-              </p>
-            </div>
-            <Button
-              type="submit"
-                           className="text-center bg-custom-gradient text-white w-full font-semibold text-md"
-            >
-              {loading ? (
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              ) : (
-                "Recover Account"
-              )}
-            </Button>
-   
-        </form>
+                {loading ? (
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                ) : (
+                  "Recover Account"
+                )}
+              </Button>
+            </form>
+          </div>
+        </div>
+        {/* <Loading loading={loading} /> */}
       </div>
-      </div>
-      {/* <Loading loading={loading} /> */}
-    </div>
     </section>
   );
 }

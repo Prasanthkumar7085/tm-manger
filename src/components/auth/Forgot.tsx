@@ -57,6 +57,14 @@ const ForgotComponent: React.FC = () => {
     mutate(forgotDetails);
   };
 
+  const handleResendEmail = (): void => {
+    if (!forgotDetails.email) {
+      toast.error("Please enter your email first.");
+      return;
+    }
+    mutate(forgotDetails);
+  };
+
   const handleBack = (): void => {
     navigate({
       to: "/",
@@ -120,6 +128,20 @@ const ForgotComponent: React.FC = () => {
                   )}
                 </Button>
               </div>
+
+              <div className="mt-4 text-center">
+                <button
+                  type="button"
+                  onClick={handleResendEmail}
+                  className="text-sm text-blue-600 hover:underline"
+                  disabled={loading}
+                >
+                  {loading
+                    ? "Resending..."
+                    : "Didn't receive email? Click here to resend."}
+                </button>
+              </div>
+
               <div className="flex justify-end">
                 <Button
                   type="button"
@@ -133,7 +155,7 @@ const ForgotComponent: React.FC = () => {
           </div>
         </div>
       </div>
-     </section>
+    </section>
   );
 };
 

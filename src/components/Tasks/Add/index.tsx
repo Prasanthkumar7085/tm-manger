@@ -66,6 +66,7 @@ const AddTask = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [selectedProjectLogo, setSelectedProjectLogo] =
     React.useState<any>(null);
+  console.log("selectedProjectLogo", selectedProjectLogo);
   const [selectedUsers, setSelectedUsers] = useState(new Set());
   const handleChange = (e: any) => {
     setTask({ ...task, [e.target.name]: e.target.value });
@@ -221,21 +222,24 @@ const AddTask = () => {
                     role="combobox"
                     disabled={taskId ? true : false}
                     aria-expanded={openProjects}
-                    className="justify-between  bg-slate-50 h-[40px] w-[400px] relative text-[#00000099] font-normal text-md border border-[#E2E2E2]"
+                    className="justify-between bg-slate-50 h-[40px] w-[400px] relative text-[#00000099] font-normal text-md border border-[#E2E2E2]"
                   >
                     <div className="flex items-center">
-                      {task.project_id && selectedProjectLogo && (
-                        <img
-                          src={selectedProjectLogo || "/favicon.png"}
-                          alt={` logo`}
-                          onError={(e: any) => {
-                            e.target.onerror = null;
-                            e.target.src =
-                              "https://via.placeholder.com/150?text=No preview";
-                          }}
-                          className="mr-2 h-6 w-6 rounded-full object-cover"
-                        />
-                      )}
+                      <img
+                        src={
+                          task.project_id && selectedProjectLogo
+                            ? selectedProjectLogo
+                            : "/favicon.png"
+                        }
+                        alt="Project logo"
+                        onError={(e: any) => {
+                          e.target.onerror = null;
+                          e.target.src =
+                            "https://via.placeholder.com/150?text=No preview";
+                        }}
+                        className="mr-2 h-6 w-6 rounded-full object-cover"
+                      />
+
                       {task.project_id
                         ? projectsList.find(
                             (p: any) => p.id === task.project_id
@@ -243,7 +247,7 @@ const AddTask = () => {
                         : "Select Project"}
                     </div>
                     <div>
-                      <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
+                      <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2 bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
                       {task.project_id && (
                         <X
                           className="mr-4 h-4 w-4 cursor-pointer"
@@ -303,6 +307,7 @@ const AddTask = () => {
                 <p style={{ color: "red" }}>{errorMessages?.project_id?.[0]}</p>
               )}
             </div>
+
             <div className="form-item">
               <label className="block text-[#383838] font-medium text-sm mb-1">
                 Task Title<span className="text-red-500">*</span>
