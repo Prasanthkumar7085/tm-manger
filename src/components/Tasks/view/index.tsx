@@ -155,6 +155,16 @@ const TaskView = () => {
                 </p>
               </div>
             </div>
+            <div>
+              <Button
+                type="button"
+                onClick={() =>
+                  router.navigate({ to: `/tasks/view/${taskId}/add-subtask` })
+                }
+              >
+                Add SubTask
+              </Button>
+            </div>
             <div className="action-buttons flex space-x-2">
               <TaskStatus
                 taskId={taskId}

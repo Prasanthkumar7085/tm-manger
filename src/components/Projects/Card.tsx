@@ -114,7 +114,7 @@ const ProjectCard = ({
             className="object-contain w-6 h-6"
             onError={(e: any) => {
               e.target.onerror = null;
-              e.target.src = "https://via.placeholder.com/150?text=No preview";
+              e.target.src = "/favicon.png";
             }}
           />
         </div>

@@ -37,8 +37,9 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { DatePicker } from "rsuite";
 import { toast } from "sonner";
-import TagsComponentForAdd from "./TagsComponentForAdd";
-const AddTask = () => {
+import TagsComponentForAdd from "../../Add/TagsComponentForAdd";
+
+const AddSubTask = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
@@ -100,7 +101,7 @@ const AddTask = () => {
     mutationFn: async (payload: any) => {
       setErrorMessages({});
       setLoading(true);
-      return taskId ? updateTasksAPI(taskId, payload) : addTasksAPI(payload);
+      return addTasksAPI(payload);
     },
     onSuccess: (response: any) => {
       if (response?.status === 200 || response?.status === 201) {
@@ -212,7 +213,7 @@ const AddTask = () => {
       className="min-h-screen overflow-auto m-3 bg-white shadow rounded-lg"
     >
       <h2 className="text-lg font-bold mb-5 border-b px-6 py-4">
-        {taskId ? "Edit Task" : "Add Task"}
+        {/* {taskId ? "Edit Task" : "Add Task"} */}
       </h2>
       <div className="px-6">
         <div className="grid grid-cols-2 gap-10">
@@ -610,4 +611,4 @@ const AddTask = () => {
     </section>
   );
 };
-export default AddTask;
+export default AddSubTask;

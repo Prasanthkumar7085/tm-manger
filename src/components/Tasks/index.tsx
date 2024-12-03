@@ -169,6 +169,7 @@ const Tasks = () => {
       return response?.data?.data;
     },
   });
+  console.log("usersData", usersData);
 
   const { data: tagsData, isLoading: isTagsLoading } = useQuery({
     queryKey: ["tags"],
@@ -267,7 +268,7 @@ const Tasks = () => {
   };
   const handleCardClick = (status: string) => {
     setSelectedStatus(status);
-    setPagination({ ...pagination, pageIndex:1 });
+    setPagination({ ...pagination, pageIndex: 1 });
   };
   return (
     <section id="tasks">

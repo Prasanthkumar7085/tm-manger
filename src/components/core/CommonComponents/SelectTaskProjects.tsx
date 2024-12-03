@@ -44,7 +44,7 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
   const handleSelect = (value: any) => {
     setSelectedProject(value === selectedProject ? "" : value?.id);
     setOpen(false);
-    setSelectedProjectLogo(value?.logo_url || "/favicon.png");
+    setSelectedProjectLogo(value?.logo || "/favicon.png");
   };
 
   return (
@@ -60,13 +60,12 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
             <img
               src={
                 projectList?.find((item: any) => item.id == selectedProject)
-                  ?.logo_url || "/favicon.png"
+                  ?.logo || "/favicon.png"
               }
               alt={` logo`}
               onError={(e: any) => {
                 e.target.onerror = null;
-                e.target.src =
-                  "https://via.placeholder.com/150?text=No preview";
+                e.target.src = "/favicon.png";
               }}
               className="mr-2 h-6 w-6 rounded-full object-cover"
             />

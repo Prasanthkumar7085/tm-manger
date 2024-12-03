@@ -307,7 +307,7 @@ const ProjectView = () => {
             <div className="created-person flex items-center space-x-3">
               <img
                 src={
-                  projectDetails?.created_profile_pic_url ||
+                  `${import.meta.env.VITE_IMAGE_URL}/${projectDetails?.created_profile_pic_url}` ||
                   "/profile-picture.png"
                 }
                 onError={(e: any) => {
