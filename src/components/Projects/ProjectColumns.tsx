@@ -29,6 +29,7 @@ export const projectColumns = ({
   row,
 }: any) => {
   const navigate = useNavigate();
+  console.log(projectsData, "projectsData");
 
   const { projectId } = useParams({ strict: false });
   const profileData: any = useSelector(
@@ -130,7 +131,9 @@ export const projectColumns = ({
       id: "title",
       cell: (info: any) => {
         const title = info.getValue();
-        const logo = info.row.original.logo || "/favicon.png";
+
+        const logo = info.row.original.logo;
+
         return (
           <div
             style={{
@@ -142,7 +145,7 @@ export const projectColumns = ({
           >
             {logo && (
               <img
-                src={logo}
+                src={`${import.meta.env.VITE_IMAGE_URL}/${logo}`}
                 alt="project logo"
                 style={{
                   width: "24px",

@@ -106,7 +106,10 @@ const ProjectCard = ({
       <div className="top_header mb-3 flex justify-between">
         <div className="company-icon">
           <img
-            src={project?.logo || "/favicon.png"}
+            src={
+              `${import.meta.env.VITE_IMAGE_URL}/${project.logo}` ||
+              "/favicon.png"
+            }
             alt="company logo"
             className="object-contain w-6 h-6"
             onError={(e: any) => {

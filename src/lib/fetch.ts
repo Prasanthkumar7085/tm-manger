@@ -153,3 +153,7 @@ export const $dummyFetch = new FetchService(
   "json",
   import.meta.env.VITE_PUBLIC_DUMMY_API_URL
 );
+export const $imagefetch = new FetchService(
+  "json",
+  import.meta.env.VITE_IMAGE_URL
+);

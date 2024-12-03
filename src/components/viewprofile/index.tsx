@@ -52,10 +52,10 @@ function ViewProfile() {
             lname: data?.lname,
             email: data?.email,
             phone_number: data?.phone_number,
-            profile_pic:data?.profile_pic,
+            profile_pic: data?.profile_pic,
           });
           setUserType({
-            user_type:"admin",
+            user_type: "admin",
           });
         } else {
           throw response;
@@ -80,10 +80,14 @@ function ViewProfile() {
 
   const fileUploadMutation = useMutation({
     mutationFn: async (file: any) => {
-      const { data } = await fileUploadAPI({
-        file_name: file.name,
-        file_type: file.type,
-      });
+      const queryParam = `?is_public=true`;
+      const { data } = await fileUploadAPI(
+        {
+          file_name: file.name,
+          file_type: file.type,
+        },
+        queryParam
+      );
       const { target_url, file_key } = data?.data;
 
       await uploadToS3(target_url, file);
@@ -187,15 +191,19 @@ function ViewProfile() {
           <span>Profile Information</span>
           {isEditMode ? (
             <div>
-             <Button variant="secondary" onClick={handleCancel}
-                  className="bg-white border-transparent text-[#FF6000] text-sm mr-2 px-8 font-medium hover:bg-transparent hover:text-[#FF6000]">
+              <Button
+                variant="secondary"
+                onClick={handleCancel}
+                className="bg-white border-transparent text-[#FF6000] text-sm mr-2 px-8 font-medium hover:bg-transparent hover:text-[#FF6000]"
+              >
                 Cancel
               </Button>
-               <Button  onClick={handleSave}
-                   className="bg-[#1B2459] text-white font-medium text-sm hover:bg-[#1B2459] hover:text-white px-8">
+              <Button
+                onClick={handleSave}
+                className="bg-[#1B2459] text-white font-medium text-sm hover:bg-[#1B2459] hover:text-white px-8"
+              >
                 Save
               </Button>
-        
             </div>
           ) : (
             <Button
@@ -233,7 +241,7 @@ function ViewProfile() {
                 </div>
               ) : (
                 <img
-                  src={userData.profile_pic}
+                  src={`${import.meta.env.VITE_IMAGE_URL}/${userData.profile_pic}`}
                   alt="User Profile"
                   className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 shadow"
                 />

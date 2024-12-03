@@ -19,7 +19,6 @@ import KanbanBoard from "../KanBanView";
 import ProjectTasksCounts from "./ProjectTasksCounts";
 import ProjectMembersManagment from "./ProjectMembersManagment";
 
-
 const ProjectView = () => {
   const { projectId } = useParams({ strict: false });
   const router = useRouter();
@@ -45,12 +44,14 @@ const ProjectView = () => {
   const [openMembers, setOpenMembers] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  console.log(previewUrl, "prol");
 
   const { isFetching, isLoading } = useQuery({
     queryKey: ["getSingleProject", projectId],
     queryFn: async () => {
       try {
         const response = await viewProjectAPI(projectId);
+        console.log(response, "response");
         if (response.success) {
           setProjectDetails(response.data?.data);
           setPreviewUrl(response.data?.data?.logo);
@@ -72,10 +73,14 @@ const ProjectView = () => {
         loading: true,
         uploadSuccess: false,
       });
-      const { data } = await fileUploadAPI({
-        file_name: file.name,
-        file_type: file.type,
-      });
+      const queryParam = `?is_public=true`;
+      const { data } = await fileUploadAPI(
+        {
+          file_name: file.name,
+          file_type: file.type,
+        },
+        queryParam
+      );
       const { target_url, file_key } = data?.data;
 
       await uploadToS3(target_url, file);
@@ -85,6 +90,7 @@ const ProjectView = () => {
 
     onSuccess: async (file_key) => {
       uploadLogoMutation.mutate({ logo: file_key });
+      console.log(file_key, "file");
     },
     onError: (error) => {
       console.error(error);
@@ -153,6 +159,7 @@ const ProjectView = () => {
   const handleCardClick = (status: string) => {
     setSelectedStatus(status);
   };
+  console.log(import.meta.env.VITE_IMAGE_URL, "lplp");
 
   return (
     <div className="card-container shadow-md border p-5 rounded-lg bg-white h-[calc(100vh-100px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
@@ -164,7 +171,7 @@ const ProjectView = () => {
           {previewUrl ? (
             <div className="relative w-20 h-20 rounded-full border-2 shadow-md">
               <img
-                src={previewUrl || "/favicon.png"}
+                src={`${import.meta.env.VITE_IMAGE_URL}/${previewUrl}`}
                 alt="Profile Preview"
                 className="w-20 h-20 object-cover rounded-full border  bg-black"
                 onError={(e: any) => {
@@ -173,6 +180,20 @@ const ProjectView = () => {
                     "https://via.placeholder.com/150?text=No preview";
                 }}
               />
+              {/* <img
+                src={
+                  previewUrl
+                    ? `${import.meta.env.VITE_IMAGE_URL}/${previewUrl}`
+                    : "/favicon.png"
+                }
+                alt="Profile Preview"
+                className="w-20 h-20 object-cover rounded-full border bg-black"
+                onError={(e: any) => {
+                  e.target.onerror = null;
+                  e.target.src =
+                    "https://via.placeholder.com/150?text=No+preview";
+                }}
+              /> */}
               {uploadingStatus.loading && (
                 <div className="absolute w-20 h-20 inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 rounded-full">
                   <Loader className="text-white w-6 h-6 animate-spin" />
