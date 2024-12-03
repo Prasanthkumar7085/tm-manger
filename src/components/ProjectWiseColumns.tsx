@@ -27,7 +27,7 @@ const ProjectWiseColumn = () => {
       id: "project_title",
       cell: (info: any) => {
         const title = info.getValue();
-        const downloadUrl = info.row.original.download_url || "/favicon.png";
+        const downloadUrl = info.row.original.project_logo || "/favicon.png";
 
         return (
           <>
@@ -42,12 +42,11 @@ const ProjectWiseColumn = () => {
               {downloadUrl && (
                 <div className="project-logo cursor-pointer">
                   <img
-                    src={downloadUrl}
+                    src={`${import.meta.env.VITE_IMAGE_URL}/${downloadUrl}`}
                     alt="project logo"
                     onError={(e: any) => {
                       e.target.onerror = null;
-                      e.target.src =
-                        "https://via.placeholder.com/150?text=No preview";
+                      e.target.src = "/favicon.png";
                     }}
                     className="w-[22px] h-[22px] rounded-full border bg-transparent"
                   />

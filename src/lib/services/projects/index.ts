@@ -72,7 +72,14 @@ export const uploadLogoAPI = async (projectId: any, payload: any) => {
     throw err;
   }
 };
-export const fileUploadAPI = async (payload: any) => {
+export const fileUploadAPI = async (payload: any, queryParam: any) => {
+  try {
+    return await $fetch.post(`/files/upload${queryParam}`, payload);
+  } catch (err) {
+    throw err;
+  }
+};
+export const fileUploadsAPI = async (payload: any) => {
   try {
     return await $fetch.post(`/files/upload`, payload);
   } catch (err) {

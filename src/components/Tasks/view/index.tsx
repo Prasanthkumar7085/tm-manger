@@ -155,6 +155,16 @@ const TaskView = () => {
                 </p>
               </div>
             </div>
+            <div>
+              <Button
+                type="button"
+                onClick={() =>
+                  router.navigate({ to: `/tasks/view/${taskId}/add-subtask` })
+                }
+              >
+                Add SubTask
+              </Button>
+            </div>
             <div className="action-buttons flex space-x-2">
               <TaskStatus
                 taskId={taskId}
@@ -213,12 +223,16 @@ const TaskView = () => {
                       </p>
                       <p className="mt-0 text-black font-medium flex items-center">
                         <img
-                          src={viewData?.project_logo || "/favicon.png"}
+                          src={`${import.meta.env.VITE_IMAGE_URL}/${viewData?.project_logo}`}
                           alt={` logo`}
+                          // onError={(e: any) => {
+                          //   e.target.onerror = null;
+                          //   e.target.src =
+                          //     "https://via.placeholder.com/150?text=No preview";
+                          // }}
                           onError={(e: any) => {
                             e.target.onerror = null;
-                            e.target.src =
-                              "https://via.placeholder.com/150?text=No preview";
+                            e.target.src = "/favicon.png";
                           }}
                           className="mr-2 h-6 w-6 rounded-full object-cover"
                         />
@@ -273,7 +287,7 @@ const TaskView = () => {
                         <div className="created-person flex items-center space-x-3">
                           <img
                             src={
-                              viewData?.created_profile_pic_url ||
+                              `${import.meta.env.VITE_IMAGE_URL}/${viewData?.created_profile_pic}` ||
                               "/profile-picture.png"
                             }
                             onError={(e: any) => {

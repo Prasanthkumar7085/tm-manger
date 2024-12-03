@@ -1,6 +1,10 @@
 import DeleteProjects from "@/components/Projects/DeleteProject";
 import { Button } from "@/components/ui/button";
-import { fileUploadAPI, uploadToS3API } from "@/lib/services/projects";
+import {
+  fileUploadAPI,
+  fileUploadsAPI,
+  uploadToS3API,
+} from "@/lib/services/projects";
 import attachIcon from "@/assets/attachments-icon.svg";
 import {
   downloadAttachmentAPI,
@@ -102,7 +106,8 @@ const UploadAttachments = () => {
         loading: true,
         uploadSuccess: false,
       });
-      const { data } = await fileUploadAPI({
+
+      const { data } = await fileUploadsAPI({
         file_name: file.name,
         file_type: file.type,
       });

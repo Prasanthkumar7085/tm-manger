@@ -174,6 +174,15 @@ export const addTasksAPI = async (payload: any) => {
     throw err;
   }
 };
+
+export const addSubTasksAPI = async (payload: any) => {
+  try {
+    return await $fetch.post(`/tasks`, payload);
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const updateTasksAPI = async (taskId: any, payload: any) => {
   try {
     return await $fetch.patch(`/tasks/${taskId}`, payload);

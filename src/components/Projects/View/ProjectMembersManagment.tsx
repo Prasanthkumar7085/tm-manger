@@ -288,14 +288,17 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
                 <CommandList className="max-h-[220px] z-[99999]">
                   <CommandGroup>
                     {Array.isArray(users) &&
-                      users.map((user: any) => (
+                      users?.map((user: any) => (
                         <CommandItem
                           key={user.id}
                           value={getFullName(user)}
                           onSelect={() => toggleValue(user.id.toString())}
-                          disabled={selectedMembers.some(
-                            (m: any) => m.user_id == user.id
-                          )}
+                          disabled={
+                            selectedMembers?.length > 0 &&
+                            !selectedMembers.some(
+                              (m: any) => m.user_id == user.id
+                            )
+                          }
                         >
                           <Check
                             className={cn(
@@ -307,7 +310,14 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
                           />
                           <div className="w-6 h-6 object-contain	mr-2 rounded-full border  bg-white">
                             <img
-                              src={user?.profile_pic || "/profile-picture.png"}
+                              src={
+                                `${import.meta.env.VITE_IMAGE_URL}/${user?.profile_pic}` ||
+                                "/profile-picture.png"
+                              }
+                              onError={(e: any) => {
+                                e.target.onerror = null;
+                                e.target.src = "/profile-picture.png";
+                              }}
                             />
                           </div>
                           <p className="capitalize cursor-pointer">

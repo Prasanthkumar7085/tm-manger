@@ -87,6 +87,7 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
                   <div className="flex justify-start -space-x-1">
                     {selectedMembers?.slice(0, 5).map((user: any) => {
                       const initials = user.fname[0] + user.lname[0];
+                      console.log(user, "initials");
                       const backgroundColor = getColorFromInitials(initials);
 
                       return (
@@ -95,10 +96,27 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
                           title={getFullName(user)}
                           className={`w-6 h-6 ${backgroundColor}`}
                         >
-                          <AvatarImage
-                            src={user.profile_pic}
+                          {/* <AvatarImage
+                            src={`${import.meta.env.VITE_IMAGE_URL}${user.profile_pic}`}
                             alt={getFullName(user)}
+                            onError={(e: any) => {
+                              e.target.onerror = null;
+                              e.target.src = "/profile-picture.png";
+                            }}
                             title={getFullName(user)}
+                          /> */}
+                          <img
+                            src={
+                              `${import.meta.env.VITE_IMAGE_URL}/${
+                                user.profile_pic
+                              }` || "/profile-picture.png"
+                            }
+                            alt={getFullName(user)}
+                            onError={(e: any) => {
+                              e.target.onerror = null;
+                              e.target.src = "/profile-picture.png";
+                            }}
+                            className="object-contain w-6 h-6 rounded-full border"
                           />
                           <AvatarFallback>{initials}</AvatarFallback>
                         </Avatar>
@@ -167,7 +185,15 @@ const UserSelectionPopover: React.FC<UserSelectionPopoverProps> = ({
                       />
                       <div className="w-6 h-6 object-contain mr-2 rounded-full border bg-white">
                         <img
-                          src={user.profile_pic || "/profile-picture.png"}
+                          src={
+                            `${import.meta.env.VITE_IMAGE_URL}/${
+                              user.profile_pic
+                            }` || "/profile-picture.png"
+                          }
+                          onError={(e: any) => {
+                            e.target.onerror = null;
+                            e.target.src = "/profile-picture.png";
+                          }}
                           alt="User Avatar"
                         />
                       </div>

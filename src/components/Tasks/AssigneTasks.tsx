@@ -220,9 +220,13 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                 >
                   <div className="flex items-center gap-x-1">
                     <img
-                      src={memberIcon}
+                      src={`${import.meta.env.VITE_IMAGE_URL}/${memberIcon}`}
                       alt="No tags"
                       className="w-4 h-4 mr-1"
+                      onError={(e: any) => {
+                        e.target.onerror = null;
+                        e.target.src = "/profile-picture.png";
+                      }}
                     />
                     <p>Select Assignes</p>
                   </div>
@@ -244,7 +248,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                   <CommandList className="max-h-[200px] z-[99999]">
                     <CommandGroup>
                       {Array.isArray(users) &&
-                        users.map((user: any) => (
+                        users?.map((user: any) => (
                           <CommandItem
                             className="cursor-pointer gap-x-1"
                             key={user.id}
@@ -270,7 +274,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                             <div className="w-6 h-6 object-contain	 rounded-full border  bg-white">
                               <img
                                 src={
-                                  user?.created_profile_pic_url ||
+                                  `${import.meta.env.VITE_IMAGE_URL}/${user?.created_profile_pic_url}` ||
                                   "/profile-picture.png"
                                 }
                               />

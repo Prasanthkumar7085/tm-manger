@@ -90,7 +90,7 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
       cell: (info: any) => {
         const title = info.getValue();
         const project_logo_url =
-          info.row.original.project_logo_url || "/favicon.png";
+          info.row.original.project_logo || "/favicon.png";
         const handleProjectsView = () => {
           navigate({
             to: `/projects/view/${info.row.original.project_id}`,
@@ -101,13 +101,12 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
             {project_logo_url && (
               <div className="project-logo">
                 <img
-                  src={project_logo_url}
+                  src={`${import.meta.env.VITE_IMAGE_URL}/${project_logo_url}`}
                   alt="project logo"
                   className="w-[22px] h-[22px] rounded-full border bg-transparent"
                   onError={(e: any) => {
                     e.target.onerror = null;
-                    e.target.src =
-                      "https://via.placeholder.com/150?text=No preview";
+                    e.target.src = "/favicon.png";
                   }}
                 />
               </div>

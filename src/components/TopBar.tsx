@@ -60,7 +60,7 @@ function TopBar() {
   const currentNavItem = navBarConstants.find((item: titleProps) =>
     pathname.includes(item.path)
   );
-  
+
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
   const userID = useSelector(
@@ -331,7 +331,10 @@ function TopBar() {
           <DropdownMenuTrigger className="flex gap-2 items-center hover:cursor-pointer">
             <Avatar>
               <AvatarImage
-                src={viewData?.profile_pic || "/profile-picture.png"}
+                src={
+                  `${import.meta.env.VITE_IMAGE_URL}/${viewData?.profile_pic}` ||
+                  "/profile-picture.png"
+                }
                 alt="User avatar"
               />
               <AvatarFallback>
