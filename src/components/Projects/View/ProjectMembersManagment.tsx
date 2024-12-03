@@ -288,7 +288,7 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
                 <CommandList className="max-h-[220px] z-[99999]">
                   <CommandGroup>
                     {Array.isArray(users) &&
-                      users.map((user: any) => (
+                      users?.map((user: any) => (
                         <CommandItem
                           key={user.id}
                           value={getFullName(user)}

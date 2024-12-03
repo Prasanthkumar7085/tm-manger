@@ -260,7 +260,7 @@ const AddProject = () => {
                     <CommandList>
                       <CommandGroup>
                         {Array.isArray(users) &&
-                          users.map((user: any) => (
+                          users?.map((user: any) => (
                             <CommandItem
                               className="hover:bg-[#F5F5F5] active:bg-[#28A74533] cursor-pointer"
                               key={user.id}

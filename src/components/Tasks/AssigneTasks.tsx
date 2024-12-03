@@ -244,7 +244,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                   <CommandList className="max-h-[200px] z-[99999]">
                     <CommandGroup>
                       {Array.isArray(users) &&
-                        users.map((user: any) => (
+                        users?.map((user: any) => (
                           <CommandItem
                             className="cursor-pointer gap-x-1"
                             key={user.id}

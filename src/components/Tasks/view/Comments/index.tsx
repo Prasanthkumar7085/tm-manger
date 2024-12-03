@@ -459,7 +459,11 @@ const TaskComments = ({ taskId }: any) => {
             <div className="profile-image">
               <img
                 className="shadow-lg rounded-full w-[40px] h-[40px]"
-                src={profileData?.profile_pic || "/profile-picture.png"}
+                src={`${import.meta.env.VITE_IMAGE_URL}/${profileData?.profile_pic}`}
+                onError={(e: any) => {
+                  e.target.onerror = null;
+                  e.target.src = "/profile-picture.png";
+                }}
                 alt="User"
               />
             </div>

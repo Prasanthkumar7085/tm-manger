@@ -127,6 +127,7 @@ const AddTask = () => {
     queryFn: async () => {
       const response = await getSingleTaskAPI(taskId);
       const taskData = response?.data?.data;
+      console.log("taskData", taskData);
       try {
         if (response?.status === 200 || response?.status === 201) {
           let data = {
@@ -277,15 +278,14 @@ const AddTask = () => {
                             onSelect={() => handleProjectSelect(project)}
                             className="text-ellipsis overflow-hidden"
                           >
-                            {(project.logo_url || "/favicon.png") && (
+                            {(project.logo || "/favicon.png") && (
                               <img
-                                src={project.logo_url || "/favicon.png"}
+                                src={`${import.meta.env.VITE_IMAGE_URL}/${project.logo}`}
                                 alt={`${project.title} logo`}
                                 className="mr-2 h-6 w-6 rounded-full object-cover"
                                 onError={(e: any) => {
                                   e.target.onerror = null;
-                                  e.target.src =
-                                    "https://via.placeholder.com/150?text=No preview";
+                                  e.target.src = "/favicon.png";
                                 }}
                               />
                             )}
@@ -481,7 +481,7 @@ const AddTask = () => {
                         <CommandList>
                           <CommandEmpty>No Users found.</CommandEmpty>
                           <CommandGroup>
-                            {users.map((user) => (
+                            {users?.map((user) => (
                               <CommandItem
                                 key={user.id}
                                 onSelect={() => handleUserSelect(user)}
@@ -542,7 +542,7 @@ const AddTask = () => {
                             </tr>
                           </thead>
                           <tbody>
-                            {task.users.map((user: any, index: number) => (
+                            {task?.users?.map((user: any, index: number) => (
                               <tr key={user.id}>
                                 <td className=" px-4 py-2">{index + 1}</td>
                                 <td className=" px-4 py-2 capitalize">

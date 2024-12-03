@@ -31,14 +31,20 @@ const UserColumns = () => {
       cell: (info: any) => {
         const title = info.getValue();
         const profilePicUrl =
-          info.row.original.profile_pic_url || "profile-picture.png";
+          info.row.original.profile_pic || "profile-picture.png";
+        const profile = `${import.meta.env.VITE_IMAGE_URL}/${profilePicUrl}`;
+
         return (
           <div
             style={{ display: "flex", alignItems: "center", textAlign: "left" }}
           >
             {profilePicUrl ? (
               <img
-                src={profilePicUrl}
+                src={`${import.meta.env.VITE_IMAGE_URL}/${profilePicUrl}`}
+                onError={(e: any) => {
+                  e.target.onerror = null;
+                  e.target.src = "/profile-picture.png";
+                }}
                 alt="Profile"
                 style={{
                   width: 30,
