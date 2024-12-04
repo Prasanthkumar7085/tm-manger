@@ -149,6 +149,7 @@ const Tasks = () => {
   const getAllTasks = async ({ pageIndex, pageSize, order_by }: any) => {
     setPagination({ pageIndex, pageSize, order_by });
   };
+
   const getFullName = (user: any) => {
     return `${user?.fname || ""} ${user?.lname || ""}`;
   };
@@ -169,7 +170,6 @@ const Tasks = () => {
       return response?.data?.data;
     },
   });
-  console.log("usersData", usersData);
 
   const { data: tagsData, isLoading: isTagsLoading } = useQuery({
     queryKey: ["tags"],

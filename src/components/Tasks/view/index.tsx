@@ -24,7 +24,6 @@ import TaskComments from "./Comments";
 import { isMananger } from "@/lib/helpers/loginHelpers";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
 import { ActivityDrawer } from "./ActivityDrawer";
-import SubTasks from "../subtasks";
 
 const TaskView = () => {
   const navigate = useNavigate();
@@ -160,7 +159,9 @@ const TaskView = () => {
               <Button
                 type="button"
                 onClick={() =>
-                  router.navigate({ to: `/tasks/view/${taskId}/add-subtask` })
+                  router.navigate({
+                    to: `/tasks/${taskId}/subtasks/add-subtask?project_id=${viewData?.project_id}`,
+                  })
                 }
               >
                 Add SubTask
