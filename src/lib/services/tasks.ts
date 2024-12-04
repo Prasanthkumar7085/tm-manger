@@ -52,6 +52,56 @@ export const getAllPaginatedTasks = async ({
     throw err;
   }
 };
+
+export const getAllSubTasks = async (taskId: any) => {
+  try {
+    return await $fetch.get(`/tasks/${taskId}/sub-tasks`);
+  } catch (err: any) {
+    throw err;
+  }
+};
+export const getAllSubTask = async (
+  taskId: any,
+  {
+    pageIndex,
+    pageSize,
+    order_by,
+    search_string,
+    from_date,
+    to_date,
+    status,
+    priority,
+    project_id,
+    user_ids,
+    is_archived,
+    tags,
+  }: GetAllPaginatedUsersPropTypes
+) => {
+  try {
+    const queryParams = {
+      page: pageIndex,
+      page_size: pageSize,
+      order_by: order_by,
+      search_string: search_string,
+      from_date: from_date,
+      to_date: to_date,
+      status: status,
+      priority: priority,
+      project_id: project_id,
+      user_ids: user_ids,
+      is_archived,
+      tags,
+    };
+    if (is_archived === "true" || is_archived === true) {
+      return await $fetch.get("/tasks/archives", queryParams);
+    } else {
+      return await $fetch.get(`/tasks/${taskId}/sub-tasks`, queryParams);
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const getAllArchivedTasks = async ({
   pageIndex,
   pageSize,

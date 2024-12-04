@@ -27,6 +27,7 @@ import { Route as LayoutProjectsAddIndexImport } from './routes/_layout/projects
 import { Route as LayoutProjectsProjectIdIndexImport } from './routes/_layout/projects/$projectId/index'
 import { Route as LayoutProjectsProjectIdProjectmembersImport } from './routes/_layout/projects/$projectId/project_members'
 import { Route as LayoutTasksViewTaskIdIndexImport } from './routes/_layout/tasks/view/$taskId/index'
+import { Route as LayoutTasksTaskIdSubtasksIndexImport } from './routes/_layout/tasks/$taskId/subtasks/index'
 import { Route as LayoutProjectsViewProjectIdIndexImport } from './routes/_layout/projects/view/$projectId/index'
 import { Route as LayoutTasksViewTaskIdAddSubtaskIndexImport } from './routes/_layout/tasks/view/$taskId/add-subtask/index'
 
@@ -115,6 +116,12 @@ const LayoutTasksViewTaskIdIndexRoute = LayoutTasksViewTaskIdIndexImport.update(
     getParentRoute: () => LayoutRoute,
   } as any,
 )
+
+const LayoutTasksTaskIdSubtasksIndexRoute =
+  LayoutTasksTaskIdSubtasksIndexImport.update({
+    path: '/tasks/$taskId/subtasks/',
+    getParentRoute: () => LayoutRoute,
+  } as any)
 
 const LayoutProjectsViewProjectIdIndexRoute =
   LayoutProjectsViewProjectIdIndexImport.update({
@@ -244,6 +251,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutProjectsViewProjectIdIndexImport
       parentRoute: typeof LayoutImport
     }
+    '/_layout/tasks/$taskId/subtasks/': {
+      id: '/_layout/tasks/$taskId/subtasks/'
+      path: '/tasks/$taskId/subtasks'
+      fullPath: '/tasks/$taskId/subtasks'
+      preLoaderRoute: typeof LayoutTasksTaskIdSubtasksIndexImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/tasks/view/$taskId/': {
       id: '/_layout/tasks/view/$taskId/'
       path: '/tasks/view/$taskId'
@@ -275,6 +289,7 @@ interface LayoutRouteChildren {
   LayoutTasksTaskIdIndexRoute: typeof LayoutTasksTaskIdIndexRoute
   LayoutTasksAddIndexRoute: typeof LayoutTasksAddIndexRoute
   LayoutProjectsViewProjectIdIndexRoute: typeof LayoutProjectsViewProjectIdIndexRoute
+  LayoutTasksTaskIdSubtasksIndexRoute: typeof LayoutTasksTaskIdSubtasksIndexRoute
   LayoutTasksViewTaskIdIndexRoute: typeof LayoutTasksViewTaskIdIndexRoute
   LayoutTasksViewTaskIdAddSubtaskIndexRoute: typeof LayoutTasksViewTaskIdAddSubtaskIndexRoute
 }
@@ -292,6 +307,7 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutTasksTaskIdIndexRoute: LayoutTasksTaskIdIndexRoute,
   LayoutTasksAddIndexRoute: LayoutTasksAddIndexRoute,
   LayoutProjectsViewProjectIdIndexRoute: LayoutProjectsViewProjectIdIndexRoute,
+  LayoutTasksTaskIdSubtasksIndexRoute: LayoutTasksTaskIdSubtasksIndexRoute,
   LayoutTasksViewTaskIdIndexRoute: LayoutTasksViewTaskIdIndexRoute,
   LayoutTasksViewTaskIdAddSubtaskIndexRoute:
     LayoutTasksViewTaskIdAddSubtaskIndexRoute,
@@ -317,6 +333,7 @@ export interface FileRoutesByFullPath {
   '/tasks/$taskId': typeof LayoutTasksTaskIdIndexRoute
   '/tasks/add': typeof LayoutTasksAddIndexRoute
   '/projects/view/$projectId': typeof LayoutProjectsViewProjectIdIndexRoute
+  '/tasks/$taskId/subtasks': typeof LayoutTasksTaskIdSubtasksIndexRoute
   '/tasks/view/$taskId': typeof LayoutTasksViewTaskIdIndexRoute
   '/tasks/view/$taskId/add-subtask': typeof LayoutTasksViewTaskIdAddSubtaskIndexRoute
 }
@@ -338,6 +355,7 @@ export interface FileRoutesByTo {
   '/tasks/$taskId': typeof LayoutTasksTaskIdIndexRoute
   '/tasks/add': typeof LayoutTasksAddIndexRoute
   '/projects/view/$projectId': typeof LayoutProjectsViewProjectIdIndexRoute
+  '/tasks/$taskId/subtasks': typeof LayoutTasksTaskIdSubtasksIndexRoute
   '/tasks/view/$taskId': typeof LayoutTasksViewTaskIdIndexRoute
   '/tasks/view/$taskId/add-subtask': typeof LayoutTasksViewTaskIdAddSubtaskIndexRoute
 }
@@ -360,6 +378,7 @@ export interface FileRoutesById {
   '/_layout/tasks/$taskId/': typeof LayoutTasksTaskIdIndexRoute
   '/_layout/tasks/add/': typeof LayoutTasksAddIndexRoute
   '/_layout/projects/view/$projectId/': typeof LayoutProjectsViewProjectIdIndexRoute
+  '/_layout/tasks/$taskId/subtasks/': typeof LayoutTasksTaskIdSubtasksIndexRoute
   '/_layout/tasks/view/$taskId/': typeof LayoutTasksViewTaskIdIndexRoute
   '/_layout/tasks/view/$taskId/add-subtask/': typeof LayoutTasksViewTaskIdAddSubtaskIndexRoute
 }
@@ -383,6 +402,7 @@ export interface FileRouteTypes {
     | '/tasks/$taskId'
     | '/tasks/add'
     | '/projects/view/$projectId'
+    | '/tasks/$taskId/subtasks'
     | '/tasks/view/$taskId'
     | '/tasks/view/$taskId/add-subtask'
   fileRoutesByTo: FileRoutesByTo
@@ -403,6 +423,7 @@ export interface FileRouteTypes {
     | '/tasks/$taskId'
     | '/tasks/add'
     | '/projects/view/$projectId'
+    | '/tasks/$taskId/subtasks'
     | '/tasks/view/$taskId'
     | '/tasks/view/$taskId/add-subtask'
   id:
@@ -423,6 +444,7 @@ export interface FileRouteTypes {
     | '/_layout/tasks/$taskId/'
     | '/_layout/tasks/add/'
     | '/_layout/projects/view/$projectId/'
+    | '/_layout/tasks/$taskId/subtasks/'
     | '/_layout/tasks/view/$taskId/'
     | '/_layout/tasks/view/$taskId/add-subtask/'
   fileRoutesById: FileRoutesById
@@ -480,6 +502,7 @@ export const routeTree = rootRoute
         "/_layout/tasks/$taskId/",
         "/_layout/tasks/add/",
         "/_layout/projects/view/$projectId/",
+        "/_layout/tasks/$taskId/subtasks/",
         "/_layout/tasks/view/$taskId/",
         "/_layout/tasks/view/$taskId/add-subtask/"
       ]
@@ -535,6 +558,10 @@ export const routeTree = rootRoute
     },
     "/_layout/projects/view/$projectId/": {
       "filePath": "_layout/projects/view/$projectId/index.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/tasks/$taskId/subtasks/": {
+      "filePath": "_layout/tasks/$taskId/subtasks/index.tsx",
       "parent": "/_layout"
     },
     "/_layout/tasks/view/$taskId/": {
