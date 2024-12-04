@@ -24,6 +24,7 @@ import TaskComments from "./Comments";
 import { isMananger } from "@/lib/helpers/loginHelpers";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
 import { ActivityDrawer } from "./ActivityDrawer";
+import SubTasks from "../subtasks";
 
 const TaskView = () => {
   const navigate = useNavigate();
@@ -165,6 +166,14 @@ const TaskView = () => {
                 Add SubTask
               </Button>
             </div>
+            <Button
+              type="button"
+              onClick={() =>
+                router.navigate({ to: `/tasks/${taskId}/subtasks` })
+              }
+            >
+              View SubTask
+            </Button>
             <div className="action-buttons flex space-x-2">
               <TaskStatus
                 taskId={taskId}
@@ -203,6 +212,7 @@ const TaskView = () => {
               <UploadAttachments />
               <hr className="my-3" />
               <TaskComments taskId={taskId} />
+              {/* <SubTasks /> */}
             </div>
             <div
               className={`rightItem transition-transform duration-300 ${
