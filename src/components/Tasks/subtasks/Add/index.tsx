@@ -38,12 +38,16 @@ import { useSelector } from "react-redux";
 import { DatePicker } from "rsuite";
 import { toast } from "sonner";
 import TagsComponentForAdd from "../../Add/TagsComponentForAdd";
+import { sub } from "date-fns";
 
 const AddSubTask = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
   const { taskId } = useParams({ strict: false });
+  const { subtaskId } = useParams({ strict: false });
+  const { projectId } = useParams({ strict: false });
+  console.log(projectId, "projectId");
   const searchParams = new URLSearchParams(location.search);
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
@@ -68,13 +72,11 @@ const AddSubTask = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [selectedProjectLogo, setSelectedProjectLogo] =
     React.useState<any>(null);
-  console.log("selectedProjectLogo", selectedProjectLogo);
   const [selectedUsers, setSelectedUsers] = useState(new Set());
   const handleChange = (e: any) => {
     setTask({ ...task, [e.target.name]: e.target.value });
   };
   const handleProjectSelect = (project: any) => {
-    console.log(project, "project");
     setTask((prev: any) => ({
       ...prev,
       project_id: project.id ? project.id : "",
@@ -89,7 +91,7 @@ const AddSubTask = () => {
     let payload = {
       ...task,
     };
-    if (!taskId) {
+    if (!subtaskId) {
       payload["users"] = task.users.map((user: any) => ({
         name: user.name,
         id: user.user_id,
@@ -101,7 +103,9 @@ const AddSubTask = () => {
     mutationFn: async (payload: any) => {
       setErrorMessages({});
       setLoading(true);
-      return addTasksAPI(payload);
+      return subtaskId
+        ? updateTasksAPI(subtaskId, payload)
+        : addTasksAPI(payload);
     },
     onSuccess: (response: any) => {
       if (response?.status === 200 || response?.status === 201) {
@@ -128,9 +132,9 @@ const AddSubTask = () => {
     error: taskError,
     data: taskData,
   } = useQuery({
-    queryKey: ["getSingleTask", taskId],
+    queryKey: ["getSingleTask", subtaskId],
     queryFn: async () => {
-      const response = await getSingleTaskAPI(taskId);
+      const response = await getSingleTaskAPI(subtaskId);
       const taskData = response?.data?.data;
       console.log("taskData", taskData);
       try {
@@ -142,7 +146,6 @@ const AddSubTask = () => {
           setTask(data);
           setSelectedProjectLogo(taskData.project_logo || "/favicon.png");
         } else {
-          throw new Error("Failed to fetch task");
         }
         return response;
       } catch (err: any) {
@@ -213,7 +216,7 @@ const AddSubTask = () => {
       className="min-h-screen overflow-auto m-3 bg-white shadow rounded-lg"
     >
       <h2 className="text-lg font-bold mb-5 border-b px-6 py-4">
-        {/* {taskId ? "Edit Task" : "Add Task"} */}
+        {taskId && subtaskId ? "Edit Subtask" : "Add SubTask"}
       </h2>
       <div className="px-6">
         <div className="grid grid-cols-2 gap-10">
@@ -601,7 +604,7 @@ const AddSubTask = () => {
                 onClick={handleSubmit}
                 className="bg-[#1B2459] text-white font-medium text-md hover:bg-[#1B2459] hover:text-white px-8"
               >
-                {taskId ? "Update" : " Submit"}
+                {taskId && subtaskId ? "Update" : " Submit"}
               </Button>
             </div>
           </div>

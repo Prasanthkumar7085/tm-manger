@@ -10,288 +10,303 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as ForgotPasswordImport } from './routes/forgot-password'
-import { Route as LayoutImport } from './routes/_layout'
-import { Route as IndexImport } from './routes/index'
-import { Route as PraticegraphIndexImport } from './routes/praticegraph/index'
-import { Route as AuthResetPasswordImport } from './routes/auth/reset-password'
-import { Route as LayoutViewProfileImport } from './routes/_layout/view-profile'
-import { Route as LayoutUsersIndexImport } from './routes/_layout/users/index'
-import { Route as LayoutTasksIndexImport } from './routes/_layout/tasks/index'
-import { Route as LayoutProjectsIndexImport } from './routes/_layout/projects/index'
-import { Route as LayoutDashboardIndexImport } from './routes/_layout/dashboard/index'
-import { Route as LayoutTasksAddIndexImport } from './routes/_layout/tasks/add/index'
-import { Route as LayoutTasksTaskIdIndexImport } from './routes/_layout/tasks/$taskId/index'
-import { Route as LayoutProjectsAddIndexImport } from './routes/_layout/projects/add/index'
-import { Route as LayoutProjectsProjectIdIndexImport } from './routes/_layout/projects/$projectId/index'
-import { Route as LayoutProjectsProjectIdProjectmembersImport } from './routes/_layout/projects/$projectId/project_members'
-import { Route as LayoutTasksViewTaskIdIndexImport } from './routes/_layout/tasks/view/$taskId/index'
-import { Route as LayoutTasksTaskIdSubtasksIndexImport } from './routes/_layout/tasks/$taskId/subtasks/index'
-import { Route as LayoutProjectsViewProjectIdIndexImport } from './routes/_layout/projects/view/$projectId/index'
-import { Route as LayoutTasksViewTaskIdAddSubtaskIndexImport } from './routes/_layout/tasks/view/$taskId/add-subtask/index'
+import { Route as rootRoute } from "./routes/__root";
+import { Route as ForgotPasswordImport } from "./routes/forgot-password";
+import { Route as LayoutImport } from "./routes/_layout";
+import { Route as IndexImport } from "./routes/index";
+import { Route as PraticegraphIndexImport } from "./routes/praticegraph/index";
+import { Route as AuthResetPasswordImport } from "./routes/auth/reset-password";
+import { Route as LayoutViewProfileImport } from "./routes/_layout/view-profile";
+import { Route as LayoutUsersIndexImport } from "./routes/_layout/users/index";
+import { Route as LayoutTasksIndexImport } from "./routes/_layout/tasks/index";
+import { Route as LayoutProjectsIndexImport } from "./routes/_layout/projects/index";
+import { Route as LayoutDashboardIndexImport } from "./routes/_layout/dashboard/index";
+import { Route as LayoutTasksAddIndexImport } from "./routes/_layout/tasks/add/index";
+import { Route as LayoutTasksTaskIdIndexImport } from "./routes/_layout/tasks/$taskId/index";
+import { Route as LayoutProjectsAddIndexImport } from "./routes/_layout/projects/add/index";
+import { Route as LayoutProjectsProjectIdIndexImport } from "./routes/_layout/projects/$projectId/index";
+import { Route as LayoutProjectsProjectIdProjectmembersImport } from "./routes/_layout/projects/$projectId/project_members";
+import { Route as LayoutTasksViewTaskIdIndexImport } from "./routes/_layout/tasks/view/$taskId/index";
+import { Route as LayoutTasksTaskIdSubtasksIndexImport } from "./routes/_layout/tasks/$taskId/subtasks/index";
+import { Route as LayoutProjectsViewProjectIdIndexImport } from "./routes/_layout/projects/view/$projectId/index";
+import { Route as LayoutTasksTaskIdSubtasksAddSubtaskIndexImport } from "./routes/_layout/tasks/$taskId/subtasks/add-subtask/index";
+import { Route as LayoutTasksTaskIdSubtasksSubtaskIdIndexImport } from "./routes/_layout/tasks/$taskId/subtasks/$subtaskId/index";
 
 // Create/Update Routes
 
 const ForgotPasswordRoute = ForgotPasswordImport.update({
-  path: '/forgot-password',
+  path: "/forgot-password",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const LayoutRoute = LayoutImport.update({
-  id: '/_layout',
+  id: "/_layout",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const IndexRoute = IndexImport.update({
-  path: '/',
+  path: "/",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const PraticegraphIndexRoute = PraticegraphIndexImport.update({
-  path: '/praticegraph/',
+  path: "/praticegraph/",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const AuthResetPasswordRoute = AuthResetPasswordImport.update({
-  path: '/auth/reset-password',
+  path: "/auth/reset-password",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const LayoutViewProfileRoute = LayoutViewProfileImport.update({
-  path: '/view-profile',
+  path: "/view-profile",
   getParentRoute: () => LayoutRoute,
-} as any)
+} as any);
 
 const LayoutUsersIndexRoute = LayoutUsersIndexImport.update({
-  path: '/users/',
+  path: "/users/",
   getParentRoute: () => LayoutRoute,
-} as any)
+} as any);
 
 const LayoutTasksIndexRoute = LayoutTasksIndexImport.update({
-  path: '/tasks/',
+  path: "/tasks/",
   getParentRoute: () => LayoutRoute,
-} as any)
+} as any);
 
 const LayoutProjectsIndexRoute = LayoutProjectsIndexImport.update({
-  path: '/projects/',
+  path: "/projects/",
   getParentRoute: () => LayoutRoute,
-} as any)
+} as any);
 
 const LayoutDashboardIndexRoute = LayoutDashboardIndexImport.update({
-  path: '/dashboard/',
+  path: "/dashboard/",
   getParentRoute: () => LayoutRoute,
-} as any)
+} as any);
 
 const LayoutTasksAddIndexRoute = LayoutTasksAddIndexImport.update({
-  path: '/tasks/add/',
+  path: "/tasks/add/",
   getParentRoute: () => LayoutRoute,
-} as any)
+} as any);
 
 const LayoutTasksTaskIdIndexRoute = LayoutTasksTaskIdIndexImport.update({
-  path: '/tasks/$taskId/',
+  path: "/tasks/$taskId/",
   getParentRoute: () => LayoutRoute,
-} as any)
+} as any);
 
 const LayoutProjectsAddIndexRoute = LayoutProjectsAddIndexImport.update({
-  path: '/projects/add/',
+  path: "/projects/add/",
   getParentRoute: () => LayoutRoute,
-} as any)
+} as any);
 
 const LayoutProjectsProjectIdIndexRoute =
   LayoutProjectsProjectIdIndexImport.update({
-    path: '/projects/$projectId/',
+    path: "/projects/$projectId/",
     getParentRoute: () => LayoutRoute,
-  } as any)
+  } as any);
 
 const LayoutProjectsProjectIdProjectmembersRoute =
   LayoutProjectsProjectIdProjectmembersImport.update({
-    path: '/projects/$projectId/project_members',
+    path: "/projects/$projectId/project_members",
     getParentRoute: () => LayoutRoute,
-  } as any)
+  } as any);
 
 const LayoutTasksViewTaskIdIndexRoute = LayoutTasksViewTaskIdIndexImport.update(
   {
-    path: '/tasks/view/$taskId/',
+    path: "/tasks/view/$taskId/",
     getParentRoute: () => LayoutRoute,
-  } as any,
-)
+  } as any
+);
 
 const LayoutTasksTaskIdSubtasksIndexRoute =
   LayoutTasksTaskIdSubtasksIndexImport.update({
-    path: '/tasks/$taskId/subtasks/',
+    path: "/tasks/$taskId/subtasks/",
     getParentRoute: () => LayoutRoute,
-  } as any)
+  } as any);
 
 const LayoutProjectsViewProjectIdIndexRoute =
   LayoutProjectsViewProjectIdIndexImport.update({
-    path: '/projects/view/$projectId/',
+    path: "/projects/view/$projectId/",
     getParentRoute: () => LayoutRoute,
-  } as any)
+  } as any);
 
-const LayoutTasksViewTaskIdAddSubtaskIndexRoute =
-  LayoutTasksViewTaskIdAddSubtaskIndexImport.update({
-    path: '/tasks/view/$taskId/add-subtask/',
+const LayoutTasksTaskIdSubtasksAddSubtaskIndexRoute =
+  LayoutTasksTaskIdSubtasksAddSubtaskIndexImport.update({
+    path: "/tasks/$taskId/subtasks/add-subtask/",
     getParentRoute: () => LayoutRoute,
-  } as any)
+  } as any);
+
+const LayoutTasksTaskIdSubtasksSubtaskIdIndexRoute =
+  LayoutTasksTaskIdSubtasksSubtaskIdIndexImport.update({
+    path: "/tasks/$taskId/subtasks/$subtaskId/",
+    getParentRoute: () => LayoutRoute,
+  } as any);
 
 // Populate the FileRoutesByPath interface
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/_layout': {
-      id: '/_layout'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof LayoutImport
-      parentRoute: typeof rootRoute
-    }
-    '/forgot-password': {
-      id: '/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof ForgotPasswordImport
-      parentRoute: typeof rootRoute
-    }
-    '/_layout/view-profile': {
-      id: '/_layout/view-profile'
-      path: '/view-profile'
-      fullPath: '/view-profile'
-      preLoaderRoute: typeof LayoutViewProfileImport
-      parentRoute: typeof LayoutImport
-    }
-    '/auth/reset-password': {
-      id: '/auth/reset-password'
-      path: '/auth/reset-password'
-      fullPath: '/auth/reset-password'
-      preLoaderRoute: typeof AuthResetPasswordImport
-      parentRoute: typeof rootRoute
-    }
-    '/praticegraph/': {
-      id: '/praticegraph/'
-      path: '/praticegraph'
-      fullPath: '/praticegraph'
-      preLoaderRoute: typeof PraticegraphIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/_layout/dashboard/': {
-      id: '/_layout/dashboard/'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof LayoutDashboardIndexImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/projects/': {
-      id: '/_layout/projects/'
-      path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof LayoutProjectsIndexImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/tasks/': {
-      id: '/_layout/tasks/'
-      path: '/tasks'
-      fullPath: '/tasks'
-      preLoaderRoute: typeof LayoutTasksIndexImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/users/': {
-      id: '/_layout/users/'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof LayoutUsersIndexImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/projects/$projectId/project_members': {
-      id: '/_layout/projects/$projectId/project_members'
-      path: '/projects/$projectId/project_members'
-      fullPath: '/projects/$projectId/project_members'
-      preLoaderRoute: typeof LayoutProjectsProjectIdProjectmembersImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/projects/$projectId/': {
-      id: '/_layout/projects/$projectId/'
-      path: '/projects/$projectId'
-      fullPath: '/projects/$projectId'
-      preLoaderRoute: typeof LayoutProjectsProjectIdIndexImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/projects/add/': {
-      id: '/_layout/projects/add/'
-      path: '/projects/add'
-      fullPath: '/projects/add'
-      preLoaderRoute: typeof LayoutProjectsAddIndexImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/tasks/$taskId/': {
-      id: '/_layout/tasks/$taskId/'
-      path: '/tasks/$taskId'
-      fullPath: '/tasks/$taskId'
-      preLoaderRoute: typeof LayoutTasksTaskIdIndexImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/tasks/add/': {
-      id: '/_layout/tasks/add/'
-      path: '/tasks/add'
-      fullPath: '/tasks/add'
-      preLoaderRoute: typeof LayoutTasksAddIndexImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/projects/view/$projectId/': {
-      id: '/_layout/projects/view/$projectId/'
-      path: '/projects/view/$projectId'
-      fullPath: '/projects/view/$projectId'
-      preLoaderRoute: typeof LayoutProjectsViewProjectIdIndexImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/tasks/$taskId/subtasks/': {
-      id: '/_layout/tasks/$taskId/subtasks/'
-      path: '/tasks/$taskId/subtasks'
-      fullPath: '/tasks/$taskId/subtasks'
-      preLoaderRoute: typeof LayoutTasksTaskIdSubtasksIndexImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/tasks/view/$taskId/': {
-      id: '/_layout/tasks/view/$taskId/'
-      path: '/tasks/view/$taskId'
-      fullPath: '/tasks/view/$taskId'
-      preLoaderRoute: typeof LayoutTasksViewTaskIdIndexImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/tasks/view/$taskId/add-subtask/': {
-      id: '/_layout/tasks/view/$taskId/add-subtask/'
-      path: '/tasks/view/$taskId/add-subtask'
-      fullPath: '/tasks/view/$taskId/add-subtask'
-      preLoaderRoute: typeof LayoutTasksViewTaskIdAddSubtaskIndexImport
-      parentRoute: typeof LayoutImport
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/_layout": {
+      id: "/_layout";
+      path: "";
+      fullPath: "";
+      preLoaderRoute: typeof LayoutImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/forgot-password": {
+      id: "/forgot-password";
+      path: "/forgot-password";
+      fullPath: "/forgot-password";
+      preLoaderRoute: typeof ForgotPasswordImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/_layout/view-profile": {
+      id: "/_layout/view-profile";
+      path: "/view-profile";
+      fullPath: "/view-profile";
+      preLoaderRoute: typeof LayoutViewProfileImport;
+      parentRoute: typeof LayoutImport;
+    };
+    "/auth/reset-password": {
+      id: "/auth/reset-password";
+      path: "/auth/reset-password";
+      fullPath: "/auth/reset-password";
+      preLoaderRoute: typeof AuthResetPasswordImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/praticegraph/": {
+      id: "/praticegraph/";
+      path: "/praticegraph";
+      fullPath: "/praticegraph";
+      preLoaderRoute: typeof PraticegraphIndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/_layout/dashboard/": {
+      id: "/_layout/dashboard/";
+      path: "/dashboard";
+      fullPath: "/dashboard";
+      preLoaderRoute: typeof LayoutDashboardIndexImport;
+      parentRoute: typeof LayoutImport;
+    };
+    "/_layout/projects/": {
+      id: "/_layout/projects/";
+      path: "/projects";
+      fullPath: "/projects";
+      preLoaderRoute: typeof LayoutProjectsIndexImport;
+      parentRoute: typeof LayoutImport;
+    };
+    "/_layout/tasks/": {
+      id: "/_layout/tasks/";
+      path: "/tasks";
+      fullPath: "/tasks";
+      preLoaderRoute: typeof LayoutTasksIndexImport;
+      parentRoute: typeof LayoutImport;
+    };
+    "/_layout/users/": {
+      id: "/_layout/users/";
+      path: "/users";
+      fullPath: "/users";
+      preLoaderRoute: typeof LayoutUsersIndexImport;
+      parentRoute: typeof LayoutImport;
+    };
+    "/_layout/projects/$projectId/project_members": {
+      id: "/_layout/projects/$projectId/project_members";
+      path: "/projects/$projectId/project_members";
+      fullPath: "/projects/$projectId/project_members";
+      preLoaderRoute: typeof LayoutProjectsProjectIdProjectmembersImport;
+      parentRoute: typeof LayoutImport;
+    };
+    "/_layout/projects/$projectId/": {
+      id: "/_layout/projects/$projectId/";
+      path: "/projects/$projectId";
+      fullPath: "/projects/$projectId";
+      preLoaderRoute: typeof LayoutProjectsProjectIdIndexImport;
+      parentRoute: typeof LayoutImport;
+    };
+    "/_layout/projects/add/": {
+      id: "/_layout/projects/add/";
+      path: "/projects/add";
+      fullPath: "/projects/add";
+      preLoaderRoute: typeof LayoutProjectsAddIndexImport;
+      parentRoute: typeof LayoutImport;
+    };
+    "/_layout/tasks/$taskId/": {
+      id: "/_layout/tasks/$taskId/";
+      path: "/tasks/$taskId";
+      fullPath: "/tasks/$taskId";
+      preLoaderRoute: typeof LayoutTasksTaskIdIndexImport;
+      parentRoute: typeof LayoutImport;
+    };
+    "/_layout/tasks/add/": {
+      id: "/_layout/tasks/add/";
+      path: "/tasks/add";
+      fullPath: "/tasks/add";
+      preLoaderRoute: typeof LayoutTasksAddIndexImport;
+      parentRoute: typeof LayoutImport;
+    };
+    "/_layout/projects/view/$projectId/": {
+      id: "/_layout/projects/view/$projectId/";
+      path: "/projects/view/$projectId";
+      fullPath: "/projects/view/$projectId";
+      preLoaderRoute: typeof LayoutProjectsViewProjectIdIndexImport;
+      parentRoute: typeof LayoutImport;
+    };
+    "/_layout/tasks/$taskId/subtasks/": {
+      id: "/_layout/tasks/$taskId/subtasks/";
+      path: "/tasks/$taskId/subtasks";
+      fullPath: "/tasks/$taskId/subtasks";
+      preLoaderRoute: typeof LayoutTasksTaskIdSubtasksIndexImport;
+      parentRoute: typeof LayoutImport;
+    };
+    "/_layout/tasks/view/$taskId/": {
+      id: "/_layout/tasks/view/$taskId/";
+      path: "/tasks/view/$taskId";
+      fullPath: "/tasks/view/$taskId";
+      preLoaderRoute: typeof LayoutTasksViewTaskIdIndexImport;
+      parentRoute: typeof LayoutImport;
+    };
+    "/_layout/tasks/$taskId/subtasks/$subtaskId/": {
+      id: "/_layout/tasks/$taskId/subtasks/$subtaskId/";
+      path: "/tasks/$taskId/subtasks/$subtaskId";
+      fullPath: "/tasks/$taskId/subtasks/$subtaskId";
+      preLoaderRoute: typeof LayoutTasksTaskIdSubtasksSubtaskIdIndexImport;
+      parentRoute: typeof LayoutImport;
+    };
+    "/_layout/tasks/$taskId/subtasks/add-subtask/": {
+      id: "/_layout/tasks/$taskId/subtasks/add-subtask/";
+      path: "/tasks/$taskId/subtasks/add-subtask";
+      fullPath: "/tasks/$taskId/subtasks/add-subtask";
+      preLoaderRoute: typeof LayoutTasksTaskIdSubtasksAddSubtaskIndexImport;
+      parentRoute: typeof LayoutImport;
+    };
   }
 }
 
 // Create and export the route tree
 
 interface LayoutRouteChildren {
-  LayoutViewProfileRoute: typeof LayoutViewProfileRoute
-  LayoutDashboardIndexRoute: typeof LayoutDashboardIndexRoute
-  LayoutProjectsIndexRoute: typeof LayoutProjectsIndexRoute
-  LayoutTasksIndexRoute: typeof LayoutTasksIndexRoute
-  LayoutUsersIndexRoute: typeof LayoutUsersIndexRoute
-  LayoutProjectsProjectIdProjectmembersRoute: typeof LayoutProjectsProjectIdProjectmembersRoute
-  LayoutProjectsProjectIdIndexRoute: typeof LayoutProjectsProjectIdIndexRoute
-  LayoutProjectsAddIndexRoute: typeof LayoutProjectsAddIndexRoute
-  LayoutTasksTaskIdIndexRoute: typeof LayoutTasksTaskIdIndexRoute
-  LayoutTasksAddIndexRoute: typeof LayoutTasksAddIndexRoute
-  LayoutProjectsViewProjectIdIndexRoute: typeof LayoutProjectsViewProjectIdIndexRoute
-  LayoutTasksTaskIdSubtasksIndexRoute: typeof LayoutTasksTaskIdSubtasksIndexRoute
-  LayoutTasksViewTaskIdIndexRoute: typeof LayoutTasksViewTaskIdIndexRoute
-  LayoutTasksViewTaskIdAddSubtaskIndexRoute: typeof LayoutTasksViewTaskIdAddSubtaskIndexRoute
+  LayoutViewProfileRoute: typeof LayoutViewProfileRoute;
+  LayoutDashboardIndexRoute: typeof LayoutDashboardIndexRoute;
+  LayoutProjectsIndexRoute: typeof LayoutProjectsIndexRoute;
+  LayoutTasksIndexRoute: typeof LayoutTasksIndexRoute;
+  LayoutUsersIndexRoute: typeof LayoutUsersIndexRoute;
+  LayoutProjectsProjectIdProjectmembersRoute: typeof LayoutProjectsProjectIdProjectmembersRoute;
+  LayoutProjectsProjectIdIndexRoute: typeof LayoutProjectsProjectIdIndexRoute;
+  LayoutProjectsAddIndexRoute: typeof LayoutProjectsAddIndexRoute;
+  LayoutTasksTaskIdIndexRoute: typeof LayoutTasksTaskIdIndexRoute;
+  LayoutTasksAddIndexRoute: typeof LayoutTasksAddIndexRoute;
+  LayoutProjectsViewProjectIdIndexRoute: typeof LayoutProjectsViewProjectIdIndexRoute;
+  LayoutTasksTaskIdSubtasksIndexRoute: typeof LayoutTasksTaskIdSubtasksIndexRoute;
+  LayoutTasksViewTaskIdIndexRoute: typeof LayoutTasksViewTaskIdIndexRoute;
+  LayoutTasksTaskIdSubtasksSubtaskIdIndexRoute: typeof LayoutTasksTaskIdSubtasksSubtaskIdIndexRoute;
+  LayoutTasksTaskIdSubtasksAddSubtaskIndexRoute: typeof LayoutTasksTaskIdSubtasksAddSubtaskIndexRoute;
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
@@ -309,153 +324,161 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutProjectsViewProjectIdIndexRoute: LayoutProjectsViewProjectIdIndexRoute,
   LayoutTasksTaskIdSubtasksIndexRoute: LayoutTasksTaskIdSubtasksIndexRoute,
   LayoutTasksViewTaskIdIndexRoute: LayoutTasksViewTaskIdIndexRoute,
-  LayoutTasksViewTaskIdAddSubtaskIndexRoute:
-    LayoutTasksViewTaskIdAddSubtaskIndexRoute,
-}
+  LayoutTasksTaskIdSubtasksSubtaskIdIndexRoute:
+    LayoutTasksTaskIdSubtasksSubtaskIdIndexRoute,
+  LayoutTasksTaskIdSubtasksAddSubtaskIndexRoute:
+    LayoutTasksTaskIdSubtasksAddSubtaskIndexRoute,
+};
 
 const LayoutRouteWithChildren =
-  LayoutRoute._addFileChildren(LayoutRouteChildren)
+  LayoutRoute._addFileChildren(LayoutRouteChildren);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '': typeof LayoutRouteWithChildren
-  '/forgot-password': typeof ForgotPasswordRoute
-  '/view-profile': typeof LayoutViewProfileRoute
-  '/auth/reset-password': typeof AuthResetPasswordRoute
-  '/praticegraph': typeof PraticegraphIndexRoute
-  '/dashboard': typeof LayoutDashboardIndexRoute
-  '/projects': typeof LayoutProjectsIndexRoute
-  '/tasks': typeof LayoutTasksIndexRoute
-  '/users': typeof LayoutUsersIndexRoute
-  '/projects/$projectId/project_members': typeof LayoutProjectsProjectIdProjectmembersRoute
-  '/projects/$projectId': typeof LayoutProjectsProjectIdIndexRoute
-  '/projects/add': typeof LayoutProjectsAddIndexRoute
-  '/tasks/$taskId': typeof LayoutTasksTaskIdIndexRoute
-  '/tasks/add': typeof LayoutTasksAddIndexRoute
-  '/projects/view/$projectId': typeof LayoutProjectsViewProjectIdIndexRoute
-  '/tasks/$taskId/subtasks': typeof LayoutTasksTaskIdSubtasksIndexRoute
-  '/tasks/view/$taskId': typeof LayoutTasksViewTaskIdIndexRoute
-  '/tasks/view/$taskId/add-subtask': typeof LayoutTasksViewTaskIdAddSubtaskIndexRoute
+  "/": typeof IndexRoute;
+  "": typeof LayoutRouteWithChildren;
+  "/forgot-password": typeof ForgotPasswordRoute;
+  "/view-profile": typeof LayoutViewProfileRoute;
+  "/auth/reset-password": typeof AuthResetPasswordRoute;
+  "/praticegraph": typeof PraticegraphIndexRoute;
+  "/dashboard": typeof LayoutDashboardIndexRoute;
+  "/projects": typeof LayoutProjectsIndexRoute;
+  "/tasks": typeof LayoutTasksIndexRoute;
+  "/users": typeof LayoutUsersIndexRoute;
+  "/projects/$projectId/project_members": typeof LayoutProjectsProjectIdProjectmembersRoute;
+  "/projects/$projectId": typeof LayoutProjectsProjectIdIndexRoute;
+  "/projects/add": typeof LayoutProjectsAddIndexRoute;
+  "/tasks/$taskId": typeof LayoutTasksTaskIdIndexRoute;
+  "/tasks/add": typeof LayoutTasksAddIndexRoute;
+  "/projects/view/$projectId": typeof LayoutProjectsViewProjectIdIndexRoute;
+  "/tasks/$taskId/subtasks": typeof LayoutTasksTaskIdSubtasksIndexRoute;
+  "/tasks/view/$taskId": typeof LayoutTasksViewTaskIdIndexRoute;
+  "/tasks/$taskId/subtasks/$subtaskId": typeof LayoutTasksTaskIdSubtasksSubtaskIdIndexRoute;
+  "/tasks/$taskId/subtasks/add-subtask": typeof LayoutTasksTaskIdSubtasksAddSubtaskIndexRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '': typeof LayoutRouteWithChildren
-  '/forgot-password': typeof ForgotPasswordRoute
-  '/view-profile': typeof LayoutViewProfileRoute
-  '/auth/reset-password': typeof AuthResetPasswordRoute
-  '/praticegraph': typeof PraticegraphIndexRoute
-  '/dashboard': typeof LayoutDashboardIndexRoute
-  '/projects': typeof LayoutProjectsIndexRoute
-  '/tasks': typeof LayoutTasksIndexRoute
-  '/users': typeof LayoutUsersIndexRoute
-  '/projects/$projectId/project_members': typeof LayoutProjectsProjectIdProjectmembersRoute
-  '/projects/$projectId': typeof LayoutProjectsProjectIdIndexRoute
-  '/projects/add': typeof LayoutProjectsAddIndexRoute
-  '/tasks/$taskId': typeof LayoutTasksTaskIdIndexRoute
-  '/tasks/add': typeof LayoutTasksAddIndexRoute
-  '/projects/view/$projectId': typeof LayoutProjectsViewProjectIdIndexRoute
-  '/tasks/$taskId/subtasks': typeof LayoutTasksTaskIdSubtasksIndexRoute
-  '/tasks/view/$taskId': typeof LayoutTasksViewTaskIdIndexRoute
-  '/tasks/view/$taskId/add-subtask': typeof LayoutTasksViewTaskIdAddSubtaskIndexRoute
+  "/": typeof IndexRoute;
+  "": typeof LayoutRouteWithChildren;
+  "/forgot-password": typeof ForgotPasswordRoute;
+  "/view-profile": typeof LayoutViewProfileRoute;
+  "/auth/reset-password": typeof AuthResetPasswordRoute;
+  "/praticegraph": typeof PraticegraphIndexRoute;
+  "/dashboard": typeof LayoutDashboardIndexRoute;
+  "/projects": typeof LayoutProjectsIndexRoute;
+  "/tasks": typeof LayoutTasksIndexRoute;
+  "/users": typeof LayoutUsersIndexRoute;
+  "/projects/$projectId/project_members": typeof LayoutProjectsProjectIdProjectmembersRoute;
+  "/projects/$projectId": typeof LayoutProjectsProjectIdIndexRoute;
+  "/projects/add": typeof LayoutProjectsAddIndexRoute;
+  "/tasks/$taskId": typeof LayoutTasksTaskIdIndexRoute;
+  "/tasks/add": typeof LayoutTasksAddIndexRoute;
+  "/projects/view/$projectId": typeof LayoutProjectsViewProjectIdIndexRoute;
+  "/tasks/$taskId/subtasks": typeof LayoutTasksTaskIdSubtasksIndexRoute;
+  "/tasks/view/$taskId": typeof LayoutTasksViewTaskIdIndexRoute;
+  "/tasks/$taskId/subtasks/$subtaskId": typeof LayoutTasksTaskIdSubtasksSubtaskIdIndexRoute;
+  "/tasks/$taskId/subtasks/add-subtask": typeof LayoutTasksTaskIdSubtasksAddSubtaskIndexRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/_layout': typeof LayoutRouteWithChildren
-  '/forgot-password': typeof ForgotPasswordRoute
-  '/_layout/view-profile': typeof LayoutViewProfileRoute
-  '/auth/reset-password': typeof AuthResetPasswordRoute
-  '/praticegraph/': typeof PraticegraphIndexRoute
-  '/_layout/dashboard/': typeof LayoutDashboardIndexRoute
-  '/_layout/projects/': typeof LayoutProjectsIndexRoute
-  '/_layout/tasks/': typeof LayoutTasksIndexRoute
-  '/_layout/users/': typeof LayoutUsersIndexRoute
-  '/_layout/projects/$projectId/project_members': typeof LayoutProjectsProjectIdProjectmembersRoute
-  '/_layout/projects/$projectId/': typeof LayoutProjectsProjectIdIndexRoute
-  '/_layout/projects/add/': typeof LayoutProjectsAddIndexRoute
-  '/_layout/tasks/$taskId/': typeof LayoutTasksTaskIdIndexRoute
-  '/_layout/tasks/add/': typeof LayoutTasksAddIndexRoute
-  '/_layout/projects/view/$projectId/': typeof LayoutProjectsViewProjectIdIndexRoute
-  '/_layout/tasks/$taskId/subtasks/': typeof LayoutTasksTaskIdSubtasksIndexRoute
-  '/_layout/tasks/view/$taskId/': typeof LayoutTasksViewTaskIdIndexRoute
-  '/_layout/tasks/view/$taskId/add-subtask/': typeof LayoutTasksViewTaskIdAddSubtaskIndexRoute
+  __root__: typeof rootRoute;
+  "/": typeof IndexRoute;
+  "/_layout": typeof LayoutRouteWithChildren;
+  "/forgot-password": typeof ForgotPasswordRoute;
+  "/_layout/view-profile": typeof LayoutViewProfileRoute;
+  "/auth/reset-password": typeof AuthResetPasswordRoute;
+  "/praticegraph/": typeof PraticegraphIndexRoute;
+  "/_layout/dashboard/": typeof LayoutDashboardIndexRoute;
+  "/_layout/projects/": typeof LayoutProjectsIndexRoute;
+  "/_layout/tasks/": typeof LayoutTasksIndexRoute;
+  "/_layout/users/": typeof LayoutUsersIndexRoute;
+  "/_layout/projects/$projectId/project_members": typeof LayoutProjectsProjectIdProjectmembersRoute;
+  "/_layout/projects/$projectId/": typeof LayoutProjectsProjectIdIndexRoute;
+  "/_layout/projects/add/": typeof LayoutProjectsAddIndexRoute;
+  "/_layout/tasks/$taskId/": typeof LayoutTasksTaskIdIndexRoute;
+  "/_layout/tasks/add/": typeof LayoutTasksAddIndexRoute;
+  "/_layout/projects/view/$projectId/": typeof LayoutProjectsViewProjectIdIndexRoute;
+  "/_layout/tasks/$taskId/subtasks/": typeof LayoutTasksTaskIdSubtasksIndexRoute;
+  "/_layout/tasks/view/$taskId/": typeof LayoutTasksViewTaskIdIndexRoute;
+  "/_layout/tasks/$taskId/subtasks/$subtaskId/": typeof LayoutTasksTaskIdSubtasksSubtaskIdIndexRoute;
+  "/_layout/tasks/$taskId/subtasks/add-subtask/": typeof LayoutTasksTaskIdSubtasksAddSubtaskIndexRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | ''
-    | '/forgot-password'
-    | '/view-profile'
-    | '/auth/reset-password'
-    | '/praticegraph'
-    | '/dashboard'
-    | '/projects'
-    | '/tasks'
-    | '/users'
-    | '/projects/$projectId/project_members'
-    | '/projects/$projectId'
-    | '/projects/add'
-    | '/tasks/$taskId'
-    | '/tasks/add'
-    | '/projects/view/$projectId'
-    | '/tasks/$taskId/subtasks'
-    | '/tasks/view/$taskId'
-    | '/tasks/view/$taskId/add-subtask'
-  fileRoutesByTo: FileRoutesByTo
+    | "/"
+    | ""
+    | "/forgot-password"
+    | "/view-profile"
+    | "/auth/reset-password"
+    | "/praticegraph"
+    | "/dashboard"
+    | "/projects"
+    | "/tasks"
+    | "/users"
+    | "/projects/$projectId/project_members"
+    | "/projects/$projectId"
+    | "/projects/add"
+    | "/tasks/$taskId"
+    | "/tasks/add"
+    | "/projects/view/$projectId"
+    | "/tasks/$taskId/subtasks"
+    | "/tasks/view/$taskId"
+    | "/tasks/$taskId/subtasks/$subtaskId"
+    | "/tasks/$taskId/subtasks/add-subtask";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/'
-    | ''
-    | '/forgot-password'
-    | '/view-profile'
-    | '/auth/reset-password'
-    | '/praticegraph'
-    | '/dashboard'
-    | '/projects'
-    | '/tasks'
-    | '/users'
-    | '/projects/$projectId/project_members'
-    | '/projects/$projectId'
-    | '/projects/add'
-    | '/tasks/$taskId'
-    | '/tasks/add'
-    | '/projects/view/$projectId'
-    | '/tasks/$taskId/subtasks'
-    | '/tasks/view/$taskId'
-    | '/tasks/view/$taskId/add-subtask'
+    | "/"
+    | ""
+    | "/forgot-password"
+    | "/view-profile"
+    | "/auth/reset-password"
+    | "/praticegraph"
+    | "/dashboard"
+    | "/projects"
+    | "/tasks"
+    | "/users"
+    | "/projects/$projectId/project_members"
+    | "/projects/$projectId"
+    | "/projects/add"
+    | "/tasks/$taskId"
+    | "/tasks/add"
+    | "/projects/view/$projectId"
+    | "/tasks/$taskId/subtasks"
+    | "/tasks/view/$taskId"
+    | "/tasks/$taskId/subtasks/$subtaskId"
+    | "/tasks/$taskId/subtasks/add-subtask";
   id:
-    | '__root__'
-    | '/'
-    | '/_layout'
-    | '/forgot-password'
-    | '/_layout/view-profile'
-    | '/auth/reset-password'
-    | '/praticegraph/'
-    | '/_layout/dashboard/'
-    | '/_layout/projects/'
-    | '/_layout/tasks/'
-    | '/_layout/users/'
-    | '/_layout/projects/$projectId/project_members'
-    | '/_layout/projects/$projectId/'
-    | '/_layout/projects/add/'
-    | '/_layout/tasks/$taskId/'
-    | '/_layout/tasks/add/'
-    | '/_layout/projects/view/$projectId/'
-    | '/_layout/tasks/$taskId/subtasks/'
-    | '/_layout/tasks/view/$taskId/'
-    | '/_layout/tasks/view/$taskId/add-subtask/'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/_layout"
+    | "/forgot-password"
+    | "/_layout/view-profile"
+    | "/auth/reset-password"
+    | "/praticegraph/"
+    | "/_layout/dashboard/"
+    | "/_layout/projects/"
+    | "/_layout/tasks/"
+    | "/_layout/users/"
+    | "/_layout/projects/$projectId/project_members"
+    | "/_layout/projects/$projectId/"
+    | "/_layout/projects/add/"
+    | "/_layout/tasks/$taskId/"
+    | "/_layout/tasks/add/"
+    | "/_layout/projects/view/$projectId/"
+    | "/_layout/tasks/$taskId/subtasks/"
+    | "/_layout/tasks/view/$taskId/"
+    | "/_layout/tasks/$taskId/subtasks/$subtaskId/"
+    | "/_layout/tasks/$taskId/subtasks/add-subtask/";
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  LayoutRoute: typeof LayoutRouteWithChildren
-  ForgotPasswordRoute: typeof ForgotPasswordRoute
-  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
-  PraticegraphIndexRoute: typeof PraticegraphIndexRoute
+  IndexRoute: typeof IndexRoute;
+  LayoutRoute: typeof LayoutRouteWithChildren;
+  ForgotPasswordRoute: typeof ForgotPasswordRoute;
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute;
+  PraticegraphIndexRoute: typeof PraticegraphIndexRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -464,11 +487,11 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   PraticegraphIndexRoute: PraticegraphIndexRoute,
-}
+};
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
 /* prettier-ignore-end */
 
@@ -504,7 +527,8 @@ export const routeTree = rootRoute
         "/_layout/projects/view/$projectId/",
         "/_layout/tasks/$taskId/subtasks/",
         "/_layout/tasks/view/$taskId/",
-        "/_layout/tasks/view/$taskId/add-subtask/"
+        "/_layout/tasks/$taskId/subtasks/$subtaskId/",
+        "/_layout/tasks/$taskId/subtasks/add-subtask/"
       ]
     },
     "/forgot-password": {
@@ -568,8 +592,12 @@ export const routeTree = rootRoute
       "filePath": "_layout/tasks/view/$taskId/index.tsx",
       "parent": "/_layout"
     },
-    "/_layout/tasks/view/$taskId/add-subtask/": {
-      "filePath": "_layout/tasks/view/$taskId/add-subtask/index.tsx",
+    "/_layout/tasks/$taskId/subtasks/$subtaskId/": {
+      "filePath": "_layout/tasks/$taskId/subtasks/$subtaskId/index.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/tasks/$taskId/subtasks/add-subtask/": {
+      "filePath": "_layout/tasks/$taskId/subtasks/add-subtask/index.tsx",
       "parent": "/_layout"
     }
   }

@@ -7,7 +7,7 @@ import {
   taskStatusConstants,
 } from "@/lib/helpers/statusConstants";
 import { archiveTaskAPI, deleteTaskAPI } from "@/lib/services/tasks";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
 import { useState } from "react";
@@ -33,9 +33,11 @@ export const subTaskColumns = () => {
   const [open, setOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const { taskId } = useParams({ strict: false });
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
   );
+  const { subtaskId } = useParams({ strict: false });
   const deleteTask = async () => {
     try {
       setDeleteLoading(true);
@@ -57,11 +59,12 @@ export const subTaskColumns = () => {
       to: `/tasks/view/${taskId}`,
     });
   };
-  const handleEdit = (taskId: any) => {
+  const handleEdit = (subtaskId: any) => {
     navigate({
-      to: `/tasks/${taskId}`,
+      to: `/tasks/${taskId}/subtasks/${subtaskId}`,
     });
   };
+
   const onClickClose = () => {
     setOpen(false);
   };
@@ -187,20 +190,20 @@ export const subTaskColumns = () => {
               .slice(0, 5)
               .map((assignee: any) => {
                 const initials =
-                  assignee.user.fname?.[0]?.toUpperCase() +
-                  assignee.user.lname?.[0]?.toUpperCase();
+                  assignee.fname?.[0]?.toUpperCase() +
+                  assignee.lname?.[0]?.toUpperCase();
                 console.log(initials, "initials");
                 const backgroundColor = getColorFromInitials(initials);
                 return (
                   <Avatar
                     key={assignee.user_id}
-                    title={assignee?.user_fname + " " + assignee.user_lname}
+                    title={assignee?.fname + " " + assignee.lname}
                     className={`w-6 h-6 ${backgroundColor}`}
                   >
                     <AvatarImage
-                      src={assignee.user_profile_pic_url}
+                      src={assignee.profile_pic}
                       alt={assignee.name}
-                      title={assignee.user_fname + " " + assignee.user_lname}
+                      title={assignee.fname + " " + assignee.lname}
                     />
                     <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>
@@ -373,76 +376,79 @@ export const subTaskColumns = () => {
       accessorFn: (row: any) => row.actions,
       id: "actions",
       cell: (info: any) => (
-        <>
-          <ul className="table-action-buttons flex space-x-2 items-center">
-            <li>
-              <Button
-                title="View"
-                variant={"ghost"}
-                className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
-                onClick={() => handleView(info.row.original.id)}
-              >
-                <img src={viewButtonIcon} alt="view" height={18} width={18} />
-              </Button>
-            </li>
-            <li>
-              <Button
-                title="Edit"
-                variant={"ghost"}
-                disabled={
-                  profileData?.user_type === "admin" ||
-                  isProjectMemberOrNot(
-                    info.row.original.assignees,
-                    profileData?.id
-                  )
-                    ? false
-                    : true
-                }
-                className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
-                onClick={() => handleEdit(info.row.original.id)}
-              >
-                <img
-                  src={"/table/edit.svg"}
-                  alt="view"
-                  height={18}
-                  width={18}
-                />
-              </Button>
-            </li>
-            <li>
-              <Button
-                title="archive"
-                disabled={
-                  profileData?.user_type === "admin" ||
-                  isProjectMemberOrNot(
-                    info.row.original.assignees,
-                    profileData?.id
-                  )
-                    ? false
-                    : true
-                }
-                onClick={() => onClickOpen(info.row.original.id)}
-                variant={"ghost"}
-                className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
-              >
-                <img
-                  src={"/archive.svg"}
-                  alt="archive"
-                  height={18}
-                  width={18}
-                />
-              </Button>
-            </li>
-          </ul>
-          <DeleteDialog
-            openOrNot={open}
-            label="Are you sure you want to Archive this task?"
-            onCancelClick={onClickClose}
-            onOKClick={deleteTask}
-            deleteLoading={deleteLoading}
-            buttonLable="Yes! Archive"
-          />
-        </>
+        console.log(info.row.original.id, "info"),
+        (
+          <>
+            <ul className="table-action-buttons flex space-x-2 items-center">
+              <li>
+                <Button
+                  title="View"
+                  variant={"ghost"}
+                  className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
+                  onClick={() => handleView(info.row.original.id)}
+                >
+                  <img src={viewButtonIcon} alt="view" height={18} width={18} />
+                </Button>
+              </li>
+              <li>
+                <Button
+                  title="Edit"
+                  variant={"ghost"}
+                  disabled={
+                    profileData?.user_type === "admin" ||
+                    isProjectMemberOrNot(
+                      info.row.original.assignees,
+                      profileData?.id
+                    )
+                      ? false
+                      : true
+                  }
+                  className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
+                  onClick={() => handleEdit(info.row.original.id)}
+                >
+                  <img
+                    src={"/table/edit.svg"}
+                    alt="view"
+                    height={18}
+                    width={18}
+                  />
+                </Button>
+              </li>
+              <li>
+                <Button
+                  title="archive"
+                  disabled={
+                    profileData?.user_type === "admin" ||
+                    isProjectMemberOrNot(
+                      info.row.original.assignees,
+                      profileData?.id
+                    )
+                      ? false
+                      : true
+                  }
+                  onClick={() => onClickOpen(info.row.original.id)}
+                  variant={"ghost"}
+                  className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
+                >
+                  <img
+                    src={"/archive.svg"}
+                    alt="archive"
+                    height={18}
+                    width={18}
+                  />
+                </Button>
+              </li>
+            </ul>
+            <DeleteDialog
+              openOrNot={open}
+              label="Are you sure you want to Archive this task?"
+              onCancelClick={onClickClose}
+              onOKClick={deleteTask}
+              deleteLoading={deleteLoading}
+              buttonLable="Yes! Archive"
+            />
+          </>
+        )
       ),
       header: () => <span>Actions</span>,
       footer: (props: any) => props.column.id,

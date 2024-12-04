@@ -44,14 +44,13 @@ const ProjectView = () => {
   const [openMembers, setOpenMembers] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  console.log(previewUrl, "prol");
 
   const { isFetching, isLoading } = useQuery({
     queryKey: ["getSingleProject", projectId],
     queryFn: async () => {
       try {
         const response = await viewProjectAPI(projectId);
-        console.log(response, "response");
+
         if (response.success) {
           setProjectDetails(response.data?.data);
           setPreviewUrl(response.data?.data?.logo);
@@ -159,7 +158,6 @@ const ProjectView = () => {
   const handleCardClick = (status: string) => {
     setSelectedStatus(status);
   };
-  console.log(import.meta.env.VITE_IMAGE_URL, "lplp");
 
   return (
     <div className="card-container shadow-md border p-5 rounded-lg bg-white h-[calc(100vh-100px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
