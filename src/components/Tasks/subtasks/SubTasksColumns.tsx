@@ -105,7 +105,7 @@ export const subTaskColumns = () => {
       id: "title",
       cell: (info: any) => {
         const title = info.getValue();
-        console.log(title, "title");
+
         const project_logo_url =
           info.row.original.project_logo || "/favicon.png";
         const handleProjectsView = () => {
@@ -143,39 +143,33 @@ export const subTaskColumns = () => {
       header: () => <span>Title</span>,
       footer: (props: any) => props.column.id,
     },
-    // {
-    //   accessorFn: (row: any) => ({ ref_id: row.ref_id, title: row.title }),
-    //   id: "title",
-    //   cell: (info: any) => {
-    //     const { ref_id, title } = info.getValue();
-    //     const handleView = (taskId: any) => {
-    //       navigate({
-    //         to: `/tasks/view/${taskId}`,
-    //       });
-    //     };
-    //     return (
-    //       <div
-    //         className="task capitalize flex justify-between cursor-pointer"
-    //         onClick={() => handleView(info.row.original.id)}
-    //       >
-    //         <span
-    //           title={title}
-    //           className="task-title whitespace-nowrap overflow-hidden text-ellipsis max-w-[100px]"
-    //         >
-    //           {title || "-"}
-    //         </span>
-    //         <span className="ml-2 text-[11px] font-semibold text-primary">
-    //           [{ref_id}]
-    //         </span>
-    //       </div>
-    //     );
-    //   },
-    //   width: "230px",
-    //   maxWidth: "230px",
-    //   minWidth: "230px",
-    //   header: () => <span>Task</span>,
-    //   footer: (props: any) => props.column.id,
-    // },
+    {
+      accessorFn: (row: any) => ({ ref_id: row.ref_id }),
+      id: "ref_id",
+      cell: (info: any) => {
+        const { ref_id } = info.getValue();
+        const handleView = (taskId: any) => {
+          navigate({
+            to: `/tasks/view/${taskId}`,
+          });
+        };
+        return (
+          <div
+            className="task capitalize flex justify-between cursor-pointer"
+            onClick={() => handleView(info.row.original.id)}
+          >
+            <span className="ml-2 text-[11px] font-semibold text-primary">
+              [{ref_id}]
+            </span>
+          </div>
+        );
+      },
+      width: "230px",
+      maxWidth: "230px",
+      minWidth: "230px",
+      header: () => <span>Ref Id</span>,
+      footer: (props: any) => props.column.id,
+    },
     {
       accessorFn: (row: any) => row.assignees,
       id: "assignees",

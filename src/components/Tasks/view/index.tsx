@@ -130,19 +130,6 @@ const TaskView = () => {
     setActivityOpen(true);
   };
 
-  const handleNavigation = () => {
-    //     onClick={() => {
-    //   if (taskId) {
-    //     router.navigate({
-    //       to: `/tasks/${taskId}/subtasks/edit-subtask`,
-    //     });
-    //   } else {
-    //     router.navigate({
-    //       to: `/tasks/${taskId}/subtasks/add-subtask`,
-    //     });
-    //   }
-    // }}
-  };
   return (
     <div className="relative overflow-y-auto">
       <div
@@ -173,7 +160,7 @@ const TaskView = () => {
                 type="button"
                 onClick={() =>
                   router.navigate({
-                    to: `/tasks/${taskId}/subtasks/add-subtask`,
+                    to: `/tasks/${taskId}/subtasks/add-subtask?project_id=${viewData?.project_id}`,
                   })
                 }
               >

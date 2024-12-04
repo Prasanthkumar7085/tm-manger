@@ -47,7 +47,7 @@ const AddSubTask = () => {
   const { taskId } = useParams({ strict: false });
   const { subtaskId } = useParams({ strict: false });
   const { projectId } = useParams({ strict: false });
-  console.log(projectId, "projectId");
+
   const searchParams = new URLSearchParams(location.search);
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
@@ -62,10 +62,10 @@ const AddSubTask = () => {
     users: [],
     project_id: Number(searchParams.get("project_id")) || "",
   });
+
   const [openProjects, setOpenProjects] = useState(false);
   const [tagInput, setTagInput] = useState<any>("");
   const [projectsList, setProjectsList] = useState<any>([]);
-
   const [openUsers, setOpenUsers] = useState(false);
   const [errorMessages, setErrorMessages] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
@@ -90,6 +90,7 @@ const AddSubTask = () => {
   const handleSubmit = () => {
     let payload = {
       ...task,
+      parent_id: Number(taskId),
     };
     if (!subtaskId) {
       payload["users"] = task.users.map((user: any) => ({
