@@ -446,7 +446,7 @@ const AddSubTask = () => {
               )}
             </div>
             <div className="form-item">
-              {!taskId && (
+              {taskId && (
                 <div className="mb-4">
                   <div className="flex justify-between items-center mb-4">
                     <label className="block text-[#383838] font-medium text-sm mb-1">

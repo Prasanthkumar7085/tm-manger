@@ -156,26 +156,8 @@ const TaskView = () => {
                 </p>
               </div>
             </div>
-            <div>
-              <Button
-                type="button"
-                onClick={() =>
-                  router.navigate({
-                    to: `/tasks/${taskId}/subtasks/add-subtask?project_id=${viewData?.project_id}`,
-                  })
-                }
-              >
-                Add SubTask
-              </Button>
-            </div>
-            <Button
-              type="button"
-              onClick={() =>
-                router.navigate({ to: `/tasks/${taskId}/subtasks` })
-              }
-            >
-              View SubTask
-            </Button>
+            <div></div>
+
             <div className="action-buttons flex space-x-2">
               <TaskStatus
                 taskId={taskId}
@@ -212,7 +194,7 @@ const TaskView = () => {
           <div className="grid grid-cols-1 lg:grid-cols-[70%,auto] gap-5">
             <div className="leftItem">
               <UploadAttachments />
-              <SubTasks />
+              <SubTasks viewData={viewData} />
               <hr className="my-3" />
               <TaskComments taskId={taskId} />
             </div>
@@ -333,7 +315,7 @@ const TaskView = () => {
           </div>
         </div>
       </div>
-      <LoadingComponent loading={isLoading || loading} />
+      {/* <LoadingComponent loading={isLoading || loading} /> */}
     </div>
   );
 };

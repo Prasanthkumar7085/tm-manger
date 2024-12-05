@@ -7,12 +7,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "@tanstack/react-router";
 import { sub } from "date-fns";
 import { useEffect, useState } from "react";
-import { subTaskColumns } from "./SubTasksColumns";
+
 import { get } from "http";
 import LoadingComponent from "@/components/core/LoadingComponent";
 import { toast } from "sonner";
+import { SubTaskColumns } from "./SubTasksColumns";
+import { Button } from "@/components/ui/button";
 
-export const SubTasks = () => {
+export const SubTasks = ({ viewData }: { viewData: any }) => {
   const searchParams = new URLSearchParams(location.search);
   const initialSearch = searchParams.get("search");
   const router = useRouter();
@@ -21,7 +23,7 @@ export const SubTasks = () => {
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const { taskId } = useParams({ strict: false });
-  console.log(filteredData, "data");
+
   const { isFetching, isLoading } = useQuery({
     queryKey: ["subtasks", taskId],
     queryFn: async () => {
@@ -42,14 +44,20 @@ export const SubTasks = () => {
   return (
     <div className="relative">
       <div className="mt-5">
-        <TanStackTable
-          data={filteredData}
-          columns={subTaskColumns()}
-          loading={isLoading || isFetching || loading}
-          paginationDetails={0}
-          getData={getAllSubTasks}
-          removeSortingForColumnIds={["serial"]}
-        />
+        <div className="flex justify-end">
+          <Button
+            type="button"
+            className="h-[25px] px-3 bg-blue-400"
+            onClick={() =>
+              router.navigate({
+                to: `/tasks/${taskId}/subtasks/add-subtask?project_id=${viewData?.project_id}`,
+              })
+            }
+          >
+            Add SubTask
+          </Button>
+        </div>
+        <SubTaskColumns data={filteredData} />
       </div>
       <LoadingComponent
         loading={isLoading || isFetching || loading}
