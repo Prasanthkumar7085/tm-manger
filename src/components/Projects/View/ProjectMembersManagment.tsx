@@ -44,7 +44,9 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
   );
-  const [selectedMembers, setSelectedMembers] = useState<any>([]);
+
+  const [selectedMembers, setSelectedMembers] = useState<any[]>([]);
+
   const [loading, setLoading] = useState(false);
   const [errorMessages, setErrorMessages] = useState({});
   const [open, setOpen] = useState<boolean>(false);
@@ -57,15 +59,21 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
   const getFullName = (user: any) => {
     return `${user?.fname || ""} ${user?.lname || ""}`;
   };
+
   const confirmSelection = () => {
     const newMembers = tempSelectedMember
       ?.map((memberValue: string) => {
         const member = users.find(
           (user: any) => user.id.toString() === memberValue
         );
+
         return (
           member &&
-          !selectedMembers.some((m: any) => m.id === member.id) && {
+          !(
+            selectedMembers &&
+            Array.isArray(selectedMembers) &&
+            selectedMembers.some((m: any) => m.id === member.id)
+          ) && {
             id: member.id,
             role: member?.user_type.toUpperCase(),
             fname: member?.fname || "",
@@ -76,13 +84,30 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
         );
       })
       .filter(Boolean);
-    setSelectedMembers((prev: any) => [...prev, ...newMembers]);
+
+    if (newMembers.length === 0) {
+      toast.error("No new members selected.");
+      return;
+    }
+
+    setSelectedMembers((prev: any) => {
+      const updatedMembers = Array.isArray(prev)
+        ? [...prev, ...newMembers]
+        : prev && prev.records
+          ? [...prev.records, ...newMembers]
+          : [...newMembers];
+
+      return updatedMembers;
+    });
+
     setTempSelectedMember([]);
     setOpen(false);
-    let allMembers = [...newMembers];
-    let payload = allMembers.map((member: any) => {
-      return { user_id: member.id, role: member.role };
-    });
+
+    const payload = newMembers.map((member: any) => ({
+      user_id: member.id,
+      role: member.role,
+    }));
+
     setUpdatedOrNot(false);
     mutate({
       project_members: payload,
@@ -90,10 +115,12 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
   };
 
   const changeRole = (userId: number, role: string) => {
-    setSelectedMembers((prev: any) =>
-      prev.map((member: any) =>
-        member.user_id === userId ? { ...member, role } : member
-      )
+    setSelectedMembers(
+      (prev: any) =>
+        prev.length > 0 &&
+        prev.map((member: any) =>
+          member.user_id === userId ? { ...member, role } : member
+        )
     );
     let allMembers = [
       ...selectedMembers,
@@ -104,6 +131,7 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
     let payload = allMembers.map((member: any) => {
       return { user_id: member.user_id, role: member.role };
     });
+
     setUpdatedOrNot(true);
 
     mutate({
@@ -152,7 +180,8 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
         const response = await getProjectMembersAPI(projectId);
         if (response.success) {
           const data = response.data?.data;
-          setSelectedMembers(data?.members || []);
+
+          setSelectedMembers(data?.members?.records || []);
         } else {
           throw response;
         }
@@ -295,7 +324,7 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
                           onSelect={() => toggleValue(user.id.toString())}
                           disabled={
                             selectedMembers?.length > 0 &&
-                            !selectedMembers.some(
+                            selectedMembers?.some(
                               (m: any) => m.user_id == user.id
                             )
                           }

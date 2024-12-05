@@ -163,43 +163,41 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
       accessorFn: (row: any) => row.assignees,
       id: "assignees",
       cell: (info: any) => {
+        console.log(info.getValue(), "assignees");
         const [showPopover, setShowPopover] = useState(false);
         return (
           <div className="flex justify-start items-center -space-x-2">
-            {info.getValue().length === 0 && <span>--</span>}
+            {info.getValue()?.length === 0 && <span>--</span>}
 
             {info
               .getValue()
-              .slice(0, 5)
+              ?.slice(0, 5)
               .map((assignee: any) => {
                 const initials =
-                  assignee.user_first_name?.[0]?.toUpperCase() +
-                  assignee.user_last_name?.[0]?.toUpperCase();
+                  assignee.fname?.[0]?.toUpperCase() +
+                  assignee.lname?.[0]?.toUpperCase();
+                console.log(initials, "initials");
                 const backgroundColor = getColorFromInitials(initials);
                 return (
                   <Avatar
                     key={assignee.user_id}
-                    title={
-                      assignee?.user_first_name + " " + assignee.user_last_name
-                    }
+                    title={assignee?.fname + " " + assignee.lname}
                     className={`w-6 h-6 ${backgroundColor}`}
                   >
                     <AvatarImage
                       src={assignee.user_profile_pic_url}
                       alt={assignee.name}
-                      title={
-                        assignee.user_first_name + " " + assignee.user_last_name
-                      }
+                      title={assignee.fname + " " + assignee.lname}
                     />
                     <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>
                 );
               })}
-            {info.getValue().length > 5 && (
+            {info.getValue()?.length > 5 && (
               <Popover open={showPopover} onOpenChange={setShowPopover}>
                 <PopoverTrigger asChild>
                   <div className="flex items-center justify-center w-8 h-8 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold cursor-pointer hover:bg-gray-300">
-                    +{info.getValue().length - 5}
+                    +{info.getValue()?.length - 5}
                   </div>
                 </PopoverTrigger>
                 <PopoverContent className="p-2 w-48 max-w-xs bg-white border border-gray-300 rounded-lg shadow-lg max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
@@ -211,11 +209,7 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
                       >
                         <Avatar
                           key={assignee.user_id}
-                          title={
-                            assignee.user_first_name +
-                            " " +
-                            assignee.user_last_name
-                          }
+                          title={assignee.fname + " " + assignee.lname}
                           className={`w-8 h-8 ${getColorFromInitials(
                             assignee.user_first_name[0] +
                               assignee.user_last_name[0]
@@ -224,19 +218,14 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
                           <AvatarImage
                             src={assignee.user_profile_pic_url}
                             alt={assignee.name}
-                            title={
-                              assignee.user_first_name +
-                              " " +
-                              assignee.user_last_name
-                            }
+                            title={assignee.fname + " " + assignee.lname}
                           />
                           <AvatarFallback>
-                            {assignee.user_first_name[0] +
-                              assignee.user_last_name[0]}
+                            {assignee.fname[0] + assignee.lname[0]}
                           </AvatarFallback>
                         </Avatar>
                         <span>
-                          {assignee.user_first_name} {assignee.user_last_name}
+                          {assignee.fname} {assignee.lname}
                         </span>
                       </div>
                     ))}
