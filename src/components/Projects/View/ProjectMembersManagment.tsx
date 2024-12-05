@@ -57,12 +57,45 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
   const getFullName = (user: any) => {
     return `${user?.fname || ""} ${user?.lname || ""}`;
   };
+  // const confirmSelection = () => {
+  //   const newMembers = tempSelectedMember
+  //     ?.map((memberValue: string) => {
+  //       const member = users.find(
+  //         (user: any) => user.id.toString() === memberValue
+  //       );
+  //       return (
+  //         member &&
+  //         !selectedMembers.some((m: any) => m.id === member.id) && {
+  //           id: member.id,
+  //           role: member?.user_type.toUpperCase(),
+  //           fname: member?.fname || "",
+  //           lname: member?.lname || "",
+  //           email: member?.email || "--",
+  //           phone_number: member?.phone_number || "--",
+  //         }
+  //       );
+  //     })
+  //     .filter(Boolean);
+  //   setSelectedMembers((prev: any) => [...prev, ...newMembers]);
+  //   setTempSelectedMember([]);
+  //   setOpen(false);
+  //   let allMembers = [...newMembers];
+  //   let payload = allMembers.map((member: any) => {
+  //     return { user_id: member.id, role: member.role };
+  //   });
+  //   setUpdatedOrNot(false);
+  //   mutate({
+  //     project_members: payload,
+  //   });
+  // };
   const confirmSelection = () => {
     const newMembers = tempSelectedMember
       ?.map((memberValue: string) => {
         const member = users.find(
           (user: any) => user.id.toString() === memberValue
         );
+
+        // Only add members that are not already in the selected list
         return (
           member &&
           !selectedMembers.some((m: any) => m.id === member.id) && {
@@ -75,15 +108,29 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
           }
         );
       })
-      .filter(Boolean);
+      .filter(Boolean); // Remove undefined or falsy values
+
+    if (newMembers.length === 0) {
+      toast.error("No new members selected.");
+      return;
+    }
+
+    // Update selectedMembers
     setSelectedMembers((prev: any) => [...prev, ...newMembers]);
+
+    // Clear temporary selection
     setTempSelectedMember([]);
     setOpen(false);
-    let allMembers = [...newMembers];
-    let payload = allMembers.map((member: any) => {
-      return { user_id: member.id, role: member.role };
-    });
+
+    // Prepare payload for API call
+    const payload = newMembers.map((member: any) => ({
+      user_id: member.id,
+      role: member.role,
+    }));
+
     setUpdatedOrNot(false);
+
+    // Trigger API mutation
     mutate({
       project_members: payload,
     });
@@ -104,6 +151,7 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
     let payload = allMembers.map((member: any) => {
       return { user_id: member.user_id, role: member.role };
     });
+
     setUpdatedOrNot(true);
 
     mutate({

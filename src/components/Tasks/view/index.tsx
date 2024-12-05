@@ -24,6 +24,7 @@ import TaskComments from "./Comments";
 import { isMananger } from "@/lib/helpers/loginHelpers";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
 import { ActivityDrawer } from "./ActivityDrawer";
+import { SubTasks } from "../subtasks";
 
 const TaskView = () => {
   const navigate = useNavigate();
@@ -211,9 +212,9 @@ const TaskView = () => {
           <div className="grid grid-cols-1 lg:grid-cols-[70%,auto] gap-5">
             <div className="leftItem">
               <UploadAttachments />
+              <SubTasks />
               <hr className="my-3" />
               <TaskComments taskId={taskId} />
-              {/* <SubTasks /> */}
             </div>
             <div
               className={`rightItem transition-transform duration-300 ${
