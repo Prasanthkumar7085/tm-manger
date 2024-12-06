@@ -174,8 +174,8 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
               ?.slice(0, 5)
               .map((assignee: any) => {
                 const initials =
-                  assignee.fname?.[0]?.toUpperCase() +
-                  assignee.lname?.[0]?.toUpperCase();
+                  assignee.user_first_name?.[0]?.toUpperCase() +
+                  assignee.user_last_name?.[0]?.toUpperCase();
                 console.log(initials, "initials");
                 const backgroundColor = getColorFromInitials(initials);
                 return (
@@ -209,7 +209,11 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
                       >
                         <Avatar
                           key={assignee.user_id}
-                          title={assignee.fname + " " + assignee.lname}
+                          title={
+                            assignee.user_first_name +
+                            " " +
+                            assignee.user_last_name
+                          }
                           className={`w-8 h-8 ${getColorFromInitials(
                             assignee.user_first_name[0] +
                               assignee.user_last_name[0]
@@ -218,14 +222,19 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
                           <AvatarImage
                             src={assignee.user_profile_pic_url}
                             alt={assignee.name}
-                            title={assignee.fname + " " + assignee.lname}
+                            title={
+                              assignee.user_first_name +
+                              " " +
+                              assignee.user_last_name
+                            }
                           />
                           <AvatarFallback>
-                            {assignee.fname[0] + assignee.lname[0]}
+                            {assignee.user_first_name[0] +
+                              assignee.user_last_name[0]}
                           </AvatarFallback>
                         </Avatar>
                         <span>
-                          {assignee.fname} {assignee.lname}
+                          {assignee.user_first_name} {assignee.user_last_name}
                         </span>
                       </div>
                     ))}
@@ -240,6 +249,30 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
       maxWidth: "130px",
       minWidth: "130px",
       header: () => <span>Assigned Users</span>,
+      footer: (props: any) => props.column.id,
+    },
+    {
+      accessorFn: (row: any) => row.tags,
+      id: "tags",
+      cell: (info: any) => {
+        const tags = info.getValue();
+        return (
+          <div className="flex flex-wrap gap-2">
+            {tags?.map((tag: any, index: any) => (
+              <span
+                key={index}
+                className="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        );
+      },
+      width: "100px",
+      maxWidth: "100px",
+      minWidth: "100px",
+      header: () => <span>Tags</span>,
       footer: (props: any) => props.column.id,
     },
     {

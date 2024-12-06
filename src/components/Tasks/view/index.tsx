@@ -47,6 +47,7 @@ const TaskView = () => {
     label: string;
     value: string;
   }>();
+  console.log(selectedStatus, "selectedStatus");
   const [openReplies, setOpenReplies] = useState<any>({
     commentId: null,
     open: false,
@@ -194,7 +195,12 @@ const TaskView = () => {
           <div className="grid grid-cols-1 lg:grid-cols-[70%,auto] gap-5">
             <div className="leftItem">
               <UploadAttachments />
-              <SubTasks viewData={viewData} />
+              {viewData?.sub_task === false ? (
+                <SubTasks viewData={viewData} />
+              ) : (
+                ""
+              )}
+
               <hr className="my-3" />
               <TaskComments taskId={taskId} />
             </div>

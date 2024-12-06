@@ -54,6 +54,7 @@ const AssignedUsers = ({ viewTaskData }: any) => {
       download_url: any;
     }[]
   >([]);
+  console.log(selectedMembers, "selectedMembers");
   const [updatedOrNot, setUpdatedOrNot] = useState<boolean>(false);
   const page = 1;
   const limit = 10;
@@ -71,7 +72,9 @@ const AssignedUsers = ({ viewTaskData }: any) => {
         const response = await getAssignesAPI(taskId);
         if (response.status === 200 || response?.status === 201) {
           const data = response.data?.data;
-          setSelectedMembers(data);
+          console.log(data, "data");
+
+          setSelectedMembers(data.data);
         }
       } catch (error: any) {
         console.error(error);
@@ -173,6 +176,49 @@ const AssignedUsers = ({ viewTaskData }: any) => {
       user_ids: payload,
     });
   };
+  // const confirmSelection = () => {
+
+  //   const newMembers = Array.isArray(tempSelectedMember)
+  //     ? tempSelectedMember
+  //         .map((memberValue: string) => {
+  //           const member = users.find(
+  //             (user: any) => user.user_id.toString() === memberValue
+  //           );
+  //           return (
+  //             member &&
+  //             !selectedMembers.members.some((m: any) => m.id === member.user_id) && {
+  //               id: member.user_id,
+  //               fname: member?.fname || "",
+  //               lname: member?.lname || "",
+  //               email: member?.email || "--",
+  //               phone_number: member?.phone_number || "--",
+  //               user_type: member?.user_type || "--",
+  //             }
+  //           );
+  //         })
+  //         .filter(Boolean)
+  //     : []; // Fallback to empty array if tempSelectedMember is not an array
+
+  //   console.log("newMembers after filter", newMembers); // Debugging line
+
+  //   // Only proceed if newMembers is a valid array
+  //   if (newMembers.length > 0) {
+  //     setSelectedMembers((prev: any) => [...prev, ...newMembers]);
+  //     setTempSelectedMember([]);
+  //     setOpen(false);
+
+  //     let allMembers = [...newMembers];
+  //     let payload = allMembers.map((member: any) => {
+  //       return { user_id: member.id };
+  //     });
+
+  //     setUpdatedOrNot(false);
+
+  //     mutate({
+  //       user_ids: payload,
+  //     });
+  //   }
+  // };
 
   const isAbleToAddOrEdit = () => {
     if (
