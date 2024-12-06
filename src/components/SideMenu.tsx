@@ -12,10 +12,12 @@ import usersBlackIcon from "@/assets/users-icon.svg";
 import usersWhiteIcon from "@/assets/users-white-icon.svg";
 import projectsBlackIcon from "@/assets/projects-icon.svg";
 import projectsWhiteIcon from "@/assets/projects-white-icon.svg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import { deleteSetSubRefId } from "@/redux/Modules/userlogin";
 
 function SideMenu() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const router = useRouter();
   const { pathname } = useLocation();
@@ -31,6 +33,7 @@ function SideMenu() {
 
   const handleNavigation = (to: string) => {
     router.navigate({ to });
+    dispatch(deleteSetSubRefId());
   };
 
   return (

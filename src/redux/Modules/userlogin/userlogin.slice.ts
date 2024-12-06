@@ -38,6 +38,9 @@ export const userLoginSlice = createSlice({
     setSelectId: (state: any, action: any) => {
       state.selectId = action.payload;
     },
+    deleteSetSubRefId: (state: any) => {
+      state.subRefId = "";
+    },
   },
 });
 
@@ -47,8 +50,8 @@ export const {
   setProfileDetails,
   deleteProfileDetails,
   setRefId,
-
   setSubRefId,
+  deleteSetSubRefId,
 } = userLoginSlice.actions;
 
 export const userLoginSliceReducer = { [reducerName]: userLoginSlice.reducer };

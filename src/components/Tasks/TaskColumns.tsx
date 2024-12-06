@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import DeleteDialog from "../core/deleteDialog";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   isMananger,
   isProjectAdmin,
@@ -29,7 +29,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { setRefId } from "@/redux/Modules/userlogin";
 export const taskColumns = ({ setDel, isArchive }: any) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState("");
@@ -416,7 +418,10 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
                 title="View"
                 variant={"ghost"}
                 className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
-                onClick={() => handleView(info.row.original.id)}
+                onClick={() => {
+                  handleView(info.row.original.id);
+                  dispatch(setRefId(info.row.original.ref_id));
+                }}
               >
                 <img src={viewButtonIcon} alt="view" height={18} width={18} />
               </Button>

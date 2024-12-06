@@ -25,9 +25,13 @@ const userSlice = createSlice({
     setSubRefId: (state: any, action: any) => {
       state.subRefId = action.payload;
     },
+    deleteSetSubRefId: (state: any) => {
+      state.subRefId = "";
+    },
   },
 });
 
-export const { setSelectedId, setRefId, setSubRefId } = userSlice.actions;
+export const { setSelectedId, setRefId, setSubRefId, deleteSetSubRefId } =
+  userSlice.actions;
 
 export default userSlice.reducer;
