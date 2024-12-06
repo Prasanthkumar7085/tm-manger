@@ -192,8 +192,6 @@ export const SubTaskColumns = ({
                 </div>
               </td>
 
-              {/* Status */}
-
               <td className="p-2 text-sm">
                 <span
                   className="capitalize text-[12px] leading-1 px-2 rounded-full font-medium flex justify-center items-center"
