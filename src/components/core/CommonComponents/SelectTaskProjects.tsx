@@ -60,9 +60,14 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
             <img
               src={
                 projectList?.find((item: any) => item.id == selectedProject)
-                  ?.logo || "/favicon.png"
+                  ? `${import.meta.env.VITE_IMAGE_URL}/${
+                      projectList.find(
+                        (item: any) => item.id == selectedProject
+                      )?.logo
+                    }`
+                  : "/favicon.png"
               }
-              alt={` logo`}
+              alt={`logo`}
               onError={(e: any) => {
                 e.target.onerror = null;
                 e.target.src = "/favicon.png";
@@ -118,13 +123,12 @@ export const SelectTaskProjects: React.FC<StatusFilterProps> = ({
                           />
                           {(project.logo_url || "/favicon.png") && (
                             <img
-                              src={project.logo_url || "/favicon.png"}
+                              src={`${import.meta.env.VITE_IMAGE_URL}/${project.logo}`}
                               alt={`${project.title} logo`}
                               className="mr-2 h-6 w-6 rounded-full object-cover"
                               onError={(e: any) => {
                                 e.target.onerror = null;
-                                e.target.src =
-                                  "https://via.placeholder.com/150?text=No preview";
+                                e.target.src = "/favicon.png";
                               }}
                             />
                           )}

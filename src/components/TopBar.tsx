@@ -10,7 +10,7 @@ import {
 } from "@tanstack/react-router";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import {
@@ -31,6 +31,7 @@ import {
 } from "@/lib/services/notifications";
 import { toast } from "sonner";
 import { getAllSubTasks } from "@/lib/services/tasks";
+import { deleteSetSubRefId } from "@/redux/Modules/userlogin";
 
 interface titleProps {
   title: string;
@@ -38,6 +39,7 @@ interface titleProps {
 }
 
 function TopBar() {
+  const dispatch = useDispatch();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("current_page")) || 1;
@@ -217,6 +219,7 @@ function TopBar() {
   const handleLogout = () => {
     Cookies.remove("token");
     Cookies.remove("user_type");
+    dispatch(deleteSetSubRefId());
     navigate({
       to: `/`,
     });
@@ -224,11 +227,19 @@ function TopBar() {
 
   return (
     <div className="py-3 px-5 flex justify-between items-center bg-white border-b">
-      <span className="ml-2 text-lg font-semibold flex">
-        {pathname.includes("/tasks/view/") && taskId
-          ? `${title} - ${refernceId}`
-          : title}
-      </span>
+      {subRefernceId ? (
+        <span className="ml-2 text-lg font-semibold flex">
+          {pathname.includes("/tasks/view/") && taskId
+            ? `${title} - ${refernceId} / ${subRefernceId}`
+            : title}
+        </span>
+      ) : (
+        <span className="ml-2 text-lg font-semibold flex">
+          {pathname.includes("/tasks/view/") && taskId
+            ? `${title} - ${refernceId}`
+            : title}
+        </span>
+      )}
 
       <div className="flex items-center gap-2">
         {pathname == "/tasks" && !taskId && (

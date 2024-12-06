@@ -47,7 +47,7 @@ const TaskView = () => {
     label: string;
     value: string;
   }>();
-  console.log(selectedStatus, "selectedStatus");
+
   const [openReplies, setOpenReplies] = useState<any>({
     commentId: null,
     open: false,
@@ -69,7 +69,6 @@ const TaskView = () => {
             (item: any) => item.value === taskData?.status
           );
           setSelectedStatus(status);
-          dispatch(setRefId(response.data?.data?.ref_id));
         } else {
           throw new Error("Failed to fetch task");
         }

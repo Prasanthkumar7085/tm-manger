@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { getAssignesAPI } from "@/lib/services/tasks";
+import { archiveTaskAPI, getAssignesAPI } from "@/lib/services/tasks";
 import TaskStatus from "../view/TaskStatus";
 import { sub } from "date-fns";
 import SubTaskStatus from "./SubTaskStatus";
@@ -17,29 +17,35 @@ import {
   colorObjectForStatus,
 } from "@/lib/helpers/statusConstants";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setSubRefId } from "@/redux/Modules/userlogin";
+import { isProjectMemberOrNot } from "@/lib/helpers/loginHelpers";
+import DeleteDialog from "@/components/core/deleteDialog";
+import { toast } from "sonner";
 const getColorFromInitials = (initials: string) => {
   const colors = ["bg-red-500", "bg-blue-500", "bg-green-500"];
   return colors[initials.charCodeAt(0) % colors?.length];
 };
 
-export const SubTaskColumns = ({ data }: { data: any[] }) => {
+export const SubTaskColumns = ({
+  data,
+  setDel,
+}: {
+  data: any[];
+  setDel: any;
+}) => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const profileData: any = useSelector(
+    (state: any) => state.auth.user.user_details
+  );
   const { taskId } = useParams({ strict: false });
   const { subtaskId } = useParams({ strict: false });
-  console.log("subtaskId", subtaskId);
+
   const [showPopover, setShowPopover] = useState(false);
-  const [updateDetailsOfTask, setUpdateDetailsOfTask] = useState<any>(0);
-  const [updatePrority, setUpdatePriority] = useState<{
-    label: string;
-    value: string;
-  }>();
-  const [selectedStatus, setSelectedStatus] = useState<{
-    label: string;
-    value: string;
-  }>();
+  const [open, setOpen] = useState(false);
+  const [deleteTaskId, setDeleteTaskId] = useState("");
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const getColorFromInitials = (initials: string) => {
     const colors = ["bg-red-500", "bg-blue-500", "bg-green-500"];
@@ -64,10 +70,34 @@ export const SubTaskColumns = ({ data }: { data: any[] }) => {
     },
     enabled: Boolean(taskId),
   });
+  const deleteTask = async () => {
+    try {
+      setDeleteLoading(true);
+      const response = await archiveTaskAPI(deleteTaskId);
+      if (response?.status === 200 || response?.status === 201) {
+        onClickClose();
+        toast.success(response?.data?.message);
+        setDel((prev: any) => prev + 1);
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Something went wrong");
+      console.error(err);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
 
   const handleTitleClick = (row: any) => {
     router.navigate({ to: `/tasks/view/${row?.id}` });
     dispatch(setSubRefId(row?.ref_id));
+  };
+  const onClickOpen = (id: any) => {
+    setOpen(true);
+    setDeleteTaskId(id);
+  };
+
+  const onClickClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -84,15 +114,6 @@ export const SubTaskColumns = ({ data }: { data: any[] }) => {
               {/* Title */}
               <td className="p-2 text-sm">
                 <div className="flex items-center gap-2">
-                  <img
-                    src={row.project_logo || "/favicon.png"}
-                    alt="Project logo"
-                    className="w-6 h-6 rounded-full border"
-                    onError={(e: any) => {
-                      e.target.onerror = null;
-                      e.target.src = "/favicon.png";
-                    }}
-                  />
                   <span
                     className="capitalize cursor-pointer"
                     onClick={() => handleTitleClick(row)}
@@ -159,13 +180,6 @@ export const SubTaskColumns = ({ data }: { data: any[] }) => {
                 </div>
               </td>
 
-              {/* Due Date */}
-              {/* <td className="p-2 text-sm">
-                {row.due_date
-                  ? moment(row.due_date).format("MMM DD, YYYY")
-                  : "-"}
-              </td> */}
-
               {/* Status */}
 
               <td className="p-2 text-sm">
@@ -187,28 +201,71 @@ export const SubTaskColumns = ({ data }: { data: any[] }) => {
               </td>
               <td className="p-2 text-sm">
                 <span
-                  className={`px-2 py-1 text-xs font-medium rounded-full ${
-                    row.status === "OVER_DUE"
-                      ? "bg-red-100 text-red-500"
-                      : row.status === "TODO"
-                        ? "bg-purple-100 text-purple-500"
-                        : row.status === "COMPLETED"
-                          ? "bg-green-100 text-green-500"
-                          : "bg-blue-100 text-blue-500"
-                  }`}
+                  className={`rounded-full px-2 py-1 text-xs font-medium flex items-center justify-center ${(() => {
+                    switch (row.status) {
+                      case "OVER_DUE":
+                        return "bg-red-100 text-red-500";
+                      case "TODO":
+                        return "bg-purple-100 text-purple-500";
+                      case "COMPLETED":
+                        return "bg-green-100 text-green-500";
+                      case "IN_PROGRESS":
+                        return "bg-blue-100 text-blue-500";
+                      default:
+                        return "bg-gray-100 text-gray-500";
+                    }
+                  })()}`}
                 >
-                  {row.status}
+                  <span
+                    className={`dot w-2 h-2 inline-block mr-1 rounded-full ${(() => {
+                      switch (row.status) {
+                        case "OVER_DUE":
+                          return "bg-red-500";
+                        case "TODO":
+                          return "bg-purple-500";
+                        case "COMPLETED":
+                          return "bg-green-500";
+                        case "IN_PROGRESS":
+                          return "bg-blue-500";
+                        default:
+                          return "bg-gray-500";
+                      }
+                    })()}`}
+                  ></span>
+
+                  {/* Status Text */}
+                  <span className="text-[12px] font-medium">{row.status}</span>
                 </span>
-                {/* <SubTaskStatus
-                  subTaskId={subtaskId}
-                  setUpdateDetailsOfTask={setUpdateDetailsOfTask}
-                  selectedStatus={row.status}
-                  setSelectedStatus={setSelectedStatus}
-                  assignedUsers={assignedUsers || []}
-                /> */}
               </td>
+              <Button
+                title="archive"
+                disabled={
+                  profileData?.user_type === "admin" ||
+                  isProjectMemberOrNot(row.assignees, profileData?.id)
+                    ? false
+                    : true
+                }
+                onClick={() => onClickOpen(row.id)}
+                variant={"ghost"}
+                className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#f5f5f5]"
+              >
+                <img
+                  src={"/archive.svg"}
+                  alt="archive"
+                  height={18}
+                  width={18}
+                />
+              </Button>
             </tr>
           ))}
+          <DeleteDialog
+            openOrNot={open}
+            label="Are you sure you want to Archive this subtask?"
+            onCancelClick={onClickClose}
+            onOKClick={deleteTask}
+            deleteLoading={deleteLoading}
+            buttonLable="Yes! Archive"
+          />
         </tbody>
       </table>
     </div>

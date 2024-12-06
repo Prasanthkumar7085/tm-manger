@@ -19,13 +19,14 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
   const initialSearch = searchParams.get("search");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [del, setDel] = useState<any>(1);
   const [searchString, setSearchString] = useState<any>(initialSearch || "");
   const [debouncedSearch, setDebouncedSearch] = useState(searchString);
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const { taskId } = useParams({ strict: false });
 
   const { isFetching, isLoading } = useQuery({
-    queryKey: ["subtasks", taskId],
+    queryKey: ["subtasks", taskId, del],
     queryFn: async () => {
       try {
         const response = await getAllSubTasks(taskId);
@@ -57,7 +58,7 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
             Add SubTask
           </Button>
         </div>
-        <SubTaskColumns data={filteredData} />
+        <SubTaskColumns data={filteredData} setDel={setDel} />
       </div>
       <LoadingComponent
         loading={isLoading || isFetching || loading}
