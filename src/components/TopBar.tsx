@@ -22,7 +22,7 @@ import {
 import { Bell } from "lucide-react";
 import { Popover } from "@radix-ui/react-popover";
 import { PopoverContent, PopoverTrigger } from "./ui/popover";
-import { format } from "date-fns";
+import { format, sub } from "date-fns";
 import {
   getAllNotificationsAPI,
   getAllNotificationsCountsAPI,
@@ -30,6 +30,7 @@ import {
   markAsReadAPI,
 } from "@/lib/services/notifications";
 import { toast } from "sonner";
+import { getAllSubTasks } from "@/lib/services/tasks";
 
 interface titleProps {
   title: string;
@@ -56,17 +57,23 @@ function TopBar() {
   });
 
   const { taskId } = useParams({ strict: false });
+
   const pathname = location.pathname;
   const currentNavItem = navBarConstants.find((item: titleProps) =>
     pathname.includes(item.path)
   );
 
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
 
   const userID = useSelector(
     (state: any) => state.auth?.user?.user_details?.id
   );
   const refernceId: any = useSelector((state: any) => state.auth.refId);
+  const subRefernceId: any = useSelector((state: any) => state.auth.subRefId);
+  console.log(subRefernceId, "subRefernceId");
+  const subtaskId = useParams({ strict: false });
+  console.log(refernceId, "refernceId");
 
   const capitalize = (word: string) =>
     word.charAt(0).toUpperCase() + word.slice(1);
@@ -74,6 +81,22 @@ function TopBar() {
     return `${capitalize(user.fname)} ${capitalize(user.lname)}`;
   };
 
+  const { isFetching } = useQuery({
+    queryKey: ["subtasks", taskId],
+    queryFn: async () => {
+      try {
+        const response = await getAllSubTasks(taskId);
+        if (response.status === 200 || response?.status === 201) {
+          const data = response.data?.data;
+          setFilteredData(data);
+        }
+      } catch (error: any) {
+        console.error(error);
+        toast.error(error?.message || "Something went wrong");
+      }
+    },
+    enabled: Boolean(taskId),
+  });
   const title = currentNavItem ? currentNavItem.title : null;
   const navigate = useNavigate({ from: "/" });
   const { isLoading, isError, error } = useQuery({

@@ -8,6 +8,7 @@ export const initialState: IReduxUserLogin.IInitialLoginState = {
   user: {},
   emailWhilePasswordReset: "",
   refId: "",
+  subRefId: "",
 };
 
 export const userLoginSlice = createSlice({
@@ -30,6 +31,9 @@ export const userLoginSlice = createSlice({
     setRefId: (state: any, action: any) => {
       state.refId = action.payload;
     },
+    setSubRefId: (state: any, action: any) => {
+      state.subRefId = action.payload;
+    },
 
     setSelectId: (state: any, action: any) => {
       state.selectId = action.payload;
@@ -43,6 +47,8 @@ export const {
   setProfileDetails,
   deleteProfileDetails,
   setRefId,
+
+  setSubRefId,
 } = userLoginSlice.actions;
 
 export const userLoginSliceReducer = { [reducerName]: userLoginSlice.reducer };

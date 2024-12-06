@@ -3,11 +3,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface UserState {
   selectedId: string | null;
   refId: null;
+  subRefId: null;
 }
 
 const initialState: UserState = {
   selectedId: null,
   refId: null,
+  subRefId: null,
 };
 
 const userSlice = createSlice({
@@ -20,9 +22,12 @@ const userSlice = createSlice({
     setRefId: (state: any, action: any) => {
       state.refId = action.payload;
     },
+    setSubRefId: (state: any, action: any) => {
+      state.subRefId = action.payload;
+    },
   },
 });
 
-export const { setSelectedId, setRefId } = userSlice.actions;
+export const { setSelectedId, setRefId, setSubRefId } = userSlice.actions;
 
 export default userSlice.reducer;

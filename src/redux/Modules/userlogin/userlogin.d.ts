@@ -14,6 +14,7 @@ declare namespace IReduxUserLogin {
     user: Partial<UserDetails>;
     emailWhilePasswordReset: string;
     refId: string;
+    subRefId: string;
   }
 
   export interface IUserResponse {

@@ -181,7 +181,7 @@ const ProjectMembersManagment = ({ projectDetails }: any) => {
         if (response.success) {
           const data = response.data?.data;
 
-          setSelectedMembers(data?.members?.records || []);
+          setSelectedMembers(data?.members || []);
         } else {
           throw response;
         }
