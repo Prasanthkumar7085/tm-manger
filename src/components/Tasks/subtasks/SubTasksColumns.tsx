@@ -114,15 +114,6 @@ export const SubTaskColumns = ({
               {/* Title */}
               <td className="p-2 text-sm">
                 <div className="flex items-center gap-2">
-                  <img
-                    src={row.project_logo || "/favicon.png"}
-                    alt="Project logo"
-                    className="w-6 h-6 rounded-full border"
-                    onError={(e: any) => {
-                      e.target.onerror = null;
-                      e.target.src = "/favicon.png";
-                    }}
-                  />
                   <span
                     className="capitalize cursor-pointer"
                     onClick={() => handleTitleClick(row)}

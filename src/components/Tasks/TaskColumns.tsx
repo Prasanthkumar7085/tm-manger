@@ -98,7 +98,7 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
       cell: (info: any) => {
         const title = info.getValue();
         const project_logo_url =
-          info.row.original.project_logo || "/favicon.png";
+          info.row.original.project_log || "/favicon.png";
         const handleProjectsView = () => {
           navigate({
             to: `/projects/view/${info.row.original.project_id}`,
