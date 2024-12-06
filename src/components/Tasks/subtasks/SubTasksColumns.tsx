@@ -249,7 +249,6 @@ export const SubTaskColumns = ({
                     })()}`}
                   ></span>
 
-                  {/* Status Text */}
                   {taskStatusConstants.find(
                     (item: any) => item.value === row.status
                   )?.label || <span className="text-gray-500">--</span>}
