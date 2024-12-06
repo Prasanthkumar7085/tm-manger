@@ -23,11 +23,6 @@ import { setSubRefId } from "@/redux/Modules/userlogin";
 import { isProjectMemberOrNot } from "@/lib/helpers/loginHelpers";
 import DeleteDialog from "@/components/core/deleteDialog";
 import { toast } from "sonner";
-const getColorFromInitials = (initials: string) => {
-  const colors = ["bg-red-500", "bg-blue-500", "bg-green-500"];
-  return colors[initials.charCodeAt(0) % colors?.length];
-};
-
 export const SubTaskColumns = ({
   data,
   setDel,
