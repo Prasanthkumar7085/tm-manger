@@ -6,13 +6,30 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { useParams } from "@tanstack/react-router";
+import { useParams, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getAssignesAPI } from "@/lib/services/tasks";
 import TaskStatus from "../view/TaskStatus";
+import { sub } from "date-fns";
+import SubTaskStatus from "./SubTaskStatus";
+import {
+  bgColorObjectForStatus,
+  colorObjectForStatus,
+} from "@/lib/helpers/statusConstants";
+import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { setSubRefId } from "@/redux/Modules/userlogin";
+const getColorFromInitials = (initials: string) => {
+  const colors = ["bg-red-500", "bg-blue-500", "bg-green-500"];
+  return colors[initials.charCodeAt(0) % colors?.length];
+};
 
 export const SubTaskColumns = ({ data }: { data: any[] }) => {
+  const dispatch = useDispatch();
+  const router = useRouter();
   const { taskId } = useParams({ strict: false });
+  const { subtaskId } = useParams({ strict: false });
+  console.log("subtaskId", subtaskId);
   const [showPopover, setShowPopover] = useState(false);
   const [updateDetailsOfTask, setUpdateDetailsOfTask] = useState<any>(0);
   const [updatePrority, setUpdatePriority] = useState<{
@@ -48,6 +65,11 @@ export const SubTaskColumns = ({ data }: { data: any[] }) => {
     enabled: Boolean(taskId),
   });
 
+  const handleTitleClick = (row: any) => {
+    router.navigate({ to: `/tasks/view/${row?.id}` });
+    dispatch(setSubRefId(row?.ref_id));
+  };
+
   return (
     <div className="w-full overflow-x-auto">
       <table className="w-full border-collapse">
@@ -71,7 +93,12 @@ export const SubTaskColumns = ({ data }: { data: any[] }) => {
                       e.target.src = "/favicon.png";
                     }}
                   />
-                  <span className="capitalize">{row.title || "-"}</span>
+                  <span
+                    className="capitalize cursor-pointer"
+                    onClick={() => handleTitleClick(row)}
+                  >
+                    {row.title || "-"}
+                  </span>
                 </div>
               </td>
 
@@ -140,6 +167,24 @@ export const SubTaskColumns = ({ data }: { data: any[] }) => {
               </td> */}
 
               {/* Status */}
+
+              <td className="p-2 text-sm">
+                <span
+                  className="capitalize text-[12px] leading-1 px-2 rounded-full font-medium flex justify-center items-center"
+                  style={{
+                    backgroundColor:
+                      bgColorObjectForStatus[row.priority] || "gray",
+                    color: colorObjectForStatus[row.priority] || "black",
+                  }}
+                >
+                  {row.priority === "HIGH" && <ArrowUp className="w-4 h-4" />}
+                  {row.priority === "MEDIUM" && (
+                    <ArrowRight className="w-4 h-4" />
+                  )}
+                  {row.priority === "LOW" && <ArrowDown className="w-4 h-4" />}
+                  {row.priority || "-"}
+                </span>
+              </td>
               <td className="p-2 text-sm">
                 <span
                   className={`px-2 py-1 text-xs font-medium rounded-full ${
@@ -154,10 +199,10 @@ export const SubTaskColumns = ({ data }: { data: any[] }) => {
                 >
                   {row.status}
                 </span>
-                {/* <TaskStatus
-                  taskId={taskId}
+                {/* <SubTaskStatus
+                  subTaskId={subtaskId}
                   setUpdateDetailsOfTask={setUpdateDetailsOfTask}
-                  selectedStatus={selectedStatus}
+                  selectedStatus={row.status}
                   setSelectedStatus={setSelectedStatus}
                   assignedUsers={assignedUsers || []}
                 /> */}

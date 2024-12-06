@@ -30,6 +30,7 @@ import {
   isProjectAdmin,
   isProjectMemberOrNot,
 } from "@/lib/helpers/loginHelpers";
+import { on } from "events";
 
 const AssignedUsers = ({ viewTaskData }: any) => {
   const { taskId } = useParams({ strict: false });
@@ -294,40 +295,53 @@ const AssignedUsers = ({ viewTaskData }: any) => {
                   <CommandList className="max-h-[200px] z-[99999]">
                     <CommandGroup>
                       {Array.isArray(users) &&
-                        users?.map((user: any) => (
-                          <CommandItem
-                            className="cursor-pointer gap-x-1"
-                            key={user.id}
-                            value={getFullName(user)}
-                            onSelect={() =>
-                              toggleValue(user.user_id.toString())
-                            }
-                            disabled={selectedMembers.some(
-                              (m: any) => m.user_id == user.user_id
-                            )}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                tempSelectedMember.includes(
-                                  user.user_id.toString()
-                                )
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-
-                            <div className="w-6 h-6 object-contain	 rounded-full border  bg-white">
-                              <img
-                                src={
-                                  `${import.meta.env.VITE_IMAGE_URL}/${user?.created_profile_pic_url}` ||
-                                  "/profile-picture.png"
+                        users?.map(
+                          (user: any) => (
+                            console.log(user, "user"),
+                            (
+                              <CommandItem
+                                className="cursor-pointer gap-x-1"
+                                key={user.id}
+                                value={getFullName(user)}
+                                onSelect={() =>
+                                  toggleValue(user.user_id.toString())
                                 }
-                              />
-                            </div>
-                            <p className="capitalize">{getFullName(user)}</p>
-                          </CommandItem>
-                        ))}
+                                disabled={selectedMembers.some(
+                                  (m: any) => m.user_id == user.user_id
+                                )}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    tempSelectedMember.includes(
+                                      user.user_id.toString()
+                                    )
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+
+                                <div className="w-6 h-6 object-contain	 rounded-full border  bg-white">
+                                  <img
+                                    src={
+                                      `${import.meta.env.VITE_IMAGE_URL}/${
+                                        user.user_profile_pic
+                                      }` || "/profile-picture.png"
+                                    }
+                                    className="w-full h-full object-contain"
+                                    onError={(e: any) => {
+                                      e.target.onerror = null;
+                                      e.target.src = "/profile-picture.png";
+                                    }}
+                                  />
+                                </div>
+                                <p className="capitalize">
+                                  {getFullName(user)}
+                                </p>
+                              </CommandItem>
+                            )
+                          )
+                        )}
                     </CommandGroup>
                     <CommandEmpty>No members found.</CommandEmpty>
                   </CommandList>

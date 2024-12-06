@@ -23,6 +23,12 @@ import {
 } from "@/lib/helpers/loginHelpers";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
 import { getColorFromInitials } from "@/lib/constants/colorConstants";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 export const taskColumns = ({ setDel, isArchive }: any) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -251,30 +257,7 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
       header: () => <span>Assigned Users</span>,
       footer: (props: any) => props.column.id,
     },
-    {
-      accessorFn: (row: any) => row.tags,
-      id: "tags",
-      cell: (info: any) => {
-        const tags = info.getValue();
-        return (
-          <div className="flex flex-wrap gap-2">
-            {tags?.map((tag: any, index: any) => (
-              <span
-                key={index}
-                className="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        );
-      },
-      width: "100px",
-      maxWidth: "100px",
-      minWidth: "100px",
-      header: () => <span>Tags</span>,
-      footer: (props: any) => props.column.id,
-    },
+
     {
       accessorFn: (row: any) => row.due_date,
       id: "due_date",
@@ -286,6 +269,48 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
       maxWidth: "100px",
       minWidth: "100px",
       header: () => <span>Due Date</span>,
+      footer: (props: any) => props.column.id,
+    },
+    {
+      accessorFn: (row: any) => row.tags,
+      id: "tags",
+      cell: (info: any) => {
+        const tags = info.getValue();
+        const visibleTags = tags?.slice(0, 2);
+        const remainingTags = tags?.slice(2);
+
+        return (
+          <div className="flex flex-wrap gap-2">
+            {visibleTags?.map((tag: any, index: any) => (
+              <span
+                key={index}
+                className="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs"
+              >
+                {tag}
+              </span>
+            ))}
+
+            {remainingTags?.length > 0 && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <span className="bg-gray-200 text-gray-600 px-2 py-1 rounded-full text-xs cursor-pointer">
+                      +{remainingTags.length}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <div className="p-2">{remainingTags.join(", ")}</div>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+          </div>
+        );
+      },
+      width: "100px",
+      maxWidth: "100px",
+      minWidth: "100px",
+      header: () => <span>Tags</span>,
       footer: (props: any) => props.column.id,
     },
     {

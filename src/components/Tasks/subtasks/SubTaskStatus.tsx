@@ -33,10 +33,9 @@ function SubTaskStatus({
     (state: any) => state.auth.user.user_details
   );
   const selectStatus = (status: any) => {
-    setSelectedStatus(status);
-    console.log(selectedStatus, "status");
+    setSelectedStatus(status); // Update local UI
     setIsOpen(false);
-    mutate(status.value);
+    mutate(status.value); // Trigger API update
   };
 
   const { mutate } = useMutation({
