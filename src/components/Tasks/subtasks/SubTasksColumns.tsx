@@ -15,6 +15,7 @@ import SubTaskStatus from "./SubTaskStatus";
 import {
   bgColorObjectForStatus,
   colorObjectForStatus,
+  taskStatusConstants,
 } from "@/lib/helpers/statusConstants";
 import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -108,7 +109,7 @@ export const SubTaskColumns = ({
             <tr key={row.id} className="border-b border-gray-200">
               {/* Ref ID */}
               <td className="p-2 text-sm font-semibold text-primary">
-                [{row.ref_id}]
+                [{row.ref_id || "--"}]
               </td>
 
               {/* Title */}
@@ -118,7 +119,7 @@ export const SubTaskColumns = ({
                     className="capitalize cursor-pointer"
                     onClick={() => handleTitleClick(row)}
                   >
-                    {row.title || "-"}
+                    {row.title || "--"}
                   </span>
                 </div>
               </td>
@@ -126,56 +127,67 @@ export const SubTaskColumns = ({
               {/* Assignees */}
               <td className="p-2 text-sm">
                 <div className="flex items-center -space-x-2">
-                  {row.assignees.slice(0, 5).map((assignee: any) => {
-                    const initials =
-                      assignee.fname?.[0]?.toUpperCase() +
-                      assignee.lname?.[0]?.toUpperCase();
-                    return (
-                      <Avatar
-                        key={assignee.user_id}
-                        className={`w-6 h-6 ${getColorFromInitials(initials)}`}
-                        title={`${assignee.fname} ${assignee.lname}`}
-                      >
-                        <AvatarImage
-                          src={assignee.profile_pic}
-                          alt={assignee.name}
-                        />
-                        <AvatarFallback>{initials}</AvatarFallback>
-                      </Avatar>
-                    );
-                  })}
-                  {row.assignees?.length > 5 && (
-                    <Popover open={showPopover} onOpenChange={setShowPopover}>
-                      <PopoverTrigger asChild>
-                        <div className="w-6 h-6 text-xs font-semibold text-center bg-gray-200 rounded-full cursor-pointer hover:bg-gray-300">
-                          +{row.assignees?.length - 5}
-                        </div>
-                      </PopoverTrigger>
-                      <PopoverContent>
-                        <div className="p-2">
-                          {row.assignees.map((assignee: any) => (
-                            <div
-                              key={assignee.user_id}
-                              className="flex items-center gap-2"
-                            >
-                              <Avatar
-                                className={`w-6 h-6 ${getColorFromInitials(
-                                  assignee.fname?.[0] + assignee.lname?.[0]
-                                )}`}
-                              >
-                                <AvatarImage src={assignee.profile_pic} />
-                                <AvatarFallback>
-                                  {assignee.fname[0] + assignee.lname[0]}
-                                </AvatarFallback>
-                              </Avatar>
-                              <span>
-                                {assignee.fname} {assignee.lname}
-                              </span>
+                  {/* Check if assignees exist and map, else show fallback */}
+                  {row.assignees && row.assignees.length > 0 ? (
+                    <>
+                      {row.assignees.slice(0, 5).map((assignee: any) => {
+                        const initials =
+                          assignee.fname?.[0]?.toUpperCase() +
+                          assignee.lname?.[0]?.toUpperCase();
+                        return (
+                          <Avatar
+                            key={assignee.user_id}
+                            className={`w-6 h-6 ${getColorFromInitials(initials)}`}
+                            title={`${assignee.fname} ${assignee.lname}`}
+                          >
+                            <AvatarImage
+                              src={assignee.profile_pic}
+                              alt={`${assignee.fname} ${assignee.lname}`}
+                            />
+                            <AvatarFallback>{initials || "--"}</AvatarFallback>
+                          </Avatar>
+                        );
+                      })}
+                      {row.assignees?.length > 5 && (
+                        <Popover
+                          open={showPopover}
+                          onOpenChange={setShowPopover}
+                        >
+                          <PopoverTrigger asChild>
+                            <div className="w-6 h-6 text-xs font-semibold text-center bg-gray-200 rounded-full cursor-pointer hover:bg-gray-300">
+                              +{row.assignees?.length - 5}
                             </div>
-                          ))}
-                        </div>
-                      </PopoverContent>
-                    </Popover>
+                          </PopoverTrigger>
+                          <PopoverContent>
+                            <div className="p-2">
+                              {row.assignees.map((assignee: any) => (
+                                <div
+                                  key={assignee.user_id}
+                                  className="flex items-center gap-2"
+                                >
+                                  <Avatar
+                                    className={`w-6 h-6 ${getColorFromInitials(
+                                      assignee.fname?.[0] + assignee.lname?.[0]
+                                    )}`}
+                                  >
+                                    <AvatarImage src={assignee.profile_pic} />
+                                    <AvatarFallback>
+                                      {assignee.fname?.[0] +
+                                        assignee.lname?.[0]}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <span>
+                                    {assignee.fname} {assignee.lname}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      )}
+                    </>
+                  ) : (
+                    <span className="text-gray-500 text-sm">--</span>
                   )}
                 </div>
               </td>
@@ -196,7 +208,11 @@ export const SubTaskColumns = ({
                     <ArrowRight className="w-4 h-4" />
                   )}
                   {row.priority === "LOW" && <ArrowDown className="w-4 h-4" />}
-                  {row.priority || "-"}
+                  {row.priority ? (
+                    row.priority
+                  ) : (
+                    <span className="text-gray-500 text-sm">--</span>
+                  )}
                 </span>
               </td>
               <td className="p-2 text-sm">
@@ -234,7 +250,9 @@ export const SubTaskColumns = ({
                   ></span>
 
                   {/* Status Text */}
-                  <span className="text-[12px] font-medium">{row.status}</span>
+                  {taskStatusConstants.find(
+                    (item: any) => item.value === row.status
+                  )?.label || <span className="text-gray-500">--</span>}
                 </span>
               </td>
               <Button
