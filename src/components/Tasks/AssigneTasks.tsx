@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
 import memberIcon from "@/assets/members.svg";
 import selectDropIcon from "@/assets/select-dropdown.svg";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -14,6 +14,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  isMananger,
+  isProjectAdmin,
+  isProjectMemberOrNot,
+} from "@/lib/helpers/loginHelpers";
 import { getProjectMembersAPI } from "@/lib/services/projects/members";
 import { addAssignesAPI, getAssignesAPI } from "@/lib/services/tasks";
 import { cn } from "@/lib/utils";
@@ -21,19 +26,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import LoadingComponent from "../core/LoadingComponent";
 import DeleteAssignes from "./view/DeleteAssigneeTask";
-import { useSelector } from "react-redux";
-import {
-  isMananger,
-  isProjectAdmin,
-  isProjectMemberOrNot,
-} from "@/lib/helpers/loginHelpers";
-import { on } from "events";
 
-const AssignedUsers = ({ viewTaskData }: any) => {
-  const { taskId } = useParams({ strict: false });
+interface assignTaskProps {
+  taskId?: any;
+  viewTaskData: any;
+}
+const AssignedUsers = ({ viewTaskData, taskId }: assignTaskProps) => {
+  console.log(viewTaskData, "viewTaskData");
   const router = useRouter();
   const queryClient = useQueryClient();
   const [users, setUsers] = useState<any[]>([]);
@@ -55,7 +58,6 @@ const AssignedUsers = ({ viewTaskData }: any) => {
       download_url: any;
     }[]
   >([]);
-  console.log(selectedMembers, "selectedMembers");
   const [updatedOrNot, setUpdatedOrNot] = useState<boolean>(false);
   const page = 1;
   const limit = 10;

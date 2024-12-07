@@ -305,7 +305,7 @@ const TaskView = () => {
                   </ul>
                 </div>
               </div>
-              <AssignedUsers viewTaskData={viewData} />
+              <AssignedUsers viewTaskData={viewData} taskId={taskId} />
 
               <TagsComponent errorMessages={errorMessages} />
               {setActivityOpen && (

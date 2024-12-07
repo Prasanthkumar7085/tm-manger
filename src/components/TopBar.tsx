@@ -230,7 +230,7 @@ function TopBar() {
       {subRefernceId ? (
         <span className="ml-2 text-lg font-semibold flex">
           {pathname.includes("/tasks/view/") && taskId
-            ? `${title} - ${refernceId} / ${subRefernceId}`
+            ? `${title} - ${refernceId}`
             : title}
         </span>
       ) : (
