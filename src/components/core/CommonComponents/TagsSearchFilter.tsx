@@ -65,32 +65,32 @@ const TagsSearchFilter = ({
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className="w-[220px] h-[35px] grid grid-cols-[30px_150px_25px] items-center px-0 py-0 bg-[#F4F4F6] border-[#E2E2E2] rounded-[8px] text-[#00000099] relative"
+            className="w-[220px] h-[35px] grid grid-cols-[30px_150px_25px] items-center !px-12  py-0 bg-[#F4F4F6] border-[#E2E2E2] rounded-[8px] text-[#00000099] relative overflow-hidden"
           >
-            <div className="flex items-center gap-1 justify-start w-[100%]">
+            <div className="flex items-center gap-1 justify-start w-[100%] ">
               {selectedTags.length === 0 ? (
                 <p>Select Tags</p>
               ) : (
                 <div className="flex items-center gap-1 justify-between w-[96%]">
                   <div className="w-full flex items-center justify-between">
                     <div className="flex justify-start items-center">
-                      {selectedTags.slice(0, 3).map((tag, index) => (
+                      {selectedTags.slice(0, 2).map((tag, index) => (
                         <p
                           key={tag.id}
                           title={tag.title}
-                          className="text-[#00B812] text-md font-medium rounded-full capitalize truncate max-w-[80px]"
+                          className="text-[#00B812] text-md font-medium rounded-full capitalize truncate max-w-[80px] m-0"
                         >
                           {tag.title}
-                          {index < 2 && ","}{" "}
+                          {index < 1 && ","}{" "}
                         </p>
                       ))}
                     </div>
 
-                    {selectedTags.length > 3 && (
+                    {selectedTags.length > 2 && (
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <div className="flex items-center justify-center w-6 h-6 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold cursor-pointer">
-                            +{selectedTags.length - 3}
+                            +{selectedTags.length - 2}
                           </div>
                         </TooltipTrigger>
                         <TooltipContent className="bg-white p-2 rounded-md shadow-md">
@@ -151,7 +151,7 @@ const TagsSearchFilter = ({
                   </CommandItem>
                 ))}
               </CommandGroup>
-              <CommandEmpty>No tags found.</CommandEmpty>
+              <CommandEmpty className="text-center">No tags found.</CommandEmpty>
             </CommandList>
             <div className="flex justify-end space-x-2 p-2 border-t">
               <Button
