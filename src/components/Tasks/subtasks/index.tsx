@@ -318,19 +318,25 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
               {errorMessages?.title?.[0]}
             </p>
           )}
-          <SubTaskColumns
-            data={subTasks}
-            setDel={setDel}
-            mainTask={viewData}
-            showDetailsDialog={showDetailsDialog}
-            setShowDetailsDialog={setShowDetailsDialog}
-            selectedSubTaskStatus={selectedSubTaskStatus}
-            setSelectedSubTaskStatus={setSelectedSubTaskStatus}
-            setSelectedPriority={setSelectedPriority}
-            selectedPriority={selectedPriority}
-            setUpdateDetailsOfTask={setUpdateDetailsOfTask}
-            setUpdatePriority={setUpdatePriority}
-          />
+          {subTasks.length > 0 ? (
+            <SubTaskColumns
+              data={subTasks}
+              setDel={setDel}
+              mainTask={viewData}
+              showDetailsDialog={showDetailsDialog}
+              setShowDetailsDialog={setShowDetailsDialog}
+              selectedSubTaskStatus={selectedSubTaskStatus}
+              setSelectedSubTaskStatus={setSelectedSubTaskStatus}
+              setSelectedPriority={setSelectedPriority}
+              selectedPriority={selectedPriority}
+              setUpdateDetailsOfTask={setUpdateDetailsOfTask}
+              setUpdatePriority={setUpdatePriority}
+            />
+          ) : (
+            <div className="text-center py-4 text-gray-500 text-lg">
+              No Subtasks Found
+            </div>
+          )}
         </div>
         <LoadingComponent loading={loading} />
       </div>
