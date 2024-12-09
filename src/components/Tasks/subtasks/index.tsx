@@ -264,8 +264,8 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
     <section className="border rounded-md my-2">
       <div className="relative">
         <div>
-          <div className="flex justify-between items-center px-4 py-2">
-            <h1 className="text-lg font-medium text-[#1B2459]">SubTasks</h1>
+          <div className="flex justify-between items-center px-4 py-2 bg-gray-50">
+            <h1 className="text-lg font-medium text-[#1B2459] ">SubTasks</h1>
             {!showActionButton && (
               <div
                 title="Add SubTask"
@@ -278,7 +278,7 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
           </div>
           <hr />
           {showActionButton && (
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center gap-4 ">
               <div className="flex flex-1 gap-x-4 p-4 justify-center items-center">
                 <Input
                   name="title"
@@ -286,6 +286,15 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
                   onChange={handleChange}
                   placeholder=" Enter Title"
                 />
+                                <Button
+                  type="button"
+                  variant="contained"
+                  className="!bg-[#1B2459] !text-white font-medium text-md !hover:bg-[#1B2459] h-[30px] !hover:text-white px-8"
+                  onClick={handleSubmit}
+                  disabled={!handleValidation()}
+                >
+                  Create
+                </Button>
 
                 <Button
                   type="button"
@@ -294,16 +303,6 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
                   onClick={handleCancel}
                 >
                   Cancel
-                </Button>
-
-                <Button
-                  type="button"
-                  variant="contained"
-                  className="!bg-[#1B2459] !text-white font-medium text-md !hover:bg-[#1B2459] h-[30px] !hover:text-white px-8"
-                  onClick={handleSubmit}
-                  disabled={!handleValidation()}
-                >
-                  Create
                 </Button>
               </div>
             </div>

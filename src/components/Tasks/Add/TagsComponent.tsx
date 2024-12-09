@@ -233,11 +233,14 @@ const TagsComponent: React.FC<TagsComponentProps> = ({ errorMessages }) => {
                       )}
                   </CommandList>
                 </Command>
-                <div className="flex justify-between p-2">
-                  <Button variant="outline" onClick={handleClearTags}>
+                <div className="flex justify-end gap-2 p-2">
+                  <Button
+                     className="bg-white border-transparent px-6 text-[#000000] text-sm font-medium"
+                      variant="outline" onClick={handleClearTags}>
                     Clear
                   </Button>
                   <Button
+                    className="bg-[#000000] text-white px-6 font-medium text-sm rounded-[4px]"
                     onClick={handleConfirmTags}
                     disabled={selectedTags.length === 0}
                   >
