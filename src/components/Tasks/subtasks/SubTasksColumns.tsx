@@ -25,6 +25,7 @@ import PriorityStatus from "../view/PriorityStatus";
 
 import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
 import TaskStatus from "../view/TaskStatus";
+import LoadingComponent from "@/components/core/LoadingComponent";
 // Get color based on initials
 const getColorFromInitials = (initials: string) => {
   const colors = ["bg-red-500", "bg-blue-500", "bg-green-500"];
@@ -51,6 +52,7 @@ export const SubTaskColumns = ({
   const [deleteTaskId, setDeleteTaskId] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [viewData, setViewData] = useState<any>();
+  const [loading, setLoading] = useState<boolean>(false);
   const [openReplies, setOpenReplies] = useState<any>({
     commentId: null,
     open: false,
@@ -291,22 +293,20 @@ export const SubTaskColumns = ({
       {showDetailsDialog && selectedTask && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white w-[1200px] max-w-full rounded-lg shadow-lg   max-h-[90vh]">
-          <div className="flex justify-between items-center py-2 px-6 border-b">
-            <h1 className="text-2xl text-[#000] font-semibold">
-              SubTask Details
-            </h1>
-                <button
-                  title="close"
-                  className="text-black rounded justify-end"
-                  onClick={onClickClose}
-                >
-                  <CircleX />
-                </button>
-              </div>
+            <div className="flex justify-between items-center py-2 px-6 border-b">
+              <h1 className="text-2xl text-[#000] font-semibold">
+                SubTask Details
+              </h1>
+              <button
+                title="close"
+                className="text-black rounded justify-end"
+                onClick={onClickClose}
+              >
+                <CircleX />
+              </button>
+            </div>
             {/* Task Comments Section - 60% */}
             <div className="flex px-6 pb-6">
-          
-
               <div className="w-[60%] pr-4 border-r overflow-y-auto max-h-[80vh]">
                 <h2>
                   {refernceId}/{subRefernceId}
@@ -467,6 +467,7 @@ export const SubTaskColumns = ({
         deleteLoading={deleteLoading}
         buttonLable="Yes! Archive"
       />
+      <LoadingComponent loading={loading || isLoading} />
     </div>
   );
 };
