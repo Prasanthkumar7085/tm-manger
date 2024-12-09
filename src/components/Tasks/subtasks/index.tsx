@@ -123,7 +123,6 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
       ref_id: refernceId,
       description: "",
 
-      // users: Array.from(selectedUsers),
       project_id: viewData?.project_id,
       title: task?.title,
       priority: "MEDIUM",
