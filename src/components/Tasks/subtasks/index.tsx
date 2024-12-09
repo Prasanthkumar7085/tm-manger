@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter, useParams } from "@tanstack/react-router";
 import {
   Button,
@@ -24,7 +24,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -50,6 +50,8 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
   const { taskId } = useParams({ strict: false });
   const { subtaskId } = useParams({ strict: false });
   const [del, setDel] = useState(0);
+  const subTaskColumnsRef: any = useRef(null);
+
   const { projectId } = useParams({ strict: false });
   const searchParams = new URLSearchParams(location.search);
   const [showNewSubtaskFields, setShowNewSubtaskFields] = useState(false);
@@ -69,9 +71,15 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
   });
   const [subTasks, setSubTasks] = useState<any>([]);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
-
-  console.log(task, "task");
-  console.log("Project ID before submit: ", task.project_id);
+  const [updatePrority, setUpdatePriority] = useState<{
+    label: string;
+    value: string;
+  }>();
+  const [selectedStatus, setSelectedStatus] = useState<{
+    label: string;
+    value: string;
+  }>();
+  const [updateDetailsOfTask, setUpdateDetailsOfTask] = useState<any>(0);
 
   const [openProjects, setOpenProjects] = useState(false);
   const [tagInput, setTagInput] = useState<any>("");
@@ -81,11 +89,15 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
   const [errorMessages, setErrorMessages] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [users, setUsers] = useState<any[]>([]);
-  console.log(users, "users");
   const [selectedProjectLogo, setSelectedProjectLogo] =
     React.useState<any>(null);
   const [selectedUsers, setSelectedUsers] = useState(new Set());
   const [showActionButton, setShowActionButton] = useState(false);
+  const [selectedSubTaskStatus, setSelectedSubTaskStatus] = useState<{
+    label: string;
+    value: string;
+  }>();
+  const [selectedPriority, setSelectedPriority] = useState<any>();
 
   const handleChange = (e: any) => {
     setTask({ ...task, [e.target.name]: e.target.value });
@@ -119,19 +131,20 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
 
       due_date: `${new Date().toISOString().split("T")[0]}T00:00:00.000Z`,
     };
-
-    // if (!subtaskId) {
-    //   payload["users"] = task?.users?.map((user: any) => ({
-    //     name: user.name,
-    //     id: user.user_id,
-    //   }));
-    // }
     mutate(payload);
-    // router.navigate({ to: "/tasks/view/${taskId}" });
   };
 
   const { isFetching, isLoading } = useQuery({
-    queryKey: ["subtasks", taskId, del, showDetailsDialog],
+    queryKey: [
+      "subtasks",
+      taskId,
+      del,
+      showDetailsDialog,
+      selectedSubTaskStatus,
+      selectedPriority,
+      updateDetailsOfTask,
+      updatePrority,
+    ],
     queryFn: async () => {
       try {
         const response = await getAllSubTasks(taskId);
@@ -231,7 +244,6 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
       return true;
     }
   };
-
   const handleAddSubtask = () => {
     setShowNewSubtaskFields(!showNewSubtaskFields);
     setShowActionButton(true);
@@ -245,53 +257,47 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
     setTask({
       title: "",
     });
-    // setTask({
-    //   title: "",
-    //   ref_id: "",
-    //   description: "",
-    //   priority: "MEDIUM",
-    //   status: "TODO",
-    //   due_date: "",
-    //   users: [],
-    //   project_id: Number(searchParams.get("project_id")) || "",
-    // });
-    // setSelectedUsers(new Set());
+    setErrorMessages({});
   };
 
   return (
     <>
       <div className="relative">
         <div className="mt-5">
-          {/* Add Subtask Button */}
-          <div className="flex justify-end mb-3">
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddSubtask}
-            >
-              Add SubTask
-            </Button>
+          <div className="flex justify-between mb-3 items-center px-7">
+            <h1 className="text-xl">SubTasks</h1>
+            {!showActionButton && (
+              <div
+                title="Add SubTask"
+                className="flex items-center cursor-pointer"
+                onClick={handleAddSubtask}
+              >
+                <Plus />
+              </div>
+            )}
           </div>
-          <SubTaskColumns
-            data={subTasks}
-            setDel={setDel}
-            mainTask={viewData}
-            showDetailsDialog={showDetailsDialog}
-            setShowDetailsDialog={setShowDetailsDialog}
-          />
-
+          <hr />
           {showActionButton && (
             <div className="flex items-center gap-4 mb-4">
-              <div style={{ display: "flex", gap: "10px", flex: "1" }}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  flex: "1",
+                  padding: "10px",
+                  justifyContent: "center",
+                }}
+              >
                 <Input
                   name="title"
                   value={task.title}
                   onChange={handleChange}
                   placeholder=" Enter Title"
                 />
+
                 <Button
                   variant="contained"
-                  color="success"
+                  className="bg-primary text-white hover:text-white py-4 px-3  h-[30px]"
                   onClick={handleSubmit}
                   disabled={!handleValidation()}
                 >
@@ -300,121 +306,34 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
                 <Button
                   variant="outlined"
                   color="primary"
+                  className="bg-primary text-whitepy-4 px-3  h-[30px] hover:text-black"
                   onClick={handleCancel}
                 >
                   Cancel
                 </Button>
-                {/* <FormControl style={{ minWidth: 120 }}>
-                  <InputLabel> Select Priority</InputLabel>
-                  <Select
-                    name="priority"
-                    value={task.priority}
-                    onChange={handleChange}
-                    className="bg-slate-50 h-[40px] p-2 border w-full rounded-md"
-                  >
-                    <MenuItem value="HIGH">High</MenuItem>
-                    <MenuItem value="MEDIUM">Medium</MenuItem>
-                    <MenuItem value="LOW">Low</MenuItem>
-                  </Select>
-                </FormControl>
-                <FormControl style={{ minWidth: 120 }}>
-                  <InputLabel>Select status</InputLabel>
-                  <Select
-                    name="status"
-                    value={task.status}
-                    onChange={handleChange}
-                    className="bg-slate-50 h-[40px] p-2 border w-full rounded-md"
-                  >
-                    <MenuItem value="TODO">Todo</MenuItem>
-                    <MenuItem value="IN_PROGRESS">Inprogress</MenuItem>
-                    <MenuItem value="COMPLETED">Completed</MenuItem>
-                    <MenuItem value="OVER_DUE">OverDue</MenuItem>
-                  </Select>
-                </FormControl> */}
               </div>
-              {/* <div>
-                <Popover open={openUsers} onOpenChange={setOpenUsers}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      disabled={
-                        profileData?.user_type === "admin" ||
-                        isAbleToAddOrEdit()
-                          ? false
-                          : true
-                      }
-                      className="justify-between  bg-slate-50 h-[40px] w-full relative text-[#00000099]"
-                    >
-                      Assigned Users
-                      <ChevronsUpDown className="absolute right-2 top-1/2 -translate-y-1/2  bg-red-700 text-white rounded-full w-[20px] h-[20px] p-1" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[500px] p-0 bg-white">
-                    <Command>
-                      <CommandInput placeholder="Search Users" />
-                      <CommandList>
-                        <CommandEmpty>No Users found.</CommandEmpty>
-                        <CommandGroup>
-                          {users?.length > 0 &&
-                            users.map((user) => (
-                              <CommandItem
-                                key={user.id}
-                                onSelect={() => handleUserSelect(user)}
-                                disabled={task.users?.some(
-                                  (u: any) => u.id === user.id
-                                )}
-                              >
-                                <Check
-                                  className="mr-2 h-4 w-4"
-                                  style={{
-                                    opacity: selectedUsers.has(user.id) ? 1 : 0,
-                                  }}
-                                />
-                                <div className="w-6 h-6 object-contain	mr-2 rounded-full border  bg-white">
-                                  <img
-                                    src={
-                                      user?.user_profile_pic_url ||
-                                      "/profile-picture.png"
-                                    }
-                                  />
-                                </div>
-                                <p className="capitalize">
-                                  {user.fname} {user.lname}
-                                </p>
-                              </CommandItem>
-                            ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                    <div className="flex justify-end p-2 border-t">
-                      <Button
-                        className="bg-[#000000] text-white px-6 font-medium text-sm rounded-[4px] hover:bg-[#000000]"
-                        onClick={handleConfirmSelection}
-                      >
-                        Confirm
-                      </Button>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </div> */}
             </div>
           )}
-          {/* {showActionButton && (
-            <div className="flex gap-3">
-              <Button
-                variant="contained"
-                color="success"
-                onClick={handleSubmit}
-                disabled={!handleValidation()}
-              >
-                Create
-              </Button>
-              <Button variant="outlined" color="primary" onClick={handleCancel}>
-                Cancel
-              </Button>
-            </div>
-          )} */}
+          {errorMessages.title && (
+            <p style={{ color: "red", paddingLeft: "10px" }}>
+              {errorMessages?.title?.[0]}
+            </p>
+          )}
+          <SubTaskColumns
+            data={subTasks}
+            setDel={setDel}
+            mainTask={viewData}
+            showDetailsDialog={showDetailsDialog}
+            setShowDetailsDialog={setShowDetailsDialog}
+            selectedSubTaskStatus={selectedSubTaskStatus}
+            setSelectedSubTaskStatus={setSelectedSubTaskStatus}
+            setSelectedPriority={setSelectedPriority}
+            selectedPriority={selectedPriority}
+            setUpdateDetailsOfTask={setUpdateDetailsOfTask}
+            setUpdatePriority={setUpdatePriority}
+          />
         </div>
-        <LoadingComponent loading={isLoading || loading} />
+        <LoadingComponent loading={loading} />
       </div>
     </>
   );

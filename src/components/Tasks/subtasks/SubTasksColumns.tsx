@@ -1,29 +1,26 @@
-import React, { useState } from "react";
+import DeleteDialog from "@/components/core/deleteDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useParams, useRouter } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { isProjectMemberOrNot } from "@/lib/helpers/loginHelpers";
+import {
+  taskPriorityConstants,
+  taskStatusConstants,
+} from "@/lib/helpers/statusConstants";
+import { momentWithTimezone } from "@/lib/helpers/timeZone";
 import {
   archiveTaskAPI,
   getAssignesAPI,
   getSingleTaskAPI,
 } from "@/lib/services/tasks";
-import {
-  bgColorObjectForStatus,
-  colorObjectForStatus,
-  taskStatusConstants,
-} from "@/lib/helpers/statusConstants";
-import { ArrowDown, ArrowRight, ArrowUp } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
 import { setSubRefId } from "@/redux/Modules/userlogin";
-import DeleteDialog from "@/components/core/deleteDialog";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router";
+import { CircleX } from "lucide-react";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import { isProjectMemberOrNot } from "@/lib/helpers/loginHelpers";
-import TaskComments from "../view/Comments";
-import { Row } from "rsuite";
 import AssignedUsers from "../AssigneTasks";
-import { ActivityDrawer } from "../view/ActivityDrawer";
-import { momentWithTimezone } from "@/lib/helpers/timeZone";
+import TaskComments from "../view/Comments";
 import PriorityStatus from "../view/PriorityStatus";
 
 import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
@@ -39,13 +36,13 @@ export const SubTaskColumns = ({
   mainTask,
   showDetailsDialog,
   setShowDetailsDialog,
-}: {
-  data: any;
-  setDel: any;
-  mainTask: any;
-  showDetailsDialog: any;
-  setShowDetailsDialog: any;
-}) => {
+  selectedSubTaskStatus,
+  setSelectedSubTaskStatus,
+  selectedPriority,
+  setSelectedPriority,
+  setUpdateDetailsOfTask,
+  setUpdatePriority,
+}: any) => {
   const dispatch = useDispatch();
   const taskId = data.id;
   const router = useRouter();
@@ -58,16 +55,7 @@ export const SubTaskColumns = ({
     commentId: null,
     open: false,
   });
-  const [updatePrority, setUpdatePriority] = useState<{
-    label: string;
-    value: string;
-  }>();
-  const [updateDetailsOfTask, setUpdateDetailsOfTask] = useState<any>(0);
-  const [selectedStatus, setSelectedStatus] = useState<{
-    label: string;
-    value: string;
-  }>();
-  const [selectedPriority, setSelectedPriority] = useState<any>();
+
   const profileData: any = useSelector(
     (state: any) => state.auth.user.user_details
   );
@@ -94,7 +82,7 @@ export const SubTaskColumns = ({
   });
 
   const { isLoading, isError, error } = useQuery({
-    queryKey: ["getSingleTask", selectedTask, updateDetailsOfTask],
+    queryKey: ["getSingleTask", selectedTask],
     queryFn: async () => {
       const response = await getSingleTaskAPI(selectedTask?.id);
       const taskData = response?.data?.data;
@@ -104,7 +92,7 @@ export const SubTaskColumns = ({
           let status = taskStatusConstants.find(
             (item: any) => item.value === taskData?.status
           );
-          setSelectedStatus(status);
+          setSelectedSubTaskStatus(status);
         }
       } catch (err: any) {
         toast.error(err?.message || "Something went wrong");
@@ -142,14 +130,34 @@ export const SubTaskColumns = ({
     setOpen(false);
     setShowDetailsDialog(false);
   };
-  console.log(data, "d3248347392ata");
+
+  const getTaskStatus = (taskStatus: any) => {
+    const status = taskStatusConstants.find(
+      (item: any) => item.value === taskStatus
+    );
+    return {
+      label: status?.label || "--",
+      value: status?.value || "--",
+    };
+  };
+
+  const getPriority = (priority: any) => {
+    const status = taskPriorityConstants.find(
+      (item: any) => item.value === priority
+    );
+    return {
+      label: status?.label || "--",
+      value: status?.value || "--",
+    };
+  };
+
   return (
     <div className="w-full overflow-x-auto">
       <table className="w-full border-collapse">
         <tbody>
           {data.length > 0 &&
             data.map((row: any, index: any) => (
-              <tr key={row.id} className="border-b border-gray-200">
+              <tr key={row.id} className="border-b border-gray-200 ">
                 <td
                   className="p-2 text-sm font-semibold text-primary cursor-pointer"
                   onClick={() => handleTitleClick(row)}
@@ -197,7 +205,15 @@ export const SubTaskColumns = ({
                   </div>
                 </td>
                 <td className="p-2 text-sm">
-                  <span
+                  <PriorityStatus
+                    taskId={row.id}
+                    setUpdatePriority={setUpdateDetailsOfTask}
+                    selectedPriority={getPriority(row.priority)}
+                    setSelectedPriority={setSelectedPriority}
+                    viewData={row}
+                    assignedUsers={assignedUsers}
+                  />
+                  {/* <span
                     className="capitalize text-[12px] px-2 rounded-full font-medium flex justify-center items-center"
                     style={{
                       backgroundColor:
@@ -213,10 +229,17 @@ export const SubTaskColumns = ({
                       <ArrowDown className="w-4 h-4" />
                     )}
                     {row.priority || "--"}
-                  </span>
+                  </span> */}
                 </td>
                 <td className="p-2 text-sm">
-                  <span
+                  <TaskStatus
+                    taskId={row.id}
+                    setUpdateDetailsOfTask={setUpdateDetailsOfTask}
+                    selectedStatus={getTaskStatus(row.status)}
+                    setSelectedStatus={setSelectedSubTaskStatus}
+                    assignedUsers={assignedUsers}
+                  />
+                  {/* <span
                     className={`rounded-full px-2 py-1 text-xs font-medium flex items-center justify-center ${
                       row.status === "OVER_DUE"
                         ? "bg-red-100 text-red-500"
@@ -232,7 +255,7 @@ export const SubTaskColumns = ({
                     {taskStatusConstants.find(
                       (item: any) => item.value === row.status
                     )?.label || "--"}
-                  </span>
+                  </span> */}
                 </td>
                 <Button
                   title="archive"
@@ -279,10 +302,11 @@ export const SubTaskColumns = ({
             <div className="w-[40%] pl-4 overflow-y-auto max-h-[80vh] ">
               <div className="flex justify-end">
                 <button
-                  className="px-4 py-2 ml-[20px] bg-blue-500 text-white rounded hover:bg-blue-600  justify-end"
+                  title="close"
+                  className="px-4 py-2 ml-[20px]  text-black rounded justify-end"
                   onClick={onClickClose}
                 >
-                  Close
+                  <CircleX />
                 </button>
               </div>
               <div className="focus-details border ">
@@ -291,8 +315,8 @@ export const SubTaskColumns = ({
                     <TaskStatus
                       taskId={selectedTask?.id}
                       setUpdateDetailsOfTask={setUpdateDetailsOfTask}
-                      selectedStatus={selectedStatus}
-                      setSelectedStatus={setSelectedStatus}
+                      selectedStatus={selectedSubTaskStatus}
+                      setSelectedStatus={setSelectedSubTaskStatus}
                       assignedUsers={assignedUsers}
                     />
 
@@ -363,7 +387,7 @@ export const SubTaskColumns = ({
                     </li>
                     <li className="grid grid-cols-[150px,auto]">
                       <p className="text-[#666666] text-sm font-medium mb-1">
-                        Created Date
+                        Created On
                       </p>
                       <p className="text-black font-medium">
                         {momentWithTimezone(viewData?.created_at, "MM/DD/YYYY")}
