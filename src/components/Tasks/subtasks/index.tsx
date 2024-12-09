@@ -89,8 +89,9 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
   const [errorMessages, setErrorMessages] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [users, setUsers] = useState<any[]>([]);
-  const [selectedProjectLogo, setSelectedProjectLogo] =
-    React.useState<any>(null);
+  const [selectedProjectLogo, setSelectedProjectLogo] = React.useState<any>(
+    null
+  );
   const [selectedUsers, setSelectedUsers] = useState(new Set());
   const [showActionButton, setShowActionButton] = useState(false);
   const [selectedSubTaskStatus, setSelectedSubTaskStatus] = useState<{
@@ -260,11 +261,11 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
   };
 
   return (
-    <>
+    <section className="border rounded-md my-2">
       <div className="relative">
-        <div className="mt-5">
-          <div className="flex justify-between mb-3 items-center px-7">
-            <h1 className="text-xl">SubTasks</h1>
+        <div>
+          <div className="flex justify-between items-center px-4 py-2 bg-gray-50">
+            <h1 className="text-lg font-medium text-[#1B2459] ">SubTasks</h1>
             {!showActionButton && (
               <div
                 title="Add SubTask"
@@ -277,35 +278,28 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
           </div>
           <hr />
           {showActionButton && (
-            <div className="flex items-center gap-4 mb-4">
-              <div
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  flex: "1",
-                  padding: "10px",
-                  justifyContent: "center",
-                }}
-              >
+            <div className="flex items-center gap-4 ">
+              <div className="flex flex-1 gap-x-4 p-4 justify-center items-center">
                 <Input
                   name="title"
                   value={task.title}
                   onChange={handleChange}
                   placeholder=" Enter Title"
                 />
-
-                <Button
+                                <Button
+                  type="button"
                   variant="contained"
-                  className="bg-primary text-white hover:text-white py-4 px-3  h-[30px]"
+                  className="!bg-[#1B2459] !text-white font-medium text-md !hover:bg-[#1B2459] h-[30px] !hover:text-white px-8"
                   onClick={handleSubmit}
                   disabled={!handleValidation()}
                 >
                   Create
                 </Button>
+
                 <Button
+                  type="button"
                   variant="outlined"
-                  color="primary"
-                  className="bg-primary text-whitepy-4 px-3  h-[30px] hover:text-black"
+                  className="!bg-white !border-transparent !text-[#FF6000] text-md px-8 font-medium h-[30px] !hover:bg-transparent !hover:text-[#FF6000]"
                   onClick={handleCancel}
                 >
                   Cancel
@@ -340,6 +334,6 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
         </div>
         <LoadingComponent loading={loading} />
       </div>
-    </>
+    </section>
   );
 };

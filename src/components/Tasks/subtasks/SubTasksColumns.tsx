@@ -157,7 +157,10 @@ export const SubTaskColumns = ({
         <tbody>
           {data.length > 0 &&
             data.map((row: any, index: any) => (
-              <tr key={row.id} className="border-b border-gray-200 ">
+              <tr
+                key={row.id}
+                className="border-b border-gray-200  hover:bg-gray-50"
+              >
                 <td
                   className="p-2 text-sm font-semibold text-primary cursor-pointer"
                   onClick={() => handleTitleClick(row)}
@@ -185,7 +188,9 @@ export const SubTaskColumns = ({
                           return (
                             <Avatar
                               key={assignee.user_id}
-                              className={`w-6 h-6 ${getColorFromInitials(initials)}`}
+                              className={`w-6 h-6 ${getColorFromInitials(
+                                initials
+                              )}`}
                               title={`${assignee.fname} ${assignee.lname}`}
                             >
                               <AvatarImage
@@ -213,6 +218,7 @@ export const SubTaskColumns = ({
                     viewData={row}
                     assignedUsers={assignedUsers}
                   />
+
                   {/* <span
                     className="capitalize text-[12px] px-2 rounded-full font-medium flex justify-center items-center"
                     style={{
@@ -257,50 +263,66 @@ export const SubTaskColumns = ({
                     )?.label || "--"}
                   </span> */}
                 </td>
-                <Button
-                  title="archive"
-                  disabled={
-                    profileData?.user_type === "admin" ||
-                    isProjectMemberOrNot(row.assignees, profileData?.id)
-                      ? false
-                      : true
-                  }
-                  onClick={() => onClickOpen(row.id)}
-                  variant={"ghost"}
-                  className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#F5F5F5]"
-                >
-                  <img
-                    src={"/archive.svg"}
-                    alt="archive"
-                    height={18}
-                    width={18}
-                  />
-                </Button>
+                <td>
+                  <Button
+                    title="archive"
+                    disabled={
+                      profileData?.user_type === "admin" ||
+                      isProjectMemberOrNot(row.assignees, profileData?.id)
+                        ? false
+                        : true
+                    }
+                    onClick={() => onClickOpen(row.id)}
+                    variant={"ghost"}
+                    className="p-0 rounded-md w-[27px] h-[27px] border flex items-center justify-center hover:bg-[#F5F5F5]"
+                  >
+                    <img
+                      src={"/archive.svg"}
+                      alt="archive"
+                      height={18}
+                      width={18}
+                    />
+                  </Button>
+                </td>
               </tr>
             ))}
         </tbody>
       </table>
       {showDetailsDialog && selectedTask && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white w-[1200px] max-w-full rounded-lg shadow-lg p-6 flex max-h-[90vh]">
+          <div className="bg-white w-[1200px] max-w-full rounded-lg shadow-lg   max-h-[90vh]">
+          <div className="flex justify-between items-center py-2 px-6 border-b">
+            <h1 className="text-2xl text-[#000] font-semibold">
+              SubTask Details
+            </h1>
+                <button
+                  title="close"
+                  className="text-black rounded justify-end"
+                  onClick={onClickClose}
+                >
+                  <CircleX />
+                </button>
+              </div>
             {/* Task Comments Section - 60% */}
+            <div className="flex px-6 pb-6">
+          
 
-            <div className="w-[60%] pr-4 border-r overflow-y-auto max-h-[80vh]">
-              <h2>
-                {refernceId}/{subRefernceId}
-              </h2>
-              <h2 className="text-2xl font-semibold mb-4">
-                {selectedTask.title || "--"}
-              </h2>
-              <p className="text-gray-700 text-sm mb-6">
-                {selectedTask.description || "--"}
-              </p>
-              <TaskComments taskId={selectedTask.id} />
-            </div>
+              <div className="w-[60%] pr-4 border-r overflow-y-auto max-h-[80vh]">
+                <h2>
+                  {refernceId}/{subRefernceId}
+                </h2>
+                <h2 className="text-xl text-[#1B2459] font-medium overflow-hidden overflow-ellipsis whitespace-nowrap pb-2">
+                  {selectedTask.title || "--"}
+                </h2>
+                <p className="text-gray-700 text-sm mb-6">
+                  {selectedTask.description || "--"}
+                </p>
+                <TaskComments taskId={selectedTask.id} />
+              </div>
 
-            {/* Details Section - 40% */}
-            <div className="w-[40%] pl-4 overflow-y-auto max-h-[80vh] ">
-              <div className="flex justify-end">
+              {/* Details Section - 40% */}
+              <div className="w-[40%] pl-4 overflow-y-auto max-h-[80vh] ">
+                {/* <div className="flex justify-end">
                 <button
                   title="close"
                   className="px-4 py-2 ml-[20px]  text-black rounded justify-end"
@@ -308,123 +330,131 @@ export const SubTaskColumns = ({
                 >
                   <CircleX />
                 </button>
-              </div>
-              <div className="focus-details border ">
-                <div className="card-header border-b px-4 py-0 bg-gray-50 pr-3 pl-4">
-                  <div className="flex gap-2">
-                    <TaskStatus
-                      taskId={selectedTask?.id}
-                      setUpdateDetailsOfTask={setUpdateDetailsOfTask}
-                      selectedStatus={selectedSubTaskStatus}
-                      setSelectedStatus={setSelectedSubTaskStatus}
-                      assignedUsers={assignedUsers}
-                    />
+              </div> */}
+                <div className="flex gap-2 my-4">
+                  <TaskStatus
+                    taskId={selectedTask?.id}
+                    setUpdateDetailsOfTask={setUpdateDetailsOfTask}
+                    selectedStatus={selectedSubTaskStatus}
+                    setSelectedStatus={setSelectedSubTaskStatus}
+                    assignedUsers={assignedUsers}
+                  />
 
-                    <Button
-                      type="button"
-                      variant="edit"
-                      size="DefaultButton"
-                      onClick={() => {
-                        router.navigate({
-                          to: `/tasks/${selectedTask.id}`,
-                        });
-                      }}
-                    >
-                      <img
-                        src="/edit-icon.svg"
-                        alt="icon"
-                        className="w-3 h-3 mr-2 text-[10px] "
-                      />
-                      Edit Task
-                    </Button>
+                  <Button
+                    type="button"
+                    variant="edit"
+                    size="DefaultButton"
+                    onClick={() => {
+                      router.navigate({
+                        to: `/tasks/${selectedTask.id}`,
+                      });
+                    }}
+                  >
+                    <img
+                      src="/edit-icon.svg"
+                      alt="icon"
+                      className="w-3 h-3 mr-2 text-[10px] "
+                    />
+                    Edit Task
+                  </Button>
+                </div>
+                <div className="focus-details border ">
+                  <div className="card-header border-b px-4 py-0 bg-gray-50 pr-3 pl-4">
+                    <h3 className="leading-1 text-black text-[1.1em]">
+                      Details
+                    </h3>
                   </div>
-                  <h3 className="leading-1 text-black text-[1.1em]">Details</h3>
-                </div>
-                <div className="card-body py-3 px-4">
-                  <ul className="space-y-3">
-                    <li className="grid grid-cols-[150px,auto]">
-                      <p className="text-[#666666] text-sm font-medium mb-1">
-                        Project
-                      </p>
-                      <p className="mt-0 text-black font-medium flex items-center">
-                        <img
-                          src={`${import.meta.env.VITE_IMAGE_URL}/${viewData?.project_logo}`}
-                          alt="Project logo"
-                          onError={(e: any) => {
-                            e.target.onerror = null;
-                            e.target.src = "/favicon.png";
-                          }}
-                          className="mr-2 h-6 w-6 rounded-full object-cover"
-                        />
-                        {viewData?.project_title
-                          ? capitalizeWords(viewData?.project_title)
-                          : "--"}
-                      </p>
-                    </li>
-                    <li className="grid grid-cols-[150px,auto]">
-                      <p className="text-[#666666] text-sm font-medium mb-1">
-                        Priority
-                      </p>
-                      <PriorityStatus
-                        taskId={selectedTask?.id}
-                        setUpdatePriority={setUpdatePriority}
-                        selectedPriority={selectedPriority}
-                        setSelectedPriority={setSelectedPriority}
-                        viewData={viewData}
-                        assignedUsers={assignedUsers}
-                      />
-                    </li>
-                    <li className="grid grid-cols-[150px,auto]">
-                      <p className="text-[#666666] text-sm font-medium mb-1">
-                        Due Date
-                      </p>
-                      <div className="inline-block text-[#FF0021] text-md font-semibold rounded-sm">
-                        {momentWithTimezone(
-                          selectedTask?.due_date,
-                          "MM/DD/YYYY"
-                        )}
-                      </div>
-                    </li>
-                    <li className="grid grid-cols-[150px,auto]">
-                      <p className="text-[#666666] text-sm font-medium mb-1">
-                        Created On
-                      </p>
-                      <p className="text-black font-medium">
-                        {momentWithTimezone(viewData?.created_at, "MM/DD/YYYY")}
-                      </p>
-                    </li>
-                    <li className="grid grid-cols-[150px,auto]">
-                      <p className="text-[#666666] text-sm font-medium mb-1">
-                        Created By
-                      </p>
-                      <div className="created-person flex items-center space-x-3">
-                        <img
-                          src={
-                            `${import.meta.env.VITE_IMAGE_URL}/${viewData?.created_profile_pic}` ||
-                            "/profile-picture.png"
-                          }
-                          onError={(e: any) => {
-                            e.target.onerror = null;
-                            e.target.src = "/profile-picture.png";
-                          }}
-                          alt="User"
-                          className="object-contain w-6 h-6 rounded-full border"
-                        />
-                        <p className="font-medium text-black ml-2 text-md capitalize">
-                          {viewData?.created_name}
+                  <div className="card-body py-3 px-4">
+                    <ul className="space-y-3">
+                      <li className="grid grid-cols-[150px,auto]">
+                        <p className="text-[#666666] text-sm font-medium mb-1">
+                          Project
                         </p>
-                      </div>
-                    </li>
-                  </ul>
+                        <p className="mt-0 text-black font-medium flex items-center">
+                          <img
+                            src={`${import.meta.env.VITE_IMAGE_URL}/${
+                              viewData?.project_logo
+                            }`}
+                            alt="Project logo"
+                            onError={(e: any) => {
+                              e.target.onerror = null;
+                              e.target.src = "/favicon.png";
+                            }}
+                            className="mr-2 h-6 w-6 rounded-full object-cover"
+                          />
+                          {viewData?.project_title
+                            ? capitalizeWords(viewData?.project_title)
+                            : "--"}
+                        </p>
+                      </li>
+                      <li className="grid grid-cols-[150px,auto]">
+                        <p className="text-[#666666] text-sm font-medium mb-1">
+                          Priority
+                        </p>
+                        <PriorityStatus
+                          taskId={selectedTask?.id}
+                          setUpdatePriority={setUpdatePriority}
+                          selectedPriority={selectedPriority}
+                          setSelectedPriority={setSelectedPriority}
+                          viewData={viewData}
+                          assignedUsers={assignedUsers}
+                        />
+                      </li>
+                      <li className="grid grid-cols-[150px,auto]">
+                        <p className="text-[#666666] text-sm font-medium mb-1">
+                          Due Date
+                        </p>
+                        <div className="inline-block text-[#FF0021] text-md font-semibold rounded-sm">
+                          {momentWithTimezone(
+                            selectedTask?.due_date,
+                            "MM/DD/YYYY"
+                          )}
+                        </div>
+                      </li>
+                      <li className="grid grid-cols-[150px,auto]">
+                        <p className="text-[#666666] text-sm font-medium mb-1">
+                          Created On
+                        </p>
+                        <p className="text-black font-medium">
+                          {momentWithTimezone(
+                            viewData?.created_at,
+                            "MM/DD/YYYY"
+                          )}
+                        </p>
+                      </li>
+                      <li className="grid grid-cols-[150px,auto]">
+                        <p className="text-[#666666] text-sm font-medium mb-1">
+                          Created By
+                        </p>
+                        <div className="created-person flex items-center space-x-3">
+                          <img
+                            src={
+                              `${import.meta.env.VITE_IMAGE_URL}/${
+                                viewData?.created_profile_pic
+                              }` || "/profile-picture.png"
+                            }
+                            onError={(e: any) => {
+                              e.target.onerror = null;
+                              e.target.src = "/profile-picture.png";
+                            }}
+                            alt="User"
+                            className="object-contain w-6 h-6 rounded-full border"
+                          />
+                          <p className="font-medium text-black ml-2 text-md capitalize">
+                            {viewData?.created_name}
+                          </p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
+                <AssignedUsers
+                  viewTaskData={selectedTask}
+                  taskId={selectedTask?.id}
+                />
               </div>
-              <AssignedUsers
-                viewTaskData={selectedTask}
-                taskId={selectedTask?.id}
-              />
             </div>
           </div>
-
           <div className="flex justify-end mt-4"></div>
         </div>
       )}
