@@ -257,6 +257,7 @@ export const SubTaskColumns = ({
                     )?.label || "--"}
                   </span> */}
                 </td>
+                <td>
                 <Button
                   title="archive"
                   disabled={
@@ -276,6 +277,7 @@ export const SubTaskColumns = ({
                     width={18}
                   />
                 </Button>
+                </td>
               </tr>
             ))}
         </tbody>
