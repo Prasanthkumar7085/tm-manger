@@ -44,7 +44,7 @@ const RepliedComments = ({
           <X />
         </Button>
       </div>
-      <div className="card-body flex flex-col h-[240px] pb-[100px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+      <div className="card-body flex flex-col max-h-[450px] pb-[100px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
         <div className="flex space-x-4 my-3 px-4">
           <div className="member-profile-image">
             <img

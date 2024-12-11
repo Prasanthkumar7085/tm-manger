@@ -189,7 +189,7 @@ const TaskView = () => {
             </div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-[70%,auto] gap-5">
-            <div className="leftItem">
+            <div className="leftItem  h-[calc(100vh-200px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 pr-2">
               <UploadAttachments />
               {viewData?.sub_task === false ? (
                 <SubTasks viewData={viewData} />

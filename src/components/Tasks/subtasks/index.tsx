@@ -290,7 +290,7 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
             </p>
           )}
           {subTasks.length > 0 ? (
-            <div className="max-h-[100px] overflow-auto">
+            <div className="max-h-[150px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
               <SubTaskColumns
               data={subTasks}
               setDel={setDel}
