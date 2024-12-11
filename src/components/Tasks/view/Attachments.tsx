@@ -242,15 +242,15 @@ const UploadAttachments = () => {
                     >
                       {file.file_name}
                     </p>
-                    <div className="actions  flex space-x-5">
+                    <div className="actions  flex space-x-2">
                       <button
                         onClick={() => {
                           downloadFileMutation.mutate(file);
                         }}
                         title="download"
-                        className="flex items-center text-green-600"
+                        className="flex items-center text-green-600 text-xs"
                       >
-                        <CloudDownload className="text-green-500 w-4 h-4 mr-1" />
+                        <CloudDownload className="text-green-500 w-3 h-3 mr-1" />
                         Download
                       </button>
 

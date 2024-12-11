@@ -207,7 +207,7 @@ const TaskView = () => {
             >
               <div className="focus-details border">
                 <div className="card-header border-b px-4 py-0 bg-gray-50">
-                  <h3 className="leading-1 text-black  text-[1.1em]">
+                  <h3 className="leading-loose text-black  text-[1.1em]">
                     Details
                   </h3>
                 </div>

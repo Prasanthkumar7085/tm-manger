@@ -1,10 +1,10 @@
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
-import { toast } from "sonner";
-import { X } from "lucide-react";
 import DeleteDialog from "@/components/core/deleteDialog";
 import { deleteAttachmentsAPI } from "@/lib/services/tasks";
+import { useMutation } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
+import { X } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const DeleteAttachments = ({ attachmentId, onSuccess }: any) => {
   const { taskId } = useParams({ strict: false });
@@ -48,8 +48,8 @@ const DeleteAttachments = ({ attachmentId, onSuccess }: any) => {
 
   return (
     <>
-      <button onClick={() => setDeleteDialogOpen(true)} title="delete" className="flex items-center text-red-600">
-        <X className="text-red-500 w-4 h-4 mr-1" />
+      <button onClick={() => setDeleteDialogOpen(true)} title="delete" className="flex items-center text-red-600 text-xs">
+        <X className="text-red-500 w-3 h-3 mr-1" />
         Delete
       </button>
 
