@@ -118,7 +118,7 @@ function TaskStatus({
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-20">
+        <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
           <ul className="py-1">
             {taskStatusConstants.map(
               (status: { label: string; value: string }) => (
