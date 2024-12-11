@@ -1,12 +1,13 @@
+import commentsquare from "@/assets/message-square.svg";
 import CKEditorComponent from "@/components/core/CKEditor/CKEditorComponent";
 import LoadingComponent from "@/components/core/LoadingComponent";
-import commentsquare from "@/assets/message-square.svg";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { momentWithTimezone } from "@/lib/helpers/timeZone";
 import {
   addCommentsAPI,
   deleteCommentsAPI,
@@ -20,9 +21,8 @@ import { format, formatDistanceToNow } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
-import RepliedComments from "./RepliedComments";
-import { momentWithTimezone } from "@/lib/helpers/timeZone";
 import "./comments.css";
+import RepliedComments from "./RepliedComments";
 const TaskComments = ({ taskId }: any) => {
   const userID = useSelector(
     (state: any) => state.auth?.user?.user_details?.id
@@ -269,11 +269,11 @@ const TaskComments = ({ taskId }: any) => {
     <div className="flex flex-row">
       <div className={`border ${openReplies?.open ? " w-[60%]" : "w-[100%]"}`}>
         <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
-          <h3 className="leading-1 text-black text-[1.1em]">Comments</h3>
+          <h3 className="leading-loose text-black text-[1.1em]">Comments</h3>
         </div>
         <div
           ref={commentsContainerRef}
-          className="card-body pb-[5rem] px-4 h-[272px] flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
+          className="card-body pb-[5rem] px-4 h-[240px] flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
         >
           <div className="member-comments space-y-3  flex-1 pr-3">
             {groupedComments?.length > 0 ? (

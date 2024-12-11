@@ -33,7 +33,7 @@ const RepliedComments = ({
   return (
     <div className="bg-white border">
       <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
-        <h3 className="leading-1 text-black text-[1.1em]">Replies</h3>
+        <h3 className="leading-loose text-black text-[1.1em]">Replies</h3>
         <Button
           variant="outline"
           onClick={() => {
@@ -44,8 +44,8 @@ const RepliedComments = ({
           <X />
         </Button>
       </div>
-      <div className="card-body flex flex-col h-[272px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
-        <div className="flex space-x-4  my-3 px-4">
+      <div className="card-body flex flex-col h-[240px] pb-[100px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+        <div className="flex space-x-4 my-3 px-4">
           <div className="member-profile-image">
             <img
               title={mainComment?.firstName + " " + mainComment?.lastName}

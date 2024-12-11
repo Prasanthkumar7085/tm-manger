@@ -12,11 +12,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
-import { ChevronsUpDown, Check } from "lucide-react";
 import { getTagsDropdownAPI } from "@/lib/services/tasks";
-import ta from "date-fns/locale/ta";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface TagsComponentProps {
   task: any;
@@ -115,7 +114,7 @@ const TagsComponentForAdd: React.FC<TagsComponentProps> = ({
     <div>
       <div className="border mt-2">
         <div className="card-header border-b px-4 py-0 flex justify-between items-center gap-x-2 bg-gray-50">
-          <h3 className="leading-1 text-black text-[1.1em]">Tags</h3>
+          <h3 className="leading-loose text-black text-[1.1em]">Tags</h3>
           <div>
             <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
               <PopoverTrigger>

@@ -23,7 +23,7 @@ import { getProjectMembersAPI } from "@/lib/services/projects/members";
 import { addAssignesAPI, getAssignesAPI } from "@/lib/services/tasks";
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams, useRouter } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -191,7 +191,7 @@ const AssignedUsers = ({ viewTaskData, taskId }: assignTaskProps) => {
   return (
     <div className="assign-tasks mt-3 border">
       <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
-        <h3 className="leading-1 text-black text-[1.1em]">Assigned To</h3>
+        <h3 className="leading-loose text-black text-[1.1em]">Assigned To</h3>
         <Button
           disabled={
             profileData?.user_type === "admin" || isAbleToAddOrEdit()

@@ -1,27 +1,24 @@
-import DeleteProjects from "@/components/Projects/DeleteProject";
+import attachIcon from "@/assets/attachments-icon.svg";
 import { Button } from "@/components/ui/button";
 import {
-  fileUploadAPI,
   fileUploadsAPI,
-  uploadToS3API,
+  uploadToS3API
 } from "@/lib/services/projects";
-import attachIcon from "@/assets/attachments-icon.svg";
 import {
   downloadAttachmentAPI,
   getAttachmentsAPI,
   uploadAttachmentAPI,
 } from "@/lib/services/tasks";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import pdfIcon from "@/assets/pdf-icon.svg";
 import { useParams } from "@tanstack/react-router";
-import { CloudDownload, Loader2, UploadCloud, X } from "lucide-react";
+import { CloudDownload, Loader2, X } from "lucide-react";
 
-import { useState } from "react";
-import { useDropzone, FileRejection } from "react-dropzone";
-import { toast } from "sonner";
-import DeleteAttachments from "./DelteteAttachments";
 import LoadingComponent from "@/components/core/LoadingComponent";
 import { downloadFileFromS3 } from "@/lib/helpers/apiHelpers";
+import { useState } from "react";
+import { FileRejection, useDropzone } from "react-dropzone";
+import { toast } from "sonner";
+import DeleteAttachments from "./DelteteAttachments";
 
 const UploadAttachments = () => {
   const { taskId } = useParams({ strict: false });
@@ -211,7 +208,7 @@ const UploadAttachments = () => {
   return (
     <div id="upload-attachments" className="border">
       <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
-        <h3 className="leading-1 text-black text-[1.1em]">Attachment</h3>
+        <h3 className="leading-loose text-black text-[1.1em]">Attachment</h3>
         <Button
           type="button"
           onClick={open}
