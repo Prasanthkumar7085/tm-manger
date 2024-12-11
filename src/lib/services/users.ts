@@ -81,6 +81,13 @@ export const updateUsersAPI = async (id: any, payload: any) => {
     throw err;
   }
 };
+export const exportUsersAPI = async (queryParams: any) => {
+  try {
+    return await $fetch.get(`/users/export`, queryParams);
+  } catch (err) {
+    throw err;
+  }
+};
 export const deleteProjectAPI = async (id: number) => {
   try {
     return await $fetch.delete(`/projects/${id}`);

@@ -124,3 +124,10 @@ export const updateProjectTaskStatusAPI = async (taskID: any, payload: any) => {
     throw err;
   }
 };
+export const exportProjectsAPI = async (queryParams: any) => {
+  try {
+    return await $fetch.get(`/projects/export`, queryParams);
+  } catch (err: any) {
+    throw err;
+  }
+};

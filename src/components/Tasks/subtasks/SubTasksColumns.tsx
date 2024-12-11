@@ -212,6 +212,9 @@ export const SubTaskColumns = ({
                   </div>
                 </td>
                 <td className="p-2 text-sm">
+                  {momentWithTimezone(row?.due_date, "MM/DD/YYYY")}
+                </td>
+                <td className="p-2 text-sm">
                   <PriorityStatus
                     taskId={row.id}
                     setUpdatePriority={setUpdateDetailsOfTask}

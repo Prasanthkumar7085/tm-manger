@@ -27,9 +27,10 @@ import { useParams, useRouter } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { toast } from "sonner";
+
 import LoadingComponent from "../core/LoadingComponent";
 import DeleteAssignes from "./view/DeleteAssigneeTask";
+import { toast } from "sonner";
 
 interface assignTaskProps {
   taskId?: any;

@@ -18,6 +18,12 @@ import { useSelector } from "react-redux";
 import KanbanBoard from "../KanBanView";
 import ProjectTasksCounts from "./ProjectTasksCounts";
 import ProjectMembersManagment from "./ProjectMembersManagment";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const ProjectView = () => {
   const { projectId } = useParams({ strict: false });
@@ -158,6 +164,11 @@ const ProjectView = () => {
   const handleCardClick = (status: string) => {
     setSelectedStatus(status);
   };
+  const title = projectDetails?.title;
+  const shouldShowDescriptionTooltip = title && title.split(" ").length > 5;
+  const truncatedDescription = shouldShowDescriptionTooltip
+    ? `${title.substring(0, 30)}...`
+    : title;
 
   return (
     <div className="card-container shadow-md border p-5 rounded-lg bg-white h-[calc(100vh-100px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
@@ -243,18 +254,82 @@ const ProjectView = () => {
         </div>
       </div>
       <div className="flex items-center mt-4 space-x-2 w-full justify-between relative">
-        <div>
-          <h2 className="text-xl font-semibold capitalize flex-1 text-[#1B2459]">
-            <span
-              title={projectDetails?.active ? "Active" : "Inactive"}
-              className={`inline-block w-2 h-2 rounded-full mr-2 relative bottom-[3px] ${projectDetails?.active ? "bg-green-500" : "bg-red-500"}`}
-            ></span>
-            {projectDetails?.title}
-          </h2>
-          <p className="text-md text-gray-500 mt-[6px] capitalize flex-1">
-            {projectDetails?.description}
-          </p>
-        </div>
+        <TooltipProvider>
+          <div>
+            <span className="capitalize">
+              {title ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <h2 className="text-xl font-semibold capitalize flex-1 text-[#1B2459]">
+                      <span
+                        title={projectDetails?.active ? "Active" : "Inactive"}
+                        className={`inline-block w-2 h-2 rounded-full mr-2 relative bottom-[3px] ${
+                          projectDetails?.active ? "bg-green-500" : "bg-red-500"
+                        }`}
+                      ></span>
+                      {truncatedDescription}
+                    </h2>
+                  </TooltipTrigger>
+                  {shouldShowDescriptionTooltip && (
+                    <TooltipContent
+                      style={{
+                        backgroundColor: "white",
+                        border: "1px solid #e0e0e0",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                        borderRadius: "4px",
+                        padding: "8px",
+                        maxWidth: "300px",
+                        fontSize: "14px",
+                        whiteSpace: "normal",
+                        wordWrap: "break-word",
+                      }}
+                    >
+                      <div className="tooltipContent">{title}</div>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              ) : (
+                "--"
+              )}
+            </span>
+
+            {/* Description with Tooltip */}
+            {projectDetails?.description ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <p className="text-md text-gray-500 mt-[6px] capitalize flex-1">
+                    {projectDetails?.description.length > 100
+                      ? `${projectDetails?.description.substring(0, 100)}...`
+                      : projectDetails?.description}
+                  </p>
+                </TooltipTrigger>
+                {projectDetails?.description.length > 100 && (
+                  <TooltipContent
+                    style={{
+                      backgroundColor: "white",
+                      border: "1px solid #e0e0e0",
+                      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                      borderRadius: "4px",
+                      padding: "8px",
+                      maxWidth: "300px",
+                      fontSize: "14px",
+                      whiteSpace: "normal",
+                      wordWrap: "break-word",
+                    }}
+                  >
+                    <div className="tooltipContent">
+                      {projectDetails?.description}
+                    </div>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            ) : (
+              <p className="text-md text-gray-500 mt-[6px] capitalize flex-1">
+                {projectDetails?.description}
+              </p>
+            )}
+          </div>
+        </TooltipProvider>
         <div className="flex flex-row items-center gap-4">
           <button
             className="text-white h-[35px] flex items-center justify-center bg-white border  px-3 rounded-md"

@@ -25,6 +25,7 @@ import { AddSheetRover } from "../core/AddSheetRovar";
 import DeleteDialog from "../core/deleteDialog";
 import UserColumns from "./UserColumns";
 import { UserTypeFilter } from "../core/CommonComponents/UserTypeDropDown";
+import { ExportUsers } from "./ExportUsers";
 
 function UsersTable() {
   const location = useLocation();
@@ -553,6 +554,11 @@ function UsersTable() {
                       Add Admin
                     </Button>
                   </li>
+                  <ExportUsers
+                    search_string={searchString}
+                    selectedStatus={selectedStatus}
+                    selectedUserType={selectedUserType}
+                  />
                 </ul>
               </div>
             </div>
