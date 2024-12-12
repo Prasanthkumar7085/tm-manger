@@ -1,49 +1,26 @@
-import React, { useRef, useState } from "react";
-import { useRouter, useParams } from "@tanstack/react-router";
-import {
-  Button,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from "@mui/material";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
 import LoadingComponent from "@/components/core/LoadingComponent";
-import {
-  addTasksAPI,
-  getAllSubTasks,
-  getSingleTaskAPI,
-  updateTasksAPI,
-} from "@/lib/services/tasks";
-import { SubTaskColumns } from "./SubTasksColumns";
-import { useSelector } from "react-redux";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Check, ChevronsUpDown, Plus } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
 import {
   isMananger,
   isProjectAdmin,
   isProjectMemberOrNot,
 } from "@/lib/helpers/loginHelpers";
 import { getProjectMembersAPI } from "@/lib/services/projects/members";
-import { getDropDownForProjects } from "@/lib/services/projects";
-import { ta } from "date-fns/locale";
-import { Description } from "@radix-ui/react-dialog";
-import { M } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
-import { Input } from "@/components/ui/input";
+import {
+  addTasksAPI,
+  getAllSubTasks,
+  updateTasksAPI
+} from "@/lib/services/tasks";
+import {
+  Button
+} from "@mui/material";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useParams, useRouter } from "@tanstack/react-router";
+import { Plus } from "lucide-react";
+import React, { useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { toast } from "sonner";
+import { SubTaskColumns } from "./SubTasksColumns";
 
 export const SubTasks = ({ viewData }: { viewData: any }) => {
   const router = useRouter();
@@ -265,14 +242,14 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
       <div className="relative">
         <div>
           <div className="flex justify-between items-center px-4 py-2 bg-gray-50">
-            <h1 className="text-lg font-medium text-[#1B2459] ">SubTasks</h1>
+            <h1 className="text-sm font-medium text-[#1B2459] ">SubTasks</h1>
             {!showActionButton && (
               <div
                 title="Add SubTask"
-                className="flex items-center cursor-pointer"
+                className="flex items-center  cursor-pointer bg-gray-600 text-white font-font-semibold px-3 py-0 rounded-md"
                 onClick={handleAddSubtask}
               >
-                <Plus />
+                Add <Plus className="pl-2 font-bold" />
               </div>
             )}
           </div>
@@ -313,7 +290,8 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
             </p>
           )}
           {subTasks.length > 0 ? (
-            <SubTaskColumns
+            <div className="max-h-[150px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+              <SubTaskColumns
               data={subTasks}
               setDel={setDel}
               mainTask={viewData}
@@ -326,6 +304,7 @@ export const SubTasks = ({ viewData }: { viewData: any }) => {
               setUpdateDetailsOfTask={setUpdateDetailsOfTask}
               setUpdatePriority={setUpdatePriority}
             />
+            </div>
           ) : (
             <div className="text-center py-4 text-gray-500 text-lg">
               No Subtasks Found

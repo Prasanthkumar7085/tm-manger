@@ -1,9 +1,8 @@
 import { isProjectMemberOrNot } from "@/lib/helpers/loginHelpers";
 import { taskStatusConstants } from "@/lib/helpers/statusConstants";
-import { getActivityLogsAPI, statusUpdateAPI } from "@/lib/services/tasks";
+import { statusUpdateAPI } from "@/lib/services/tasks";
 import { useMutation } from "@tanstack/react-query";
-import { profile } from "console";
-import React, { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
@@ -96,7 +95,7 @@ function TaskStatus({
             : true
         }
         onClick={toggleDropdown}
-        className={`text-md px-2 h-[35px] border  font-normal rounded-[4px] flex items-center max-w-[140px] justify-between ${
+        className={`text-md pl-2 h-[25px] border  font-normal rounded-[4px] flex items-center max-w-[140px] justify-between ${
           selectedStatus?.value === "TODO"
             ? "bg-white text-[#6F42C1] border-[#6F42C1]"
             : selectedStatus?.value === "IN_PROGRESS"
@@ -119,7 +118,7 @@ function TaskStatus({
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+        <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
           <ul className="py-1">
             {taskStatusConstants.map(
               (status: { label: string; value: string }) => (

@@ -7,24 +7,21 @@ import {
   getAssignesAPI,
   getSingleTaskAPI,
 } from "@/lib/services/tasks";
-import { setRefId } from "@/redux/Modules/userlogin";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams, useRouter } from "@tanstack/react-router";
-import dayjs from "dayjs";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import TagsComponent from "../Add/TagsComponent";
 import AssignedUsers from "../AssigneTasks";
 import UploadAttachments from "./Attachments";
+import TaskComments from "./Comments";
 import PriorityStatus from "./PriorityStatus";
 import TaskStatus from "./TaskStatus";
-import TaskComments from "./Comments";
 // import { ActivityDrawer } from "./ActivityDrawer";
-import { isMananger } from "@/lib/helpers/loginHelpers";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
-import { ActivityDrawer } from "./ActivityDrawer";
 import { SubTasks } from "../subtasks";
+import { ActivityDrawer } from "./ActivityDrawer";
 
 const TaskView = () => {
   const navigate = useNavigate();
@@ -135,7 +132,7 @@ const TaskView = () => {
     <div className="relative overflow-y-auto">
       <div
         id="task-details"
-        className=" w-full h-full bg-white rounded-lg shadow-md p-3 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
+        className=" w-full h-full bg-white rounded-lg shadow-md p-3  scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 overflow-hidden"
         style={{ height: "calc(100vh - 100px)" }}
       >
         <div className="task-primary-details">
@@ -192,7 +189,7 @@ const TaskView = () => {
             </div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-[70%,auto] gap-5">
-            <div className="leftItem">
+            <div className="leftItem  h-[calc(100vh-200px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 pr-2">
               <UploadAttachments />
               {viewData?.sub_task === false ? (
                 <SubTasks viewData={viewData} />
@@ -210,7 +207,7 @@ const TaskView = () => {
             >
               <div className="focus-details border">
                 <div className="card-header border-b px-4 py-0 bg-gray-50">
-                  <h3 className="leading-1 text-black  text-[1.1em]">
+                  <h3 className="leading-loose text-black  text-[1.1em]">
                     Details
                   </h3>
                 </div>
