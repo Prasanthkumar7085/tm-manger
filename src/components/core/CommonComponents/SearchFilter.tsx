@@ -17,7 +17,7 @@ const SearchFilter: React.FC<IReportsFilters> = ({
         value={searchString}
         type="text"
         onChange={(e) => setSearchString(e.target.value)}
-        className="pl-8 pr-8  text-xs bg-[#FFFFFF] border-[#E2E2E2] rounded-[8px] w-full h-[35px] placeholder:text-[#00000099]  focus:outline-none focus-visible:outline-none"
+        className="pl-8 pr-8  text-md bg-[#FFFFFF] border-[#E2E2E2] rounded-[8px] w-full h-[35px] placeholder:text-[#00000099]  focus:outline-none focus-visible:outline-none"
       />
       {searchString && (
         <button

@@ -14,6 +14,7 @@ export const ExportUsers = ({
 }: any) => {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<any[]>([]);
+  console.log(users, "users");
 
   const queryParams = {
     status: selectedStatus,
@@ -40,11 +41,13 @@ export const ExportUsers = ({
         Designation: user.designation || "--",
         "Phone Number": user.phone_number || "--",
 
-        "Created On": momentWithTimezone(user.created_at) || "--",
-        "Deleted On": momentWithTimezone(user.deleted_at) || "--",
+        "Created On": user.created_at || "--",
+        "Deleted On": user.deleted_at || "--",
       }));
       setUsers(userData || []);
+      console.log(userData, "userData");
     },
+
     enabled: Boolean(
       selectedStatus || selectedUserType || search_string || pagination
     ),

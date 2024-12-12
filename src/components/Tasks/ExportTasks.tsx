@@ -54,7 +54,7 @@ export const ExportTasks = ({
         "Reference ID": task.ref_id || "--",
         Status: task.status || "--",
         Priority: task.priority || "--",
-        "Due Date": momentWithTimezone(task.due_date) || "--",
+        "Due Date": momentWithTimezone(task.due_date, "MM-DD-YYYY") || "--",
         "Project Title": task.project_title || "--",
         Assignees:
           task.assignees
@@ -66,6 +66,7 @@ export const ExportTasks = ({
         Tags: task.tags.join(", ") || "--",
       }));
       setTasks(taskData || []);
+      console.log(taskData, "taskData");
     },
     enabled: Boolean(
       selectedProject ||

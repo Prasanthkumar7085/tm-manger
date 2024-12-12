@@ -56,9 +56,10 @@ const AssignedUsers = ({ viewTaskData, taskId }: assignTaskProps) => {
       user_type: string;
       role: string;
       task_assignee_id: any;
-      download_url: any;
+      profile_pic: any;
     }[]
   >([]);
+  console.log(selectedMembers, "selectedMembers");
   const [updatedOrNot, setUpdatedOrNot] = useState<boolean>(false);
   const page = 1;
   const limit = 10;
@@ -336,11 +337,13 @@ const AssignedUsers = ({ viewTaskData, taskId }: assignTaskProps) => {
                     key={index}
                   >
                     <div className="profile-image">
-                      {member.download_url ? (
+                      {member.profile_pic ? (
                         <div className="flex items-center space-x-3">
                           <div className="w-6 h-6 rounded-sm overflow-hidden border border-gray-200">
                             <img
-                              src={member.download_url}
+                              // src={member.download_url}
+
+                              src={`${import.meta.env.VITE_IMAGE_URL}/${member.profile_pic}`}
                               alt={`${getFullNames(member)}'s profile`}
                               className="w-full h-full object-cover"
                             />

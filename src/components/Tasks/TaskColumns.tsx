@@ -240,6 +240,7 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
       id: "due_date",
       cell: (info: any) => {
         const date: string = info.getValue();
+
         return <span>{date ? momentWithTimezone(date) : "-"}</span>;
       },
       width: "100px",
