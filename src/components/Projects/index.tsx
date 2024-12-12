@@ -16,6 +16,7 @@ import TanStackTable from "../core/TanstackTable";
 import { useSelector } from "react-redux";
 import { canAddTask } from "@/lib/helpers/loginHelpers";
 import { Grid3x3, List } from "lucide-react";
+import { ExportProjects } from "./ExportProjects";
 const Projects = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -196,6 +197,13 @@ const Projects = () => {
                   </Button>
                 </li>
               )}
+              <li>
+                <ExportProjects
+                  selectedStatus={selectedStatus}
+                  search_string={searchString}
+                  orderBy={selectedSort}
+                />
+              </li>
               <li>
                 <button
                   className="text-white h-[35px] flex items-center justify-center bg-white border  px-3 rounded-md"

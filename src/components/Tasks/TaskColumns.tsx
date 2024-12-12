@@ -181,75 +181,50 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
               .getValue()
               ?.slice(0, 5)
               .map((assignee: any) => {
+                const firstName = assignee.user_first_name || "";
+                const lastName = assignee.user_last_name || "";
                 const initials =
-                  assignee.user_first_name?.[0]?.toUpperCase() +
-                  assignee.user_last_name?.[0]?.toUpperCase();
-                console.log(initials, "initials");
+                  firstName?.[0]?.toUpperCase() + lastName?.[0]?.toUpperCase();
                 const backgroundColor = getColorFromInitials(initials);
                 return (
                   <Avatar
                     key={assignee.user_id}
-                    title={assignee?.fname + " " + assignee.lname}
+                    title={`${firstName} ${lastName}`}
                     className={`w-6 h-6 ${backgroundColor}`}
                   >
                     <AvatarImage
                       src={assignee.user_profile_pic_url}
-                      alt={assignee.name}
-                      title={assignee.fname + " " + assignee.lname}
+                      alt={`${firstName} ${lastName}`}
+                      title={`${firstName} ${lastName}`}
                     />
                     <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>
                 );
               })}
-            {info.getValue()?.length > 5 && (
-              <Popover open={showPopover} onOpenChange={setShowPopover}>
-                <PopoverTrigger asChild>
-                  <div className="flex items-center justify-center w-8 h-8 border-2 border-white rounded-full bg-gray-200 text-xs font-semibold cursor-pointer hover:bg-gray-300">
-                    +{info.getValue()?.length - 5}
-                  </div>
-                </PopoverTrigger>
-                <PopoverContent className="p-2 w-48 max-w-xs bg-white border border-gray-300 rounded-lg shadow-lg max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
-                  <div className="space-y-2">
-                    {info.getValue().map((assignee: any) => (
-                      <div
-                        key={assignee.user_id}
-                        className="flex items-center space-x-2"
-                      >
-                        <Avatar
-                          key={assignee.user_id}
-                          title={
-                            assignee.user_first_name +
-                            " " +
-                            assignee.user_last_name
-                          }
-                          className={`w-8 h-8 ${getColorFromInitials(
-                            assignee.user_first_name[0] +
-                              assignee.user_last_name[0]
-                          )}`}
-                        >
-                          <AvatarImage
-                            src={assignee.user_profile_pic_url}
-                            alt={assignee.name}
-                            title={
-                              assignee.user_first_name +
-                              " " +
-                              assignee.user_last_name
-                            }
-                          />
-                          <AvatarFallback>
-                            {assignee.user_first_name[0] +
-                              assignee.user_last_name[0]}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span>
-                          {assignee.user_first_name} {assignee.user_last_name}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </PopoverContent>
-              </Popover>
-            )}
+
+            {info.getValue()?.map((assignee: any) => {
+              const firstName = assignee.user_first_name || "";
+              const lastName = assignee.user_last_name || "";
+              const initials = firstName[0] + lastName[0];
+              return (
+                <div
+                  key={assignee.user_id}
+                  className="flex items-center space-x-2"
+                >
+                  <Avatar
+                    title={`${firstName} ${lastName}`}
+                    className={`w-8 h-8 ${getColorFromInitials(initials)}`}
+                  >
+                    <AvatarImage
+                      src={assignee.user_profile_pic_url}
+                      alt={`${firstName} ${lastName}`}
+                      title={`${firstName} ${lastName}`}
+                    />
+                    <AvatarFallback>{initials}</AvatarFallback>
+                  </Avatar>
+                </div>
+              );
+            })}
           </div>
         );
       },

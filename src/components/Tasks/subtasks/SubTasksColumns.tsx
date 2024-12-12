@@ -212,6 +212,9 @@ export const SubTaskColumns = ({
                   </div>
                 </td>
                 <td className="p-2 text-sm">
+                  {momentWithTimezone(row?.due_date, "MM-DD-YYYY")}
+                </td>
+                <td className="p-2 text-sm">
                   <PriorityStatus
                     taskId={row.id}
                     setUpdatePriority={setUpdateDetailsOfTask}
@@ -220,24 +223,6 @@ export const SubTaskColumns = ({
                     viewData={row}
                     assignedUsers={assignedUsers}
                   />
-
-                  {/* <span
-                    className="capitalize text-[12px] px-2 rounded-full font-medium flex justify-center items-center"
-                    style={{
-                      backgroundColor:
-                        bgColorObjectForStatus[row.priority] || "gray",
-                      color: colorObjectForStatus[row.priority] || "black",
-                    }}
-                  >
-                    {row.priority === "HIGH" && <ArrowUp className="w-4 h-4" />}
-                    {row.priority === "MEDIUM" && (
-                      <ArrowRight className="w-4 h-4" />
-                    )}
-                    {row.priority === "LOW" && (
-                      <ArrowDown className="w-4 h-4" />
-                    )}
-                    {row.priority || "--"}
-                  </span> */}
                 </td>
                 <td className="p-2 text-sm">
                   <TaskStatus
@@ -247,23 +232,6 @@ export const SubTaskColumns = ({
                     setSelectedStatus={setSelectedSubTaskStatus}
                     assignedUsers={assignedUsers}
                   />
-                  {/* <span
-                    className={`rounded-full px-2 py-1 text-xs font-medium flex items-center justify-center ${
-                      row.status === "OVER_DUE"
-                        ? "bg-red-100 text-red-500"
-                        : row.status === "TODO"
-                          ? "bg-purple-100 text-purple-500"
-                          : row.status === "COMPLETED"
-                            ? "bg-green-100 text-green-500"
-                            : row.status === "IN_PROGRESS"
-                              ? "bg-blue-100 text-blue-500"
-                              : "bg-gray-100 text-gray-500"
-                    }`}
-                  >
-                    {taskStatusConstants.find(
-                      (item: any) => item.value === row.status
-                    )?.label || "--"}
-                  </span> */}
                 </td>
                 <td>
                   <Button
@@ -407,7 +375,7 @@ export const SubTaskColumns = ({
                         <div className="inline-block text-[#FF0021] text-md font-semibold rounded-sm">
                           {momentWithTimezone(
                             selectedTask?.due_date,
-                            "MM/DD/YYYY"
+                            "MM-DD-YYYY"
                           )}
                         </div>
                       </li>
@@ -418,7 +386,7 @@ export const SubTaskColumns = ({
                         <p className="text-black font-medium">
                           {momentWithTimezone(
                             viewData?.created_at,
-                            "MM/DD/YYYY"
+                            "MM-DD-YYYY"
                           )}
                         </p>
                       </li>

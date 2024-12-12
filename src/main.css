@@ -77,8 +77,8 @@ table tbody td:last-child {
 #users table tbody td:nth-child(2) {
   position: sticky;
   left: 40px;
-  width: 150px !important;
-  max-width: 150px !important;
+  width: 200px !important;
+  max-width: 200px !important;
 }
 #users table thead th:nth-child(3),
 #users table tbody td:nth-child(3) {
@@ -90,8 +90,8 @@ table tbody td:last-child {
 
 #users table thead th:nth-child(4),
 #users table tbody td:nth-child(4) {
-  width: 200px !important;
-  max-width: 200px !important;
+  width: 280px !important;
+  max-width: 280px !important;
 }
 #users table thead th:nth-child(5),
 #users table thead th:nth-child(6),
@@ -149,5 +149,3 @@ table tbody td:last-child {
   left: 0px !important; /* Adjust this value to align the dropdown horizontally */
   z-index: 1050 !important;
 }
-
-

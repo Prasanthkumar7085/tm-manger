@@ -380,3 +380,11 @@ export const getTaskArchivedStatsCountsAPI = async () => {
     throw err;
   }
 };
+
+export const getExportTasksAPI = async (queryParams: any) => {
+  try {
+    return await $fetch.get(`/tasks/export`, queryParams);
+  } catch (err: any) {
+    throw err;
+  }
+};

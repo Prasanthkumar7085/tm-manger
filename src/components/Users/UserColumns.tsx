@@ -99,9 +99,9 @@ const UserColumns = () => {
         let title = info.getValue();
         return <span className="truncate">{title ? title : "-"}</span>;
       },
-      width: "250px",
-      maxWidth: "250px",
-      minWidth: "250px",
+      width: "500px",
+      maxWidth: "500px",
+      minWidth: "500px",
       header: () => <span>Email</span>,
       footer: (props: any) => props.column.id,
     },

@@ -26,14 +26,17 @@ import { archivetaskColumns } from "./ArchiveColumns";
 import TotalCounts from "./Counts";
 import { taskColumns } from "./TaskColumns";
 import TagsSearchFilter from "../core/CommonComponents/TagsSearchFilter";
+import { ExportTasks } from "./ExportTasks";
 const Tasks = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const router = useRouter();
+
   const user_type: any = useSelector(
     (state: any) => state.auth.user.user_details?.user_type
   );
   const { projectId } = useParams({ strict: false });
+  const { taskId } = useParams({ strict: false });
   const searchParams = new URLSearchParams(location.search);
   const pageIndexParam = Number(searchParams.get("current_page")) || 1;
   const pageSizeParam = Number(searchParams.get("page_size")) || 25;
@@ -287,6 +290,19 @@ const Tasks = () => {
             <div className="filters w-[100%] flex items-center gap-x-4 ">
               <ul className="flex justify-start space-x-3 py-1 overflow-auto w-[100%] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 ">
                 <li>
+                  <ExportTasks
+                    selectedProject={selectedProject}
+                    search_string={searchString}
+                    selectedMembers={selectedMembers}
+                    selectedDate={selectedDate}
+                    selectedtags={selectedTags}
+                    selectedStatus={selectedStatus}
+                    selectedpriority={selectedpriority}
+                    pagination={pagination}
+                    isArchive={isArchive}
+                  />
+                </li>
+                <li>
                   <SelectTaskProjects
                     selectedProject={selectedProject}
                     setSelectedProject={setSelectedProject}
@@ -330,6 +346,7 @@ const Tasks = () => {
                     setValue={setSelectedStatus}
                   />
                 </li>
+
                 <li>
                   <TasksSelectPriority
                     value={selectedpriority}
@@ -389,6 +406,7 @@ const Tasks = () => {
                 "project_title",
                 "assignees",
                 "status",
+                "tags",
               ]}
             />
           </div>
