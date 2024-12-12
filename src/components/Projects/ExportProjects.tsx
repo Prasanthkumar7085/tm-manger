@@ -7,7 +7,6 @@ import { momentWithTimezone } from "@/lib/helpers/timeZone";
 
 export const ExportProjects = ({
   selectedStatus,
-
   search_string,
   orderBy,
 }: any) => {
