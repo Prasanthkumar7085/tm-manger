@@ -58,6 +58,7 @@ export const ExportTasks = ({
             ?.label || "--",
         Priority: task.priority || "--",
         "Due Date": momentWithTimezone(task.due_date, "MM-DD-YYYY") || "--",
+
         "Project Title": task.project_title || "--",
         Assignees:
           task.assignees
