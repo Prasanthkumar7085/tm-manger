@@ -1,34 +1,33 @@
-import { useState } from "react";
-import { Button } from "@mui/material";
-import * as XLSX from "xlsx";
-import { useQuery } from "@tanstack/react-query";
 import { exportProjectsAPI } from "@/lib/services/projects";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import * as XLSX from "xlsx";
+import { Button } from "@mui/material";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
-
-interface ExportProjectsProps {
-  selectedStatus?: string;
-  orderBy: any;
-  search_string?: string;
-}
 
 export const ExportProjects = ({
   selectedStatus,
-  orderBy,
+
   search_string,
-}: ExportProjectsProps) => {
+  orderBy,
+}: any) => {
   const [loading, setLoading] = useState(false);
   const [projects, setProjects] = useState<any[]>([]);
 
   const queryParams = {
     status: selectedStatus,
-    order_by: orderBy,
+
     search_string: search_string,
+    order_by: orderBy,
   };
+
+  console.log("Query Params:", queryParams);
 
   const { refetch, isLoading, isError, data } = useQuery({
     queryKey: ["getExportProjects", selectedStatus, orderBy, search_string],
     queryFn: async () => {
       const response = await exportProjectsAPI(queryParams);
+      console.log("API Response:", response);
       const projectData = response?.data?.data.map((project: any) => ({
         Title: project.title || "--",
         Description: project.description || "--",
@@ -46,8 +45,9 @@ export const ExportProjects = ({
           : "--",
       }));
       setProjects(projectData || []);
+      return projectData;
     },
-    enabled: false,
+    enabled: Boolean(selectedStatus || search_string || orderBy),
   });
 
   const exportToCSV = async () => {
@@ -91,7 +91,7 @@ export const ExportProjects = ({
           borderRadius: "8px",
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
           "&:hover": {
-            backgroundColor: "#0056b3",
+            backgroundColor: "#1B2459",
           },
           "&:disabled": {
             backgroundColor: "#ccc",
@@ -100,7 +100,7 @@ export const ExportProjects = ({
         }}
         disabled={loading}
       >
-        {loading ? "Exporting..." : "Export  "}
+        {loading ? "Exporting..." : "Export"}
       </Button>
     </div>
   );

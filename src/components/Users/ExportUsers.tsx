@@ -14,7 +14,6 @@ export const ExportUsers = ({
 }: any) => {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<any[]>([]);
-  console.log(users, "users");
 
   const queryParams = {
     status: selectedStatus,
@@ -41,11 +40,10 @@ export const ExportUsers = ({
         Designation: user.designation || "--",
         "Phone Number": user.phone_number || "--",
 
-        "Created On": user.created_at || "--",
-        "Deleted On": user.deleted_at || "--",
+        "Created On": momentWithTimezone(user.created_at || "--"),
+        "Deleted On": momentWithTimezone(user.deleted_at || "--"),
       }));
       setUsers(userData || []);
-      console.log(userData, "userData");
     },
 
     enabled: Boolean(
@@ -97,7 +95,7 @@ export const ExportUsers = ({
           borderRadius: "8px",
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
           "&:hover": {
-            backgroundColor: "#0056b3",
+            backgroundColor: "#1B2459",
           },
           "&:disabled": {
             backgroundColor: "#ccc",
