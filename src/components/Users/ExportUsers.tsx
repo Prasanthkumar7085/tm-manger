@@ -2,22 +2,16 @@ import { useState } from "react";
 import { Button } from "@mui/material";
 import * as XLSX from "xlsx";
 import { useQuery } from "@tanstack/react-query";
-import { exportUsersAPI } from "@/lib/services/users";
+import { exportProjectsAPI } from "@/lib/services/projects";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
-
-interface ExportUsersProps {
-  selectedStatus?: string;
-  selectedUserType?: string;
-  search_string?: string;
-  pagination?: any;
-}
+import { exportUsersAPI } from "@/lib/services/users";
 
 export const ExportUsers = ({
   selectedStatus,
   selectedUserType,
   search_string,
   pagination,
-}: ExportUsersProps) => {
+}: any) => {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<any[]>([]);
 
@@ -28,8 +22,14 @@ export const ExportUsers = ({
     order_by: pagination?.order_by,
   };
 
-  const { isLoading, isError } = useQuery({
-    queryKey: ["getExportUsers", selectedStatus, selectedUserType],
+  const { refetch, isLoading, isError, data } = useQuery({
+    queryKey: [
+      "getExportUsers",
+      selectedStatus,
+      selectedUserType,
+      pagination,
+      search_string,
+    ],
     queryFn: async () => {
       const response = await exportUsersAPI(queryParams);
       const userData = response?.data?.data.map((user: any) => ({
@@ -45,13 +45,16 @@ export const ExportUsers = ({
       }));
       setUsers(userData || []);
     },
-    enabled: Boolean(selectedStatus || selectedUserType),
+    enabled: Boolean(
+      selectedStatus || selectedUserType || search_string || pagination
+    ),
   });
 
   const exportToCSV = async () => {
     setLoading(true);
 
     try {
+      await refetch();
       const userData = users.length > 0 ? users : [];
 
       if (userData.length > 0) {
@@ -76,34 +79,30 @@ export const ExportUsers = ({
   };
 
   return (
-    <>
-      <div>
-        <Button
-          type="button"
-          className="font-normal"
-          sx={{
+    <div>
+      <Button
+        onClick={exportToCSV}
+        sx={{
+          backgroundColor: "#0056b3",
+          color: "#fff",
+          fontWeight: "bold",
+          textTransform: "capitalize",
+          padding: "10px 20px",
+          fontSize: "14px",
+          borderRadius: "8px",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+          "&:hover": {
             backgroundColor: "#0056b3",
-            color: "#fff",
-            fontWeight: "bold",
-            textTransform: "capitalize",
-            padding: "10px 20px",
-            fontSize: "14px",
-            borderRadius: "8px",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-            "&:hover": {
-              backgroundColor: "#0056b3",
-            },
-            "&:disabled": {
-              backgroundColor: "#ccc",
-              color: "#666",
-            },
-          }}
-          onClick={exportToCSV}
-          disabled={loading || users.length === 0}
-        >
-          {loading ? "Exporting..." : "Export "}
-        </Button>
-      </div>
-    </>
+          },
+          "&:disabled": {
+            backgroundColor: "#ccc",
+            color: "#666",
+          },
+        }}
+        disabled={loading}
+      >
+        {loading ? "Exporting..." : "Export  "}
+      </Button>
+    </div>
   );
 };
