@@ -1,6 +1,3 @@
-import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useLocation, useParams } from "@tanstack/react-router";
 import tagIcon from "@/assets/tag- icon.svg";
 import Loading from "@/components/core/Loading";
 import { Button } from "@/components/ui/button";
@@ -22,7 +19,10 @@ import {
   getTasksBasedTagsAPI,
   removeTagAPI,
 } from "@/lib/services/tasks";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useLocation, useParams } from "@tanstack/react-router";
 import { Check, ChevronsUpDown } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface TagsComponentProps {
@@ -172,7 +172,7 @@ const TagsComponent: React.FC<TagsComponentProps> = ({ errorMessages }) => {
     <div>
       <div className="border mt-2">
         <div className="card-header border-b px-4 py-0 flex justify-between items-center gap-x-2 bg-gray-50">
-          <h3 className="leading-1 text-black text-[1.1em]">Tags</h3>
+          <h3 className="leading-loose text-black text-[1.1em]">Tags</h3>
           <div>
             <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
               <PopoverTrigger>

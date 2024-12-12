@@ -21,6 +21,7 @@ function ViewProfile() {
   const [loading, setLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [userType, setUserType] = useState<any>("");
+  console.log(userType, "userType");
   const [userData, setUserData] = useState<any>({
     fname: "",
     lname: "",
@@ -55,7 +56,7 @@ function ViewProfile() {
             profile_pic: data?.profile_pic,
           });
           setUserType({
-            user_type: "admin",
+            user_type: data?.user_type,
           });
         } else {
           throw response;
@@ -241,11 +242,15 @@ function ViewProfile() {
                 </div>
               ) : (
                 <img
-                  src={`${import.meta.env.VITE_IMAGE_URL}/${userData.profile_pic}`}
-                  alt="User Profile"
+                  src={
+                    userData.profile_pic
+                      ? `${import.meta.env.VITE_IMAGE_URL}/${userData.profile_pic}`
+                      : "/profile-picture.png"
+                  }
                   className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 shadow"
                 />
               )}
+
               <span className="absolute bottom-[-10%] left-[40%] bg-[#1b2459] text-white rounded-full p-1">
                 <Pencil className="w-4 h-4" />
               </span>

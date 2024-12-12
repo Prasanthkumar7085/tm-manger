@@ -23,7 +23,7 @@ import { getProjectMembersAPI } from "@/lib/services/projects/members";
 import { addAssignesAPI, getAssignesAPI } from "@/lib/services/tasks";
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams, useRouter } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -56,9 +56,10 @@ const AssignedUsers = ({ viewTaskData, taskId }: assignTaskProps) => {
       user_type: string;
       role: string;
       task_assignee_id: any;
-      download_url: any;
+      profile_pic: any;
     }[]
   >([]);
+  console.log(selectedMembers, "selectedMembers");
   const [updatedOrNot, setUpdatedOrNot] = useState<boolean>(false);
   const page = 1;
   const limit = 10;
@@ -192,7 +193,7 @@ const AssignedUsers = ({ viewTaskData, taskId }: assignTaskProps) => {
   return (
     <div className="assign-tasks mt-3 border">
       <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
-        <h3 className="leading-1 text-black text-[1.1em]">Assigned To</h3>
+        <h3 className="leading-loose text-black text-[1.1em]">Assigned To</h3>
         <Button
           disabled={
             profileData?.user_type === "admin" || isAbleToAddOrEdit()
@@ -336,11 +337,13 @@ const AssignedUsers = ({ viewTaskData, taskId }: assignTaskProps) => {
                     key={index}
                   >
                     <div className="profile-image">
-                      {member.download_url ? (
+                      {member.profile_pic ? (
                         <div className="flex items-center space-x-3">
                           <div className="w-6 h-6 rounded-sm overflow-hidden border border-gray-200">
                             <img
-                              src={member.download_url}
+                              // src={member.download_url}
+
+                              src={`${import.meta.env.VITE_IMAGE_URL}/${member.profile_pic}`}
                               alt={`${getFullNames(member)}'s profile`}
                               className="w-full h-full object-cover"
                             />

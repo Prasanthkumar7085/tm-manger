@@ -4,6 +4,7 @@ import * as XLSX from "xlsx";
 import { useQuery } from "@tanstack/react-query";
 import { getExportTasksAPI } from "@/lib/services/tasks";
 import { momentWithTimezone } from "@/lib/helpers/timeZone";
+import { activityStatus } from "@/lib/helpers/statusConstants";
 
 export const ExportTasks = ({
   selectedProject,
@@ -52,9 +53,11 @@ export const ExportTasks = ({
       const taskData = response?.data?.data.map((task: any) => ({
         Title: task.title || "--",
         "Reference ID": task.ref_id || "--",
-        Status: task.status || "--",
+        Status:
+          activityStatus.find((item: any) => item.value === task.status)
+            ?.label || "--",
         Priority: task.priority || "--",
-        "Due Date": momentWithTimezone(task.due_date) || "--",
+        "Due Date": momentWithTimezone(task.due_date, "MM-DD-YYYY") || "--",
         "Project Title": task.project_title || "--",
         Assignees:
           task.assignees
@@ -66,6 +69,7 @@ export const ExportTasks = ({
         Tags: task.tags.join(", ") || "--",
       }));
       setTasks(taskData || []);
+      console.log(taskData, "taskData");
     },
     enabled: Boolean(
       selectedProject ||
@@ -114,16 +118,18 @@ export const ExportTasks = ({
           onClick={exportToCSV}
           disabled={loading || tasks.length === 0}
           sx={{
-            backgroundColor: "#0056b3",
+            backgroundColor: "#1B2459",
             color: "#fff",
+
+            className: "export-button",
             fontWeight: "bold",
             textTransform: "capitalize",
-            padding: "10px 20px",
+            padding: "6px 20px",
             fontSize: "14px",
             borderRadius: "8px",
             boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
             "&:hover": {
-              backgroundColor: "#0056b3",
+              backgroundColor: "#1B2459",
             },
             "&:disabled": {
               backgroundColor: "#ccc",

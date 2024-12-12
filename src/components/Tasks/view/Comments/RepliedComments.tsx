@@ -31,9 +31,9 @@ const RepliedComments = ({
     return filteredComments.flat();
   };
   return (
-    <div className="bg-white border">
+    <div className="bg-white relative border">
       <div className="card-header border-b px-4 py-0 flex justify-between items-center bg-gray-50">
-        <h3 className="leading-1 text-black text-[1.1em]">Replies</h3>
+        <h3 className="leading-loose text-black text-[1.1em]">Replies</h3>
         <Button
           variant="outline"
           onClick={() => {
@@ -44,8 +44,9 @@ const RepliedComments = ({
           <X />
         </Button>
       </div>
-      <div className="card-body flex flex-col h-[272px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
-        <div className="flex space-x-4  my-3 px-4">
+      <div className="max-h-[450px] pb-[150px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+      <div className="card-body pb-[9rem] flex flex-col ">
+        <div className="flex space-x-4 my-3 px-4">
           <div className="member-profile-image">
             <img
               title={mainComment?.firstName + " " + mainComment?.lastName}
@@ -157,7 +158,7 @@ const RepliedComments = ({
           </div>
         </div>
       </div>
-
+      </div>
       <div className="card-footer border-t bg-[#EEEEF8] sticky bottom-0 left-0 right-0  px-4 py-4  z-10 overflow-hidden">
         <div className="ck-editor-send-button grid grid-cols-[auto,50px] space-x-3 items-end">
           <div className="overflow-auto">
@@ -171,6 +172,7 @@ const RepliedComments = ({
           </button>
         </div>
       </div>
+
     </div>
   );
 };

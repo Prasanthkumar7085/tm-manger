@@ -40,11 +40,12 @@ export const ExportUsers = ({
         Designation: user.designation || "--",
         "Phone Number": user.phone_number || "--",
 
-        "Created On": momentWithTimezone(user.created_at) || "--",
-        "Deleted On": momentWithTimezone(user.deleted_at) || "--",
+        "Created On": momentWithTimezone(user.created_at || "--"),
+        "Deleted On": momentWithTimezone(user.deleted_at || "--"),
       }));
       setUsers(userData || []);
     },
+
     enabled: Boolean(
       selectedStatus || selectedUserType || search_string || pagination
     ),
@@ -83,16 +84,18 @@ export const ExportUsers = ({
       <Button
         onClick={exportToCSV}
         sx={{
-          backgroundColor: "#0056b3",
+          backgroundColor: "#1B2459",
           color: "#fff",
+
+          className: "export-button",
           fontWeight: "bold",
           textTransform: "capitalize",
-          padding: "10px 20px",
+          padding: "6px 20px",
           fontSize: "14px",
           borderRadius: "8px",
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
           "&:hover": {
-            backgroundColor: "#0056b3",
+            backgroundColor: "#1B2459",
           },
           "&:disabled": {
             backgroundColor: "#ccc",

@@ -1,6 +1,15 @@
 import downArrowIcon from "@/assets/down-arrow.svg";
 import { navBarConstants } from "@/lib/helpers/navBarConstants";
+import {
+  getAllNotificationsAPI,
+  getAllNotificationsCountsAPI,
+  markAsReadAllAPI,
+  markAsReadAPI,
+} from "@/lib/services/notifications";
+import { getAllSubTasks } from "@/lib/services/tasks";
 import { getSingleUserApi } from "@/lib/services/viewprofile";
+import { deleteSetSubRefId } from "@/redux/Modules/userlogin";
+import { Popover } from "@radix-ui/react-popover";
 import { useQuery } from "@tanstack/react-query";
 import {
   useLocation,
@@ -8,9 +17,12 @@ import {
   useParams,
   useRouter,
 } from "@tanstack/react-router";
+import { format } from "date-fns";
 import Cookies from "js-cookie";
+import { Bell } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import {
@@ -19,19 +31,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Bell } from "lucide-react";
-import { Popover } from "@radix-ui/react-popover";
 import { PopoverContent, PopoverTrigger } from "./ui/popover";
-import { format, sub } from "date-fns";
-import {
-  getAllNotificationsAPI,
-  getAllNotificationsCountsAPI,
-  markAsReadAllAPI,
-  markAsReadAPI,
-} from "@/lib/services/notifications";
-import { toast } from "sonner";
-import { getAllSubTasks } from "@/lib/services/tasks";
-import { deleteSetSubRefId } from "@/redux/Modules/userlogin";
 
 interface titleProps {
   title: string;
@@ -226,7 +226,7 @@ function TopBar() {
   };
 
   return (
-    <div className="py-3 px-5 flex justify-between items-center bg-white border-b">
+    <div className="py-2 px-5 flex justify-between items-center bg-white border-b">
       {subRefernceId ? (
         <span className="ml-2 text-lg font-semibold flex">
           {pathname.includes("/tasks/view/") && taskId

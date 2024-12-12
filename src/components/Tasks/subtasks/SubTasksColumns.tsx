@@ -23,9 +23,9 @@ import AssignedUsers from "../AssigneTasks";
 import TaskComments from "../view/Comments";
 import PriorityStatus from "../view/PriorityStatus";
 
+import LoadingComponent from "@/components/core/LoadingComponent";
 import { capitalizeWords } from "@/lib/helpers/CapitalizeWords";
 import TaskStatus from "../view/TaskStatus";
-import LoadingComponent from "@/components/core/LoadingComponent";
 // Get color based on initials
 const getColorFromInitials = (initials: string) => {
   const colors = ["bg-red-500", "bg-blue-500", "bg-green-500"];
@@ -328,7 +328,7 @@ export const SubTaskColumns = ({
                 </div>
                 <div className="focus-details border ">
                   <div className="card-header border-b px-4 py-0 bg-gray-50 pr-3 pl-4">
-                    <h3 className="leading-1 text-black text-[1.1em]">
+                    <h3 className="leading-loose text-black text-[1.1em]">
                       Details
                     </h3>
                   </div>
