@@ -171,7 +171,6 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
       accessorFn: (row: any) => row.assignees,
       id: "assignees",
       cell: (info: any) => {
-        console.log(info.getValue(), "assignees");
         const [showPopover, setShowPopover] = useState(false);
         return (
           <div className="flex justify-start items-center -space-x-2">
@@ -383,6 +382,7 @@ export const taskColumns = ({ setDel, isArchive }: any) => {
       header: () => <span>Priority</span>,
       footer: (props: any) => props.column.id,
     },
+
     {
       accessorFn: (row: any) => row.actions,
       id: "actions",
