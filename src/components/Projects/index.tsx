@@ -232,12 +232,14 @@ const Projects = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 mt-3">
             {projectsData.length === 0 && !isLoading ? (
               <div className="col-span-full text-center text-lg">
-                <img
-                  src="/No data.svg"
-                  alt="No Data"
-                  height={500}
-                  width={500}
-                />
+                <div className="flex justify-center items-center">
+                  <img
+                    src="/No data.svg"
+                    alt="No Data"
+                    height={500}
+                    width={500}
+                  />
+                </div>
               </div>
             ) : (
               projectsData?.map((project: any) => (
