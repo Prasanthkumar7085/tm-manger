@@ -9,12 +9,14 @@ interface ExportUsersProps {
   selectedStatus?: string;
   selectedUserType?: string;
   search_string?: string;
+  pagination?: any;
 }
 
 export const ExportUsers = ({
   selectedStatus,
   selectedUserType,
   search_string,
+  pagination,
 }: ExportUsersProps) => {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<any[]>([]);
@@ -23,6 +25,7 @@ export const ExportUsers = ({
     status: selectedStatus,
     user_type: selectedUserType,
     search_string: search_string,
+    order_by: pagination?.order_by,
   };
 
   const { isLoading, isError } = useQuery({
@@ -30,16 +33,15 @@ export const ExportUsers = ({
     queryFn: async () => {
       const response = await exportUsersAPI(queryParams);
       const userData = response?.data?.data.map((user: any) => ({
-        ID: user.id || "--",
         Name: `${user.fname} ${user.lname}` || "--",
         Email: user.email || "--",
         "User Type": user.user_type || "--",
         Status: user.active ? "Active" : "Inactive",
         Designation: user.designation || "--",
-        PhoneNumber: user.phone_number || "--",
+        "Phone Number": user.phone_number || "--",
 
-        CreatedAt: momentWithTimezone(user.created_at) || "--",
-        DeletedAt: momentWithTimezone(user.deleted_at) || "--",
+        "Created On": momentWithTimezone(user.created_at) || "--",
+        "Deleted On": momentWithTimezone(user.deleted_at) || "--",
       }));
       setUsers(userData || []);
     },
@@ -79,6 +81,23 @@ export const ExportUsers = ({
         <Button
           type="button"
           className="font-normal"
+          sx={{
+            backgroundColor: "#0056b3",
+            color: "#fff",
+            fontWeight: "bold",
+            textTransform: "capitalize",
+            padding: "10px 20px",
+            fontSize: "14px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+            "&:hover": {
+              backgroundColor: "#0056b3",
+            },
+            "&:disabled": {
+              backgroundColor: "#ccc",
+              color: "#666",
+            },
+          }}
           onClick={exportToCSV}
           disabled={loading || users.length === 0}
         >

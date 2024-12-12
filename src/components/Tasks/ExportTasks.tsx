@@ -14,6 +14,7 @@ export const ExportTasks = ({
   selectedStatus,
   selectedPriority,
   pagination,
+  isArchive,
 }: any) => {
   const [loading, setLoading] = useState(false);
   const [tasks, setTasks] = useState<any[]>([]);
@@ -30,6 +31,7 @@ export const ExportTasks = ({
       ? selectedtags?.map((tag: any) => tag.id)
       : undefined,
     order_by: pagination.order_by,
+    is_archived: isArchive ? "true" : "false",
   };
 
   const { isLoading, isError } = useQuery({
@@ -43,11 +45,11 @@ export const ExportTasks = ({
       selectedDate,
       selectedtags,
       pagination,
+      isArchive,
     ],
     queryFn: async () => {
       const response = await getExportTasksAPI(queryParams);
       const taskData = response?.data?.data.map((task: any) => ({
-        ID: task.id || "--",
         Title: task.title || "--",
         "Reference ID": task.ref_id || "--",
         Status: task.status || "--",
@@ -109,11 +111,27 @@ export const ExportTasks = ({
       <div>
         <Button
           type="button"
-          className="font-normal"
           onClick={exportToCSV}
           disabled={loading || tasks.length === 0}
+          sx={{
+            backgroundColor: "#0056b3",
+            color: "#fff",
+            fontWeight: "bold",
+            textTransform: "capitalize",
+            padding: "10px 20px",
+            fontSize: "14px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+            "&:hover": {
+              backgroundColor: "#0056b3",
+            },
+            "&:disabled": {
+              backgroundColor: "#ccc",
+              color: "#666",
+            },
+          }}
         >
-          {loading ? "Exporting..." : "Export Tasks"}
+          {loading ? "Exporting..." : "Export"}
         </Button>
       </div>
     </>

@@ -370,7 +370,7 @@ const ProjectView = () => {
               : "View Members"}
           </Button>
           <div>
-            <h2 className="text-sm text-[#666666]">Created At</h2>
+            <h2 className="text-sm text-[#666666]">Created On</h2>
             <p className="text-sm text-[#038847] font-[600]">
               {momentWithTimezone(projectDetails?.created_at, "MM-DD-YYYY")}
             </p>

@@ -258,7 +258,7 @@ const TaskView = () => {
                         Due Date
                       </p>
                       <div className="inline-block  text-[#FF0021] text-md font-semibold rounded-sm">
-                        {momentWithTimezone(viewData?.due_date, "MM/DD/YYYY")}
+                        {momentWithTimezone(viewData?.due_date, "MM-DD-YYYY")}
                       </div>
                     </li>
                     <li className="grid grid-cols-[150px,auto]">
@@ -271,7 +271,7 @@ const TaskView = () => {
                         <p className="text-black font-medium">
                           {momentWithTimezone(
                             viewData?.created_at,
-                            "MM/DD/YYYY"
+                            "MM-DD-YYYY"
                           )}
                         </p>
                       </div>

@@ -558,6 +558,7 @@ function UsersTable() {
                     search_string={searchString}
                     selectedStatus={selectedStatus}
                     selectedUserType={selectedUserType}
+                    pagination={pagination}
                   />
                 </ul>
               </div>

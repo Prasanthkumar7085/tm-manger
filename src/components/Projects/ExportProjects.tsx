@@ -30,13 +30,12 @@ export const ExportProjects = ({
     queryFn: async () => {
       const response = await exportProjectsAPI(queryParams);
       const projectData = response?.data?.data.map((project: any) => ({
-        ID: project.id || "--",
         Title: project.title || "--",
         Description: project.description || "--",
         Code: project.code || "--",
         Slug: project.slug || "--",
         Status: project.active ? "Active" : "Inactive",
-        "Created At": momentWithTimezone(project.created_at) || "--",
+        "Created On": momentWithTimezone(project.created_at) || "--",
         Assignees: project.assignees
           ? project.assignees
               .map(
@@ -78,7 +77,27 @@ export const ExportProjects = ({
 
   return (
     <div>
-      <Button onClick={exportToCSV} disabled={loading}>
+      <Button
+        onClick={exportToCSV}
+        sx={{
+          backgroundColor: "#0056b3",
+          color: "#fff",
+          fontWeight: "bold",
+          textTransform: "capitalize",
+          padding: "10px 20px",
+          fontSize: "14px",
+          borderRadius: "8px",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+          "&:hover": {
+            backgroundColor: "#0056b3",
+          },
+          "&:disabled": {
+            backgroundColor: "#ccc",
+            color: "#666",
+          },
+        }}
+        disabled={loading}
+      >
         {loading ? "Exporting..." : "Export  "}
       </Button>
     </div>

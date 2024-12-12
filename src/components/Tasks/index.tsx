@@ -290,6 +290,19 @@ const Tasks = () => {
             <div className="filters w-[100%] flex items-center gap-x-4 ">
               <ul className="flex justify-start space-x-3 py-1 overflow-auto w-[100%] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 ">
                 <li>
+                  <ExportTasks
+                    selectedProject={selectedProject}
+                    search_string={searchString}
+                    selectedMembers={selectedMembers}
+                    selectedDate={selectedDate}
+                    selectedtags={selectedTags}
+                    selectedStatus={selectedStatus}
+                    selectedpriority={selectedpriority}
+                    pagination={pagination}
+                    isArchive={isArchive}
+                  />
+                </li>
+                <li>
                   <SelectTaskProjects
                     selectedProject={selectedProject}
                     setSelectedProject={setSelectedProject}
@@ -333,18 +346,7 @@ const Tasks = () => {
                     setValue={setSelectedStatus}
                   />
                 </li>
-                <li>
-                  <ExportTasks
-                    selectedProject={selectedProject}
-                    search_string={searchString}
-                    selectedMembers={selectedMembers}
-                    selectedDate={selectedDate}
-                    selectedtags={selectedTags}
-                    selectedStatus={selectedStatus}
-                    selectedpriority={selectedpriority}
-                    pagination={pagination}
-                  />
-                </li>
+
                 <li>
                   <TasksSelectPriority
                     value={selectedpriority}
