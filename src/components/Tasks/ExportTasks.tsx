@@ -115,11 +115,13 @@ export const ExportTasks = ({
           onClick={exportToCSV}
           disabled={loading || tasks.length === 0}
           sx={{
-            backgroundColor: "#0056b3",
+            backgroundColor: "#1B2459",
             color: "#fff",
+
+            className: "export-button",
             fontWeight: "bold",
             textTransform: "capitalize",
-            padding: "10px 20px",
+            padding: "6px 20px",
             fontSize: "14px",
             borderRadius: "8px",
             boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
